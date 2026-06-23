@@ -1,0 +1,134 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+
+interface Goal {
+  target_films: number
+  target_series: number
+  year: number
+}
+
+interface Watched {
+  films: number
+  series: number
+}
+
+const CURRENT_YEAR = new Date().getFullYear()
+
+function Ring({ value, max, label, color }: { value: number; max: number; label: string; color: string }) {
+  const pct = max > 0 ? Math.min(100, Math.round((value / max) * 100)) : 0
+  const r = 40
+  const circumference = 2 * Math.PI * r
+  const dash = (pct / 100) * circumference
+
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <div className="relative w-24 h-24">
+        <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r={r} fill="none" stroke="var(--bg-secondary)" strokeWidth="10" />
+          <circle
+            cx="50" cy="50" r={r} fill="none"
+            stroke={color} strokeWidth="10"
+            strokeDasharray={`${dash} ${circumference}`}
+            strokeLinecap="round"
+            className="transition-all duration-700"
+          />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="text-xl font-bold text-white">{value}</span>
+          <span className="text-[10px] text-[--text-secondary]">/{max}</span>
+        </div>
+      </div>
+      <span className="text-xs text-[--text-secondary]">{label}</span>
+      <span className="text-xs font-semibold" style={{ color }}>%{pct}</span>
+    </div>
+  )
+}
+
+export default function WatchGoalWidget() {
+  const [goal, setGoal] = useState<Goal | null>(null)
+  const [watched, setWatched] = useState<Watched>({ films: 0, series: 0 })
+  const [editing, setEditing] = useState(false)
+  const [films, setFilms] = useState(0)
+  const [series, setSeries] = useState(0)
+  const [saving, setSaving] = useState(false)
+  const year = CURRENT_YEAR
+
+  useEffect(() => {
+    fetch(`/api/watch-goals?year=${year}`)
+      .then(r => r.json())
+      .then(({ goal: g, watched: w }) => {
+        setGoal(g)
+        setWatched(w ?? { films: 0, series: 0 })
+        if (g) { setFilms(g.target_films); setSeries(g.target_series) }
+      })
+  }, [year])
+
+  async function save() {
+    setSaving(true)
+    const res = await fetch('/api/watch-goals', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ year, target_films: films, target_series: series }),
+    })
+    const data = await res.json()
+    if (!data.error) setGoal(data)
+    setSaving(false)
+    setEditing(false)
+  }
+
+  return (
+    <div className="rounded-2xl border border-[--border] bg-[--bg-card] p-5">
+      <div className="flex items-center justify-between mb-5">
+        <h3 className="text-base font-bold text-white">{year} İzleme Hedefi</h3>
+        <button
+          onClick={() => { setEditing(e => !e); if (goal) { setFilms(goal.target_films); setSeries(goal.target_series) } }}
+          className="text-xs text-[--accent] hover:underline"
+        >
+          {editing ? 'İptal' : (goal ? 'Düzenle' : 'Hedef Belirle')}
+        </button>
+      </div>
+
+      {editing ? (
+        <div className="space-y-4">
+          <div>
+            <label className="text-xs text-[--text-secondary] block mb-1">Film hedefi</label>
+            <div className="flex items-center gap-3">
+              <button onClick={() => setFilms(f => Math.max(0, f - 10))} className="w-8 h-8 rounded-lg bg-[--bg-secondary] text-white text-lg flex items-center justify-center hover:bg-[--accent] transition-colors">-</button>
+              <input type="number" min={0} max={999} value={films} onChange={e => setFilms(Number(e.target.value))}
+                className="flex-1 text-center bg-[--bg-secondary] border border-[--border] rounded-lg py-1.5 text-white text-sm outline-none focus:border-[--accent]" />
+              <button onClick={() => setFilms(f => Math.min(999, f + 10))} className="w-8 h-8 rounded-lg bg-[--bg-secondary] text-white text-lg flex items-center justify-center hover:bg-[--accent] transition-colors">+</button>
+            </div>
+          </div>
+          <div>
+            <label className="text-xs text-[--text-secondary] block mb-1">Dizi hedefi</label>
+            <div className="flex items-center gap-3">
+              <button onClick={() => setSeries(s => Math.max(0, s - 5))} className="w-8 h-8 rounded-lg bg-[--bg-secondary] text-white text-lg flex items-center justify-center hover:bg-[--accent] transition-colors">-</button>
+              <input type="number" min={0} max={999} value={series} onChange={e => setSeries(Number(e.target.value))}
+                className="flex-1 text-center bg-[--bg-secondary] border border-[--border] rounded-lg py-1.5 text-white text-sm outline-none focus:border-[--accent]" />
+              <button onClick={() => setSeries(s => Math.min(999, s + 5))} className="w-8 h-8 rounded-lg bg-[--bg-secondary] text-white text-lg flex items-center justify-center hover:bg-[--accent] transition-colors">+</button>
+            </div>
+          </div>
+          <button onClick={save} disabled={saving}
+            className="w-full py-2.5 rounded-xl bg-[--accent] hover:bg-[--accent-hover] text-white text-sm font-semibold transition-colors disabled:opacity-50">
+            {saving ? 'Kaydediliyor...' : 'Kaydet'}
+          </button>
+        </div>
+      ) : goal && (goal.target_films > 0 || goal.target_series > 0) ? (
+        <div className="flex justify-around">
+          {goal.target_films > 0 && (
+            <Ring value={watched.films} max={goal.target_films} label="Film" color="var(--accent)" />
+          )}
+          {goal.target_series > 0 && (
+            <Ring value={watched.series} max={goal.target_series} label="Dizi" color="var(--gold)" />
+          )}
+        </div>
+      ) : (
+        <div className="text-center py-6">
+          <p className="text-4xl mb-2">🎯</p>
+          <p className="text-sm text-[--text-secondary]">{year} yılı için henüz hedef belirlemedin.</p>
+        </div>
+      )}
+    </div>
+  )
+}

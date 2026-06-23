@@ -1,0 +1,310 @@
+import { notFound } from 'next/navigation'
+import Link from 'next/link'
+import { IconGlobe, IconLock, IconPencil, IconFilm, IconTv } from '@/components/icons'
+import { createClient } from '@/lib/supabase/server'
+import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb'
+import ListeYorumlar from './ListeYorumlar'
+import ListeActions from './ListeActions'
+import type { Metadata } from 'next'
+
+interface Props { params: Promise<{ id: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('lists')
+    .select('title, profiles(username)')
+    .eq('id', id)
+    .single()
+  if (!data) return { title: 'Liste bulunamadı' }
+  const title = data.title ?? 'Liste'
+  const username = (data.profiles as any)?.username as string | undefined
+  const description = username
+    ? `${username} tarafından oluşturulan film & dizi listesi. Sinezon'da keşfet.`
+    : 'Film ve dizi listesi. Sinezon\'da keşfet.'
+  return {
+    title,
+    description,
+    alternates: { canonical: `/liste/${id}` },
+    openGraph: {
+      title: `${title} | Sinezon`,
+      description,
+      type: 'website',
+      url: `/liste/${id}`,
+    },
+  }
+}
+
+export default async function ListePage({ params }: Props) {
+  const { id } = await params
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const { data: list } = await supabase
+    .from('lists')
+    .select('*, profiles(username, avatar_url), list_likes(count), list_follows(count)')
+    .eq('id', id)
+    .single()
+
+  if (!list) notFound()
+  if (!list.public && list.user_id !== user?.id) notFound()
+
+  const isOwner = user?.id === list.user_id
+
+  const [{ data: items }, { data: comments }] = await Promise.all([
+    supabase.from('list_items').select('*').eq('list_id', id).order('position', { ascending: true }),
+    supabase.from('list_comments').select('*, profiles(username, avatar_url)').eq('list_id', id).order('created_at', { ascending: true }),
+  ])
+
+  // Like & follow state for current user
+  let isLiked = false
+  let isFollowing = false
+  if (user) {
+    const [{ data: likeRow }, { data: followRow }] = await Promise.all([
+      supabase.from('list_likes').select('list_id').eq('list_id', id).eq('user_id', user.id).maybeSingle(),
+      supabase.from('list_follows').select('list_id').eq('list_id', id).eq('user_id', user.id).maybeSingle(),
+    ])
+    isLiked = !!likeRow
+    isFollowing = !!followRow
+  }
+
+  const likeCount   = list.list_likes?.[0]?.count ?? 0
+  const followCount = list.list_follows?.[0]?.count ?? 0
+
+  const itemsWithMedia = await Promise.all(
+    (items ?? []).map(async (item, idx) => {
+      try {
+        const media = item.media_type === 'film'
+          ? await getMovieDetail(item.media_id)
+          : await getSeriesDetail(item.media_id)
+        return { ...item, media, rank: idx + 1 }
+      } catch {
+        return { ...item, media: null, rank: idx + 1 }
+      }
+    })
+  )
+
+  const date = new Date(list.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })
+
+  return (
+    <>
+      {/* ── Hero ── */}
+      <div className="relative h-[50vh] min-h-[300px] max-h-[500px] overflow-hidden">
+        {list.cover_url ? (
+          <img
+            src={list.cover_url}
+            alt={list.title}
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ filter: 'brightness(0.72) saturate(1.05)' }}
+          />
+        ) : (
+          <div className="absolute inset-0 flex">
+            {itemsWithMedia.slice(0, 7).map((item, i, arr) => {
+              const poster = item.media ? getPosterUrl(item.media.poster_path, 'w342') : null
+              return (
+                <div key={i} className="flex-1 overflow-hidden relative" style={{ minWidth: 0 }}>
+                  {poster ? (
+                    <img
+                      src={poster}
+                      alt=""
+                      className="absolute inset-0 w-full h-full object-cover object-top"
+                      style={{ filter: 'brightness(0.7)' }}
+                    />
+                  ) : (
+                    <div className="absolute inset-0" style={{ background: 'var(--bg-elevated)' }} />
+                  )}
+                  {i < arr.length - 1 && (
+                    <div className="absolute top-0 bottom-0 right-0 w-[2px]" style={{ background: 'var(--bg-primary)' }} />
+                  )}
+                </div>
+              )
+            })}
+            {itemsWithMedia.length === 0 && (
+              <div className="w-full h-full" style={{ background: 'linear-gradient(135deg, var(--bg-elevated), var(--bg-secondary))' }} />
+            )}
+          </div>
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-[--bg-primary] via-[--bg-primary]/50 to-[--bg-primary]/10" />
+        <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[--bg-primary]/80 to-transparent" />
+        <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[--bg-primary]/80 to-transparent" />
+      </div>
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-28 relative pb-16">
+
+        {/* ── Header ── */}
+        <div className="mb-8">
+
+          {/* Badges */}
+          <div className="flex items-center gap-2 mb-3 flex-wrap">
+            {(list as any).is_editorial && (
+              <span
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold"
+                style={{ background: 'rgba(225,29,72,0.9)', color: 'white' }}
+              >
+                ✦ Editöryal
+              </span>
+            )}
+            <span className="inline-flex items-center gap-1.5 text-[11px]" style={{ color: 'var(--text-secondary)' }}>
+              {list.public
+                ? <><IconGlobe className="h-3.5 w-3.5" /> Herkese açık</>
+                : <><IconLock className="h-3.5 w-3.5" /> Gizli</>
+              }
+            </span>
+          </div>
+
+          {/* Başlık + düzenle */}
+          <div className="flex items-start justify-between gap-4 flex-wrap">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight tracking-tight drop-shadow-lg">
+                {list.title}
+              </h1>
+              {list.description && (
+                <p className="mt-3 text-[15px] leading-relaxed max-w-2xl" style={{ color: 'var(--text-secondary)' }}>
+                  {list.description}
+                </p>
+              )}
+            </div>
+            {isOwner && (
+              <Link
+                href={`/liste/${id}/duzenle`}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm transition-colors shrink-0 mt-3"
+                style={{ border: '1px solid var(--border)', color: 'var(--text-secondary)' }}
+              >
+                <IconPencil className="h-3.5 w-3.5" />
+                Düzenle
+              </Link>
+            )}
+          </div>
+
+          {/* Meta bar */}
+          <div className="flex flex-wrap items-center gap-4 mt-5 pb-5" style={{ borderBottom: '1px solid var(--border)' }}>
+            <Link href={`/profil/${list.profiles?.username}`} className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
+              <div
+                className="h-9 w-9 rounded-full overflow-hidden flex items-center justify-center text-sm font-bold text-white shrink-0"
+                style={{ background: 'var(--accent)' }}
+              >
+                {list.profiles?.avatar_url
+                  ? <img src={list.profiles.avatar_url} alt="" className="w-full h-full object-cover" />
+                  : (list.profiles?.username?.[0] ?? '?').toUpperCase()
+                }
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-white leading-none">{list.profiles?.username}</p>
+                <p className="text-[11px] mt-0.5" style={{ color: 'var(--text-secondary)' }}>{date}</p>
+              </div>
+            </Link>
+
+            {/* İstatistik kartları */}
+            <div className="flex items-center gap-2 ml-auto">
+              {[
+                { value: itemsWithMedia.length, label: 'İçerik' },
+                { value: likeCount,             label: 'Beğeni'  },
+                { value: followCount,           label: 'Takipçi' },
+              ].map(stat => (
+                <div
+                  key={stat.label}
+                  className="flex flex-col items-center px-3.5 py-2 rounded-xl"
+                  style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+                >
+                  <span className="text-base font-bold text-white leading-none">{stat.value}</span>
+                  <span className="text-[10px] mt-1 uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>{stat.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Aksiyon butonları */}
+          <div className="mt-4">
+            <ListeActions
+              listId={id}
+              isLoggedIn={!!user}
+              isOwner={isOwner}
+              initialLiked={isLiked}
+              initialLikeCount={likeCount}
+              initialFollowing={isFollowing}
+              initialFollowCount={followCount}
+            />
+          </div>
+        </div>
+
+        {/* ── İçerik Izgarası ── */}
+        {itemsWithMedia.length === 0 ? (
+          <div
+            className="rounded-2xl py-16 text-center"
+            style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+          >
+            <p style={{ color: 'var(--text-secondary)' }}>Bu liste henüz boş.</p>
+            {isOwner && (
+              <p className="mt-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                Film veya dizi sayfalarından içerik ekleyebilirsin.
+              </p>
+            )}
+          </div>
+        ) : (
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 md:gap-4">
+            {itemsWithMedia.map((item) => {
+              const poster = item.media ? getPosterUrl(item.media.poster_path, 'w342') : null
+              const title  = item.media ? getMediaTitle(item.media) : `#${item.media_id}`
+              const year   = item.media ? getMediaYear(item.media) : null
+              const href   = `/${item.media_type}/${item.media_id}`
+
+              return (
+                <div key={item.id} className="group relative">
+                  <Link href={href}>
+                    <div
+                      className="aspect-[2/3] rounded-xl overflow-hidden relative transition-all duration-200 group-hover:-translate-y-1.5 movie-card-grid"
+                      style={{ background: 'var(--bg-card)' }}
+                    >
+                      {poster ? (
+                        <img
+                          src={poster}
+                          alt={title}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center" style={{ color: 'var(--text-secondary)' }}>
+                          {item.media_type === 'film'
+                            ? <IconFilm className="h-8 w-8 opacity-25" />
+                            : <IconTv className="h-8 w-8 opacity-25" />}
+                        </div>
+                      )}
+                      <div
+                        className="absolute top-1.5 left-1.5 h-5 min-w-[20px] px-1.5 rounded-md text-[10px] font-bold flex items-center justify-center"
+                        style={{ background: 'rgba(11,15,25,0.9)', color: 'var(--text-primary)', border: '1px solid var(--border-strong)' }}
+                      >
+                        {item.rank}
+                      </div>
+                      <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                    </div>
+                    <p
+                      className="mt-1.5 text-[12px] font-medium leading-tight line-clamp-2 transition-colors duration-150 group-hover:text-white"
+                      style={{ color: 'var(--text-primary)' }}
+                    >
+                      {title}
+                    </p>
+                    {year && (
+                      <p className="text-[11px] mt-0.5" style={{ color: 'var(--text-secondary)', opacity: 0.6 }}>{year}</p>
+                    )}
+                  </Link>
+                  {item.note && (
+                    <p className="mt-1 text-[11px] italic line-clamp-1" style={{ color: 'var(--accent)', opacity: 0.8 }}>
+                      "{item.note}"
+                    </p>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        )}
+
+        {/* ── Yorumlar ── */}
+        <ListeYorumlar
+          listId={id}
+          initialComments={(comments ?? []) as any[]}
+          currentUserId={user?.id ?? null}
+        />
+      </div>
+    </>
+  )
+}
