@@ -23,12 +23,14 @@ import SimilarWatchers from '@/components/SimilarWatchers'
 import AffiliateLinks from '@/components/AffiliateLinks'
 import VideoGallery from '@/components/VideoGallery'
 import RatingDistribution from '@/components/RatingDistribution'
+import DemoRatings from '@/components/DemoRatings'
 import TriviaSection from '@/components/TriviaSection'
 import AwardsSection from '@/components/AwardsSection'
 import Keywords from '@/components/Keywords'
 import ParentsGuide from '@/components/ParentsGuide'
 import StickyRating from '@/components/StickyRating'
 import PageNav from '@/components/PageNav'
+import WatchStatusButton from '@/components/WatchStatusButton'
 import type { Review } from '@/lib/types'
 import type { Metadata } from 'next'
 
@@ -426,6 +428,11 @@ export default async function DiziPage({ params }: Props) {
                 initialStatus={watchlistStatus}
                 isLoggedIn={!!user}
               />
+              <WatchStatusButton
+                mediaId={seriesId}
+                mediaType="dizi"
+                isLoggedIn={!!user}
+              />
               {user?.id && (
                 <AddToListButton mediaId={seriesId} mediaType="dizi" userId={user.id} />
               )}
@@ -582,6 +589,9 @@ export default async function DiziPage({ params }: Props) {
 
         {/* Puan Dağılımı */}
         <RatingDistribution reviews={reviews ?? []} />
+
+        {/* Demografiye Göre Puan */}
+        <DemoRatings mediaId={seriesId} mediaType="dizi" />
 
         {/* Video Galerisi */}
         <div id="videolar">

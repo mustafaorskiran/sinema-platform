@@ -22,12 +22,15 @@ import SimilarWatchers from '@/components/SimilarWatchers'
 import AffiliateLinks from '@/components/AffiliateLinks'
 import VideoGallery from '@/components/VideoGallery'
 import RatingDistribution from '@/components/RatingDistribution'
+import DemoRatings from '@/components/DemoRatings'
 import TriviaSection from '@/components/TriviaSection'
 import AwardsSection from '@/components/AwardsSection'
 import Keywords from '@/components/Keywords'
 import ParentsGuide from '@/components/ParentsGuide'
 import StickyRating from '@/components/StickyRating'
 import PageNav from '@/components/PageNav'
+import CriticScores from '@/components/CriticScores'
+import AISummary from '@/components/AISummary'
 import type { Review } from '@/lib/types'
 import type { Metadata } from 'next'
 
@@ -375,6 +378,8 @@ export default async function FilmPage({ params }: Props) {
               tmdbVoteCount={movie.vote_count ?? 0}
             />
 
+            <CriticScores imdbId={imdbId} />
+
             {/* Genres */}
             <div className="flex flex-wrap gap-2 mt-4">
               {movie.genres?.map((g) => {
@@ -449,6 +454,16 @@ export default async function FilmPage({ params }: Props) {
                 {movie.overview}
               </p>
             )}
+
+            {/* AI Film Özeti */}
+            <AISummary
+              mediaId={movieId}
+              mediaType="film"
+              title={title}
+              year={getMediaYear(movie) ?? ''}
+              genres={(movie.genres ?? []).map((g: any) => g.name).join(', ')}
+              director={director?.name ?? ''}
+            />
 
             {/* ── Bilgi Kartları ── */}
             <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-x-5 gap-y-4 rounded-2xl p-5 max-w-xl" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
@@ -644,6 +659,9 @@ export default async function FilmPage({ params }: Props) {
 
         {/* Puan Dağılımı */}
         <RatingDistribution reviews={reviews ?? []} />
+
+        {/* Demografiye Göre Puan */}
+        <DemoRatings mediaId={movieId} mediaType="film" />
 
         {/* Video Galerisi */}
         <div id="videolar">

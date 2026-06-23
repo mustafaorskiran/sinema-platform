@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Forum' }
+export const metadata: Metadata = { title: 'Forum | Sinezon' }
 
 function timeAgo(date: string) {
   const diff = Math.floor((Date.now() - new Date(date).getTime()) / 1000)
@@ -13,68 +13,120 @@ function timeAgo(date: string) {
   return new Date(date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' })
 }
 
-export default async function ForumPage() {
+interface Props {
+  searchParams: Promise<{ q?: string }>
+}
+
+export default async function ForumPage({ searchParams }: Props) {
+  const { q } = await searchParams
+  const query = q?.trim() ?? ''
+
   const supabase = await createClient()
 
+  // Kategoriler sadece arama yoksa göster
+  const categoriesPromise = !query
+    ? supabase
+        .from('forum_categories')
+        .select('*, forum_threads(count)')
+        .order('order')
+    : Promise.resolve({ data: [] })
+
+  // Thread query — arama varsa filtrele
+  let threadQuery = supabase
+    .from('forum_threads')
+    .select('id, title, reply_count, last_reply_at, pinned, profiles(username), forum_categories(name, slug)')
+    .order('pinned', { ascending: false })
+    .order('last_reply_at', { ascending: false })
+
+  if (query) {
+    threadQuery = threadQuery.ilike('title', `%${query}%`)
+  } else {
+    threadQuery = threadQuery.limit(10)
+  }
+
   const [{ data: categories }, { data: recentThreads }] = await Promise.all([
-    supabase
-      .from('forum_categories')
-      .select('*, forum_threads(count)')
-      .order('order'),
-    supabase
-      .from('forum_threads')
-      .select('id, title, reply_count, last_reply_at, pinned, profiles(username), forum_categories(name, slug)')
-      .order('pinned', { ascending: false })
-      .order('last_reply_at', { ascending: false })
-      .limit(10),
+    categoriesPromise,
+    threadQuery,
   ])
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
       {/* Başlık */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-white">Forum</h1>
           <p className="text-[--text-secondary] text-sm mt-1">Sinema hakkında konuş, tartış, keşfet</p>
         </div>
         <Link
           href="/forum/yeni"
-          className="bg-[--accent] hover:bg-[--accent-hover] text-white text-sm font-semibold px-5 py-2.5 rounded-full transition-colors"
+          className="bg-[--accent] hover:bg-[--accent-hover] text-white text-sm font-semibold px-5 py-2.5 rounded-full transition-colors shrink-0"
         >
           + Konu Aç
         </Link>
       </div>
 
-      {/* Kategoriler */}
-      <div className="mb-10">
-        <h2 className="text-xs font-semibold uppercase tracking-widest text-[--text-secondary] mb-3">Kategoriler</h2>
-        <div className="grid sm:grid-cols-2 gap-3">
-          {(categories ?? []).map((cat) => {
-            const count = (cat.forum_threads as unknown as { count: number }[])?.[0]?.count ?? 0
-            return (
-              <Link
-                key={cat.id}
-                href={`/forum/kategori/${cat.slug}`}
-                className="flex items-start gap-4 p-4 rounded-xl bg-[--bg-card] border border-[--border] hover:border-[--accent]/40 transition-colors group"
-              >
-                <span className="text-2xl shrink-0">{cat.icon}</span>
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-white group-hover:text-[--accent] transition-colors">{cat.name}</p>
-                  <p className="text-xs text-[--text-secondary] mt-0.5 line-clamp-1">{cat.description}</p>
-                </div>
-                <span className="text-xs text-[--text-secondary] shrink-0">{count} konu</span>
-              </Link>
-            )
-          })}
+      {/* Arama Kutusu */}
+      <form method="GET" action="/forum" className="mb-8">
+        <div className="relative">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[--text-secondary] pointer-events-none select-none">
+            🔍
+          </span>
+          <input
+            name="q"
+            type="search"
+            defaultValue={query}
+            placeholder="Konularda ara..."
+            className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-[--bg-card] border border-[--border] text-white placeholder-[--text-secondary] text-sm focus:outline-none focus:border-[--accent]/60 transition-colors"
+          />
+          {query && (
+            <a
+              href="/forum"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[--text-secondary] hover:text-white transition-colors"
+            >
+              Temizle ✕
+            </a>
+          )}
         </div>
-      </div>
+      </form>
 
-      {/* Son Konular */}
+      {/* Kategoriler — sadece arama yoksa */}
+      {!query && (
+        <div className="mb-10">
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-[--text-secondary] mb-3">Kategoriler</h2>
+          <div className="grid sm:grid-cols-2 gap-3">
+            {(categories ?? []).map((cat) => {
+              const count = (cat.forum_threads as unknown as { count: number }[])?.[0]?.count ?? 0
+              return (
+                <Link
+                  key={cat.id}
+                  href={`/forum/kategori/${cat.slug}`}
+                  className="flex items-start gap-4 p-4 rounded-xl bg-[--bg-card] border border-[--border] hover:border-[--accent]/40 transition-colors group"
+                >
+                  <span className="text-2xl shrink-0">{cat.icon}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-white group-hover:text-[--accent] transition-colors">{cat.name}</p>
+                    <p className="text-xs text-[--text-secondary] mt-0.5 line-clamp-1">{cat.description}</p>
+                  </div>
+                  <span className="text-xs text-[--text-secondary] shrink-0">{count} konu</span>
+                </Link>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Son Konular / Arama Sonuçları */}
       <div>
-        <h2 className="text-xs font-semibold uppercase tracking-widest text-[--text-secondary] mb-3">Son Konular</h2>
+        <h2 className="text-xs font-semibold uppercase tracking-widest text-[--text-secondary] mb-3">
+          {query
+            ? `"${query}" için sonuçlar`
+            : 'Son Konular'}
+        </h2>
         <div className="rounded-xl bg-[--bg-card] border border-[--border] divide-y divide-[--border]">
           {(recentThreads ?? []).length === 0 ? (
-            <div className="py-12 text-center text-[--text-secondary] text-sm">Henüz konu açılmamış.</div>
+            <div className="py-12 text-center text-[--text-secondary] text-sm">
+              {query ? `"${query}" için sonuç bulunamadı.` : 'Henüz konu açılmamış.'}
+            </div>
           ) : (
             (recentThreads ?? []).map((thread) => {
               const profile = thread.profiles as unknown as { username: string } | null
