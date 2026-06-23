@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
   if (profile?.banned) return NextResponse.json({ error: 'Hesabın yasaklanmış.' }, { status: 403 })
 
   // Rate limit: 30 messages per minute
-  if (!rateLimit(`msg:${user.id}`, 60_000, 30)) {
+  if (!await rateLimit(`msg:${user.id}`, 60_000, 30)) {
     return NextResponse.json({ error: 'Çok fazla mesaj gönderdin. Lütfen bekle.' }, { status: 429 })
   }
 

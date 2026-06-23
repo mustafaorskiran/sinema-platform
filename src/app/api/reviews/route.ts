@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
   if (profile?.banned) return NextResponse.json({ error: 'Hesabın yasaklanmış.' }, { status: 403 })
 
   // Rate limit: 5 reviews per minute
-  if (!rateLimit(`review:${user.id}`, 60_000, 5)) {
+  if (!await rateLimit(`review:${user.id}`, 60_000, 5)) {
     return NextResponse.json({ error: 'Çok fazla yorum gönderdin. Lütfen bekle.' }, { status: 429 })
   }
 
@@ -63,7 +63,7 @@ export async function PUT(request: NextRequest) {
   if (!user) return NextResponse.json({ error: 'Giriş yapman gerekiyor.' }, { status: 401 })
 
   // Rate limit: 10 edits per minute
-  if (!rateLimit(`review-edit:${user.id}`, 60_000, 10)) {
+  if (!await rateLimit(`review-edit:${user.id}`, 60_000, 10)) {
     return NextResponse.json({ error: 'Çok fazla düzenleme. Lütfen bekle.' }, { status: 429 })
   }
 

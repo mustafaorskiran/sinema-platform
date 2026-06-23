@@ -10,7 +10,7 @@ export async function POST(_req: NextRequest, { params }: Ctx) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Giriş gerekli' }, { status: 401 })
 
-  if (!rateLimit(`list-follow:${user.id}`, 60_000, 30)) {
+  if (!await rateLimit(`list-follow:${user.id}`, 60_000, 30)) {
     return NextResponse.json({ error: 'Çok fazla istek' }, { status: 429 })
   }
 

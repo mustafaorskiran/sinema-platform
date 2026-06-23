@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   if (profile?.banned) return NextResponse.json({ error: 'Hesabın yasaklanmış.' }, { status: 403 })
 
   // Rate limit: 2 threads per 5 minutes
-  if (!rateLimit(`forum-thread:${user.id}`, 5 * 60_000, 2)) {
+  if (!await rateLimit(`forum-thread:${user.id}`, 5 * 60_000, 2)) {
     return NextResponse.json({ error: 'Çok fazla konu açtın. 5 dakika bekle.' }, { status: 429 })
   }
 

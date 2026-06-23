@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
   if (profile.banned) return NextResponse.json({ error: 'Hesabın yasaklanmış.' }, { status: 403 })
 
   // Rate limit: 20 watchlist changes per minute
-  if (!rateLimit(`watchlist:${user.id}`, 60_000, 20)) {
+  if (!await rateLimit(`watchlist:${user.id}`, 60_000, 20)) {
     return NextResponse.json({ error: 'Çok fazla işlem yaptın. Lütfen bekle.' }, { status: 429 })
   }
 
