@@ -47,6 +47,17 @@ Prefix'ler: `feat:` `fix:` `refactor:` `perf:` `security:` `style:`
 - `MovieCard, HomeCarousel, CastRow, Navbar`: `<img>` → `next/image` geçişi
 - Navbar: overflow:visible, nav gap-0.5, search md:block
 
+## Son Değişiklikler (2026-06-23 — 4. batch)
+
+- Navbar UX yeniden yapılandırıldı:
+  - Desktop: `hidden md:grid` 3-sütun layout (`auto | 1fr | auto`): Logo+NavLinks (sol), arama kutusu (orta), Bildirim+Dil+Avatar (sağ)
+  - Nav linkleri `lg:` breakpoint'te gösteriliyor (`md` ekranlarda sadece Logo+Arama+User — taşma yok)
+  - Arama kutusu max-w: md=320px, lg=400px, xl=580px — placeholder: "Film, dizi, oyuncu veya liste ara..."
+  - Akış / Öneriler / Film Gecesi / Mesajlar / Listem → yalnızca `UserDropdown` içinde
+  - `UserDropdown`: "İzleme Listem" etiketi → "Listem" olarak güncellendi
+  - Mobil üst bar: Bildirim ikonu (login varsa) + Arama toggle + Hamburger — tek satır, taşma yok
+  - Mobil hamburger: genel linkler + "Hesabım" bölümü (Akış, Öneriler, Film Gecesi, Mesajlar, Listem, Çıkış) + Dil seçici
+
 ## Son Değişiklikler (2026-06-23 — 3. batch)
 
 - Google OAuth butonu kaldırıldı (giris + kayit sayfaları). GoogleAuthButton.tsx bileşeni silinmedi, import kaldırıldı.

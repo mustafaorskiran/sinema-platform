@@ -38,6 +38,13 @@
   - Navbar responsive düzeltme: overflow:visible, shrink-0, search md:block
   - Auth sayfaları: w-full + py-12 ile tam ortalama garantisi
 
+- Navbar UX iyileştirmesi — 2026-06-23 (4. batch):
+  - Desktop: 3-sütun grid (`auto|1fr|auto`); arama merkeze taşındı (max-w 320→400→580px)
+  - Akış, Öneriler, Film Gecesi, Mesajlar, Listem → yalnızca UserDropdown
+  - UserDropdown: "İzleme Listem" → "Listem"
+  - Mobil: Bildirim ikonu üst bara taşındı; hamburger "Hesabım" bölümü eklendi
+  - Nav linkleri lg+ breakpoint'e alındı (md taşma önlendi)
+
 - Auth & Navbar iyileştirmeleri — 2026-06-23:
   - Google OAuth butonu kaldırıldı (Supabase'de aktif değil; provider etkinleştirildiğinde geri eklenecek)
   - UserDropdown.tsx: avatar tıklama → animasyonlu dropdown (Profilim, İzleme Listem, Mesajlar, Akış, Öneriler, Film Gecesi, Ayarlar, Admin Paneli, Çıkış)

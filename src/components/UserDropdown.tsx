@@ -97,7 +97,7 @@ export default function UserDropdown({ user }: Props) {
           {/* Linkler */}
           <div className="py-1.5">
             <DropLink href={`/profil/${user.username ?? ''}`} label="Profilim" />
-            <DropLink href="/izleme-listem" label="İzleme Listem" />
+            <DropLink href="/izleme-listem" label="Listem" />
             <DropLink href="/mesajlar" label="Mesajlar" />
             <DropLink href="/akis" label="Akış" />
             <DropLink href="/oneriler" label="Öneriler" />
