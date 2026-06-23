@@ -47,6 +47,39 @@ Prefix'ler: `feat:` `fix:` `refactor:` `perf:` `security:` `style:`
 - `MovieCard, HomeCarousel, CastRow, Navbar`: `<img>` → `next/image` geçişi
 - Navbar: overflow:visible, nav gap-0.5, search md:block
 
+## Son Değişiklikler (2026-06-23 — 5. batch / Büyüme Sprinti)
+
+### Yeni Bileşenler
+- `CriticScores.tsx` — OMDB API: RT + Metacritic + IMDb, film sayfasında SinezonStats altında
+- `WatchStatusButton.tsx` — 5 dizi takip durumu dropdown; `/api/watch-status` CRUD
+- `DemoRatings.tsx` — yaş grubu (18-25/26-40/40+) + TR vs Dünya puan analizi; film+dizi sayfasında
+- `FilmPreviewPopup.tsx` — hover 300ms delay inline önizleme kartı
+- `AISummary.tsx` — Claude Haiku ile Türkçe özet; film sayfasında overview altında
+- `InviteSection.tsx` — referral link kopyala butonu; kendi profil sayfasında
+
+### Yeni Sayfalar
+- `/alintilar` — public quotes sayfası (approved=true, 2-col grid, hero alıntı)
+- `/yeni-gelenler` — platformlara bu ay gelenler (Netflix/Disney+/Prime/MUBI; ?platform=)
+- `/haberler` — RSS haber akışı (Beyazperde/HR/Variety; ?kategori=; ISR 1h)
+- `/gise` — TR + Dünya gişe sıralaması (?tab=turkiye|dunya; ISR 6h)
+- `/quiz` + `QuizClient` — "Posteri Gör, Filmi Bul" 10 soruluk quiz
+- `/istatistikler` — platform genel istatistikleri
+- `/yillik-hedef` — YearlyChallenge wrapper sayfası
+- `/davet/[code]` — referral landing sayfası
+
+### Yeni API Rotaları
+- `/api/watch-status` — GET/POST/DELETE; `watch_status` tablosu
+- `/api/ai/film-ozeti` — GET; Claude Haiku (`claude-haiku-4-5`); `ANTHROPIC_API_KEY` env gerekli
+- `/api/referral` — GET; referral_code üret/getir
+
+### Supabase Migrations
+- `watch_status` tablosu: (user_id, media_id, media_type) PK + RLS
+- `profiles`: `referral_code TEXT UNIQUE` + `referred_by UUID FK` kolonları eklendi
+
+### Env Değişkenleri (yeni)
+- `OMDB_API_KEY` — CriticScores için (omdbapi.com ücretsiz tier)
+- `ANTHROPIC_API_KEY` — AISummary için (Claude Haiku)
+
 ## Son Değişiklikler (2026-06-23 — 4. batch)
 
 - Navbar UX yeniden yapılandırıldı:

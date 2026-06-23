@@ -76,6 +76,44 @@
 - Migration işi ileri aşamada, güvenli bir staging ortamında `supabase db pull` ile yapılacak.
 - Şimdilik production veritabanına müdahale edilmeyecek.
 
+## Büyüme Sprinti — 24 Özellik (FAZ 1-5) ✅ 2026-06-23
+
+### FAZ 1 — Keşif & İzleme Altyapısı ✅
+- `CriticScores.tsx`: OMDB API → RT + Metacritic + IMDb skorları film sayfasında
+- `WatchProviders.tsx`: JustWatch via TMDb — nerede izlenir (zaten vardı, entegre)
+- Koleksiyon/Franchise kutusu film sayfasında (zaten vardı, entegre)
+- Dark/Light mod: `ThemeToggle` navbar'a, `ThemeScript` layout'a eklendi
+
+### FAZ 2 — Dizi & Bölüm Deneyimi ✅
+- `WatchStatusButton.tsx` + `/api/watch-status`: 5 durum (izliyorum/tamamladım/bıraktım/izleyeceğim/askıda)
+- `watch_status` Supabase tablosu (RLS + migration uygulandı)
+- `SeasonTracker.tsx` + `episode_watches`: bölüm takibi + puanlama (zaten vardı, entegre)
+
+### FAZ 3 — Sosyal & Topluluk ✅
+- `/alintilar`: public alıntılar sayfası (quotes tablosundan, approved=true)
+- `DemoRatings.tsx`: yaş grubu (18-25/26-40/40+) + Türkiye vs Dünya puan analizi
+- `FilmPreviewPopup.tsx`: hover önizleme kartı (300ms delay, inline popup)
+- Forum arama: `searchParams.q` + Supabase ilike filtresi
+
+### FAZ 4 — Profil, İstatistikler & İçerik Akışı ✅
+- `/yeni-gelenler`: Netflix/Disney+/Prime/MUBI yeni içerikler (TMDb Discover + watch_providers)
+- `/haberler`: Beyazperde + Hollywood Reporter + Variety RSS (regex parse, ISR 1h)
+- `/gise`: TMDb now_playing (TR) + popular (Dünya) gişe sıralaması
+- Ana sayfa `HomeCarousel`: "Bu Hafta Trend" bölümü (watchlist frekans analizi)
+
+### FAZ 5 — Büyüme, AI & Premium ✅
+- `AISummary.tsx` + `/api/ai/film-ozeti`: Claude Haiku ile Türkçe film özeti
+- `/quiz` + `QuizClient`: "Posteri Gör, Filmi Bul" — 10 soruluk quiz oyunu
+- `/istatistikler`: platform genel istatistikleri (kullanıcı/yorum/watchlist/top5)
+- `/yillik-hedef`: `YearlyChallenge` bileşeni ile yıllık izleme hedefi sayfası
+- `/davet/[code]` + `/api/referral` + `InviteSection`: referral/davet sistemi
+- `profiles` tablosuna `referral_code` + `referred_by` kolonları (migration ✅)
+- Google OAuth: `GoogleAuthButton` zaten aktifti (giris + kayit sayfalarında mevcut)
+
+### Supabase Migrations (sprint kapsamında)
+- `create_watch_status_table`: watch_status tablosu + RLS politikaları
+- `add_referral_code_to_profiles`: referral_code UNIQUE + referred_by FK
+
 ## Faz 2 — Büyüme ve Kullanıcı Bağlılığı
 
 | Öncelik | Görev |
