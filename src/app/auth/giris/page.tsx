@@ -123,6 +123,7 @@ export default function GirisPage() {
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
+                  autoComplete="current-password"
                   placeholder="••••••••"
                   className="w-full rounded-lg px-4 py-2.5 pr-10 text-sm outline-none transition-all"
                   style={{

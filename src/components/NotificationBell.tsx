@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useId } from 'react'
 import Link from 'next/link'
 import { IconBell } from '@/components/icons'
 import { createClient } from '@/lib/supabase/client'
@@ -29,6 +29,7 @@ export default function NotificationBell({ userId }: Props) {
   const [open, setOpen] = useState(false)
   const [notifications, setNotifications] = useState<Notification[]>([])
   const ref = useRef<HTMLDivElement>(null)
+  const instanceId = useId()
 
   async function fetchNotifications() {
     const supabase = createClient()
@@ -52,7 +53,7 @@ export default function NotificationBell({ userId }: Props) {
     // Realtime: yeni bildirim gelince güncelle
     const supabase = createClient()
     const channel = supabase
-      .channel('notifications')
+      .channel(`notifications-${instanceId}`)
       .on('postgres_changes', {
         event: 'INSERT',
         schema: 'public',
