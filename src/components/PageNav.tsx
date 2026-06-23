@@ -34,7 +34,12 @@ export default function PageNav({ sections }: Props) {
             href={`#${s.id}`}
             onClick={e => {
               e.preventDefault()
-              document.getElementById(s.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              const el = document.getElementById(s.id)
+              if (!el) return
+              // Navbar (64px) + PageNav (~48px) sticky offset
+              const offset = 64 + 48 + 8
+              const top = el.getBoundingClientRect().top + window.scrollY - offset
+              window.scrollTo({ top, behavior: 'smooth' })
             }}
             className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors whitespace-nowrap ${
               active === s.id
