@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { IconHome, IconFilm, IconSearch, IconList, IconUser } from '@/components/icons'
 
 interface BottomNavProps {
-  user?: { id?: string; email?: string; username?: string } | null
+  user?: { id?: string; email?: string; username?: string; is_admin?: boolean } | null
 }
 
 export default function BottomNav({ user }: BottomNavProps) {

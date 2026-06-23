@@ -4,14 +4,15 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { IconSearch, IconFilm, IconTv, IconMenu, IconClose, IconLogOut, IconChevronRight } from '@/components/icons'
+import { IconSearch, IconFilm, IconTv, IconMenu, IconClose, IconChevronRight } from '@/components/icons'
 import NotificationBell from './NotificationBell'
 import LanguageSwitcher from './LanguageSwitcher'
 import { NavDropdown } from './NavDropdown'
+import UserDropdown from './UserDropdown'
 import { useLocale } from '@/context/LocaleContext'
 
 interface NavbarProps {
-  user?: { id?: string; email?: string; username?: string } | null
+  user?: { id?: string; email?: string; username?: string; is_admin?: boolean } | null
 }
 
 interface SearchResult {
@@ -107,16 +108,12 @@ export default function Navbar({ user }: NavbarProps) {
               href="/filmler"
               columns={2}
               items={[
-                { label: 'Tüm Filmler',      href: '/filmler',                                description: 'Filtrele ve keşfet' },
-                { label: 'En İyi Puanlı',    href: '/filmler?sirala=vote_average.desc',        description: 'Puana göre sıralı' },
-                { label: 'Yeni Çıkanlar',    href: '/filmler?sirala=release_date.desc',        description: 'En son yayınlananlar' },
-                { label: 'Vizyon Takvimi',   href: '/yayin-takvimi',                           description: 'Yaklaşan filmler' },
-                { label: 'Yerli Filmler',    href: '/filmler?ozel=yerli-yapimlar',              description: 'Türk yapımı filmler' },
-                { label: 'Yabancı Filmler',  href: '/filmler?ozel=yabanci-yapimlar',            description: 'Dünya sineması' },
-                { label: 'Kısa Filmler',     href: '/filmler?ozel=kisa-filmler',                description: '40 dk altı filmler' },
-                { label: 'Oscar Kazananlar', href: '/filmler?ozel=oscar-kazananlar',            description: 'Ödüllü yapımlar' },
-                { label: 'Kült Filmler',     href: '/filmler?ozel=kult-filmler',                description: 'Efsaneleşmiş filmler' },
-                { label: 'Konular',          href: '/filmler?ozel=distopya',                   description: 'Türe göre keşfet' },
+                { label: 'Tüm Filmler',      href: '/filmler',                             description: 'Filtrele ve keşfet' },
+                { label: 'En İyi Puanlı',    href: '/filmler?sirala=vote_average.desc',    description: 'Puana göre sıralı' },
+                { label: 'Yeni Çıkanlar',    href: '/filmler?sirala=release_date.desc',    description: 'En son yayınlananlar' },
+                { label: 'Yerli Filmler',    href: '/filmler?ozel=yerli-yapimlar',         description: 'Türk yapımı filmler' },
+                { label: 'Oscar Kazananlar', href: '/filmler?ozel=oscar-kazananlar',       description: 'Ödüllü yapımlar' },
+                { label: 'Kült Filmler',     href: '/filmler?ozel=kult-filmler',           description: 'Efsaneleşmiş filmler' },
               ]}
             />
             <NavDropdown
@@ -124,52 +121,26 @@ export default function Navbar({ user }: NavbarProps) {
               href="/diziler"
               columns={2}
               items={[
-                { label: 'Tüm Diziler',      href: '/diziler',                                 description: 'Filtrele ve keşfet' },
-                { label: 'En İyi Diziler',   href: '/diziler?sirala=vote_average.desc',         description: 'Puana göre sıralı' },
-                { label: 'Yeni Diziler',     href: '/diziler?sirala=first_air_date.desc',       description: 'En güncel diziler' },
-                { label: 'Mini Diziler',     href: '/diziler?ozel=mini-diziler',                description: 'Kısa sezonlu diziler' },
-                { label: 'Yerli Diziler',    href: '/diziler?ozel=yerli-diziler',               description: 'Türk yapımı diziler' },
-                { label: 'Yabancı Diziler',  href: '/diziler?ozel=yabanci-diziler',             description: 'Dünya dizileri' },
-                { label: 'Anime',            href: '/diziler?ozel=anime',                       description: 'Japon animasyon dizileri' },
-                { label: 'Bilim Kurgu',      href: '/diziler?ozel=bilim-kurgu',                 description: 'Sci-Fi & Fantezi' },
-                { label: 'Polisiye',         href: '/diziler?ozel=polisiye',                    description: 'Dedektif ve suç dizileri' },
-                { label: 'Konular',          href: '/diziler?ozel=distopya',                    description: 'Türe göre keşfet' },
+                { label: 'Tüm Diziler',     href: '/diziler',                                description: 'Filtrele ve keşfet' },
+                { label: 'En İyi Diziler',  href: '/diziler?sirala=vote_average.desc',       description: 'Puana göre sıralı' },
+                { label: 'Yeni Diziler',    href: '/diziler?sirala=first_air_date.desc',     description: 'En güncel diziler' },
+                { label: 'Yerli Diziler',   href: '/diziler?ozel=yerli-diziler',             description: 'Türk yapımı diziler' },
+                { label: 'Anime',           href: '/diziler?ozel=anime',                     description: 'Japon animasyon dizileri' },
+                { label: 'Polisiye',        href: '/diziler?ozel=polisiye',                  description: 'Dedektif ve suç dizileri' },
               ]}
             />
-            <NavDropdown
-              label="Keşfet"
-              href="/en-cok-yorumlanan"
-              items={[
-                { label: 'En Çok Yorumlanan', href: '/en-cok-yorumlanan', description: 'Topluluk favori içerikleri' },
-                { label: 'Ne İzlesem?',       href: '/ne-izlesem',        description: 'Rastgele öneri al' },
-                { label: 'Fragmanlar',        href: '/fragmanlar',         description: 'Yeni çıkan fragmanlar' },
-                { label: 'Yayın Takvimi',     href: '/yayin-takvimi',      description: 'Yaklaşan filmler' },
-                { separator: true },
-                { label: 'Dünya Sineması',    href: '/sinema',             description: 'Ülkeye göre keşfet' },
-                { label: 'Ruh Haline Göre',   href: '/ruh-hali',           description: 'Mooda göre öneri' },
-              ]}
-            />
-            <Link
-              href="/listeler"
-              className="self-stretch flex items-center px-2 text-sm font-medium transition-colors text-[--text-secondary] hover:text-[--text-primary]"
-            >
+            <Link href="/en-cok-yorumlanan" className="self-stretch flex items-center px-2.5 text-[13px] font-medium transition-colors text-[--text-secondary] hover:text-[--text-primary]">
+              Popüler
+            </Link>
+            <Link href="/ne-izlesem" className="self-stretch flex items-center px-2.5 text-[13px] font-medium transition-colors text-[--text-secondary] hover:text-[--text-primary]">
+              Ne İzlesem?
+            </Link>
+            <Link href="/listeler" className="self-stretch flex items-center px-2.5 text-[13px] font-medium transition-colors text-[--text-secondary] hover:text-[--text-primary]">
               {t('nav.lists')}
             </Link>
-            {user && (
-              <NavDropdown
-                label="Benim"
-                href="/izleme-listem"
-                items={[
-                  { label: 'Akış',               href: '/akis',                description: 'Takip ettiklerinin hareketleri' },
-                  { label: 'Öneriler',           href: '/oneriler',            description: 'Sana özel içerikler' },
-                  { label: 'Benzer Kullanıcılar',href: '/benzer-kullanicilar', description: 'Aynı zevki paylaşanlar' },
-                  { separator: true },
-                  { label: 'İzleme Listem',      href: '/izleme-listem',       description: 'Listelerim ve izlediklerim' },
-                  { label: 'Film Gecesi',        href: '/film-gecesi',         description: 'Grup izleme organizasyonu' },
-                  { label: 'Mesajlar',           href: '/mesajlar',            description: 'Doğrudan mesajlar' },
-                ]}
-              />
-            )}
+            <Link href="/yayin-takvimi" className="self-stretch flex items-center px-2.5 text-[13px] font-medium transition-colors text-[--text-secondary] hover:text-[--text-primary]">
+              Takvim
+            </Link>
           </div>
 
           {/* Search */}
@@ -243,40 +214,24 @@ export default function Navbar({ user }: NavbarProps) {
           </div>
 
           {/* Auth + Language */}
-          <div className="hidden md:flex items-stretch gap-2 shrink-0">
+          <div className="hidden md:flex items-center gap-2 shrink-0">
             <LanguageSwitcher />
-            {user ? (
+            {user?.id ? (
               <div className="flex items-center gap-2">
-                {user.id && <NotificationBell userId={user.id} />}
-                <Link
-                  href={`/profil/${user.username || ''}`}
-                  className="flex items-center gap-2 text-sm text-[--text-secondary] hover:text-white transition-colors"
-                >
-                  <div className="h-8 w-8 rounded-full bg-[--accent] flex items-center justify-center text-xs font-bold text-white">
-                    {(user.username || user.email || 'U')[0].toUpperCase()}
-                  </div>
-                </Link>
-                <form action="/auth/signout" method="post">
-                  <button
-                    type="submit"
-                    title={t('nav.logout')}
-                    className="flex items-center gap-1 text-sm text-[--text-secondary] hover:text-white transition-colors"
-                  >
-                    <IconLogOut className="h-4 w-4" />
-                  </button>
-                </form>
+                <NotificationBell userId={user.id} />
+                <UserDropdown user={{ id: user.id, email: user.email, username: user.username, is_admin: user.is_admin }} />
               </div>
             ) : (
               <div className="flex items-center gap-2">
                 <Link
                   href="/auth/giris"
-                  className="text-sm text-[--text-secondary] hover:text-white transition-colors px-3 py-1.5"
+                  className="text-[13px] text-[--text-secondary] hover:text-white transition-colors px-3 py-1.5"
                 >
                   {t('nav.login')}
                 </Link>
                 <Link
                   href="/auth/kayit"
-                  className="text-sm font-medium bg-[--accent] hover:bg-[--accent-hover] text-white px-4 py-1.5 rounded-full transition-colors"
+                  className="text-[13px] font-medium bg-[--accent] hover:bg-[--accent-hover] text-white px-4 py-1.5 rounded-full transition-colors"
                 >
                   {t('nav.register')}
                 </Link>

@@ -56,10 +56,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     if (data.user) {
       const { data: profile } = await supabase
         .from('profiles')
-        .select('username')
+        .select('username, is_admin')
         .eq('id', data.user.id)
         .single()
-      user = { id: data.user.id, email: data.user.email, username: profile?.username }
+      user = { id: data.user.id, email: data.user.email, username: profile?.username, is_admin: profile?.is_admin ?? false }
     }
   } catch {}
 
