@@ -574,7 +574,7 @@ export default async function DiziPage({ params }: Props) {
           { id: 'odüller', label: '🏆 Ödüller' },
           { id: 'puan-dagilimi', label: '📊 Puanlar' },
           ...(videos.length > 0 ? [{ id: 'videolar', label: '🎬 Videolar' }] : []),
-          { id: 'galeri', label: '🖼 Galeri' },
+          ...(backdrops.length > 0 || posters.length > 0 ? [{ id: 'galeri', label: '🖼 Galeri' }] : []),
           { id: 'trivia', label: '💡 Trivia' },
           { id: 'yorumlar', label: '💬 Yorumlar' },
           { id: 'benzer', label: '📺 Benzer' },
@@ -634,11 +634,9 @@ export default async function DiziPage({ params }: Props) {
         )}
 
         {/* Fotoğraf Galerisi */}
-        {backdrops.length > 0 && (
-          <div className="mt-10" id="galeri">
-            <BackdropGallery backdrops={backdrops} posters={posters} title={series ? getMediaTitle(series) : ''} />
-          </div>
-        )}
+        <div className="mt-10" id="galeri">
+          <BackdropGallery backdrops={backdrops} posters={posters} title={series ? getMediaTitle(series) : ''} />
+        </div>
 
         {/* Alıntılar */}
         <QuotesSection mediaId={seriesId} mediaType="dizi" isLoggedIn={!!user} title={title} />
