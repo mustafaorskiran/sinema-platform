@@ -3,7 +3,6 @@ import './globals.css'
 import Navbar from '@/components/Navbar'
 import BottomNav from '@/components/BottomNav'
 import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration'
-import ThemeScript from '@/components/ThemeScript'
 import { createClient } from '@/lib/supabase/server'
 import { LocaleProvider } from '@/context/LocaleContext'
 import { getLocale, getMessages } from '@/lib/i18n'
@@ -69,7 +68,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang={locale} className="h-full dark">
       <head>
-        <ThemeScript />
         <meta name="theme-color" content="#080A0F" />
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
         {process.env.NEXT_PUBLIC_ADSENSE_ID && (

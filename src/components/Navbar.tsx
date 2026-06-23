@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { IconSearch, IconFilm, IconTv, IconMenu, IconClose, IconChevronRight } from '@/components/icons'
 import NotificationBell from './NotificationBell'
-import ThemeToggle from './ThemeToggle'
 import LanguageSwitcher from './LanguageSwitcher'
 import { NavDropdown } from './NavDropdown'
 import UserDropdown from './UserDropdown'
@@ -232,7 +231,6 @@ export default function Navbar({ user }: NavbarProps) {
 
           {/* RIGHT: Notification + Language + User */}
           <div className="flex items-center gap-2 shrink-0">
-            <ThemeToggle />
             {user?.id && <NotificationBell userId={user.id} />}
             <LanguageSwitcher />
             {user?.id ? (
@@ -260,7 +258,6 @@ export default function Navbar({ user }: NavbarProps) {
           </Link>
 
           <div className="flex items-center gap-1">
-            <ThemeToggle />
             {user?.id && <NotificationBell userId={user.id} />}
             <button
               className="p-2 text-[--text-secondary] hover:text-white transition-colors"
