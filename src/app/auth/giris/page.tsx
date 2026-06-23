@@ -2,13 +2,11 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { IconEye, IconEyeOff, IconFilm } from '@/components/icons'
 import { createClient } from '@/lib/supabase/client'
 import GoogleAuthButton from '@/components/GoogleAuthButton'
 
 export default function GirisPage() {
-  const router = useRouter()
   const [email, setEmail]             = useState('')
   const [password, setPassword]       = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -29,8 +27,7 @@ export default function GirisPage() {
       return
     }
 
-    router.push('/')
-    router.refresh()
+    window.location.href = '/'
   }
 
   return (
