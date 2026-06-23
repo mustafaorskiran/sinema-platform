@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { IconEye, IconEyeOff, IconFilm } from '@/components/icons'
 import { createClient } from '@/lib/supabase/client'
+import GoogleAuthButton from '@/components/GoogleAuthButton'
 
 export default function GirisPage() {
   const router = useRouter()
@@ -75,6 +76,19 @@ export default function GirisPage() {
             boxShadow: '0 32px 80px rgba(0,0,0,0.5)',
           }}
         >
+          <GoogleAuthButton next="/" label="Google ile giriş yap" />
+
+          <div className="relative my-5">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full" style={{ borderTop: '1px solid var(--border)' }} />
+            </div>
+            <div className="relative flex justify-center">
+              <span className="px-3 text-xs" style={{ background: 'var(--bg-card)', color: 'var(--text-secondary)' }}>
+                veya e-posta ile
+              </span>
+            </div>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wide" style={{ color: 'var(--text-secondary)' }}>
