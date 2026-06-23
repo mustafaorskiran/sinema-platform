@@ -28,6 +28,16 @@
   - ListCard: beğeni sayısı her zaman görünür
   - Listeler sayfası: "Bu Hafta Trend" bölümü (kalıcı, ayrı query), trend hesabı her zaman çalışıyor
 
+- P0 Altyapı iyileştirmeleri — 2026-06-23:
+  - `rateLimit.ts` → Upstash Redis sliding window (serverless-safe); in-memory fallback local dev için
+  - `src/middleware.ts` oluşturuldu: Supabase session refresh + `/admin/*` server-level koruma
+  - `src/proxy.ts` silindi (artık middleware.ts tarafından karşılanıyor)
+  - `vercel.json`'a güvenlik headerları eklendi: X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, CSP
+  - `next.config.ts`: Supabase Storage + Google OAuth avatar domain'leri eklendi
+  - `<img>` → `next/image` (MovieCard, HomeCarousel, CastRow, Navbar arama önerileri)
+  - Navbar responsive düzeltme: overflow:visible, shrink-0, search md:block
+  - Auth sayfaları: w-full + py-12 ile tam ortalama garantisi
+
 ## Bilinen Buglar
 
 - ~~Özel kategori filtreleri~~ ✅ — P3 kapsamında düzeltildi.
