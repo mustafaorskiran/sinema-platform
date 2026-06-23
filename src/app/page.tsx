@@ -6,7 +6,7 @@ import {
 import {
   getTrendingAll, getBackdropUrl, getPosterUrl, getMediaTitle, getMediaYear,
   getMovieDetail, getSeriesDetail, discoverMovies,
-  getTopRatedMovies, getTopRatedSeries,
+  getTopRatedMovies, getTopRatedSeries, getMovieMini,
 } from '@/lib/tmdb'
 import { GENRE_MAP } from '@/lib/genres'
 import HomeCarousel from '@/components/HomeCarousel'
@@ -18,6 +18,10 @@ export default async function HomePage() {
   const supabase = await createClient()
 
   // ── Paralel veri çekme ──────────────────────────────────────────
+  const sevenDaysAgo = new Date()
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+  const sevenDaysAgoISO = sevenDaysAgo.toISOString()
+
   const [
     trendingRes,
     popularRes,
@@ -30,6 +34,7 @@ export default async function HomePage() {
     { data: featuredQuoteRaw },
     { data: featuredPick },
     { data: { user } },
+    { data: recentWatchlistRaw },
   ] = await Promise.all([
     getTrendingAll().catch(() => ({ results: [] as TMDbMovie[] })),
     discoverMovies({ sortBy: 'popularity.desc' }).catch(() => ({ results: [] })),
@@ -43,6 +48,10 @@ export default async function HomePage() {
       .eq('approved', true).order('created_at', { ascending: false }).limit(1).maybeSingle(),
     supabase.from('featured_picks').select('*').order('created_at', { ascending: false }).limit(1).maybeSingle(),
     supabase.auth.getUser(),
+    supabase.from('watchlist')
+      .select('media_id,media_type')
+      .eq('media_type', 'film')
+      .gte('created_at', sevenDaysAgoISO),
   ])
 
   // Hero
@@ -123,6 +132,28 @@ export default async function HomePage() {
     title: s.title || s.name || '',
     media_type: 'tv',
   }))
+
+  // Bu Hafta Trend — son 7 günde en çok watchlist'e eklenen filmler
+  let weeklyTrendItems: TMDbMovie[] = []
+  if (recentWatchlistRaw && recentWatchlistRaw.length > 0) {
+    // Frekans hesapla
+    const freqMap = new Map<number, number>()
+    for (const row of recentWatchlistRaw) {
+      const id = row.media_id as number
+      freqMap.set(id, (freqMap.get(id) ?? 0) + 1)
+    }
+    // En sık eklenen 10 film ID'si
+    const topIds = Array.from(freqMap.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+      .map(([id]) => id)
+
+    // TMDb'den paralel çek
+    const movieResults = await Promise.all(
+      topIds.map(id => getMovieMini(id).catch(() => null))
+    )
+    weeklyTrendItems = movieResults.filter((m): m is NonNullable<typeof m> => m !== null) as TMDbMovie[]
+  }
 
   return (
     <div>
@@ -351,6 +382,17 @@ export default async function HomePage() {
           items={(editorPicksRes.results ?? []).slice(0, 20)}
           defaultType="film"
         />
+
+        {/* ── 7. Bu Hafta Trend (Watchlist) ────────────────────── */}
+        {weeklyTrendItems.length > 0 && (
+          <HomeCarousel
+            title="Bu Hafta Trend"
+            icon={<IconTrendingUp className="h-5 w-5 text-[--accent]" />}
+            href="/filmler?sirala=popularity.desc"
+            items={weeklyTrendItems}
+            defaultType="film"
+          />
+        )}
 
         {/* ── Haftanın Alıntısı ─────────────────────────────────── */}
         {featuredQuote && (
