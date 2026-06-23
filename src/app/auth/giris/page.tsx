@@ -35,7 +35,7 @@ export default function GirisPage() {
 
   return (
     <div
-      className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 relative overflow-hidden"
+      className="w-full min-h-[calc(100vh-64px)] flex items-center justify-center px-4 py-12 relative overflow-hidden"
       style={{ background: 'var(--bg-primary)' }}
     >
       {/* Ambient glow */}

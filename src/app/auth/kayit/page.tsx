@@ -53,7 +53,7 @@ export default function KayitPage() {
 
   if (success) {
     return (
-      <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 relative" style={{ background: 'var(--bg-primary)' }}>
+      <div className="w-full min-h-[calc(100vh-64px)] flex items-center justify-center px-4 py-12 relative" style={{ background: 'var(--bg-primary)' }}>
         <div
           className="absolute inset-0 pointer-events-none"
           style={{ background: 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(225,29,72,0.12) 0%, transparent 70%)' }}
@@ -115,7 +115,7 @@ export default function KayitPage() {
 
   return (
     <div
-      className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 relative overflow-hidden"
+      className="w-full min-h-[calc(100vh-64px)] flex items-center justify-center px-4 py-12 relative overflow-hidden"
       style={{ background: 'var(--bg-primary)' }}
     >
       <div
