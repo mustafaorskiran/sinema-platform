@@ -588,10 +588,10 @@ export default async function DiziPage({ params }: Props) {
         </div>
 
         {/* Puan Dağılımı */}
-        <RatingDistribution reviews={reviews ?? []} />
-
-        {/* Demografiye Göre Puan */}
-        <DemoRatings mediaId={seriesId} mediaType="dizi" />
+        <div id="puan-dagilimi">
+          <RatingDistribution reviews={reviews ?? []} />
+          <DemoRatings mediaId={seriesId} mediaType="dizi" />
+        </div>
 
         {/* Video Galerisi */}
         <div id="videolar">
@@ -644,12 +644,14 @@ export default async function DiziPage({ params }: Props) {
         <SoundtrackSection mediaId={seriesId} mediaType="dizi" isLoggedIn={!!user} />
 
         {/* Trivia & Goofs */}
-        <TriviaSection
-          items={(triviaItems ?? []) as any}
-          mediaId={seriesId}
-          mediaType="dizi"
-          isLoggedIn={!!user}
-        />
+        <div id="trivia">
+          <TriviaSection
+            items={(triviaItems ?? []) as any}
+            mediaId={seriesId}
+            mediaType="dizi"
+            isLoggedIn={!!user}
+          />
+        </div>
 
         <div className="mt-12 grid lg:grid-cols-3 gap-8" id="yorumlar">
           <div className="lg:col-span-1">

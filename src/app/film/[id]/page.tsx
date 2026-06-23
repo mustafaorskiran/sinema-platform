@@ -658,10 +658,10 @@ export default async function FilmPage({ params }: Props) {
         )}
 
         {/* Puan Dağılımı */}
-        <RatingDistribution reviews={reviews ?? []} />
-
-        {/* Demografiye Göre Puan */}
-        <DemoRatings mediaId={movieId} mediaType="film" />
+        <div id="puan-dagilimi">
+          <RatingDistribution reviews={reviews ?? []} />
+          <DemoRatings mediaId={movieId} mediaType="film" />
+        </div>
 
         {/* Video Galerisi */}
         <div id="videolar">
@@ -710,12 +710,14 @@ export default async function FilmPage({ params }: Props) {
         <SoundtrackSection mediaId={movieId} mediaType="film" isLoggedIn={!!user} />
 
         {/* Trivia & Goofs */}
-        <TriviaSection
-          items={(triviaItems ?? []) as any}
-          mediaId={movieId}
-          mediaType="film"
-          isLoggedIn={!!user}
-        />
+        <div id="trivia">
+          <TriviaSection
+            items={(triviaItems ?? []) as any}
+            mediaId={movieId}
+            mediaType="film"
+            isLoggedIn={!!user}
+          />
+        </div>
 
         {/* Reviews */}
         <div className="mt-12 grid lg:grid-cols-3 gap-8" id="yorumlar">
