@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface Person {
   id: number
@@ -40,7 +41,7 @@ export default function CastRow({ cast, director }: Props) {
             style={{ scrollSnapAlign: 'start' }}
           >
             <div
-              className="w-32 h-44 rounded-xl overflow-hidden transition-all duration-200 group-hover:-translate-y-1"
+              className="relative w-32 h-44 rounded-xl overflow-hidden transition-all duration-200 group-hover:-translate-y-1"
               style={{
                 background: 'var(--bg-card)',
                 border: p.isDirector
@@ -50,11 +51,12 @@ export default function CastRow({ cast, director }: Props) {
               }}
             >
               {p.profile_path ? (
-                <img
+                <Image
                   src={`https://image.tmdb.org/t/p/w342${p.profile_path}`}
                   alt={p.name}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  loading="lazy"
+                  fill
+                  sizes="128px"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center" style={{ background: 'var(--bg-elevated)' }}>

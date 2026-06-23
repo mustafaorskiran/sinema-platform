@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { IconSearch, IconFilm, IconTv, IconMenu, IconClose, IconLogOut, IconChevronRight } from '@/components/icons'
@@ -88,9 +89,9 @@ export default function Navbar({ user }: NavbarProps) {
   }
 
   return (
-    <nav className="sticky top-0 z-50 glass-panel">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between gap-4">
+    <nav className="sticky top-0 z-50 glass-panel" style={{ overflow: 'visible' }}>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" style={{ overflow: 'visible' }}>
+        <div className="flex h-16 items-center justify-between gap-3">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0 group">
             <IconFilm className="h-6 w-6 transition-transform duration-300 group-hover:scale-110" style={{ color: 'var(--accent)' }} />
@@ -100,7 +101,7 @@ export default function Navbar({ user }: NavbarProps) {
           </Link>
 
           {/* Nav Links */}
-          <div className="hidden md:flex items-stretch gap-1 text-sm font-medium">
+          <div className="hidden md:flex items-stretch gap-0.5 text-[13px] font-medium shrink-0">
             <NavDropdown
               label={t('nav.films')}
               href="/filmler"
@@ -172,7 +173,7 @@ export default function Navbar({ user }: NavbarProps) {
           </div>
 
           {/* Search */}
-          <div className="flex-1 max-w-md hidden sm:block relative" ref={dropdownRef}>
+          <div className="flex-1 max-w-xs lg:max-w-md hidden md:block relative" ref={dropdownRef}>
             <form onSubmit={handleSearch}>
               <div className="relative">
                 <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[--text-secondary]" />
@@ -201,9 +202,9 @@ export default function Navbar({ user }: NavbarProps) {
                     onClick={handleSuggestionClick}
                     className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 transition-colors group"
                   >
-                    <div className="w-10 h-14 rounded-lg overflow-hidden bg-[--bg-card] shrink-0 shadow-md">
+                    <div className="relative w-10 h-14 rounded-lg overflow-hidden bg-[--bg-card] shrink-0 shadow-md">
                       {item.poster
-                        ? <img src={item.poster} alt={item.title} className="w-full h-full object-cover" loading="lazy" />
+                        ? <Image src={item.poster} alt={item.title} fill sizes="40px" className="object-cover" />
                         : <div className="w-full h-full flex items-center justify-center text-[--text-secondary]">
                             {item.type === 'film' ? <IconFilm className="h-4 w-4 opacity-30" /> : <IconTv className="h-4 w-4 opacity-30" />}
                           </div>
@@ -242,7 +243,7 @@ export default function Navbar({ user }: NavbarProps) {
           </div>
 
           {/* Auth + Language */}
-          <div className="hidden md:flex items-stretch gap-2">
+          <div className="hidden md:flex items-stretch gap-2 shrink-0">
             <LanguageSwitcher />
             {user ? (
               <div className="flex items-center gap-2">

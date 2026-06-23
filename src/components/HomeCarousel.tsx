@@ -2,6 +2,7 @@
 
 import { useRef } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { IconChevronLeft, IconChevronRight } from '@/components/icons'
 import { getPosterUrl } from '@/lib/tmdb-utils'
 import type { TMDbMovie } from '@/lib/types'
@@ -86,11 +87,12 @@ export default function HomeCarousel({ title, icon, href, items, defaultType = '
                   style={{ background: 'var(--bg-card)' }}
                 >
                   {poster ? (
-                    <img
+                    <Image
                       src={poster}
                       alt={itemTitle}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover/card:scale-105"
-                      loading="lazy"
+                      fill
+                      sizes="148px"
+                      className="object-cover transition-transform duration-300 group-hover/card:scale-105"
                     />
                   ) : (
                     <div

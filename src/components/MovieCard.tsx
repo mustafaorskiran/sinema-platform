@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { IconStarFilled } from '@/components/icons'
 import { getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb-utils'
 import type { TMDbMovie } from '@/lib/types'
@@ -25,10 +26,12 @@ export default function MovieCard({ media, type }: MovieCardProps) {
           {/* Poster */}
           <div className="aspect-[2/3] relative overflow-hidden" style={{ background: 'var(--bg-secondary)' }}>
             {poster ? (
-              <img
+              <Image
                 src={poster}
                 alt={title}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center text-xs" style={{ color: 'var(--text-secondary)' }}>
