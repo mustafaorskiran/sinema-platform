@@ -91,6 +91,9 @@ export default async function FilmPage({ params }: Props) {
   ])
   if (!movie) notFound()
   const backdrops = imagesData.backdrops.slice(0, 18)
+  const posters   = [...imagesData.posters]
+    .sort((a, b) => b.vote_average - a.vote_average)
+    .slice(0, 10)
   const keywords  = keywordsData.keywords ?? []
   const videos    = videosData.results.filter(v => v.site === 'YouTube')
 
@@ -699,7 +702,7 @@ export default async function FilmPage({ params }: Props) {
         {/* Fotoğraf Galerisi */}
         {backdrops.length > 0 && (
           <div className="mt-10" id="galeri">
-            <BackdropGallery backdrops={backdrops} title={title} />
+            <BackdropGallery backdrops={backdrops} posters={posters} title={title} />
           </div>
         )}
 

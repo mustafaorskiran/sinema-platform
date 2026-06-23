@@ -91,6 +91,9 @@ export default async function DiziPage({ params }: Props) {
   ])
   if (!series) notFound()
   const backdrops = imagesData.backdrops.slice(0, 18)
+  const posters   = [...imagesData.posters]
+    .sort((a, b) => b.vote_average - a.vote_average)
+    .slice(0, 10)
   const keywords  = keywordsData.results ?? []
   const videos    = videosData.results.filter(v => v.site === 'YouTube')
 
@@ -633,7 +636,7 @@ export default async function DiziPage({ params }: Props) {
         {/* Fotoğraf Galerisi */}
         {backdrops.length > 0 && (
           <div className="mt-10" id="galeri">
-            <BackdropGallery backdrops={backdrops} title={series ? getMediaTitle(series) : ''} />
+            <BackdropGallery backdrops={backdrops} posters={posters} title={series ? getMediaTitle(series) : ''} />
           </div>
         )}
 
