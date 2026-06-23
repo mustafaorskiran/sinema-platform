@@ -38,6 +38,13 @@
   - Navbar responsive düzeltme: overflow:visible, shrink-0, search md:block
   - Auth sayfaları: w-full + py-12 ile tam ortalama garantisi
 
+- Auth & Navbar iyileştirmeleri — 2026-06-23:
+  - Google OAuth butonu kaldırıldı (Supabase'de aktif değil; provider etkinleştirildiğinde geri eklenecek)
+  - UserDropdown.tsx: avatar tıklama → animasyonlu dropdown (Profilim, İzleme Listem, Mesajlar, Akış, Öneriler, Film Gecesi, Ayarlar, Admin Paneli, Çıkış)
+  - Navbar sadeleştirildi: Filmler (dropdown 6 öğe), Diziler (dropdown 6 öğe), Popüler, Ne İzlesem?, Listeler, Takvim
+  - layout.tsx: is_admin profil bilgisi çekiliyor ve Navbar'a iletiliyor
+  - Admin Panel linki sadece is_admin=true kullanıcılarda görünüyor
+
 ## Bilinen Buglar
 
 - ~~Özel kategori filtreleri~~ ✅ — P3 kapsamında düzeltildi.

@@ -37,7 +37,7 @@ git push origin master  # remote varsa
 ```
 Prefix'ler: `feat:` `fix:` `refactor:` `perf:` `security:` `style:`
 
-## Son Değişiklikler (2026-06-23)
+## Son Değişiklikler (2026-06-23 — 2. batch)
 
 - `rateLimit.ts`: In-memory → Upstash Redis (`@upstash/ratelimit`, `@upstash/redis`). Env: `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`
 - `src/middleware.ts`: Yeni dosya. Supabase session refresh + /admin/* server-side koruma
@@ -46,6 +46,14 @@ Prefix'ler: `feat:` `fix:` `refactor:` `perf:` `security:` `style:`
 - `next.config.ts`: *.supabase.co + lh3.googleusercontent.com image domain eklendi
 - `MovieCard, HomeCarousel, CastRow, Navbar`: `<img>` → `next/image` geçişi
 - Navbar: overflow:visible, nav gap-0.5, search md:block
+
+## Son Değişiklikler (2026-06-23 — 3. batch)
+
+- Google OAuth butonu kaldırıldı (giris + kayit sayfaları). GoogleAuthButton.tsx bileşeni silinmedi, import kaldırıldı.
+- UserDropdown.tsx: yeni bileşen. Avatar dropdown — is_admin ise Admin Paneli linki dahil.
+- Navbar: 6 nav öğe (2 dropdown + 4 link). "Benim" ve "Keşfet" dropdown'ları kaldırıldı.
+- layout.tsx: profiles tablosundan `username, is_admin` çekiliyor. User tipine `is_admin` eklendi.
+- BottomNav.tsx: user tipine `is_admin` eklendi (layout uyumu için).
 
 ## Kritik Bilgiler
 
