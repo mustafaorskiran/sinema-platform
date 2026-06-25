@@ -127,8 +127,10 @@ export async function discoverMovies(params: {
   page?: number
   genre?: string
   year?: string
+  minYear?: string
   maxYear?: string
   minRating?: string
+  minVoteCount?: string
   sortBy?: string
   provider?: string
   watchRegion?: string
@@ -140,15 +142,17 @@ export async function discoverMovies(params: {
   const p: Record<string, string> = { page: String(params.page ?? 1) }
   if (params.genre) p['with_genres'] = params.genre
   if (params.year) p['primary_release_year'] = params.year
+  if (params.minYear) p['primary_release_date.gte'] = `${params.minYear}-01-01`
   if (params.maxYear) p['primary_release_date.lte'] = `${params.maxYear}-12-31`
   if (params.minRating) p['vote_average.gte'] = params.minRating
-  if (params.minRating) p['vote_count.gte'] = '50'
+  if (params.minVoteCount) p['vote_count.gte'] = params.minVoteCount
+  else if (params.minRating) p['vote_count.gte'] = '50'
   if (params.provider) {
     p['with_watch_providers'] = params.provider
     p['watch_region'] = params.watchRegion ?? 'TR'
   }
-  if (params.keywords)        p['with_keywords']            = params.keywords
-  if (params.language)        p['with_original_language']   = params.language
+  if (params.keywords)        p['with_keywords']             = params.keywords
+  if (params.language)        p['with_original_language']    = params.language
   if (params.excludeLanguage) p['without_original_language'] = params.excludeLanguage
   if (params.maxRuntime)      p['with_runtime.lte']          = params.maxRuntime
   p['sort_by'] = params.sortBy ?? 'popularity.desc'

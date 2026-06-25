@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { discoverMovies } from '@/lib/tmdb'
+import {
+  discoverMovies, getNowPlayingMovies, getUpcomingMovies, getTopRatedMovies,
+} from '@/lib/tmdb'
 
 const PAGE_SIZE = 40
 
@@ -8,48 +10,67 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const page     = Math.max(1, Number(searchParams.get('sayfa')) || 1)
   const genre    = searchParams.get('genre')    ?? undefined
-  const yil      = searchParams.get('yil')      ?? undefined
-  const puan     = searchParams.get('puan')     ?? undefined
   const sirala   = searchParams.get('sirala')   ?? undefined
-  const dil      = searchParams.get('dil')      ?? undefined
   const platform = searchParams.get('platform') ?? undefined
-  const q        = searchParams.get('q')        ?? undefined
+  const kategori = searchParams.get('kategori') ?? 'populer'
+  const tarihten = searchParams.get('tarihten') ?? undefined
+  const tarihe   = searchParams.get('tarihe')   ?? undefined
+  const min_puan = searchParams.get('min_puan') ?? undefined
+  const min_oy   = searchParams.get('min_oy')   ?? undefined
+  // legacy
+  const yil      = searchParams.get('yil')      ?? undefined
+  const puan     = searchParams.get('puan')      ?? undefined
+
+  const minRating = min_puan || puan
+  const hasCustomFilters = !!(genre || tarihten || tarihe || min_puan || min_oy || platform || sirala)
 
   try {
-    const supabase = await createClient()
-
-    let results: any[] = []
+    let results: any[]  = []
     let total_pages = 1
 
-    if (platform) {
+    if (kategori === 'vizyonda' && !hasCustomFilters) {
+      const data = await getNowPlayingMovies(page).catch(() => ({ results: [], total_pages: 1 }))
+      results     = data.results ?? []
+      total_pages = (data as any).total_pages ?? 1
+    } else if (kategori === 'yakinda' && !hasCustomFilters) {
+      const data = await getUpcomingMovies(page).catch(() => ({ results: [], total_pages: 1 }))
+      results     = data.results ?? []
+      total_pages = (data as any).total_pages ?? 1
+    } else if (kategori === 'en-iyi' && !hasCustomFilters) {
+      const data = await getTopRatedMovies(page).catch(() => ({ results: [], total_pages: 1 }))
+      results     = data.results ?? []
+      total_pages = (data as any).total_pages ?? 1
+    } else if (hasCustomFilters || platform) {
+      const effectiveSirala = sirala || (
+        kategori === 'en-iyi'   ? 'vote_average.desc' :
+        kategori === 'yakinda'  ? 'primary_release_date.asc' :
+        kategori === 'vizyonda' ? 'primary_release_date.desc' : 'popularity.desc'
+      )
       const data = await discoverMovies({
-        page, genre, year: yil, minRating: puan, sortBy: sirala, provider: platform,
+        page, genre, year: yil, minYear: tarihten, maxYear: tarihe,
+        minRating, minVoteCount: min_oy, sortBy: effectiveSirala, provider: platform,
       }).catch(() => ({ results: [], total_pages: 1 }))
-      results = data.results
+      results     = data.results
       total_pages = data.total_pages
     } else {
+      const supabase = await createClient()
       const { count: catalogCount } = await supabase
         .from('movies').select('*', { count: 'exact', head: true }).limit(1)
 
       if ((catalogCount ?? 0) > 5000) {
         let query = supabase.from('movies').select('*', { count: 'exact' })
-        if (q?.trim()) {
-          query = query.or(`title.ilike.%${q.trim()}%,original_title.ilike.%${q.trim()}%`)
-        }
         if (genre) {
           const id = parseInt(genre)
           if (!isNaN(id)) query = query.contains('genre_ids', [id])
         }
-        if (yil)  query = query.eq('release_year', parseInt(yil))
-        if (puan) query = query.gte('vote_average', parseFloat(puan))
-        if (dil)  query = query.eq('original_language', dil)
+        if (yil)      query = query.eq('release_year', parseInt(yil))
+        if (minRating) query = query.gte('vote_average', parseFloat(minRating))
 
-        let orderCol = 'popularity'
-        let ascending = false
-        if (sirala === 'vote_average.desc')      { orderCol = 'vote_average'; ascending = false }
-        else if (sirala === 'vote_average.asc')  { orderCol = 'vote_average'; ascending = true  }
-        else if (sirala === 'release_date.desc') { orderCol = 'release_year'; ascending = false }
-        else if (sirala === 'release_date.asc')  { orderCol = 'release_year'; ascending = true  }
+        let orderCol = 'popularity', ascending = false
+        if (sirala === 'vote_average.desc')              { orderCol = 'vote_average'; ascending = false }
+        else if (sirala === 'vote_average.asc')          { orderCol = 'vote_average'; ascending = true  }
+        else if (sirala === 'primary_release_date.desc') { orderCol = 'release_year'; ascending = false }
+        else if (sirala === 'primary_release_date.asc')  { orderCol = 'release_year'; ascending = true  }
 
         const from = (page - 1) * PAGE_SIZE
         const { data, count } = await query
@@ -58,29 +79,23 @@ export async function GET(req: NextRequest) {
           .range(from, from + PAGE_SIZE - 1)
 
         results = (data ?? []).map((m: any) => ({
-          id:             m.tmdb_id,
-          title:          m.title,
-          original_title: m.original_title,
-          overview:       m.overview,
-          poster_path:    m.poster_path,
-          release_date:   m.release_date,
-          vote_average:   m.vote_average,
-          vote_count:     m.vote_count,
-          popularity:     m.popularity,
-          genre_ids:      m.genre_ids,
+          id: m.tmdb_id, title: m.title, original_title: m.original_title,
+          overview: m.overview, poster_path: m.poster_path,
+          release_date: m.release_date, vote_average: m.vote_average,
+          vote_count: m.vote_count, popularity: m.popularity, genre_ids: m.genre_ids,
         }))
         total_pages = Math.min(500, Math.ceil((count ?? 0) / PAGE_SIZE))
       } else {
         const data = await discoverMovies({
-          page, genre, year: yil, minRating: puan, sortBy: sirala,
+          page, genre, year: yil, minRating, sortBy: sirala,
         }).catch(() => ({ results: [], total_pages: 1 }))
-        results = data.results
+        results     = data.results
         total_pages = data.total_pages
       }
     }
 
     return NextResponse.json({ results, total_pages })
-  } catch (err) {
+  } catch {
     return NextResponse.json({ results: [], total_pages: 1 }, { status: 500 })
   }
 }
