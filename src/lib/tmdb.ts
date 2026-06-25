@@ -363,7 +363,7 @@ export async function getSeasonDetail(seriesId: number, seasonNumber: number): P
 }
 
 export async function getAiringTodayTV(page = 1): Promise<TMDbSearchResult> {
-  return tmdbFetch('/tv/airing_today', { page: String(page) })
+  return tmdbFetch('/tv/airing_today', { page: String(page), timezone: 'Europe/Istanbul' })
 }
 
 export async function getMovieVideos(id: number): Promise<{ results: TMDbVideo[] }> {

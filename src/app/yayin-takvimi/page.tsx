@@ -27,13 +27,11 @@ function dedup<T extends { id: number }>(items: T[]): T[] {
 }
 
 export default async function YayinTakvimiPage() {
-  const PAGES = [1, 2, 3, 4, 5]
-
   const [upcomingRaw, onAirRaw, todayRaw, upcomingTVRaw] = await Promise.all([
-    Promise.all(PAGES.map(p => getUpcomingMovies(p).catch(() => ({ results: [] as TMDbMovie[] })))),
-    Promise.all(PAGES.map(p => getOnAirTV(p).catch(() => ({ results: [] as TMDbMovie[] })))),
-    Promise.all(PAGES.map(p => getAiringTodayTV(p).catch(() => ({ results: [] as TMDbMovie[] })))),
-    Promise.all(PAGES.map(p => getUpcomingTV(p).catch(() => ({ results: [] as TMDbMovie[] })))),
+    Promise.all([1,2,3,4,5].map(p => getUpcomingMovies(p).catch(() => ({ results: [] as TMDbMovie[] })))),
+    Promise.all([1,2,3,4,5].map(p => getOnAirTV(p).catch(() => ({ results: [] as TMDbMovie[] })))),
+    Promise.all([1,2,3].map(p => getAiringTodayTV(p).catch(() => ({ results: [] as TMDbMovie[] })))),
+    Promise.all([1,2,3,4,5].map(p => getUpcomingTV(p).catch(() => ({ results: [] as TMDbMovie[] })))),
   ])
 
   const upcomingMovies = dedup(upcomingRaw.flatMap(d => d.results ?? []))
