@@ -31,6 +31,7 @@ import ParentsGuide from '@/components/ParentsGuide'
 import StickyRating from '@/components/StickyRating'
 import PageNav from '@/components/PageNav'
 import WatchStatusButton from '@/components/WatchStatusButton'
+import CriticScores from '@/components/CriticScores'
 import type { Review } from '@/lib/types'
 import type { Metadata } from 'next'
 
@@ -375,6 +376,8 @@ export default async function DiziPage({ params }: Props) {
               tmdbRating={series.vote_average}
               tmdbVoteCount={series.vote_count ?? 0}
             />
+
+            <CriticScores imdbId={imdbId} />
 
             <div className="flex flex-wrap gap-2 mt-4">
               {series.genres?.map((g) => {
