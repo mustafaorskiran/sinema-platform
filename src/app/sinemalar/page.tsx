@@ -35,7 +35,7 @@ function daysUntil(dateStr: string) {
 export default async function SinemalarPage() {
   const [nowData, upcomingData] = await Promise.all([
     getNowPlayingMovies(1, 'TR').catch(() => ({ results: [] })),
-    getUpcomingMovies(1, 'TR').catch(() => ({ results: [] })),
+    getUpcomingMovies(1).catch(() => ({ results: [] })),
   ])
 
   const nowPlaying = (nowData.results ?? []).slice(0, 24)

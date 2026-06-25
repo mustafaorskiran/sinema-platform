@@ -1,11 +1,11 @@
-import { getUpcomingMovies, getOnAirTV, getAiringTodayTV, getPosterUrl, getMediaTitle } from '@/lib/tmdb'
+import { getUpcomingMovies, getOnAirTV, getAiringTodayTV, getUpcomingTV, getPosterUrl, getMediaTitle } from '@/lib/tmdb'
 import type { TMDbMovie } from '@/lib/types'
 import type { Metadata } from 'next'
 import YayinTakvimiClient from './YayinTakvimiClient'
 
 export const metadata: Metadata = {
   title: 'Yayın Takvimi — Yakında & Bu Hafta',
-  description: 'Yakında çıkacak filmler, bu hafta yayındaki diziler ve bugün yayınlananlar.',
+  description: 'Yakında çıkacak filmler ve diziler, bu hafta yayındakiler ve bugün yayınlananlar.',
 }
 
 export const revalidate = 3600
@@ -21,14 +21,27 @@ function daysUntil(dateStr: string | undefined): number | null {
   return Math.ceil(diff / (1000 * 60 * 60 * 24))
 }
 
+function dedup<T extends { id: number }>(items: T[]): T[] {
+  const seen = new Set<number>()
+  return items.filter(i => { if (seen.has(i.id)) return false; seen.add(i.id); return true })
+}
+
 export default async function YayinTakvimiPage() {
-  const [upcomingData, onAirData, todayData] = await Promise.all([
-    getUpcomingMovies(1).catch(() => ({ results: [] as TMDbMovie[] })),
-    getOnAirTV(1).catch(() => ({ results: [] as TMDbMovie[] })),
-    getAiringTodayTV(1).catch(() => ({ results: [] as TMDbMovie[] })),
+  const PAGES = [1, 2, 3, 4, 5]
+
+  const [upcomingRaw, onAirRaw, todayRaw, upcomingTVRaw] = await Promise.all([
+    Promise.all(PAGES.map(p => getUpcomingMovies(p).catch(() => ({ results: [] as TMDbMovie[] })))),
+    Promise.all(PAGES.map(p => getOnAirTV(p).catch(() => ({ results: [] as TMDbMovie[] })))),
+    Promise.all(PAGES.map(p => getAiringTodayTV(p).catch(() => ({ results: [] as TMDbMovie[] })))),
+    Promise.all(PAGES.map(p => getUpcomingTV(p).catch(() => ({ results: [] as TMDbMovie[] })))),
   ])
 
-  const upcoming = (upcomingData.results ?? []).map(m => ({
+  const upcomingMovies = dedup(upcomingRaw.flatMap(d => d.results ?? []))
+  const onAirSeries   = dedup(onAirRaw.flatMap(d => d.results ?? []))
+  const todaySeries   = dedup(todayRaw.flatMap(d => d.results ?? []))
+  const upcomingTV    = dedup(upcomingTVRaw.flatMap(d => d.results ?? []))
+
+  const upcoming = upcomingMovies.map(m => ({
     id: m.id,
     title: getMediaTitle(m),
     poster: getPosterUrl(m.poster_path, 'w342'),
@@ -39,7 +52,7 @@ export default async function YayinTakvimiPage() {
     type: 'film' as const,
   })).sort((a, b) => a.date.localeCompare(b.date))
 
-  const onAir = (onAirData.results ?? []).map(s => ({
+  const onAir = onAirSeries.map(s => ({
     id: s.id,
     title: getMediaTitle(s),
     poster: getPosterUrl(s.poster_path, 'w342'),
@@ -50,7 +63,7 @@ export default async function YayinTakvimiPage() {
     type: 'dizi' as const,
   })).sort((a, b) => b.rating - a.rating)
 
-  const today = (todayData.results ?? []).map(s => ({
+  const today = todaySeries.map(s => ({
     id: s.id,
     title: getMediaTitle(s),
     poster: getPosterUrl(s.poster_path, 'w342'),
@@ -61,5 +74,23 @@ export default async function YayinTakvimiPage() {
     type: 'dizi' as const,
   })).sort((a, b) => b.rating - a.rating)
 
-  return <YayinTakvimiClient upcoming={upcoming} onAir={onAir} today={today} />
+  const upcomingDiziler = upcomingTV.map(s => ({
+    id: s.id,
+    title: getMediaTitle(s),
+    poster: getPosterUrl(s.poster_path, 'w342'),
+    date: (s as any).first_air_date ?? '',
+    dateFormatted: formatDate((s as any).first_air_date),
+    daysUntil: daysUntil((s as any).first_air_date),
+    rating: s.vote_average,
+    type: 'dizi' as const,
+  })).sort((a, b) => a.date.localeCompare(b.date))
+
+  return (
+    <YayinTakvimiClient
+      upcoming={upcoming}
+      onAir={onAir}
+      today={today}
+      upcomingDiziler={upcomingDiziler}
+    />
+  )
 }

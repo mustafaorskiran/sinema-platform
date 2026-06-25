@@ -259,8 +259,21 @@ export async function getTrendingTV(): Promise<TMDbSearchResult> {
   return tmdbFetch('/trending/tv/week')
 }
 
-export async function getUpcomingMovies(page = 1, region = 'TR'): Promise<TMDbSearchResult> {
-  return tmdbFetch('/movie/upcoming', { page: String(page), region })
+export async function getUpcomingMovies(page = 1): Promise<TMDbSearchResult> {
+  return tmdbFetch('/movie/upcoming', { page: String(page) })
+}
+
+export async function getUpcomingTV(page = 1): Promise<TMDbSearchResult> {
+  const today = new Date().toISOString().split('T')[0]
+  const future = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+  return tmdbFetch('/discover/tv', {
+    page: String(page),
+    'first_air_date.gte': today,
+    'first_air_date.lte': future,
+    sort_by: 'first_air_date.asc',
+    'vote_count.gte': '3',
+    'with_original_language': 'en|tr|ko|ja|fr|de|es',
+  })
 }
 
 export async function getNowPlayingMovies(page = 1, region = 'TR'): Promise<TMDbSearchResult> {
