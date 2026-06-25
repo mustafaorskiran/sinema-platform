@@ -11,6 +11,7 @@ import { OZEL_KATEGORILER } from '@/lib/ozel-kategoriler'
 import { createClient } from '@/lib/supabase/server'
 import { discoverMovies, getMovieProviderList, getMoviesByIds } from '@/lib/tmdb'
 import { OSCAR_WINNER_IDS } from '@/lib/oscar-winners'
+import { KULT_FILM_IDS } from '@/lib/kult-filmler'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -102,12 +103,13 @@ export default async function FilmlerPage({ searchParams }: Props) {
   let totalCount = 0
 
   if (ozelKat?.slug === 'oscar-kazananlar') {
-    // Sabit Oscar BP listesi — TMDb keyword yerine hardcoded IDs
-    const pageSize = PAGE_SIZE
     const allIds = OSCAR_WINNER_IDS
-    total_pages = Math.ceil(allIds.length / pageSize)
-    const pageIds = allIds.slice((page - 1) * pageSize, page * pageSize)
-    results = await getMoviesByIds(pageIds)
+    total_pages = Math.ceil(allIds.length / PAGE_SIZE)
+    results = await getMoviesByIds(allIds.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE))
+  } else if (ozelKat?.slug === 'kult-filmler') {
+    const allIds = KULT_FILM_IDS
+    total_pages = Math.ceil(allIds.length / PAGE_SIZE)
+    results = await getMoviesByIds(allIds.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE))
   } else if (platform || ozelKat) {
     // Platform veya özel kategori seçiliyse TMDb Discover kullan
     const data = await discoverMovies({
