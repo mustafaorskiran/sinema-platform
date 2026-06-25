@@ -87,6 +87,26 @@ export async function getMovieMini(id: number): Promise<TMDbMovieDetail> {
   return tmdbFetch(`/movie/${id}`)
 }
 
+export async function getMoviesByIds(ids: number[]): Promise<any[]> {
+  const results = await Promise.all(
+    ids.map(id =>
+      tmdbFetch(`/movie/${id}`).then((m: any) => ({
+        id:             m.id,
+        title:          m.title,
+        original_title: m.original_title,
+        overview:       m.overview,
+        poster_path:    m.poster_path,
+        release_date:   m.release_date,
+        vote_average:   m.vote_average,
+        vote_count:     m.vote_count,
+        popularity:     m.popularity,
+        genre_ids:      (m.genres ?? []).map((g: any) => g.id),
+      })).catch(() => null)
+    )
+  )
+  return results.filter(Boolean)
+}
+
 export async function getSeriesMini(id: number): Promise<TMDbMovieDetail> {
   return tmdbFetch(`/tv/${id}`)
 }

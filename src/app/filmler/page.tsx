@@ -9,7 +9,8 @@ import InfiniteGrid from '@/components/InfiniteGrid'
 import FilterPanel from '@/components/FilterPanel'
 import { OZEL_KATEGORILER } from '@/lib/ozel-kategoriler'
 import { createClient } from '@/lib/supabase/server'
-import { discoverMovies, getMovieProviderList } from '@/lib/tmdb'
+import { discoverMovies, getMovieProviderList, getMoviesByIds } from '@/lib/tmdb'
+import { OSCAR_WINNER_IDS } from '@/lib/oscar-winners'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -100,7 +101,14 @@ export default async function FilmlerPage({ searchParams }: Props) {
   let total_pages = 1
   let totalCount = 0
 
-  if (platform || ozelKat) {
+  if (ozelKat?.slug === 'oscar-kazananlar') {
+    // Sabit Oscar BP listesi — TMDb keyword yerine hardcoded IDs
+    const pageSize = PAGE_SIZE
+    const allIds = OSCAR_WINNER_IDS
+    total_pages = Math.ceil(allIds.length / pageSize)
+    const pageIds = allIds.slice((page - 1) * pageSize, page * pageSize)
+    results = await getMoviesByIds(pageIds)
+  } else if (platform || ozelKat) {
     // Platform veya özel kategori seçiliyse TMDb Discover kullan
     const data = await discoverMovies({
       page,
