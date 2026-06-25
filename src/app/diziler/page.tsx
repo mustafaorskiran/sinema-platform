@@ -90,8 +90,10 @@ export default async function DizilerPage({ searchParams }: Props) {
   let total_pages = 1
   let totalCount = 0
 
-  if (platform || ozelKat) {
-    // Platform veya özel kategori seçiliyse TMDb Discover kullan
+  const useDiscover = platform || ozelKat || sirala === 'first_air_date.desc' || sirala === 'first_air_date.asc'
+
+  if (useDiscover) {
+    // Platform / özel kategori / "Yeni Diziler" → TMDb Discover (güncel veri)
     const data = await discoverSeries({
       page,
       genre: ozelKat?.genre || genre,
@@ -122,10 +124,12 @@ export default async function DizilerPage({ searchParams }: Props) {
 
     let orderCol = 'popularity'
     let ascending = false
-    if (sirala === 'vote_average.desc')       { orderCol = 'vote_average';    ascending = false }
-    else if (sirala === 'vote_average.asc')   { orderCol = 'vote_average';    ascending = true  }
-    else if (sirala === 'release_date.desc')  { orderCol = 'first_air_year';  ascending = false }
-    else if (sirala === 'release_date.asc')   { orderCol = 'first_air_year';  ascending = true  }
+    if (sirala === 'vote_average.desc')           { orderCol = 'vote_average';   ascending = false }
+    else if (sirala === 'vote_average.asc')       { orderCol = 'vote_average';   ascending = true  }
+    else if (sirala === 'release_date.desc')      { orderCol = 'first_air_year'; ascending = false }
+    else if (sirala === 'release_date.asc')       { orderCol = 'first_air_year'; ascending = true  }
+    else if (sirala === 'first_air_date.desc')    { orderCol = 'first_air_year'; ascending = false }
+    else if (sirala === 'first_air_date.asc')     { orderCol = 'first_air_year'; ascending = true  }
 
     const from = (page - 1) * PAGE_SIZE
     const { data, count, error } = await query
