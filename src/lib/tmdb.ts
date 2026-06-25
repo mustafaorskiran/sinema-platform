@@ -276,8 +276,10 @@ export async function getUpcomingTV(page = 1): Promise<TMDbSearchResult> {
   })
 }
 
-export async function getNowPlayingMovies(page = 1, region = 'TR'): Promise<TMDbSearchResult> {
-  return tmdbFetch('/movie/now_playing', { page: String(page), region })
+export async function getNowPlayingMovies(page = 1, region?: string): Promise<TMDbSearchResult> {
+  const params: Record<string, string> = { page: String(page) }
+  if (region) params.region = region
+  return tmdbFetch('/movie/now_playing', params)
 }
 
 export async function getOnAirTV(page = 1): Promise<TMDbSearchResult> {
