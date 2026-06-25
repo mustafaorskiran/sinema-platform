@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 import { IconChevronLeft, IconChevronRight } from '@/components/icons'
 
 interface Person {
@@ -17,25 +17,88 @@ interface Props {
 }
 
 export default function CastRow({ cast, director }: Props) {
-  const ref = useRef<HTMLDivElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const trackRef = useRef<HTMLDivElement>(null)
+  const isDragging = useRef(false)
+  const dragStartX = useRef(0)
+  const dragStartScroll = useRef(0)
+
+  const [thumbLeft, setThumbLeft] = useState(0)
+  const [thumbWidth, setThumbWidth] = useState(100)
+  const [hasOverflow, setHasOverflow] = useState(false)
 
   if (!director && cast.length === 0) return null
 
   const people: (Person & { role: string; isDirector?: boolean })[] = []
+  if (director) people.push({ ...director, role: 'Yönetmen', isDirector: true })
+  for (const c of cast.slice(0, 20)) people.push({ ...c, role: c.character ?? '' })
 
-  if (director) {
-    people.push({ ...director, role: 'Yönetmen', isDirector: true })
-  }
-  for (const c of cast.slice(0, 20)) {
-    people.push({ ...c, role: c.character ?? '' })
-  }
+  const updateThumb = useCallback(() => {
+    const el = scrollRef.current
+    const track = trackRef.current
+    if (!el || !track) return
+    const ratio = el.clientWidth / el.scrollWidth
+    const newThumbWidth = track.clientWidth * ratio
+    const maxScroll = el.scrollWidth - el.clientWidth
+    const newLeft = maxScroll > 0
+      ? (el.scrollLeft / maxScroll) * (track.clientWidth - newThumbWidth)
+      : 0
+    setThumbWidth(newThumbWidth)
+    setThumbLeft(newLeft)
+    setHasOverflow(el.scrollWidth > el.clientWidth + 2)
+  }, [])
+
+  useEffect(() => {
+    updateThumb()
+    const el = scrollRef.current
+    if (!el) return
+    el.addEventListener('scroll', updateThumb, { passive: true })
+    const ro = new ResizeObserver(updateThumb)
+    ro.observe(el)
+    return () => {
+      el.removeEventListener('scroll', updateThumb)
+      ro.disconnect()
+    }
+  }, [updateThumb])
 
   const scroll = (dir: 'left' | 'right') => {
-    if (!ref.current) return
-    ref.current.scrollBy({
-      left: dir === 'left' ? -(ref.current.clientWidth * 0.75) : ref.current.clientWidth * 0.75,
-      behavior: 'smooth',
-    })
+    const el = scrollRef.current
+    if (!el) return
+    el.scrollBy({ left: dir === 'left' ? -320 : 320, behavior: 'smooth' })
+  }
+
+  const onThumbMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault()
+    isDragging.current = true
+    dragStartX.current = e.clientX
+    dragStartScroll.current = scrollRef.current?.scrollLeft ?? 0
+
+    const onMove = (ev: MouseEvent) => {
+      if (!isDragging.current || !scrollRef.current || !trackRef.current) return
+      const dx = ev.clientX - dragStartX.current
+      const track = trackRef.current.clientWidth
+      const ratio = dx / (track - thumbWidth)
+      const maxScroll = scrollRef.current.scrollWidth - scrollRef.current.clientWidth
+      scrollRef.current.scrollLeft = dragStartScroll.current + ratio * maxScroll
+    }
+    const onUp = () => {
+      isDragging.current = false
+      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('mouseup', onUp)
+    }
+    window.addEventListener('mousemove', onMove)
+    window.addEventListener('mouseup', onUp)
+  }
+
+  const onTrackClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const track = trackRef.current
+    const el = scrollRef.current
+    if (!track || !el) return
+    const rect = track.getBoundingClientRect()
+    const clickX = e.clientX - rect.left - thumbWidth / 2
+    const ratio = clickX / (track.clientWidth - thumbWidth)
+    const maxScroll = el.scrollWidth - el.clientWidth
+    el.scrollLeft = Math.max(0, Math.min(ratio * maxScroll, maxScroll))
   }
 
   return (
@@ -52,7 +115,7 @@ export default function CastRow({ cast, director }: Props) {
         <button
           onClick={() => scroll('left')}
           aria-label="Sola kaydır"
-          className="absolute left-0 top-[40%] z-10 -translate-x-4 w-9 h-9 rounded-full flex items-center justify-center opacity-0 group-hover/cast:opacity-100 transition-all duration-200 hover:scale-110"
+          className="absolute left-0 top-[38%] z-10 -translate-x-4 w-9 h-9 rounded-full flex items-center justify-center opacity-0 group-hover/cast:opacity-100 transition-all duration-200 hover:scale-110"
           style={{
             background: 'rgba(11,15,25,0.95)',
             border: '1px solid var(--border-strong)',
@@ -62,8 +125,19 @@ export default function CastRow({ cast, director }: Props) {
           <IconChevronLeft className="h-4 w-4" style={{ color: 'var(--text-primary)' }} />
         </button>
 
+        {/* Sağ gradient fade */}
+        {hasOverflow && (
+          <div
+            className="absolute right-0 top-0 bottom-6 w-20 z-10 pointer-events-none"
+            style={{ background: 'linear-gradient(to right, transparent, var(--bg-main, #0b0f19))' }}
+          />
+        )}
+
         {/* Scroll container */}
-        <div ref={ref} className="home-carousel-scroll flex gap-4 overflow-x-auto pb-3">
+        <div
+          ref={scrollRef}
+          className="home-carousel-scroll flex gap-4 overflow-x-auto pb-3"
+        >
           {people.map((p) => (
             <a
               key={`${p.id}-${p.role}`}
@@ -118,7 +192,7 @@ export default function CastRow({ cast, director }: Props) {
         <button
           onClick={() => scroll('right')}
           aria-label="Sağa kaydır"
-          className="absolute right-0 top-[40%] z-10 translate-x-4 w-9 h-9 rounded-full flex items-center justify-center opacity-0 group-hover/cast:opacity-100 transition-all duration-200 hover:scale-110"
+          className="absolute right-0 top-[38%] z-10 translate-x-4 w-9 h-9 rounded-full flex items-center justify-center opacity-0 group-hover/cast:opacity-100 transition-all duration-200 hover:scale-110"
           style={{
             background: 'rgba(11,15,25,0.95)',
             border: '1px solid var(--border-strong)',
@@ -128,6 +202,27 @@ export default function CastRow({ cast, director }: Props) {
           <IconChevronRight className="h-4 w-4" style={{ color: 'var(--text-primary)' }} />
         </button>
       </div>
+
+      {/* Scroll bar */}
+      {hasOverflow && (
+        <div
+          ref={trackRef}
+          onClick={onTrackClick}
+          className="mt-3 h-1 rounded-full cursor-pointer"
+          style={{ background: 'var(--border)' }}
+        >
+          <div
+            onMouseDown={onThumbMouseDown}
+            className="h-full rounded-full cursor-grab active:cursor-grabbing transition-colors"
+            style={{
+              width: thumbWidth,
+              transform: `translateX(${thumbLeft}px)`,
+              background: 'var(--accent)',
+              opacity: 0.7,
+            }}
+          />
+        </div>
+      )}
     </div>
   )
 }
