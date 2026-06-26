@@ -1,0 +1,15 @@
+export const DIZI_GENRES = [
+  { id: 10759, name: 'Aksiyon & Macera'     },
+  { id: 16,    name: 'Animasyon'            },
+  { id: 35,    name: 'Komedi'               },
+  { id: 80,    name: 'Suç'                  },
+  { id: 99,    name: 'Belgesel'             },
+  { id: 18,    name: 'Drama'                },
+  { id: 10751, name: 'Aile'                 },
+  { id: 10762, name: 'Çocuk'                },
+  { id: 9648,  name: 'Gizem'               },
+  { id: 10764, name: 'Reality'              },
+  { id: 10765, name: 'Bilim Kurgu & Fantezi'},
+  { id: 10768, name: 'Savaş & Politika'    },
+  { id: 37,    name: 'Western'              },
+]

@@ -165,8 +165,10 @@ export async function discoverSeries(params: {
   page?: number
   genre?: string
   year?: string
+  minYear?: string
   maxYear?: string
   minRating?: string
+  minVoteCount?: string
   sortBy?: string
   provider?: string
   watchRegion?: string
@@ -178,9 +180,11 @@ export async function discoverSeries(params: {
   const p: Record<string, string> = { page: String(params.page ?? 1) }
   if (params.genre) p['with_genres'] = params.genre
   if (params.year) p['first_air_date_year'] = params.year
+  if (params.minYear) p['first_air_date.gte'] = `${params.minYear}-01-01`
   if (params.maxYear) p['first_air_date.lte'] = `${params.maxYear}-12-31`
   if (params.minRating) p['vote_average.gte'] = params.minRating
-  if (params.minRating) p['vote_count.gte'] = '50'
+  if (params.minVoteCount) p['vote_count.gte'] = params.minVoteCount
+  else if (params.minRating) p['vote_count.gte'] = '50'
   if (params.provider) {
     p['with_watch_providers'] = params.provider
     p['watch_region'] = params.watchRegion ?? 'TR'
