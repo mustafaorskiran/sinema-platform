@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { IconChevronDown } from '@/components/icons'
 import { FILM_GENRES } from '@/lib/film-genres'
+import { WATCH_REGIONS } from '@/lib/watch-regions'
 
 export { FILM_GENRES }
 
@@ -58,6 +59,7 @@ interface Props {
   initialMinSure?: string
   initialMaxSure?: string
   initialKeyword?: string
+  initialUlke?: string
 }
 
 /* ── Alt bölüm ayırıcısı – gold gradient ── */
@@ -133,6 +135,7 @@ export default function FilmlerSidebar({
   initialMinSure = '0',
   initialMaxSure = '400',
   initialKeyword = '',
+  initialUlke = 'TR',
 }: Props) {
   const router = useRouter()
   const sp = useSearchParams()
@@ -150,10 +153,28 @@ export default function FilmlerSidebar({
   const [minSure,  setMinSure]  = useState(Number(initialMinSure) || 0)
   const [maxSure,  setMaxSure]  = useState(Number(initialMaxSure) || 400)
   const [keyword,  setKeyword]  = useState(initialKeyword)
+  const [ulke,     setUlke]     = useState(initialUlke || 'TR')
+  const [providerList,  setProviderList]  = useState<Provider[]>(providers)
+  const [loadingProv,   setLoadingProv]   = useState(false)
 
   const [providerOpen, setProviderOpen] = useState(true)
   const [dilOpen,      setDilOpen]      = useState(false)
   const [filterOpen,   setFilterOpen]   = useState(true)
+
+  const changeRegion = useCallback(async (code: string) => {
+    setUlke(code)
+    setPlatform('')
+    setLoadingProv(true)
+    try {
+      const res = await fetch(`/api/providers?type=movie&region=${code}`)
+      const data = await res.json()
+      setProviderList(data.results ?? [])
+    } catch {
+      setProviderList([])
+    } finally {
+      setLoadingProv(false)
+    }
+  }, [])
 
   function toggleGenre(id: string) {
     setGenres(prev => prev.includes(id) ? prev.filter(g => g !== id) : [...prev, id])
@@ -174,6 +195,7 @@ export default function FilmlerSidebar({
     if (minSure > 0)        params.set('min_sure', String(minSure))
     if (maxSure < 400)      params.set('max_sure', String(maxSure))
     if (keyword.trim())     params.set('keyword',  keyword.trim())
+    if (ulke && ulke !== 'TR') params.set('ulke',  ulke)
     return `/filmler${params.toString() ? `?${params}` : ''}`
   }
 
@@ -183,6 +205,7 @@ export default function FilmlerSidebar({
     setGenres([]); setPlatform(''); setSirala('popularity.desc')
     setDil(''); setTarihten(''); setTarihe('')
     setMinPuan(0); setMinOy(0); setMinSure(0); setMaxSure(400); setKeyword('')
+    changeRegion('TR')
     const params = new URLSearchParams()
     const kategori = sp.get('kategori')
     if (kategori && kategori !== 'populer') params.set('kategori', kategori)
@@ -298,32 +321,63 @@ export default function FilmlerSidebar({
           <GoldDivider />
 
           {/* ── İzleme Servisleri ── */}
-          {providers.length > 0 && (
-            <>
-              <SectionHeader
-                label="İzleme Servisleri"
-                open={providerOpen}
-                onToggle={() => setProviderOpen(o => !o)}
-              />
-              {providerOpen && (
-                <div className="px-5 pb-4">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-sm leading-none">🇹🇷</span>
-                    <span className="text-[11px] font-medium" style={{ color: 'rgba(240,192,96,0.5)' }}>
-                      Türkiye
-                    </span>
-                    {platform && (
-                      <button
-                        onClick={() => setPlatform('')}
-                        className="ml-auto text-[10px] transition-colors hover:opacity-100"
-                        style={{ color: 'rgba(212,168,67,0.5)' }}
-                      >
-                        Temizle
-                      </button>
-                    )}
+          <>
+            <SectionHeader
+              label="İzleme Servisleri"
+              open={providerOpen}
+              onToggle={() => setProviderOpen(o => !o)}
+            />
+            {providerOpen && (
+              <div className="px-5 pb-4">
+                {/* Ülke seçici */}
+                <div className="relative mb-3">
+                  <select
+                    value={ulke}
+                    onChange={e => changeRegion(e.target.value)}
+                    className="w-full rounded-xl px-3 py-2 text-[12px] text-white focus:outline-none appearance-none cursor-pointer pr-8"
+                    style={{
+                      background: 'rgba(255,255,255,0.03)',
+                      border: '1px solid rgba(212,168,67,0.14)',
+                    }}
+                  >
+                    {WATCH_REGIONS.map(r => (
+                      <option key={r.code} value={r.code} className="bg-[#141c2f] text-white">
+                        {r.flag} {r.name}
+                      </option>
+                    ))}
+                  </select>
+                  <IconChevronDown
+                    className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-3 w-3"
+                    style={{ color: GOLD, opacity: 0.5 }}
+                  />
+                </div>
+
+                {/* Seçim temizle */}
+                {platform && (
+                  <button
+                    onClick={() => setPlatform('')}
+                    className="text-[10px] mb-2 transition-colors"
+                    style={{ color: 'rgba(212,168,67,0.5)' }}
+                  >
+                    × Seçimi temizle
+                  </button>
+                )}
+
+                {/* Provider logoları */}
+                {loadingProv ? (
+                  <div className="flex gap-1.5 flex-wrap">
+                    {Array.from({ length: 8 }).map((_, i) => (
+                      <div key={i} className="w-9 h-9 rounded-lg animate-pulse"
+                           style={{ background: 'rgba(255,255,255,0.05)' }} />
+                    ))}
                   </div>
+                ) : providerList.length === 0 ? (
+                  <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.2)' }}>
+                    Bu ülkede servis bulunamadı.
+                  </p>
+                ) : (
                   <div className="flex flex-wrap gap-1.5">
-                    {providers.map(p => {
+                    {providerList.map(p => {
                       const active = platform === String(p.provider_id)
                       return (
                         <button
@@ -337,9 +391,7 @@ export default function FilmlerSidebar({
                             boxShadow: `0 0 10px rgba(212,168,67,0.3)`,
                             transform: 'scale(1.08)',
                             opacity: 1,
-                          } : {
-                            opacity: 0.4,
-                          }}
+                          } : { opacity: 0.4 }}
                           onMouseEnter={e => { if (!active) (e.currentTarget as HTMLButtonElement).style.opacity = '0.85' }}
                           onMouseLeave={e => { if (!active) (e.currentTarget as HTMLButtonElement).style.opacity = '0.4' }}
                         >
@@ -352,11 +404,11 @@ export default function FilmlerSidebar({
                       )
                     })}
                   </div>
-                </div>
-              )}
-              <GoldDivider />
-            </>
-          )}
+                )}
+              </div>
+            )}
+            <GoldDivider />
+          </>
 
           {/* ── Dil ── */}
           <SectionHeader label="Dil" open={dilOpen} onToggle={() => setDilOpen(o => !o)} />

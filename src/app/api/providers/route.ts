@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
     const data = await res.json()
     const sorted = (data.results ?? [])
       .sort((a: { display_priority: number }, b: { display_priority: number }) => a.display_priority - b.display_priority)
-      .slice(0, 20)
+      .slice(0, 40)
     return NextResponse.json({ results: sorted })
   } catch {
     return NextResponse.json({ results: [] })

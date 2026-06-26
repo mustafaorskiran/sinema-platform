@@ -38,7 +38,7 @@ interface Props {
   searchParams: Promise<{
     sayfa?: string; genre?: string; sirala?: string; platform?: string; ozel?: string
     kategori?: string; tarihten?: string; tarihe?: string; min_puan?: string; min_oy?: string
-    dil?: string; min_sure?: string; max_sure?: string; keyword?: string
+    dil?: string; min_sure?: string; max_sure?: string; keyword?: string; ulke?: string
     // legacy params kept for compat
     yil?: string; puan?: string
   }>
@@ -48,7 +48,7 @@ export default async function FilmlerPage({ searchParams }: Props) {
   const {
     sayfa, genre, sirala, platform, ozel,
     kategori = 'populer', tarihten, tarihe, min_puan, min_oy,
-    dil, min_sure, max_sure, keyword,
+    dil, min_sure, max_sure, keyword, ulke,
     yil, puan,
   } = await searchParams
 
@@ -117,6 +117,7 @@ export default async function FilmlerPage({ searchParams }: Props) {
       year: yil, minYear: tarihten, maxYear: tarihe,
       minRating, minVoteCount: min_oy,
       sortBy: effectiveSirala, provider: platform,
+      watchRegion: ulke || 'TR',
       language: dil,
       minRuntime: min_sure,
       maxRuntime: max_sure && Number(max_sure) < 400 ? max_sure : undefined,
@@ -194,6 +195,7 @@ export default async function FilmlerPage({ searchParams }: Props) {
   if (min_sure)   gridParams.min_sure   = min_sure
   if (max_sure)   gridParams.max_sure   = max_sure
   if (keyword)    gridParams.keyword    = keyword
+  if (ulke && ulke !== 'TR') gridParams.ulke = ulke
   if (kategori && kategori !== 'populer') gridParams.kategori = kategori
 
   // Active genre/kategori label for page title
@@ -238,6 +240,7 @@ export default async function FilmlerPage({ searchParams }: Props) {
           initialMinSure={min_sure}
           initialMaxSure={max_sure}
           initialKeyword={keyword}
+          initialUlke={ulke}
         />
 
         {/* ── Main Content ── */}

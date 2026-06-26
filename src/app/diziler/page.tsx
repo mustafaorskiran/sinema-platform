@@ -23,7 +23,7 @@ interface Props {
   searchParams: Promise<{
     sayfa?: string; genre?: string; sirala?: string; platform?: string; ozel?: string
     tarihten?: string; tarihe?: string; puan?: string; min_oy?: string
-    dil?: string; goruntum?: string; q?: string
+    dil?: string; goruntum?: string; q?: string; ulke?: string
     // legacy
     yil?: string
   }>
@@ -33,7 +33,7 @@ export default async function DizilerPage({ searchParams }: Props) {
   const {
     sayfa, genre, sirala, platform, ozel,
     tarihten, tarihe, puan, min_oy, dil,
-    goruntum = 'grid', q, yil,
+    goruntum = 'grid', q, yil, ulke,
   } = await searchParams
 
   const ozelKat  = ozel ? OZEL_KATEGORILER.find(k => k.slug === ozel) : undefined
@@ -79,6 +79,7 @@ export default async function DizilerPage({ searchParams }: Props) {
       minVoteCount: min_oy,
       sortBy: sirala,
       provider: platform,
+      watchRegion: ulke || 'TR',
       language: dil,
     }).catch(() => ({ results: [], total_pages: 1 }))
     results     = data.results
@@ -146,6 +147,7 @@ export default async function DizilerPage({ searchParams }: Props) {
   if (min_oy)   gridParams.min_oy   = min_oy
   if (dil)      gridParams.dil      = dil
   if (q)        gridParams.q        = q
+  if (ulke && ulke !== 'TR') gridParams.ulke = ulke
 
   const activeGenreName = genre
     ? (genre.includes(',') ? 'Seçili Türler' : DIZI_GENRES.find(g => String(g.id) === genre)?.name ?? null)
@@ -168,6 +170,7 @@ export default async function DizilerPage({ searchParams }: Props) {
           initialMinOy={min_oy}
           initialDil={dil}
           initialGoruntum={goruntum}
+          initialUlke={ulke}
         />
 
         {/* ── Ana içerik ── */}
