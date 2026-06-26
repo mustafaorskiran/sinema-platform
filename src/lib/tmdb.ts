@@ -138,6 +138,7 @@ export async function discoverMovies(params: {
   language?: string
   excludeLanguage?: string
   maxRuntime?: string
+  minRuntime?: string
 }): Promise<TMDbSearchResult> {
   const p: Record<string, string> = { page: String(params.page ?? 1) }
   if (params.genre) p['with_genres'] = params.genre
@@ -155,6 +156,7 @@ export async function discoverMovies(params: {
   if (params.language)        p['with_original_language']    = params.language
   if (params.excludeLanguage) p['without_original_language'] = params.excludeLanguage
   if (params.maxRuntime)      p['with_runtime.lte']          = params.maxRuntime
+  if (params.minRuntime)      p['with_runtime.gte']          = params.minRuntime
   p['sort_by'] = params.sortBy ?? 'popularity.desc'
   return tmdbFetch('/discover/movie', p)
 }

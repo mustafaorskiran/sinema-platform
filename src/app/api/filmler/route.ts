@@ -17,12 +17,16 @@ export async function GET(req: NextRequest) {
   const tarihe   = searchParams.get('tarihe')   ?? undefined
   const min_puan = searchParams.get('min_puan') ?? undefined
   const min_oy   = searchParams.get('min_oy')   ?? undefined
+  const dil      = searchParams.get('dil')      ?? undefined
+  const min_sure = searchParams.get('min_sure') ?? undefined
+  const max_sure = searchParams.get('max_sure') ?? undefined
+  const keyword  = searchParams.get('keyword')  ?? undefined
   // legacy
   const yil      = searchParams.get('yil')      ?? undefined
   const puan     = searchParams.get('puan')      ?? undefined
 
   const minRating = min_puan || puan
-  const hasCustomFilters = !!(genre || tarihten || tarihe || min_puan || min_oy || platform || sirala)
+  const hasCustomFilters = !!(genre || tarihten || tarihe || min_puan || min_oy || platform || sirala || dil || min_sure || max_sure || keyword)
 
   try {
     let results: any[]  = []
@@ -49,6 +53,9 @@ export async function GET(req: NextRequest) {
       const data = await discoverMovies({
         page, genre, year: yil, minYear: tarihten, maxYear: tarihe,
         minRating, minVoteCount: min_oy, sortBy: effectiveSirala, provider: platform,
+        language: dil,
+        minRuntime: min_sure,
+        maxRuntime: max_sure && Number(max_sure) < 400 ? max_sure : undefined,
       }).catch(() => ({ results: [], total_pages: 1 }))
       results     = data.results
       total_pages = data.total_pages
