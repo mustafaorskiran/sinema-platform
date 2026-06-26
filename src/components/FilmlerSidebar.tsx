@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { IconChevronDown } from '@/components/icons'
+import { IconChevronDown, IconSlidersHorizontal, IconClose } from '@/components/icons'
 import { FILM_GENRES } from '@/lib/film-genres'
 import { WATCH_REGIONS } from '@/lib/watch-regions'
 
@@ -199,7 +199,7 @@ export default function FilmlerSidebar({
     return `/filmler${params.toString() ? `?${params}` : ''}`
   }
 
-  function ara() { router.push(buildUrl()) }
+  function ara() { setDrawerOpen(false); router.push(buildUrl()) }
 
   function reset() {
     setGenres([]); setPlatform(''); setSirala('popularity.desc')
@@ -212,9 +212,11 @@ export default function FilmlerSidebar({
     router.push(`/filmler${params.toString() ? `?${params}` : ''}`)
   }
 
-  const hasFilters = genres.length > 0 || platform || sirala !== 'popularity.desc' ||
+  const hasFilters = !!(genres.length > 0 || platform || sirala !== 'popularity.desc' ||
     dil || tarihten || tarihe || minPuan > 0 || minOy > 0 ||
-    minSure > 0 || maxSure < 400 || keyword.trim()
+    minSure > 0 || maxSure < 400 || keyword.trim())
+
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   const selectCls = 'w-full rounded-xl px-3 py-2.5 text-[12.5px] text-white focus:outline-none transition-all appearance-none cursor-pointer pr-8'
 
@@ -260,7 +262,55 @@ export default function FilmlerSidebar({
         }
       `}</style>
 
-      <aside className="w-[270px] shrink-0 sticky top-20 self-start pb-6 max-h-[calc(100vh-6rem)] overflow-y-auto scrollbar-thin">
+      {/* ── Mobil: backdrop ── */}
+      {drawerOpen && (
+        <div
+          className="lg:hidden fixed inset-0 z-40"
+          style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)' }}
+          onClick={() => setDrawerOpen(false)}
+        />
+      )}
+
+      {/* ── Mobil: floating Filtrele butonu ── */}
+      <button
+        className="lg:hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-5 py-2.5 rounded-full text-[13px] font-semibold text-white active:scale-95 transition-transform"
+        style={{
+          background: `linear-gradient(135deg, ${RED} 0%, #be123c 100%)`,
+          boxShadow: '0 4px 24px rgba(225,29,72,0.45)',
+          display: drawerOpen ? 'none' : undefined,
+        }}
+        onClick={() => setDrawerOpen(true)}
+      >
+        <IconSlidersHorizontal className="h-4 w-4" />
+        Filtrele
+        {hasFilters && <span className="w-1.5 h-1.5 rounded-full bg-[#F0C060]" />}
+      </button>
+
+      {/* ── Sidebar: mobilde drawer, desktop'ta sticky ── */}
+      <aside
+        className={[
+          'z-50 pb-6 overflow-y-auto scrollbar-thin',
+          drawerOpen
+            ? 'fixed top-0 right-0 h-full w-[290px] pt-3 px-3'
+            : 'hidden',
+          'lg:block lg:static lg:w-[270px] lg:shrink-0 lg:sticky lg:top-20 lg:self-start lg:max-h-[calc(100vh-6rem)]',
+        ].join(' ')}
+        style={drawerOpen ? { background: '#0b0f19' } : undefined}
+      >
+        {/* Mobil kapat butonu */}
+        {drawerOpen && (
+          <div className="lg:hidden flex justify-between items-center px-1 pb-2">
+            <span className="text-[11px] font-bold uppercase tracking-[0.15em]"
+                  style={{ color: 'rgba(212,168,67,0.5)' }}>Filtrele</span>
+            <button
+              onClick={() => setDrawerOpen(false)}
+              className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+              style={{ color: 'rgba(255,255,255,0.5)' }}
+            >
+              <IconClose className="h-5 w-5" />
+            </button>
+          </div>
+        )}
         <div
           className="rounded-2xl overflow-hidden"
           style={{
