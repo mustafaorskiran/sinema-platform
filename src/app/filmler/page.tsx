@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import InfiniteGrid from '@/components/InfiniteGrid'
-import FilmlerSidebar, { FILM_GENRES } from '@/components/FilmlerSidebar'
+import FilmlerSidebar from '@/components/FilmlerSidebar'
+import { FILM_GENRES } from '@/lib/film-genres'
 import { OZEL_KATEGORILER } from '@/lib/ozel-kategoriler'
 import { createClient } from '@/lib/supabase/server'
 import {
