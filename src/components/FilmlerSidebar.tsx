@@ -19,7 +19,7 @@ const SORT_OPTIONS = [
 ]
 
 const LANGUAGE_OPTIONS = [
-  { value: '',   label: 'Herhangi' },
+  { value: '',   label: 'Herhangi bir dil' },
   { value: 'tr', label: '🇹🇷 Türkçe' },
   { value: 'en', label: '🇺🇸 İngilizce' },
   { value: 'fr', label: '🇫🇷 Fransızca' },
@@ -56,39 +56,53 @@ interface Props {
   initialKeyword?: string
 }
 
-function SidebarSection({
-  title, children, defaultOpen = true,
-}: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
-  const [open, setOpen] = useState(defaultOpen)
+function Divider() {
+  return <div className="h-px bg-white/[0.05]" />
+}
+
+function SectionHeader({
+  label, open, onToggle,
+}: { label: string; open: boolean; onToggle: () => void }) {
   return (
-    <div className="rounded-xl border border-[--border] bg-[--bg-card] overflow-hidden">
-      <button
-        onClick={() => setOpen(o => !o)}
-        className="flex items-center justify-between w-full px-4 py-3 hover:bg-white/[.03] transition-colors"
-      >
-        <span className="text-[11px] font-bold uppercase tracking-widest text-[--text-secondary]">
-          {title}
-        </span>
-        <IconChevronDown
-          className={`h-3.5 w-3.5 text-[--text-secondary] transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-        />
-      </button>
-      {open && (
-        <div className="border-t border-[--border] px-4 pb-4 pt-3">
-          {children}
-        </div>
-      )}
-    </div>
+    <button
+      onClick={onToggle}
+      className="flex items-center justify-between w-full px-5 py-3.5 hover:bg-white/[0.02] transition-colors group"
+    >
+      <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-white/35 group-hover:text-white/50 transition-colors">
+        {label}
+      </span>
+      <IconChevronDown
+        className={`h-3 w-3 text-white/25 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+      />
+    </button>
   )
 }
 
-function SubLabel({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+function FilterLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className={`text-[11px] font-bold text-white mb-2 ${className}`}>{children}</p>
+    <p className="text-[11px] font-semibold text-white/60 mb-2.5 tracking-wide">{children}</p>
   )
 }
 
-const inputCls = 'w-full bg-[--bg-secondary] border border-[--border] rounded-lg px-3 py-2 text-[13px] text-white focus:outline-none focus:border-[--accent] transition-colors'
+function SliderTrack({
+  min, max, step, value, onChange, pct,
+}: {
+  min: number; max: number; step: number
+  value: number; onChange: (v: number) => void; pct: number
+}) {
+  return (
+    <input
+      type="range"
+      min={min} max={max} step={step}
+      value={value}
+      onChange={e => onChange(Number(e.target.value))}
+      className="sidebar-range w-full cursor-pointer"
+      style={{
+        background: `linear-gradient(to right, #E11D48 0%, #E11D48 ${pct}%, rgba(255,255,255,0.08) ${pct}%, rgba(255,255,255,0.08) 100%)`,
+      }}
+    />
+  )
+}
 
 export default function FilmlerSidebar({
   providers,
@@ -120,6 +134,10 @@ export default function FilmlerSidebar({
   const [minSure,  setMinSure]  = useState(Number(initialMinSure) || 0)
   const [maxSure,  setMaxSure]  = useState(Number(initialMaxSure) || 400)
   const [keyword,  setKeyword]  = useState(initialKeyword)
+
+  const [providerOpen, setProviderOpen] = useState(true)
+  const [dilOpen,      setDilOpen]      = useState(false)
+  const [filterOpen,   setFilterOpen]   = useState(true)
 
   function toggleGenre(id: string) {
     setGenres(prev =>
@@ -161,228 +179,314 @@ export default function FilmlerSidebar({
     dil || tarihten || tarihe || minPuan > 0 || minOy > 0 ||
     minSure > 0 || maxSure < 400 || keyword.trim()
 
+  const selectCls = 'w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-[13px] text-white focus:outline-none focus:border-[--accent]/50 focus:bg-white/[0.06] transition-all appearance-none cursor-pointer'
+  const inputCls  = 'w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-[12px] text-white placeholder:text-white/25 focus:outline-none focus:border-[--accent]/50 focus:bg-white/[0.06] transition-all'
+
   return (
-    <aside className="w-[270px] shrink-0 sticky top-20 self-start space-y-2 pb-6 max-h-[calc(100vh-6rem)] overflow-y-auto scrollbar-thin">
+    <>
+      {/* Custom range slider styles */}
+      <style>{`
+        .sidebar-range {
+          -webkit-appearance: none;
+          appearance: none;
+          height: 3px;
+          border-radius: 9999px;
+          outline: none;
+        }
+        .sidebar-range::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 14px;
+          height: 14px;
+          border-radius: 50%;
+          background: #ffffff;
+          border: 2px solid #E11D48;
+          box-shadow: 0 0 0 3px rgba(225,29,72,0.18), 0 1px 4px rgba(0,0,0,0.4);
+          cursor: pointer;
+          transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .sidebar-range::-webkit-slider-thumb:hover {
+          transform: scale(1.2);
+          box-shadow: 0 0 0 4px rgba(225,29,72,0.25), 0 1px 6px rgba(0,0,0,0.5);
+        }
+        .sidebar-range::-moz-range-thumb {
+          width: 14px;
+          height: 14px;
+          border-radius: 50%;
+          background: #ffffff;
+          border: 2px solid #E11D48;
+          box-shadow: 0 0 0 3px rgba(225,29,72,0.18);
+          cursor: pointer;
+        }
+      `}</style>
 
-      {/* ── Sırala ── */}
-      <SidebarSection title="Sırala">
-        <select value={sirala} onChange={e => setSirala(e.target.value)} className={inputCls}>
-          {SORT_OPTIONS.map(o => (
-            <option key={o.value} value={o.value}>{o.label}</option>
-          ))}
-        </select>
-        <button
-          onClick={ara}
-          className="mt-3 w-full py-2 rounded-lg bg-[--accent] text-white text-[13px] font-semibold hover:opacity-90 transition-opacity"
-        >
-          Ara
-        </button>
-      </SidebarSection>
+      <aside className="w-[270px] shrink-0 sticky top-20 self-start pb-6 max-h-[calc(100vh-6rem)] overflow-y-auto scrollbar-thin">
+        <div className="rounded-2xl border border-white/[0.07] bg-[--bg-card] shadow-2xl shadow-black/40 overflow-hidden">
 
-      {/* ── İzleme Servisleri ── */}
-      {providers.length > 0 && (
-        <SidebarSection title="İzleme Servisleri">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-base leading-none">🇹🇷</span>
-            <span className="text-[12px] text-white font-medium">Türkiye</span>
-            {platform && (
-              <button
-                onClick={() => setPlatform('')}
-                className="ml-auto text-[10px] text-[--accent] hover:underline"
+          {/* ── Sırala ── */}
+          <div className="px-5 pt-5 pb-4">
+            <p className="text-[10px] font-bold uppercase tracking-[0.13em] text-white/30 mb-3">Sırala</p>
+            <div className="relative">
+              <select
+                value={sirala}
+                onChange={e => setSirala(e.target.value)}
+                className={selectCls}
               >
-                Temizle
-              </button>
-            )}
-          </div>
-          <div className="flex flex-wrap gap-1.5">
-            {providers.map(p => {
-              const active = platform === String(p.provider_id)
-              return (
-                <button
-                  key={p.provider_id}
-                  onClick={() => setPlatform(active ? '' : String(p.provider_id))}
-                  title={p.provider_name}
-                  className={`w-10 h-10 rounded-lg overflow-hidden transition-all ${
-                    active
-                      ? 'ring-2 ring-[--accent] ring-offset-1 ring-offset-[--bg-card] opacity-100'
-                      : 'opacity-60 hover:opacity-100'
-                  }`}
-                >
-                  <img
-                    src={`https://image.tmdb.org/t/p/original${p.logo_path}`}
-                    alt={p.provider_name}
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              )
-            })}
-          </div>
-        </SidebarSection>
-      )}
-
-      {/* ── Dil ── */}
-      <SidebarSection title="Dil">
-        <select value={dil} onChange={e => setDil(e.target.value)} className={inputCls}>
-          {LANGUAGE_OPTIONS.map(o => (
-            <option key={o.value} value={o.value}>{o.label}</option>
-          ))}
-        </select>
-      </SidebarSection>
-
-      {/* ── Filtreleme Düğmeleri ── */}
-      <SidebarSection title="Filtreleme Düğmeleri" defaultOpen>
-        <div className="space-y-4">
-
-          {/* Tarih Aralığı */}
-          <div>
-            <SubLabel>İlk Gösterim Tarihi</SubLabel>
-            <div className="flex gap-2">
-              <div className="flex-1">
-                <p className="text-[10px] text-[--text-secondary] mb-1">Başlangıç</p>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  placeholder="2000"
-                  value={tarihten}
-                  onChange={e => setTarihten(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                  className="w-full bg-[--bg-secondary] border border-[--border] rounded px-2 py-1.5 text-[12px] text-white placeholder:text-[--text-secondary] focus:outline-none focus:border-[--accent]"
-                />
-              </div>
-              <div className="flex-1">
-                <p className="text-[10px] text-[--text-secondary] mb-1">Bitiş</p>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  placeholder={String(new Date().getFullYear())}
-                  value={tarihe}
-                  onChange={e => setTarihe(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                  className="w-full bg-[--bg-secondary] border border-[--border] rounded px-2 py-1.5 text-[12px] text-white placeholder:text-[--text-secondary] focus:outline-none focus:border-[--accent]"
-                />
-              </div>
+                {SORT_OPTIONS.map(o => (
+                  <option key={o.value} value={o.value} className="bg-[#1a2035] text-white">
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+              <IconChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-white/30" />
             </div>
-          </div>
-
-          {/* Türler — çoklu seçim */}
-          <div>
-            <SubLabel>Türler</SubLabel>
-            <div className="flex flex-wrap gap-1.5">
-              {FILM_GENRES.map(g => {
-                const active = genres.includes(String(g.id))
-                return (
-                  <button
-                    key={g.id}
-                    onClick={() => toggleGenre(String(g.id))}
-                    className={`text-[11px] px-2.5 py-1 rounded-full border transition-colors ${
-                      active
-                        ? 'bg-[--accent]/15 border-[--accent] text-[--accent] font-semibold'
-                        : 'border-[--border] text-[--text-secondary] hover:border-[--accent]/40 hover:text-white'
-                    }`}
-                  >
-                    {g.name}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* Kullanıcı Puanı */}
-          <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <SubLabel className="mb-0">Kullanıcı Puanı</SubLabel>
-              <span className="text-[11px] font-bold text-[--accent] tabular-nums">
-                {minPuan.toFixed(1)}
-              </span>
-            </div>
-            <input
-              type="range" min="0" max="10" step="0.5"
-              value={minPuan}
-              onChange={e => setMinPuan(Number(e.target.value))}
-              className="w-full accent-[--accent] cursor-pointer"
-            />
-            <div className="flex justify-between text-[10px] text-[--text-secondary] mt-0.5">
-              <span>0</span><span>5</span><span>10</span>
-            </div>
-          </div>
-
-          {/* En Az Kullanıcı Oyu */}
-          <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <SubLabel className="mb-0">En Az Kullanıcı Oyu</SubLabel>
-              <span className="text-[11px] font-bold text-[--accent] tabular-nums">
-                {minOy.toLocaleString('tr-TR')}
-              </span>
-            </div>
-            <input
-              type="range" min="0" max="500" step="50"
-              value={minOy}
-              onChange={e => setMinOy(Number(e.target.value))}
-              className="w-full accent-[--accent] cursor-pointer"
-            />
-            <div className="flex justify-between text-[10px] text-[--text-secondary] mt-0.5">
-              <span>0</span><span>250</span><span>500+</span>
-            </div>
-          </div>
-
-          {/* Süre */}
-          <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <SubLabel className="mb-0">Süre (Dakika)</SubLabel>
-              <span className="text-[11px] font-bold text-[--accent] tabular-nums">
-                {minSure}–{maxSure >= 400 ? '400+' : maxSure}
-              </span>
-            </div>
-            <div className="space-y-1">
-              <input
-                type="range" min="0" max="400" step="10"
-                value={minSure}
-                onChange={e => setMinSure(Math.min(Number(e.target.value), maxSure - 10))}
-                className="w-full accent-[--accent] cursor-pointer"
-              />
-              <input
-                type="range" min="0" max="400" step="10"
-                value={maxSure}
-                onChange={e => setMaxSure(Math.max(Number(e.target.value), minSure + 10))}
-                className="w-full accent-[--accent] cursor-pointer"
-              />
-            </div>
-            <div className="flex justify-between text-[10px] text-[--text-secondary] mt-0.5">
-              <span>0</span><span>200</span><span>400+</span>
-            </div>
-          </div>
-
-          {/* Anahtar Sözcükler */}
-          <div>
-            <SubLabel>Anahtar Sözcükler</SubLabel>
-            <input
-              type="text"
-              placeholder="Birden fazla anahtar sözcük..."
-              value={keyword}
-              onChange={e => setKeyword(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && ara()}
-              className="w-full bg-[--bg-secondary] border border-[--border] rounded-lg px-3 py-1.5 text-[12px] text-white placeholder:text-[--text-secondary] focus:outline-none focus:border-[--accent]"
-            />
-          </div>
-
-          {/* Buttons */}
-          <div className="pt-1 space-y-2">
             <button
               onClick={ara}
-              className="w-full py-2 rounded-lg bg-[--accent] text-white text-[13px] font-semibold hover:opacity-90 transition-opacity"
+              className="mt-3 w-full py-2.5 rounded-xl font-semibold text-[13px] text-white transition-all hover:opacity-90 active:scale-[0.98]"
+              style={{
+                background: 'linear-gradient(135deg, #E11D48 0%, #be123c 100%)',
+                boxShadow: '0 4px 14px rgba(225,29,72,0.30)',
+              }}
             >
               Ara
             </button>
-            {hasFilters && (
-              <button
-                onClick={reset}
-                className="w-full py-1.5 rounded-lg border border-[--border] text-[--text-secondary] text-[12px] hover:text-white hover:border-[--accent]/40 transition-colors"
-              >
-                Filtreleri Temizle
-              </button>
-            )}
           </div>
 
+          <Divider />
+
+          {/* ── İzleme Servisleri ── */}
+          {providers.length > 0 && (
+            <>
+              <SectionHeader label="İzleme Servisleri" open={providerOpen} onToggle={() => setProviderOpen(o => !o)} />
+              {providerOpen && (
+                <div className="px-5 pb-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-sm leading-none">🇹🇷</span>
+                    <span className="text-[11px] text-white/50 font-medium">Türkiye</span>
+                    {platform && (
+                      <button
+                        onClick={() => setPlatform('')}
+                        className="ml-auto text-[10px] text-[--accent]/70 hover:text-[--accent] transition-colors"
+                      >
+                        Temizle
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {providers.map(p => {
+                      const active = platform === String(p.provider_id)
+                      return (
+                        <button
+                          key={p.provider_id}
+                          onClick={() => setPlatform(active ? '' : String(p.provider_id))}
+                          title={p.provider_name}
+                          className={`w-9 h-9 rounded-lg overflow-hidden transition-all duration-200 ${
+                            active
+                              ? 'ring-2 ring-[--accent] ring-offset-2 ring-offset-[--bg-card] opacity-100 scale-105'
+                              : 'opacity-45 hover:opacity-90 hover:scale-105'
+                          }`}
+                        >
+                          <img
+                            src={`https://image.tmdb.org/t/p/original${p.logo_path}`}
+                            alt={p.provider_name}
+                            className="w-full h-full object-cover"
+                          />
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+              <Divider />
+            </>
+          )}
+
+          {/* ── Dil ── */}
+          <SectionHeader label="Dil" open={dilOpen} onToggle={() => setDilOpen(o => !o)} />
+          {dilOpen && (
+            <>
+              <div className="px-5 pb-4">
+                <div className="relative">
+                  <select
+                    value={dil}
+                    onChange={e => setDil(e.target.value)}
+                    className={selectCls}
+                  >
+                    {LANGUAGE_OPTIONS.map(o => (
+                      <option key={o.value} value={o.value} className="bg-[#1a2035] text-white">
+                        {o.label}
+                      </option>
+                    ))}
+                  </select>
+                  <IconChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-white/30" />
+                </div>
+              </div>
+              <Divider />
+            </>
+          )}
+
+          {/* ── Filtreleme ── */}
+          <SectionHeader label="Filtreleme" open={filterOpen} onToggle={() => setFilterOpen(o => !o)} />
+          {filterOpen && (
+            <div className="px-5 pb-5 space-y-5">
+
+              {/* Tarih */}
+              <div>
+                <FilterLabel>İlk Gösterim Tarihi</FilterLabel>
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <p className="text-[10px] text-white/25 mb-1.5">Başlangıç</p>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="2000"
+                      value={tarihten}
+                      onChange={e => setTarihten(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                      className={inputCls}
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-[10px] text-white/25 mb-1.5">Bitiş</p>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      placeholder={String(new Date().getFullYear())}
+                      value={tarihe}
+                      onChange={e => setTarihe(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                      className={inputCls}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Türler */}
+              <div>
+                <FilterLabel>Türler</FilterLabel>
+                <div className="flex flex-wrap gap-1.5">
+                  {FILM_GENRES.map(g => {
+                    const active = genres.includes(String(g.id))
+                    return (
+                      <button
+                        key={g.id}
+                        onClick={() => toggleGenre(String(g.id))}
+                        className={`text-[11px] px-2.5 py-1 rounded-full border transition-all duration-150 ${
+                          active
+                            ? 'bg-[--gold]/10 border-[--gold]/60 text-[--gold] font-semibold shadow-sm shadow-[--gold]/10'
+                            : 'border-white/[0.08] text-white/40 hover:border-white/20 hover:text-white/70 hover:bg-white/[0.04]'
+                        }`}
+                      >
+                        {g.name}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Kullanıcı Puanı */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <FilterLabel>Kullanıcı Puanı</FilterLabel>
+                  <span className="text-[12px] font-bold tabular-nums" style={{ color: '#D4A843' }}>
+                    {minPuan.toFixed(1)}
+                  </span>
+                </div>
+                <SliderTrack
+                  min={0} max={10} step={0.5}
+                  value={minPuan}
+                  onChange={setMinPuan}
+                  pct={(minPuan / 10) * 100}
+                />
+                <div className="flex justify-between text-[10px] text-white/20 mt-1.5">
+                  <span>0</span><span>5</span><span>10</span>
+                </div>
+              </div>
+
+              {/* En Az Kullanıcı Oyu */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <FilterLabel>En Az Kullanıcı Oyu</FilterLabel>
+                  <span className="text-[12px] font-bold tabular-nums" style={{ color: '#D4A843' }}>
+                    {minOy.toLocaleString('tr-TR')}
+                  </span>
+                </div>
+                <SliderTrack
+                  min={0} max={500} step={50}
+                  value={minOy}
+                  onChange={setMinOy}
+                  pct={(minOy / 500) * 100}
+                />
+                <div className="flex justify-between text-[10px] text-white/20 mt-1.5">
+                  <span>0</span><span>250</span><span>500+</span>
+                </div>
+              </div>
+
+              {/* Süre */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <FilterLabel>Süre</FilterLabel>
+                  <span className="text-[12px] font-bold tabular-nums" style={{ color: '#D4A843' }}>
+                    {minSure > 0 ? `${minSure}–` : ''}{maxSure >= 400 ? '400+ dk' : `${maxSure} dk`}
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  <SliderTrack
+                    min={0} max={400} step={10}
+                    value={minSure}
+                    onChange={v => setMinSure(Math.min(v, maxSure - 10))}
+                    pct={(minSure / 400) * 100}
+                  />
+                  <SliderTrack
+                    min={0} max={400} step={10}
+                    value={maxSure}
+                    onChange={v => setMaxSure(Math.max(v, minSure + 10))}
+                    pct={(maxSure / 400) * 100}
+                  />
+                </div>
+                <div className="flex justify-between text-[10px] text-white/20 mt-1.5">
+                  <span>0</span><span>200</span><span>400+</span>
+                </div>
+              </div>
+
+              {/* Anahtar Sözcükler */}
+              <div>
+                <FilterLabel>Anahtar Sözcükler</FilterLabel>
+                <input
+                  type="text"
+                  placeholder="Örn: uzay, dedektif..."
+                  value={keyword}
+                  onChange={e => setKeyword(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && ara()}
+                  className={inputCls}
+                />
+              </div>
+
+              {/* Buttons */}
+              <div className="space-y-2 pt-1">
+                <button
+                  onClick={ara}
+                  className="w-full py-2.5 rounded-xl font-semibold text-[13px] text-white transition-all hover:opacity-90 active:scale-[0.98]"
+                  style={{
+                    background: 'linear-gradient(135deg, #E11D48 0%, #be123c 100%)',
+                    boxShadow: '0 4px 14px rgba(225,29,72,0.25)',
+                  }}
+                >
+                  Ara
+                </button>
+                {hasFilters && (
+                  <button
+                    onClick={reset}
+                    className="w-full py-2 rounded-xl border border-white/[0.07] text-white/35 text-[12px] hover:text-white/60 hover:border-white/15 transition-all"
+                  >
+                    Filtreleri Temizle
+                  </button>
+                )}
+              </div>
+
+            </div>
+          )}
+
         </div>
-      </SidebarSection>
-    </aside>
+      </aside>
+    </>
   )
 }
