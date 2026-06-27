@@ -110,7 +110,7 @@ export default function ForumThreadClient({ thread, initialPosts, currentUser, i
   return (
     <div>
       {/* Konu başlığı */}
-      <div className="rounded-2xl bg-[--bg-card] border border-[--border] p-6 mb-4">
+      <div className="rounded-2xl p-6 mb-4" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.95), rgba(14,20,32,0.98))', border: '1px solid rgba(212,168,67,0.1)' }}>
         <div className="flex items-start justify-between gap-4 mb-4">
           <h1 className="text-xl font-bold text-white leading-snug">
             {thread.pinned && <span className="mr-2">📌</span>}
@@ -150,7 +150,8 @@ export default function ForumThreadClient({ thread, initialPosts, currentUser, i
           </p>
           <div className="space-y-3">
             {posts.map((post, i) => (
-              <div key={post.id} className="rounded-xl bg-[--bg-card] border border-[--border] p-4">
+              <div key={post.id} className="rounded-xl p-4 transition-all duration-200"
+                style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2.5">
                     <Link href={`/profil/${post.profiles?.username}`}>
