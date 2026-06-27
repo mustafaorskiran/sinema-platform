@@ -65,7 +65,14 @@ export default async function FilmGecesiPage() {
             const date = party.scheduled_at ? new Date(party.scheduled_at) : null
 
             return (
-              <div key={party.id} className="rounded-2xl bg-[--bg-card] border border-[--border] p-5 hover:border-[--accent]/30 transition-colors">
+              <div key={party.id} className="rounded-2xl p-5 transition-all duration-200 hover:-translate-y-0.5"
+                style={{
+                  background: isJoined
+                    ? 'linear-gradient(160deg, rgba(20,40,30,0.9), rgba(14,20,32,0.95))'
+                    : 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))',
+                  border: `1px solid ${isJoined ? 'rgba(34,197,94,0.15)' : 'rgba(255,255,255,0.06)'}`,
+                  boxShadow: '0 2px 12px rgba(0,0,0,0.2)',
+                }}>
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     <Link href={`/film-gecesi/${party.id}`}>
