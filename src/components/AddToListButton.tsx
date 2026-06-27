@@ -64,7 +64,8 @@ export default function AddToListButton({ mediaId, mediaType, userId }: Props) {
     <div ref={ref} className="relative">
       <button
         onClick={openDropdown}
-        className="flex items-center gap-2 px-4 py-2 rounded-full border border-[--border] bg-[--bg-card] text-[--text-secondary] hover:text-white hover:border-white/30 text-sm font-medium transition-colors"
+        className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all hover:scale-105"
+        style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)' }}
       >
         <IconListPlus className="h-4 w-4" />
         Listeye Ekle
@@ -93,7 +94,7 @@ export default function AddToListButton({ mediaId, mediaType, userId }: Props) {
                     key={list.id}
                     onClick={() => toggle(list)}
                     disabled={toggling === list.id}
-                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[--bg-secondary] transition-colors text-left"
+                    className="w-full flex items-center gap-3 px-4 py-3 transition-colors text-left hover:bg-white/5"
                   >
                     <div className={`h-5 w-5 rounded border flex items-center justify-center shrink-0 transition-colors ${list.item_exists ? 'bg-[--accent] border-[--accent]' : 'border-[--border]'}`}>
                       {toggling === list.id
@@ -107,9 +108,9 @@ export default function AddToListButton({ mediaId, mediaType, userId }: Props) {
                   </button>
                 ))}
               </div>
-              <div className="border-t border-[--border] p-2">
+              <div className="p-2" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                 <Link href="/liste/yeni" onClick={() => setOpen(false)}
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[--bg-secondary] text-sm text-[--text-secondary] hover:text-white transition-colors">
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/5 text-sm transition-colors" style={{ color: 'rgba(255,255,255,0.5)' }}>
                   <IconPlus className="h-4 w-4" /> Yeni Liste Oluştur
                 </Link>
               </div>
