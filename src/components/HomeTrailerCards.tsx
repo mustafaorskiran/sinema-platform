@@ -15,7 +15,8 @@ export default function HomeTrailerCards({ trailers }: { trailers: TrailerItem[]
         const thumb = `https://img.youtube.com/vi/${t.trailerKey}/mqdefault.jpg`
 
         return (
-          <div key={cardId} className="rounded-xl overflow-hidden bg-[--bg-card] border border-[--border] group">
+          <div key={cardId} className="rounded-xl overflow-hidden group transition-all duration-200 hover:-translate-y-0.5"
+            style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <div className="relative aspect-video bg-black">
               {playing ? (
                 <>
