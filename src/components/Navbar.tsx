@@ -170,12 +170,15 @@ export default function Navbar({ user }: NavbarProps) {
                 href="/filmler"
                 columns={2}
                 items={[
-                  { label: 'Tüm Filmler',      href: '/filmler',                          description: 'Filtrele ve keşfet' },
-                  { label: 'En İyi Puanlı',    href: '/filmler?sirala=vote_average.desc', description: 'Puana göre sıralı' },
-                  { label: 'Yeni Çıkanlar',    href: '/filmler?sirala=release_date.desc', description: 'En son yayınlananlar' },
-                  { label: 'Yerli Filmler',    href: '/filmler?ozel=yerli-yapimlar',      description: 'Türk yapımı filmler' },
-                  { label: 'Oscar Kazananlar', href: '/filmler?ozel=oscar-kazananlar',    description: 'Ödüllü yapımlar' },
-                  { label: 'Kült Filmler',     href: '/filmler?ozel=kult-filmler',        description: 'Efsaneleşmiş filmler' },
+                  { label: 'Tüm Filmler',             href: '/filmler',                              description: 'Filtrele ve keşfet' },
+                  { label: 'En İyi Puanlı',           href: '/filmler?sirala=vote_average.desc',     description: 'Puana göre sıralı' },
+                  { label: 'Yeni Çıkanlar',           href: '/filmler?sirala=release_date.desc',     description: 'En son yayınlananlar' },
+                  { label: 'Yerli Filmler',           href: '/filmler?ozel=yerli-yapimlar',          description: 'Türk yapımı filmler' },
+                  { label: 'Oscar Kazananlar',        href: '/filmler?ozel=oscar-kazananlar',        description: 'Ödüllü yapımlar' },
+                  { label: 'Kült Filmler',            href: '/filmler?ozel=kult-filmler',            description: 'Efsaneleşmiş filmler' },
+                  { label: 'Gişe Sıralaması',         href: '/gise',                                 description: 'Türkiye ve dünya' },
+                  { label: 'Platforma Yeni Gelenler', href: '/yeni-gelenler',                        description: 'Netflix, Disney+ ve diğerleri' },
+                  { label: 'Sinema Haberleri',        href: '/haberler',                             description: 'Beyazperde, HR, Variety' },
                 ]}
               />
               <NavDropdown
@@ -360,6 +363,9 @@ export default function Navbar({ user }: NavbarProps) {
             <Link href="/listeler" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.lists')}</Link>
             <Link href="/fragmanlar" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.trailers')}</Link>
             <Link href="/yayin-takvimi" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Yayın Takvimi</Link>
+            <Link href="/gise" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Gişe Sıralaması</Link>
+            <Link href="/yeni-gelenler" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Platforma Yeni Gelenler</Link>
+            <Link href="/haberler" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Sinema Haberleri</Link>
             <Link href="/karsilastir" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Karşılaştır</Link>
             <Link href="/forum" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Forum</Link>
             <Link href="/sinema" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🌍 Dünya Sineması</Link>

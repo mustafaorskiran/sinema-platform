@@ -20,12 +20,16 @@ Premium/luxury görünüm. Koyu lacivert arka plan (`--bg-primary: #0B0F19`), ro
 1. Önce ilgili dosyaları oku, sonra uygula
 2. Mevcut sistemi bozma — yeni özellik eklerken mevcut API ve component arayüzlerini koru
 3. TypeScript hatası bırakma
-4. Her görev sonunda çalıştır ve sonucu raporla:
+4. Her görev sonunda sırayla çalıştır:
    ```
-   npx tsc --noEmit
    npm run build
+   git add .
+   git commit -m "type: açıklama"
+   git push origin main
+   cd /c/sinema-dev && npx vercel --prod --yes
    ```
-5. Gereksiz dosya tarama yapma — doğrudan ilgili dosyaya git
+5. Deploy her görevin zorunlu son adımıdır — deploy yapılmadan görev tamamlanmış sayılmaz
+6. Gereksiz dosya tarama yapma — doğrudan ilgili dosyaya git
 
 ## Commit Kuralları
 

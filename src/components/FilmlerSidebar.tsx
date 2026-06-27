@@ -17,6 +17,7 @@ const SORT_OPTIONS = [
   { value: 'primary_release_date.asc',  label: 'Çıkış Tarihi (Eski → Yeni)' },
   { value: 'title.asc',                 label: 'Başlık (A → Z)'             },
   { value: 'revenue.desc',              label: 'Gişe Hasılatı'              },
+  { value: 'en-cok-puan',              label: '⭐ Sinezon\'da En Çok Puanlanan' },
 ]
 
 const LANGUAGE_OPTIONS = [

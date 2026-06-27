@@ -19,10 +19,10 @@ export const metadata: Metadata = {
 }
 
 const KATEGORI_TABS = [
-  { key: 'populer',  label: 'Popüler'             },
-  { key: 'vizyonda', label: 'Şu Anda Vizyonda'     },
-  { key: 'yakinda',  label: 'Yakında'              },
-  { key: 'en-iyi',   label: 'En Fazla Oy Alan'     },
+  { key: 'populer',        label: 'Popüler'             },
+  { key: 'vizyonda',       label: 'Şu Anda Vizyonda'    },
+  { key: 'yakinda',        label: 'Yakında'             },
+  { key: 'en-iyi',         label: 'En Fazla Oy Alan'    },
 ]
 
 const KATEGORI_TITLES: Record<string, string> = {
@@ -56,7 +56,8 @@ export default async function FilmlerPage({ searchParams }: Props) {
   const page     = Math.max(1, Number(sayfa) || 1)
   const minRating = min_puan || puan  // new param takes priority
 
-  const hasCustomFilters = !!(genre || tarihten || tarihe || min_puan || min_oy || platform || sirala || dil || min_sure || max_sure || keyword)
+  const isEnCokPuan = sirala === 'en-cok-puan'
+  const hasCustomFilters = !isEnCokPuan && !!(genre || tarihten || tarihe || min_puan || min_oy || platform || sirala || dil || min_sure || max_sure || keyword)
 
   const supabase = await createClient()
 
@@ -70,7 +71,27 @@ export default async function FilmlerPage({ searchParams }: Props) {
   let totalCount = 0
 
   // Special categories bypass normal flow
-  if (ozelKat?.slug === 'oscar-kazananlar') {
+  if (isEnCokPuan) {
+    // Sinezon kullanıcı yorumlarına göre en çok puanlanan filmler
+    const { data: topMedia } = await supabase.rpc('get_top_rated_media', {
+      p_media_type: 'film',
+      p_limit: PAGE_SIZE,
+      p_offset: (page - 1) * PAGE_SIZE,
+    })
+    const { count: totalReviewed } = await supabase
+      .from('reviews')
+      .select('media_id', { count: 'exact', head: true })
+      .eq('media_type', 'film')
+      .gt('rating', 0)
+    const ids = (topMedia as any[] ?? []).map((r: any) => Number(r.media_id))
+    if (ids.length > 0) {
+      results = await getMoviesByIds(ids).catch(() => [])
+      // Preserve Supabase ordering
+      const orderMap = new Map(ids.map((id, i) => [id, i]))
+      results.sort((a, b) => (orderMap.get(a.id) ?? 999) - (orderMap.get(b.id) ?? 999))
+    }
+    total_pages = Math.max(1, Math.ceil((totalReviewed ?? 0) / PAGE_SIZE))
+  } else if (ozelKat?.slug === 'oscar-kazananlar') {
     const allIds = OSCAR_WINNER_IDS
     total_pages = Math.ceil(allIds.length / PAGE_SIZE)
     results = await getMoviesByIds(allIds.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE))
@@ -204,8 +225,10 @@ export default async function FilmlerPage({ searchParams }: Props) {
       ? 'Seçili Türler'
       : FILM_GENRES.find(g => String(g.id) === genre)?.name ?? null)
     : null
-  const pageTitle = ozelKat?.label
-    ?? (activeGenreName ? `${activeGenreName} Filmleri` : KATEGORI_TITLES[kategori] ?? 'Popüler Filmler')
+  const pageTitle = isEnCokPuan
+    ? 'Sinezon\'da En Çok Puanlanan Filmler'
+    : ozelKat?.label
+      ?? (activeGenreName ? `${activeGenreName} Filmleri` : KATEGORI_TITLES[kategori] ?? 'Popüler Filmler')
 
   // Build tab href (preserves genre/platform/filters, changes kategori)
   function tabHref(kat: string) {
