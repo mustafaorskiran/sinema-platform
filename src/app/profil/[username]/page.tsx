@@ -12,6 +12,7 @@ import PinReviewButton from '@/components/PinReviewButton'
 import WatchGoalWidget from '@/components/WatchGoalWidget'
 import YearlyChallenge from '@/components/YearlyChallenge'
 import InviteSection from '@/components/InviteSection'
+import EmbedWidgetCopy from '@/components/EmbedWidgetCopy'
 import type { Metadata } from 'next'
 import type { Review } from '@/lib/types'
 
@@ -437,6 +438,11 @@ export default async function ProfilPage({ params }: Props) {
 
       {/* Arkadaşlarını Davet Et (sadece kendi profilinde) */}
       {isOwnProfile && <InviteSection />}
+      {isOwnProfile && (
+        <div className="mb-8">
+          <EmbedWidgetCopy username={profile.username} />
+        </div>
+      )}
 
       {/* İstatistikler */}
       <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 mb-10">
