@@ -51,7 +51,8 @@ export default function YeniListePage() {
                 onChange={e => setTitle(e.target.value)}
                 required maxLength={100}
                 placeholder="En iyi 2024 filmleri"
-                className="w-full rounded-lg bg-[--bg-secondary] border border-[--border] px-4 py-3 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
+                className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/25 outline-none transition-colors"
+                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
               />
               <p className="mt-1 text-xs text-[--text-secondary] text-right">{title.length}/100</p>
             </div>
@@ -63,7 +64,8 @@ export default function YeniListePage() {
                 onChange={e => setDescription(e.target.value)}
                 maxLength={500} rows={3}
                 placeholder="Bu liste hakkında kısa bir açıklama..."
-                className="w-full rounded-lg bg-[--bg-secondary] border border-[--border] px-4 py-3 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors resize-none"
+                className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/25 outline-none transition-colors resize-none"
+                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
               />
               <p className="mt-1 text-xs text-[--text-secondary] text-right">{description.length}/500</p>
             </div>

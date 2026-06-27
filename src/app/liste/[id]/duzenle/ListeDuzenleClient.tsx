@@ -71,13 +71,15 @@ export default function ListeDuzenleClient({ list, items: initial }: { list: Lis
         <div>
           <label className="block text-sm font-medium text-[--text-secondary] mb-2">Başlık *</label>
           <input value={title} onChange={e => setTitle(e.target.value)} maxLength={100}
-            className="w-full rounded-lg bg-[--bg-secondary] border border-[--border] px-4 py-3 text-sm text-white outline-none focus:border-[--accent] transition-colors" />
+            className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/25 outline-none transition-colors"
+            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }} />
           <p className="mt-1 text-xs text-[--text-secondary] text-right">{title.length}/100</p>
         </div>
         <div>
           <label className="block text-sm font-medium text-[--text-secondary] mb-2">Açıklama</label>
           <textarea value={description} onChange={e => setDescription(e.target.value)} maxLength={500} rows={3}
-            className="w-full rounded-lg bg-[--bg-secondary] border border-[--border] px-4 py-3 text-sm text-white outline-none focus:border-[--accent] transition-colors resize-none" />
+            className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/25 outline-none transition-colors resize-none"
+            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }} />
           <p className="mt-1 text-xs text-[--text-secondary] text-right">{description.length}/500</p>
         </div>
         <div>
@@ -95,7 +97,8 @@ export default function ListeDuzenleClient({ list, items: initial }: { list: Lis
         </div>
         {error && <p className="text-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-lg px-4 py-3">{error}</p>}
         <button onClick={saveInfo} disabled={saving}
-          className="w-full py-3 rounded-lg bg-[--accent] hover:bg-[--accent-hover] text-white font-semibold text-sm transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+          className="w-full py-3 rounded-lg text-white font-semibold text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2 hover:scale-[1.02]"
+          style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', boxShadow: '0 2px 8px rgba(225,29,72,0.3)' }}>
           {saving && <IconLoader className="h-4 w-4 animate-spin" />}
           {saving ? 'Kaydediliyor...' : 'Kaydet'}
         </button>
@@ -127,7 +130,8 @@ export default function ListeDuzenleClient({ list, items: initial }: { list: Lis
             value={coverUrl}
             onChange={e => setCoverUrl(e.target.value)}
             placeholder="https://image.tmdb.org/t/p/w780/..."
-            className="w-full rounded-lg bg-[--bg-secondary] border border-[--border] px-3 py-2.5 text-sm text-white outline-none focus:border-[--accent] transition-colors"
+            className="w-full rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-white/25 outline-none transition-colors"
+            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
           />
         </div>
 
@@ -168,7 +172,8 @@ export default function ListeDuzenleClient({ list, items: initial }: { list: Lis
         ) : (
           <div className="space-y-2">
             {items.map((item) => (
-              <div key={item.id} className="flex items-center gap-3 p-3 rounded-xl bg-[--bg-secondary] border border-[--border]">
+              <div key={item.id} className="flex items-center gap-3 p-3 rounded-xl"
+                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
                 <div className="h-12 w-8 rounded-md overflow-hidden bg-[--bg-card] shrink-0">
                   {item.poster
                     ? <img src={item.poster} alt={item.title} className="w-full h-full object-cover" />
