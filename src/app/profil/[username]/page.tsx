@@ -539,8 +539,8 @@ export default async function ProfilPage({ params }: Props) {
                 {earnedBadges.length}/{badges.length}
               </span>
             </div>
-            <Link href={`/profil/${username}/istatistikler`} className="text-sm hover:underline" style={{ color: 'var(--accent)' }}>
-              Tüm başarımlar →
+            <Link href={`/profil/${username}/rozetler`} className="text-sm hover:underline" style={{ color: 'var(--accent)' }}>
+              Tüm rozetler →
             </Link>
           </div>
           <div className="flex flex-wrap gap-2">
