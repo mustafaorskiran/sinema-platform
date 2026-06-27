@@ -112,9 +112,10 @@ export default function NotificationBell({ userId }: Props) {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-80 rounded-xl bg-[--bg-card] border border-[--border] shadow-2xl shadow-black/50 z-50 overflow-hidden">
+        <div className="absolute right-0 top-full mt-2 w-80 rounded-xl z-50 overflow-hidden backdrop-blur-xl"
+          style={{ background: 'linear-gradient(160deg, rgba(14,20,36,0.98), rgba(10,14,26,0.99))', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)' }}>
           {/* Başlık */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-[--border]">
+          <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
             <span className="text-sm font-semibold text-white">Bildirimler</span>
             {notifications.length > 0 && (
               <button
@@ -138,9 +139,10 @@ export default function NotificationBell({ userId }: Props) {
                   key={n.id}
                   href={notifHref(n)}
                   onClick={() => setOpen(false)}
-                  className={`flex items-start gap-3 px-4 py-3 hover:bg-white/5 transition-colors border-b border-[--border]/50 last:border-0 ${
-                    !n.read ? 'bg-[--accent]/5' : ''
+                  className={`flex items-start gap-3 px-4 py-3 hover:bg-white/5 transition-colors last:border-0 ${
+                    !n.read ? '' : ''
                   }`}
+                  style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', background: !n.read ? 'rgba(225,29,72,0.04)' : 'transparent' }}
                 >
                   {/* Avatar */}
                   <div className="h-8 w-8 rounded-full bg-[--accent] flex items-center justify-center text-xs font-bold text-white shrink-0 overflow-hidden">
