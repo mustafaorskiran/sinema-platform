@@ -107,7 +107,8 @@ export default function ReviewList({ reviews, currentUserId, likeData = {}, repl
   return (
     <div>
       {/* Sıralama */}
-      <div className="flex items-center gap-1 mb-5 p-1 rounded-xl w-fit" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+      <div className="flex items-center gap-1 mb-5 p-1 rounded-xl w-fit"
+        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
         {SORT_OPTIONS.map(opt => (
           <button
             key={opt.key}
@@ -137,18 +138,18 @@ export default function ReviewList({ reviews, currentUserId, likeData = {}, repl
           return (
             <div
               key={review.id}
-              className="rounded-xl p-5 transition-all duration-200 hover:shadow-xl hover:shadow-black/30 hover:-translate-y-px"
+              className="rounded-xl p-5 transition-all duration-200 hover:-translate-y-0.5"
               style={{
-                background: 'var(--bg-card)',
-                border: '1px solid var(--border)',
-                borderLeft: '3px solid var(--accent)',
+                background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))',
+                border: '1px solid rgba(255,255,255,0.07)',
+                borderLeft: '3px solid rgba(225,29,72,0.5)',
               }}
             >
               {/* Header: avatar + kullanıcı + puan */}
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <Link href={`/profil/${username}`} className="shrink-0">
-                    <div className="h-9 w-9 rounded-full bg-[--accent] flex items-center justify-center text-sm font-bold text-white overflow-hidden ring-2 ring-[--border]">
+                    <div className="h-9 w-9 rounded-full bg-[--accent] flex items-center justify-center text-sm font-bold text-white overflow-hidden ring-2 ring-[--accent]/20">
                       {avatarUrl
                         ? <Image src={avatarUrl} alt={username} width={36} height={36} className="w-full h-full object-cover" />
                         : initial
