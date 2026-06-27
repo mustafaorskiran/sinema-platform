@@ -183,7 +183,7 @@ export default function ForumThreadClient({ thread, initialPosts, currentUser, i
 
       {/* Yanıt formu */}
       {currentUser && !thread.locked ? (
-        <div className="rounded-xl bg-[--bg-card] border border-[--border] p-4">
+        <div className="rounded-xl p-4" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <p className="text-sm font-semibold text-white mb-3">Yanıtla</p>
           <textarea
             value={replyText}
@@ -204,11 +204,13 @@ export default function ForumThreadClient({ thread, initialPosts, currentUser, i
           </div>
         </div>
       ) : currentUser && thread.locked ? (
-        <div className="rounded-xl bg-[--bg-card] border border-[--border] p-4 text-center text-sm text-[--text-secondary]">
+        <div className="rounded-xl p-4 text-center text-sm text-[--text-secondary]"
+          style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
           🔒 Bu konu kilitlenmiş, yeni yanıt eklenemez.
         </div>
       ) : (
-        <div className="rounded-xl bg-[--bg-card] border border-[--border] p-4 text-center text-sm text-[--text-secondary]">
+        <div className="rounded-xl p-4 text-center text-sm text-[--text-secondary]"
+          style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
           Yanıt yazmak için{' '}
           <Link href="/auth/giris" className="text-[--accent] hover:underline">giriş yap</Link>.
         </div>

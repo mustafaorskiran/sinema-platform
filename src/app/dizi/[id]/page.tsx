@@ -779,7 +779,8 @@ export default async function DiziPage({ params, searchParams }: Props) {
             {user ? (
               <ReviewForm mediaId={seriesId} mediaType="dizi" existingReview={userReview} />
             ) : (
-              <div className="rounded-lg bg-[--bg-card] border border-[--border] p-6 text-center">
+              <div className="rounded-lg p-6 text-center"
+                style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <p className="text-[--text-secondary] text-sm mb-4">
                   Yorum yapmak için giriş yapman gerekiyor.
                 </p>

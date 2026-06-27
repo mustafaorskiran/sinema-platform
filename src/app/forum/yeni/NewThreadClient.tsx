@@ -76,7 +76,8 @@ export default function NewThreadClient({ categories, defaultCategoryId }: Props
           placeholder="Konunun başlığı..."
           maxLength={200}
           required
-          className="w-full bg-[--bg-card] border border-[--border] rounded-lg px-3 py-2.5 text-sm text-white placeholder-[--text-secondary] focus:outline-none focus:border-[--accent]/60"
+          className="w-full rounded-lg px-3 py-2.5 text-sm text-white placeholder-[--text-secondary] focus:outline-none transition-colors"
+          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}
         />
         <p className="text-xs text-[--text-secondary] mt-1 text-right">{title.length}/200</p>
       </div>
@@ -90,7 +91,8 @@ export default function NewThreadClient({ categories, defaultCategoryId }: Props
           placeholder="Ne hakkında konuşmak istiyorsun?"
           rows={8}
           required
-          className="w-full bg-[--bg-card] border border-[--border] rounded-lg px-3 py-2.5 text-sm text-white placeholder-[--text-secondary] focus:outline-none focus:border-[--accent]/60 resize-none"
+          className="w-full rounded-lg px-3 py-2.5 text-sm text-white placeholder-[--text-secondary] focus:outline-none transition-colors resize-none"
+          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}
         />
       </div>
 
