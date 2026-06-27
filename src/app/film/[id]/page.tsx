@@ -477,7 +477,8 @@ export default async function FilmPage({ params, searchParams }: Props) {
               <ShareButtons path={`/film/${movieId}`} title={`${title} — SineMa'da izle`} />
               <a
                 href={`/karsilastir?a=${movieId}&ta=film`}
-                className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-[--bg-secondary] border border-[--border] text-[--text-secondary] hover:text-white hover:border-white/20 transition-colors"
+                className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition-all hover:text-white hover:scale-105"
+                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.55)' }}
               >
                 ⚖️ Karşılaştır
               </a>

@@ -88,7 +88,7 @@ export default async function KategoriPage({ params, searchParams }: Props) {
               <Link
                 key={thread.id}
                 href={`/forum/${thread.id}`}
-                className="flex items-center gap-4 px-4 py-3.5 hover:bg-[--bg-secondary] transition-colors group"
+                className="flex items-center gap-4 px-4 py-3.5 transition-colors group hover:bg-white/5"
               >
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
