@@ -81,7 +81,7 @@ export default async function KoleksiyonPage({ params }: Props) {
             className="flex items-center gap-4 p-3 rounded-xl transition-all duration-200 hover:-translate-y-0.5 group"
               style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <span className="text-sm font-bold text-[--text-secondary] w-8 text-center shrink-0">{idx + 1}</span>
-            <div className="w-12 aspect-[2/3] rounded-lg overflow-hidden shrink-0 bg-[--bg-secondary]">
+            <div className="w-12 aspect-[2/3] rounded-lg overflow-hidden shrink-0" style={{ background: 'rgba(255,255,255,0.06)' }}>
               {part.poster_path && (
                 <img src={`https://image.tmdb.org/t/p/w342${part.poster_path}`} alt={part.title} className="w-full h-full object-cover" />
               )}

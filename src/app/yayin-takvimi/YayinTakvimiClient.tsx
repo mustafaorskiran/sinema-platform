@@ -81,7 +81,7 @@ function ItemRow({ item }: { item: ScheduleItem }) {
       className="group flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-white/5 transition-colors"
     >
       {/* Poster */}
-      <div className="shrink-0 w-11 h-16 rounded overflow-hidden bg-[--bg-secondary]">
+      <div className="shrink-0 w-11 h-16 rounded overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
         {item.poster
           ? <img src={item.poster} alt={item.title} className="w-full h-full object-cover" loading="lazy" />
           : <div className="w-full h-full flex items-center justify-center text-[8px] text-[--text-secondary] p-0.5 text-center leading-tight">{item.title}</div>

@@ -58,7 +58,7 @@ export default function SinemalarClient({ nowPlaying, upcoming, zincirleri }: Pr
             {t.label}
             {t.count !== undefined && (
               <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-                tab === t.key ? 'bg-white/20' : 'bg-[--bg-secondary]'
+                tab === t.key ? 'bg-white/20' : 'bg-white/5'
               }`}>
                 {t.count}
               </span>
@@ -185,7 +185,8 @@ export default function SinemalarClient({ nowPlaying, upcoming, zincirleri }: Pr
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3 py-1.5 rounded-full bg-[--bg-secondary] border border-[--border] text-xs text-[--text-secondary] hover:text-white hover:border-white/30 transition-colors"
+                  className="px-3 py-1.5 rounded-full text-xs text-white/40 hover:text-white hover:border-white/30 transition-colors"
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
                 >
                   {link.label} ↗
                 </a>

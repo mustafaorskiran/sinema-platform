@@ -74,7 +74,7 @@ export default function FilmografiClient({ castCredits, directorCredits, writerC
           <div className="flex items-center gap-1 rounded-xl p-1" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             {(['hepsi', 'film', 'dizi'] as TypeFilter[]).map(t => (
               <button key={t} onClick={() => { setTypeFilter(t); setShowAll(false) }}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors capitalize ${typeFilter === t ? 'bg-[--bg-secondary] text-white' : 'text-[--text-secondary] hover:text-white'}`}>
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors capitalize ${typeFilter === t ? 'bg-white/12 text-white' : 'text-white/40 hover:text-white'}`}>
                 {t === 'hepsi' ? 'Hepsi' : t === 'film' ? 'Filmler' : 'Diziler'}
               </button>
             ))}
@@ -82,11 +82,11 @@ export default function FilmografiClient({ castCredits, directorCredits, writerC
           {/* Sıralama */}
           <div className="flex items-center gap-1 rounded-xl p-1" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <button onClick={() => setSort('puan')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${sort === 'puan' ? 'bg-[--bg-secondary] text-white' : 'text-[--text-secondary] hover:text-white'}`}>
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${sort === 'puan' ? 'bg-white/12 text-white' : 'text-white/40 hover:text-white'}`}>
               En İyi
             </button>
             <button onClick={() => setSort('yil')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${sort === 'yil' ? 'bg-[--bg-secondary] text-white' : 'text-[--text-secondary] hover:text-white'}`}>
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${sort === 'yil' ? 'bg-white/12 text-white' : 'text-white/40 hover:text-white'}`}>
               En Yeni
             </button>
           </div>

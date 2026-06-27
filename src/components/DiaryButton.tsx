@@ -82,7 +82,8 @@ export default function DiaryButton({ mediaId, mediaType, mediaTitle, isLoggedIn
                 onChange={e => setWatchedAt(e.target.value)}
                 max={new Date().toISOString().slice(0, 10)}
                 required
-                className="w-full bg-[--bg-secondary] border border-[--border] rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[--accent]/60"
+                className="w-full rounded-lg px-3 py-2 text-sm text-white focus:outline-none transition-colors"
+                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
               />
             </div>
 
@@ -97,7 +98,7 @@ export default function DiaryButton({ mediaId, mediaType, mediaTitle, isLoggedIn
                     className={`w-7 h-7 rounded text-xs font-bold transition-colors ${
                       rating === n
                         ? 'bg-[--gold] text-black'
-                        : 'bg-[--bg-secondary] border border-[--border] text-[--text-secondary] hover:text-white'
+                        : 'text-white/40 hover:text-white border border-white/10 bg-white/5'
                     }`}
                   >
                     {n}
@@ -124,7 +125,8 @@ export default function DiaryButton({ mediaId, mediaType, mediaTitle, isLoggedIn
                 onChange={e => setNote(e.target.value)}
                 placeholder="Kısa bir not..."
                 rows={2}
-                className="w-full bg-[--bg-secondary] border border-[--border] rounded-lg px-3 py-2 text-sm text-white placeholder-[--text-secondary] focus:outline-none focus:border-[--accent]/60 resize-none"
+                className="w-full rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/25 focus:outline-none transition-colors resize-none"
+                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
               />
             </div>
 
@@ -144,7 +146,8 @@ export default function DiaryButton({ mediaId, mediaType, mediaTitle, isLoggedIn
                 onKeyDown={addTag}
                 placeholder="etiket..."
                 disabled={tags.length >= 5}
-                className="w-full bg-[--bg-secondary] border border-[--border] rounded-lg px-3 py-1.5 text-xs text-white placeholder-[--text-secondary] focus:outline-none focus:border-[--accent]/60 disabled:opacity-40"
+                className="w-full rounded-lg px-3 py-1.5 text-xs text-white placeholder:text-white/25 focus:outline-none transition-colors disabled:opacity-40"
+                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
               />
             </div>
 

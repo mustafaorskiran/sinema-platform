@@ -381,7 +381,7 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
       {/* E-posta bildirimleri */}
       <div>
         <label className="block text-sm font-medium text-white mb-3">E-posta Bildirimleri</label>
-        <div className="bg-[--bg-secondary] rounded-xl border border-[--border] divide-y divide-[--border]">
+        <div className="rounded-xl divide-y" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '0.75rem' }}>
           {[
             { label: 'Tüm bildirimleri etkinleştir', value: emailNotifications, set: setEmailNotifications },
             { label: 'Biri beni takip ettiğinde', value: emailOnFollow, set: setEmailOnFollow },

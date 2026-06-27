@@ -55,7 +55,7 @@ export default function OrtakIzlenenlerClient({ myProfile, following, defaultUse
                     : 'border-[--border] text-[--text-secondary] hover:text-white hover:border-[--accent]/50'}`}>
                 {u.avatar_url
                   ? <img src={u.avatar_url} alt="" className="h-5 w-5 rounded-full object-cover" />
-                  : <span className="h-5 w-5 rounded-full bg-[--bg-secondary] text-[10px] flex items-center justify-center text-white">{u.username[0]?.toUpperCase()}</span>}
+                  : <span className="h-5 w-5 rounded-full text-[10px] flex items-center justify-center text-white" style={{ background: 'rgba(225,29,72,0.25)' }}>{u.username[0]?.toUpperCase()}</span>}
                 @{u.username}
               </button>
             ))}

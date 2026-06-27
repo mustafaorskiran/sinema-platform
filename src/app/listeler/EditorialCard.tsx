@@ -40,7 +40,7 @@ export default function EditorialCard({ list, posters }: Props) {
       <div className="relative h-40 overflow-hidden">
         <div className="grid grid-cols-2 grid-rows-2 h-full">
           {slots.map((poster, i) => (
-            <div key={i} className="relative bg-[--bg-secondary] overflow-hidden">
+            <div key={i} className="relative overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
               {poster ? (
                 <img
                   src={`https://image.tmdb.org/t/p/w185${poster}`}
@@ -48,7 +48,7 @@ export default function EditorialCard({ list, posters }: Props) {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-[--bg-secondary] to-[--bg-primary]" />
+                <div className="w-full h-full" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.06), rgba(14,20,32,0.8))' }} />
               )}
             </div>
           ))}
@@ -79,12 +79,13 @@ export default function EditorialCard({ list, posters }: Props) {
         <div className="flex items-center justify-between mt-auto pt-3 border-t border-[--border]/50">
           <div className="flex items-center gap-1.5">
             {list.category && (
-              <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${CATEGORY_COLORS[list.category] ?? 'bg-[--bg-secondary] text-[--text-secondary]'}`}>
+              <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${CATEGORY_COLORS[list.category] ?? 'text-white/40'}`}
+                style={CATEGORY_COLORS[list.category] ? {} : { background: 'rgba(255,255,255,0.06)' }}>
                 {list.category}
               </span>
             )}
             {isDynamic && (
-              <span className="text-[10px] text-[--text-secondary] bg-[--bg-secondary] border border-[--border] px-1.5 py-0.5 rounded-full">
+              <span className="text-[10px] text-white/40 px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}>
                 dinamik
               </span>
             )}

@@ -35,7 +35,8 @@ export default function ShareButtons({ path, title }: Props) {
 
       <button
         onClick={tweet}
-        className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-[--bg-secondary] border border-[--border] text-[--text-secondary] hover:text-white hover:border-white/20 transition-colors"
+        className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg text-white/40 hover:text-white hover:border-white/20 transition-colors"
+        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
         title="X (Twitter)'da paylaş"
       >
         <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor">
@@ -46,7 +47,8 @@ export default function ShareButtons({ path, title }: Props) {
 
       <button
         onClick={whatsapp}
-        className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-[--bg-secondary] border border-[--border] text-[--text-secondary] hover:text-green-400 hover:border-green-500/30 transition-colors"
+        className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg text-white/40 hover:text-green-400 hover:border-green-500/30 transition-colors"
+        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
         title="WhatsApp'ta paylaş"
       >
         <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor">
@@ -60,7 +62,7 @@ export default function ShareButtons({ path, title }: Props) {
         className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border transition-colors ${
           copied
             ? 'bg-green-500/15 border-green-500/30 text-green-400'
-            : 'bg-[--bg-secondary] border-[--border] text-[--text-secondary] hover:text-white hover:border-white/20'
+            : 'text-white/40 hover:text-white hover:border-white/20 bg-white/5 border-white/8'
         }`}
         title="Linki kopyala"
       >

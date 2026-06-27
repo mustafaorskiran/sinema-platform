@@ -85,7 +85,7 @@ export default function WatchProviders({ allProviders, mediaType }: Props) {
             className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs transition-colors ${
               activeCode === c.code
                 ? 'bg-[--accent] text-white font-semibold'
-                : 'bg-[--bg-secondary] border border-[--border] text-[--text-secondary] hover:text-white hover:border-[--accent]/40'
+                : 'text-white/40 hover:text-white hover:border-[--accent]/40 bg-white/5 border border-white/8'
             }`}
           >
             <span>{c.flag}</span>
@@ -119,18 +119,20 @@ export default function WatchProviders({ allProviders, mediaType }: Props) {
                         <span className="text-xs text-white">{p.provider_name}</span>
                       </>
                     )
-                    const cls = "flex items-center gap-1.5 bg-[--bg-secondary] border border-[--border] rounded-lg px-2.5 py-1.5 hover:border-[--accent]/40 transition-colors"
+                    const cls = "flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 hover:border-[--accent]/40 transition-colors"
+                    const clsStyle = { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }
                     return mediaType ? (
                       <a
                         key={p.provider_id}
                         href={`${basePage}?platform=${p.provider_id}`}
                         title={`${p.provider_name}'deki tüm ${mediaType === 'dizi' ? 'diziler' : 'filmler'}`}
-                        className={cls + " hover:bg-[--accent]/10 cursor-pointer"}
+                        className={cls + " cursor-pointer"}
+                        style={clsStyle}
                       >
                         {inner}
                       </a>
                     ) : (
-                      <div key={p.provider_id} title={p.provider_name} className={cls}>
+                      <div key={p.provider_id} title={p.provider_name} className={cls} style={clsStyle}>
                         {inner}
                       </div>
                     )

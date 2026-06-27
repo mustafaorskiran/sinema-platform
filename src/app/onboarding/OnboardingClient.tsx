@@ -170,7 +170,7 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
               <div
                 key={i}
                 className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-                  i < step ? 'bg-[--accent]' : 'bg-[--bg-secondary]'
+                  i < step ? 'bg-[--accent]' : 'bg-white/8'
                 }`}
               />
             ))}
@@ -265,7 +265,7 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
               </p>
               {/* İlerleme */}
               <div className="flex items-center gap-3">
-                <div className="flex-1 h-2 rounded-full bg-[--bg-secondary] overflow-hidden">
+                <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
                   <div
                     className="h-full rounded-full bg-[--accent] transition-all duration-300"
                     style={{ width: `${Math.min(100, (ratedCount / MIN_RATINGS) * 100)}%` }}

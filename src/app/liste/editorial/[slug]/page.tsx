@@ -109,7 +109,7 @@ export default async function EditorialListPage({ params }: Props) {
             {Array.from({ length: 4 }).map((_, i) => {
               const hp = heroPosters[i]
               return (
-                <div key={i} className="relative bg-[--bg-secondary] overflow-hidden">
+                <div key={i} className="relative overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
                   {hp ? (
                     <img src={`https://image.tmdb.org/t/p/w185${hp}`} alt="" className="w-full h-full object-cover" />
                   ) : (
@@ -180,7 +180,7 @@ export default async function EditorialListPage({ params }: Props) {
               </div>
 
               {/* Poster */}
-              <div className="shrink-0 w-10 h-14 rounded-lg overflow-hidden bg-[--bg-secondary]">
+              <div className="shrink-0 w-10 h-14 rounded-lg overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
                 {item.poster_path ? (
                   <img
                     src={`https://image.tmdb.org/t/p/w92${item.poster_path}`}

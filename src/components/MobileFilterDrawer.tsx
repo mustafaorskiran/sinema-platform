@@ -52,7 +52,8 @@ export default function MobileFilterDrawer({ genres, countries, years, activeLab
       )}
 
       {/* Drawer */}
-      <div className={`fixed top-0 left-0 h-full w-72 max-w-[85vw] bg-[--bg-secondary] border-r border-[--border] z-50 overflow-y-auto transition-transform duration-300 lg:hidden ${open ? 'translate-x-0' : '-translate-x-full'}`}>
+      <div className={`fixed top-0 left-0 h-full w-72 max-w-[85vw] z-50 overflow-y-auto transition-transform duration-300 lg:hidden ${open ? 'translate-x-0' : '-translate-x-full'}`}
+        style={{ background: 'rgba(10,15,28,0.99)', borderRight: '1px solid rgba(255,255,255,0.08)' }}>
         <div className="flex items-center justify-between px-4 py-4 border-b border-[--border]">
           <span className="text-base font-bold text-white">Filtrele</span>
           <button onClick={() => setOpen(false)} className="text-[--text-secondary] hover:text-white">

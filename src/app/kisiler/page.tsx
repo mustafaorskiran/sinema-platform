@@ -44,7 +44,7 @@ function ProfileCard({ person }: { person: TMDbPersonListItem }) {
       style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
     >
       {/* Fotoğraf */}
-      <div className="relative aspect-[2/3] overflow-hidden bg-[--bg-secondary]">
+      <div className="relative aspect-[2/3] overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
         {person.profile_path ? (
           <Image
             src={`https://image.tmdb.org/t/p/w342${person.profile_path}`}

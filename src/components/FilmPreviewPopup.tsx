@@ -53,7 +53,7 @@ export default function FilmPreviewPopup({
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          <span className="block bg-[--bg-secondary] border border-[--border] rounded-xl shadow-2xl p-3">
+          <span className="block rounded-xl shadow-2xl p-3" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.98), rgba(14,20,32,0.99))', border: '1px solid rgba(255,255,255,0.08)' }}>
             {/* Poster */}
             {posterUrl ? (
               <span className="block w-full h-28 rounded-lg overflow-hidden mb-2 relative">

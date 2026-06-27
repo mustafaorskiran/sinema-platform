@@ -101,7 +101,7 @@ export default function FavoritesEditor({ favorites, isOwnProfile }: Props) {
 
             {/* Arama modalı */}
             {editing === pos && (
-              <div className="absolute top-0 left-0 z-50 w-64 bg-[--bg-secondary] border border-[--border] rounded-xl shadow-xl p-3">
+              <div className="absolute top-0 left-0 z-50 w-64 rounded-xl shadow-xl p-3" style={{ background: 'rgba(14,20,32,0.98)', border: '1px solid rgba(255,255,255,0.1)' }}>
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-xs font-semibold text-white">Film / Dizi seç</p>
                   <button onClick={() => setEditing(null)} className="text-[--text-secondary] hover:text-white text-lg leading-none">×</button>

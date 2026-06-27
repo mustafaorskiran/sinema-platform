@@ -193,7 +193,7 @@ export default function SeasonTracker({ seriesId, seasons, isLoggedIn }: Props) 
             <span className="text-sm text-[--text-secondary]">
               <span className="text-white font-semibold">{watchedCount}</span>/{totalEpisodes} bölüm
             </span>
-            <div className="w-28 h-2 rounded-full bg-[--bg-secondary] overflow-hidden">
+            <div className="w-28 h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
               <div
                 className="h-full rounded-full bg-[--accent] transition-all duration-300"
                 style={{ width: `${progressPct}%` }}
@@ -308,7 +308,7 @@ export default function SeasonTracker({ seriesId, seasons, isLoggedIn }: Props) 
 
                                 {/* Still görseli */}
                                 {ep.still_path && (
-                                  <div className="shrink-0 w-16 sm:w-20 rounded-md overflow-hidden bg-[--bg-secondary]">
+                                  <div className="shrink-0 w-16 sm:w-20 rounded-md overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
                                     <img
                                       src={`https://image.tmdb.org/t/p/w300${ep.still_path}`}
                                       alt={ep.name}
@@ -370,7 +370,7 @@ export default function SeasonTracker({ seriesId, seasons, isLoggedIn }: Props) 
                                                 className={`w-7 h-7 rounded-lg text-xs font-bold transition-colors ${
                                                   epRating === r
                                                     ? 'bg-[--gold] text-black'
-                                                    : 'bg-[--bg-secondary] text-white hover:bg-[--accent]'
+                                                    : 'bg-white/8 text-white hover:bg-[--accent]'
                                                 }`}
                                               >
                                                 {r}
@@ -454,7 +454,8 @@ export default function SeasonTracker({ seriesId, seasons, isLoggedIn }: Props) 
                                             }}
                                             placeholder="Bu bölüm hakkında ne düşündün?"
                                             rows={3}
-                                            className="w-full rounded-lg bg-[--bg-secondary] border border-[--border] px-3 py-2 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors resize-none"
+                                            className="w-full rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/25 outline-none transition-colors resize-none"
+                                            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
                                           />
                                           <div className="flex items-center justify-between mt-1.5">
                                             <span className={`text-[10px] ${currentDraft.length >= 480 ? 'text-yellow-400' : 'text-[--text-secondary]'}`}>

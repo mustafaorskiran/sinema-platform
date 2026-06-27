@@ -72,7 +72,8 @@ export default function ReportButton({ targetType, targetId, isLoggedIn, classNa
                 </div>
                 <textarea value={details} onChange={e => setDetails(e.target.value)} rows={2} maxLength={300}
                   placeholder="Ek açıklama (opsiyonel)"
-                  className="w-full rounded-lg bg-[--bg-secondary] border border-[--border] px-3 py-2 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors resize-none"
+                  className="w-full rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/25 outline-none transition-colors resize-none"
+                  style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
                 />
                 <div className="flex gap-2">
                   <button type="button" onClick={() => setOpen(false)}

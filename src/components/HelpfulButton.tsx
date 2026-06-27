@@ -35,7 +35,7 @@ export default function HelpfulButton({ reviewId, initialCount, initialMarked, i
       className={`flex items-center gap-1.5 text-xs rounded-full px-3 py-1 border transition-colors disabled:opacity-50 ${
         marked
           ? 'bg-green-500/15 border-green-500/30 text-green-400'
-          : 'bg-[--bg-secondary] border-[--border] text-[--text-secondary] hover:text-green-400 hover:border-green-500/30'
+          : 'border-white/10 text-white/40 hover:text-green-400 hover:border-green-500/30 bg-white/5'
       }`}
       title={marked ? 'Faydalı işaretini kaldır' : 'Bu yorum faydalıydı'}>
       👍 Faydalı{count > 0 && <span className="font-semibold">{count}</span>}

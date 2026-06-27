@@ -81,7 +81,8 @@ export default function YeniPartiForm() {
       <div>
         <label className="block text-sm font-medium text-[--text-secondary] mb-2">Tarih & Saat</label>
         <input type="datetime-local" value={scheduledAt} onChange={e => setScheduledAt(e.target.value)}
-          className="w-full rounded-lg bg-[--bg-secondary] border border-[--border] px-4 py-3 text-sm text-white outline-none focus:border-[--accent] transition-colors"
+          className="w-full rounded-lg px-4 py-3 text-sm text-white outline-none transition-colors"
+          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
         />
       </div>
 
