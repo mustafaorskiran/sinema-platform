@@ -31,11 +31,13 @@ import StickyRating from '@/components/StickyRating'
 import PageNav from '@/components/PageNav'
 import CriticScores from '@/components/CriticScores'
 import AISummary from '@/components/AISummary'
+import ReviewSortButton from '@/components/ReviewSortButton'
 import type { Review } from '@/lib/types'
 import type { Metadata } from 'next'
 
 interface Props {
   params: Promise<{ id: string }>
+  searchParams?: Promise<{ siralama?: string }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -76,8 +78,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function FilmPage({ params }: Props) {
+export default async function FilmPage({ params, searchParams }: Props) {
   const { id } = await params
+  const { siralama = 'yeni' } = (await searchParams) ?? {}
   const movieId = Number(id)
 
   const [movie, similarData, imagesData, keywordsData, certification, videosData, watchProviders] = await Promise.all([
@@ -121,12 +124,19 @@ export default async function FilmPage({ params }: Props) {
     }
   }
 
+  const reviewSortMap: Record<string, { col: string; asc: boolean }> = {
+    yeni:        { col: 'created_at',  asc: false },
+    puan_yuksek: { col: 'rating',      asc: false },
+    puan_dusuk:  { col: 'rating',      asc: true  },
+    populer:     { col: 'created_at',  asc: false },
+  }
+  const rSort = reviewSortMap[siralama] ?? reviewSortMap.yeni
   const { data: reviews } = await supabase
     .from('reviews')
     .select('*, profiles(username, avatar_url)')
     .eq('media_id', movieId)
     .eq('media_type', 'film')
-    .order('created_at', { ascending: false })
+    .order(rSort.col, { ascending: rSort.asc })
 
   const userReview = reviews?.find((r: Review) => r.user_id === user?.id)
 
@@ -170,6 +180,11 @@ export default async function FilmPage({ params }: Props) {
       }
     }
   }
+
+  // Populer sıralama: beğeni sayısına göre
+  const sortedReviews = siralama === 'populer'
+    ? [...(reviews ?? [])].sort((a, b) => (likeData[b.id]?.count ?? 0) - (likeData[a.id]?.count ?? 0))
+    : (reviews ?? [])
 
   let watchlistStatus: 'izlemek-istiyorum' | 'izledim' | null = null
   let friendsRatings: { username: string; avatar_url: string | null; rating: number }[] = []
@@ -838,13 +853,16 @@ export default async function FilmPage({ params }: Props) {
 
           {/* Review list */}
           <div className="lg:col-span-2">
-            <div className="flex items-center gap-3 mb-5">
-              <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #E11D48 0%, #E11D4880 100%)' }} />
-              <h2 className="text-xl font-bold text-white tracking-tight">
-                Yorumlar <span className="font-normal text-base" style={{ color: 'rgba(255,255,255,0.35)' }}>({reviews?.length ?? 0})</span>
-              </h2>
+            <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
+              <div className="flex items-center gap-3">
+                <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #E11D48 0%, #E11D4880 100%)' }} />
+                <h2 className="text-xl font-bold text-white tracking-tight">
+                  Yorumlar <span className="font-normal text-base" style={{ color: 'rgba(255,255,255,0.35)' }}>({reviews?.length ?? 0})</span>
+                </h2>
+              </div>
+              <ReviewSortButton current={siralama as any} />
             </div>
-            <ReviewList reviews={reviews ?? []} currentUserId={user?.id} likeData={likeData} replyCount={replyCount} helpfulData={helpfulData} />
+            <ReviewList reviews={sortedReviews} currentUserId={user?.id} likeData={likeData} replyCount={replyCount} helpfulData={helpfulData} />
           </div>
         </div>
 

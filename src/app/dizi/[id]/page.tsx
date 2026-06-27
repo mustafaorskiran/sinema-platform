@@ -32,11 +32,13 @@ import StickyRating from '@/components/StickyRating'
 import PageNav from '@/components/PageNav'
 import WatchStatusButton from '@/components/WatchStatusButton'
 import CriticScores from '@/components/CriticScores'
+import ReviewSortButton from '@/components/ReviewSortButton'
 import type { Review } from '@/lib/types'
 import type { Metadata } from 'next'
 
 interface Props {
   params: Promise<{ id: string }>
+  searchParams?: Promise<{ siralama?: string }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -77,8 +79,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function DiziPage({ params }: Props) {
+export default async function DiziPage({ params, searchParams }: Props) {
   const { id } = await params
+  const { siralama = 'yeni' } = (await searchParams) ?? {}
   const seriesId = Number(id)
 
   const [series, similarData, imagesData, keywordsData, certification, videosData, watchProviders] = await Promise.all([
@@ -122,12 +125,19 @@ export default async function DiziPage({ params }: Props) {
     }
   }
 
+  const tvReviewSortMap: Record<string, { col: string; asc: boolean }> = {
+    yeni:        { col: 'created_at', asc: false },
+    puan_yuksek: { col: 'rating',     asc: false },
+    puan_dusuk:  { col: 'rating',     asc: true  },
+    populer:     { col: 'created_at', asc: false },
+  }
+  const tvSort = tvReviewSortMap[siralama] ?? tvReviewSortMap.yeni
   const { data: reviews } = await supabase
     .from('reviews')
     .select('*, profiles(username, avatar_url)')
     .eq('media_id', seriesId)
     .eq('media_type', 'dizi')
-    .order('created_at', { ascending: false })
+    .order(tvSort.col, { ascending: tvSort.asc })
 
   const userReview = reviews?.find((r: Review) => r.user_id === user?.id)
 
@@ -170,6 +180,10 @@ export default async function DiziPage({ params }: Props) {
       }
     }
   }
+
+  const tvSortedReviews = siralama === 'populer'
+    ? [...(reviews ?? [])].sort((a, b) => (likeData[b.id]?.count ?? 0) - (likeData[a.id]?.count ?? 0))
+    : (reviews ?? [])
 
   let watchlistStatus: 'izlemek-istiyorum' | 'izledim' | null = null
   let friendsRatings: { username: string; avatar_url: string | null; rating: number }[] = []
@@ -747,13 +761,16 @@ export default async function DiziPage({ params }: Props) {
           </div>
 
           <div className="lg:col-span-2">
-            <div className="flex items-center gap-3 mb-5">
-              <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #E11D48 0%, #E11D4880 100%)' }} />
-              <h2 className="text-xl font-bold text-white tracking-tight">
-                Yorumlar <span className="font-normal text-base" style={{ color: 'rgba(255,255,255,0.35)' }}>({reviews?.length ?? 0})</span>
-              </h2>
+            <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
+              <div className="flex items-center gap-3">
+                <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #E11D48 0%, #E11D4880 100%)' }} />
+                <h2 className="text-xl font-bold text-white tracking-tight">
+                  Yorumlar <span className="font-normal text-base" style={{ color: 'rgba(255,255,255,0.35)' }}>({reviews?.length ?? 0})</span>
+                </h2>
+              </div>
+              <ReviewSortButton current={siralama as any} />
             </div>
-            <ReviewList reviews={reviews ?? []} currentUserId={user?.id} likeData={likeData} replyCount={replyCount} helpfulData={helpfulData} />
+            <ReviewList reviews={tvSortedReviews} currentUserId={user?.id} likeData={likeData} replyCount={replyCount} helpfulData={helpfulData} />
           </div>
         </div>
 
