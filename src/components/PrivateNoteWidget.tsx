@@ -50,19 +50,22 @@ export default function PrivateNoteWidget({ mediaId, mediaType, initialNote }: P
             rows={3}
             maxLength={500}
             placeholder="Sadece sen görebilirsin..."
-            className="w-full bg-[--bg-secondary] border border-[--border] rounded-lg px-3 py-2 text-sm text-white placeholder-[--text-secondary] focus:outline-none focus:border-[--accent]/60 resize-none"
+            className="w-full rounded-lg px-3 py-2 text-sm text-white resize-none focus:outline-none"
+            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
           />
           <div className="flex gap-2">
             <button
               onClick={() => setEditing(false)}
-              className="flex-1 py-1.5 text-xs border border-[--border] rounded-lg text-[--text-secondary] hover:text-white transition-colors"
+              className="flex-1 py-1.5 text-xs rounded-lg transition-colors hover:text-white"
+              style={{ border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.45)' }}
             >
               İptal
             </button>
             <button
               onClick={save}
               disabled={saving}
-              className="flex-1 py-1.5 text-xs bg-[--accent] hover:bg-[--accent-hover] disabled:opacity-50 text-white rounded-lg font-semibold transition-colors"
+              className="flex-1 py-1.5 text-xs disabled:opacity-50 text-white rounded-lg font-semibold transition-all hover:scale-[1.02]"
+              style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)' }}
             >
               {saving ? 'Kaydediliyor...' : 'Kaydet'}
             </button>
