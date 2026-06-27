@@ -1,4 +1,5 @@
-﻿import Link from 'next/link'
+﻿import React from 'react'
+import Link from 'next/link'
 import { IconFilm, IconMessageSquare, IconStar, IconTrendingUp, IconTv } from '@/components/icons'
 import { createClient } from '@/lib/supabase/server'
 import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb'
@@ -78,11 +79,15 @@ export default async function EnCokYorumlananPage({ searchParams }: Props) {
   )
 
   const tabCls = (t: string) =>
-    `flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium transition-colors ${
+    `flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium transition-all ${
       activeTab === t
-        ? 'bg-[--accent] text-white'
+        ? 'text-white'
         : 'text-[--text-secondary] hover:text-white'
     }`
+
+  const tabStyle = (t: string): React.CSSProperties => activeTab === t
+    ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', boxShadow: '0 2px 8px rgba(225,29,72,0.3)' }
+    : {}
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -93,13 +98,13 @@ export default async function EnCokYorumlananPage({ searchParams }: Props) {
       </div>
 
       {/* Sekmeler */}
-      <div className="flex gap-1 mb-8 bg-[--bg-card] border border-[--border] rounded-xl p-1 w-fit">
-        <Link href="/en-cok-yorumlanan" className={tabCls('tumu')}>Tümü</Link>
-        <Link href="/en-cok-yorumlanan?tab=film" className={tabCls('film')}>
+      <div className="flex gap-1 mb-8 rounded-xl p-1 w-fit" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+        <Link href="/en-cok-yorumlanan" className={tabCls('tumu')} style={tabStyle('tumu')}>Tümü</Link>
+        <Link href="/en-cok-yorumlanan?tab=film" className={tabCls('film')} style={tabStyle('film')}>
           <IconFilm className="h-4 w-4" />
           Filmler
         </Link>
-        <Link href="/en-cok-yorumlanan?tab=dizi" className={tabCls('dizi')}>
+        <Link href="/en-cok-yorumlanan?tab=dizi" className={tabCls('dizi')} style={tabStyle('dizi')}>
           <IconTv className="h-4 w-4" />
           Diziler
         </Link>
