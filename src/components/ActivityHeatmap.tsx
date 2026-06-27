@@ -33,7 +33,7 @@ function getLastNWeeks(n: number) {
 }
 
 const LEVEL_COLORS = [
-  'bg-[--bg-secondary]',
+  'bg-white/5',
   'bg-[--accent]/30',
   'bg-[--accent]/55',
   'bg-[--accent]/80',

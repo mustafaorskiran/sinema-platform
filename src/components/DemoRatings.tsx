@@ -94,7 +94,7 @@ export default async function DemoRatings({ mediaId, mediaType }: Props) {
             <span className="text-sm text-[--text-secondary] w-16 shrink-0">{group.label}</span>
 
             {/* Progress bar alanı */}
-            <div className="flex-1 relative h-2 rounded-full bg-[--bg-secondary] overflow-hidden">
+            <div className="flex-1 relative h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
               {group.avg !== null && (
                 <div
                   className="absolute inset-y-0 left-0 rounded-full bg-[--accent] transition-all duration-500"

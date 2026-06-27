@@ -65,7 +65,7 @@ export default function CollectionButton({ mediaId, mediaType, inCollection: ini
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 mt-2 z-20 w-44 bg-[--bg-secondary] border border-[--border] rounded-xl shadow-xl p-2">
+        <div className="absolute top-full left-0 mt-2 z-20 w-44 rounded-xl shadow-xl p-2" style={{ background: 'rgba(14,20,32,0.98)', border: '1px solid rgba(255,255,255,0.09)' }}>
           <p className="text-[10px] text-[--text-secondary] uppercase font-semibold px-2 mb-1">Format seç</p>
           {Object.entries(FORMAT_LABELS).map(([key, label]) => (
             <button

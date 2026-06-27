@@ -368,7 +368,7 @@ export default async function ProfilPage({ params }: Props) {
           </div>
           <div className="flex gap-4 rounded-xl bg-gradient-to-br from-[--accent]/10 via-[--bg-card] to-[--bg-card] border border-[--accent]/25 p-4">
             <Link href={`/${pinnedReviewWithMedia.media_type}/${pinnedReviewWithMedia.media_id}`} className="shrink-0">
-              <div className="w-14 aspect-[2/3] rounded-lg overflow-hidden bg-[--bg-secondary]">
+              <div className="w-14 aspect-[2/3] rounded-lg overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
                 {pinnedReviewWithMedia.poster
                   ? <img src={pinnedReviewWithMedia.poster} alt={pinnedReviewWithMedia.title} className="w-full h-full object-cover hover:opacity-90 transition-opacity" />
                   : <div className="w-full h-full flex items-center justify-center text-[--text-secondary] text-xs">?</div>
@@ -380,7 +380,7 @@ export default async function ProfilPage({ params }: Props) {
                 <Link href={`/${pinnedReviewWithMedia.media_type}/${pinnedReviewWithMedia.media_id}`} className="hover:text-[--accent] transition-colors">
                   <h3 className="font-semibold text-white leading-snug">{pinnedReviewWithMedia.title}</h3>
                 </Link>
-                <div className="flex items-center gap-1 shrink-0 bg-[--bg-secondary] rounded-md px-2 py-0.5">
+                <div className="flex items-center gap-1 shrink-0 rounded-md px-2 py-0.5" style={{ background: 'rgba(212,168,67,0.12)', border: '1px solid rgba(212,168,67,0.2)' }}>
                   <IconStar className="h-3.5 w-3.5 fill-[--gold] text-[--gold]" />
                   <span className="text-[--gold] font-bold text-sm">{pinnedReviewWithMedia.rating}/10</span>
                 </div>
@@ -618,7 +618,7 @@ export default async function ProfilPage({ params }: Props) {
               <div key={review.id} className="flex gap-4 rounded-xl p-4 transition-all duration-200 hover:-translate-y-0.5"
                 style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <Link href={href} className="shrink-0">
-                  <div className="w-14 aspect-[2/3] rounded-lg overflow-hidden bg-[--bg-secondary]">
+                  <div className="w-14 aspect-[2/3] rounded-lg overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
                     {poster
                       ? <img src={poster} alt={title} className="w-full h-full object-cover" />
                       : <div className="w-full h-full flex items-center justify-center text-[--text-secondary] text-xs">?</div>
@@ -631,7 +631,7 @@ export default async function ProfilPage({ params }: Props) {
                       <h3 className="font-semibold text-white leading-snug">{title}</h3>
                     </Link>
                     <div className="flex items-center gap-2 shrink-0">
-                      <div className="flex items-center gap-1 bg-[--bg-secondary] rounded-md px-2 py-0.5">
+                      <div className="flex items-center gap-1 rounded-md px-2 py-0.5" style={{ background: 'rgba(212,168,67,0.12)', border: '1px solid rgba(212,168,67,0.2)' }}>
                         <IconStar className="h-3.5 w-3.5 fill-[--gold] text-[--gold]" />
                         <span className="text-[--gold] font-bold text-sm">{review.rating}/10</span>
                       </div>

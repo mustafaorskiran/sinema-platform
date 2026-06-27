@@ -51,7 +51,7 @@ export default function CustomSelect({ value, onChange, options, active = false 
               className={`w-full text-left px-3 py-2 text-sm transition-colors ${
                 o.value === value
                   ? 'bg-[--accent]/20 text-white font-medium'
-                  : 'text-[--text-secondary] hover:bg-[--bg-secondary] hover:text-white'
+                  : 'text-[--text-secondary] hover:bg-white/5 hover:text-white'
               }`}
             >
               {o.label}
