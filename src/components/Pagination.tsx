@@ -7,6 +7,9 @@ interface PaginationProps {
   baseUrl: string
 }
 
+const glass = { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }
+const glassHover = 'hover:bg-white/8 hover:border-white/15 transition-all'
+
 export default function Pagination({ currentPage, totalPages, baseUrl }: PaginationProps) {
   const maxPage = Math.min(totalPages, 500)
 
@@ -22,11 +25,13 @@ export default function Pagination({ currentPage, totalPages, baseUrl }: Paginat
     <div className="flex items-center justify-center gap-1 mt-10 flex-wrap">
       {currentPage > 1 ? (
         <Link href={pageUrl(currentPage - 1)}
-          className="flex items-center gap-1 px-3 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white hover:border-[--accent]/50 transition-colors">
+          className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm transition-all hover:scale-105`}
+          style={{ ...glass, color: 'rgba(255,255,255,0.5)' }}>
           <IconChevronLeft className="h-4 w-4" /> Önceki
         </Link>
       ) : (
-        <span className="flex items-center gap-1 px-3 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary]/40 cursor-not-allowed">
+        <span className="flex items-center gap-1 px-3 py-2 rounded-lg text-sm cursor-not-allowed"
+          style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.2)' }}>
           <IconChevronLeft className="h-4 w-4" /> Önceki
         </span>
       )}
@@ -34,14 +39,14 @@ export default function Pagination({ currentPage, totalPages, baseUrl }: Paginat
       <div className="flex items-center gap-1">
         {pages.map((p, i) =>
           p === '...' ? (
-            <span key={`dots-${i}`} className="px-2 py-2 text-sm text-[--text-secondary]">…</span>
+            <span key={`dots-${i}`} className="px-2 py-2 text-sm" style={{ color: 'rgba(255,255,255,0.25)' }}>…</span>
           ) : (
             <Link key={p} href={pageUrl(p as number)}
-              className={`min-w-[36px] px-3 py-2 rounded-lg text-sm font-medium text-center transition-colors ${
-                p === currentPage
-                  ? 'bg-[--accent] text-white'
-                  : 'bg-[--bg-card] border border-[--border] text-[--text-secondary] hover:text-white hover:border-[--accent]/50'
-              }`}>
+              className={`min-w-[36px] px-3 py-2 rounded-lg text-sm font-medium text-center transition-all hover:scale-105`}
+              style={p === currentPage
+                ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff', boxShadow: '0 2px 8px rgba(225,29,72,0.3)' }
+                : { ...glass, color: 'rgba(255,255,255,0.5)' }
+              }>
               {p}
             </Link>
           )
@@ -50,11 +55,13 @@ export default function Pagination({ currentPage, totalPages, baseUrl }: Paginat
 
       {currentPage < maxPage ? (
         <Link href={pageUrl(currentPage + 1)}
-          className="flex items-center gap-1 px-3 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white hover:border-[--accent]/50 transition-colors">
+          className="flex items-center gap-1 px-3 py-2 rounded-lg text-sm transition-all hover:scale-105"
+          style={{ ...glass, color: 'rgba(255,255,255,0.5)' }}>
           Sonraki <IconChevronRight className="h-4 w-4" />
         </Link>
       ) : (
-        <span className="flex items-center gap-1 px-3 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary]/40 cursor-not-allowed">
+        <span className="flex items-center gap-1 px-3 py-2 rounded-lg text-sm cursor-not-allowed"
+          style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.2)' }}>
           Sonraki <IconChevronRight className="h-4 w-4" />
         </span>
       )}
