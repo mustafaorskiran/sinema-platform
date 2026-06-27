@@ -102,6 +102,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <p className="font-semibold text-white mb-3">Topluluk</p>
                 <ul className="space-y-2">
                   <li><a href="/liderlik" className="hover:text-white transition-colors">Liderlik Tablosu</a></li>
+                  <li><a href="/haftalik" className="hover:text-white transition-colors">📰 Haftanın Özeti</a></li>
                   <li><a href="/forum" className="hover:text-white transition-colors">Forum</a></li>
                   <li><a href="/alintilar" className="hover:text-white transition-colors">Alıntılar</a></li>
                   <li><a href="/haberler" className="hover:text-white transition-colors">Sinema Haberleri</a></li>

@@ -275,6 +275,7 @@ export default function Navbar({ user }: NavbarProps) {
                   { label: 'Alıntılar',            href: '/alintilar',            description: 'Unutulmaz replikler' },
                   { label: '🏆 Liderlik Tablosu', href: '/liderlik',             description: 'En aktif yorumcular' },
                   { label: '🤖 AI Film Önerisi',  href: '/oneri',                description: 'Yapay zeka destekli öneri' },
+                  { label: '📰 Haftanın Özeti',   href: '/haftalik',             description: 'Trend, yorumlar, aktif üyeler' },
                 ]}
               />
               <Link href="/listeler" className="self-stretch flex items-center px-2.5 transition-colors text-[--text-secondary] hover:text-[--text-primary]">
