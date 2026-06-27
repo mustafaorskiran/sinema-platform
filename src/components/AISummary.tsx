@@ -44,18 +44,12 @@ export default function AISummary({ mediaId, mediaType, title, year, genres, dir
 
   if (loading) {
     return (
-      <div
-        className="mt-4 rounded-r-2xl p-4"
-        style={{
-          background: 'var(--bg-card)',
-          border: '1px solid rgba(var(--border-rgb, 255,255,255), 0.1)',
-          borderLeft: '4px solid var(--accent)',
-        }}
-      >
+      <div className="mt-4 rounded-xl p-4"
+        style={{ background: 'rgba(124,58,237,0.05)', border: '1px solid rgba(124,58,237,0.12)', borderLeft: '3px solid rgba(124,58,237,0.5)' }}>
         <div className="space-y-2 animate-pulse">
-          <div className="h-3 rounded" style={{ background: 'var(--bg-secondary)', width: '30%' }} />
-          <div className="h-3 rounded" style={{ background: 'var(--bg-secondary)', width: '100%' }} />
-          <div className="h-3 rounded" style={{ background: 'var(--bg-secondary)', width: '85%' }} />
+          <div className="h-2.5 rounded" style={{ background: 'rgba(255,255,255,0.07)', width: '30%' }} />
+          <div className="h-2.5 rounded" style={{ background: 'rgba(255,255,255,0.05)', width: '100%' }} />
+          <div className="h-2.5 rounded" style={{ background: 'rgba(255,255,255,0.05)', width: '85%' }} />
         </div>
       </div>
     )
@@ -64,22 +58,16 @@ export default function AISummary({ mediaId, mediaType, title, year, genres, dir
   if (error || !summary) return null
 
   return (
-    <div
-      className="mt-4 rounded-r-2xl p-4"
-      style={{
-        background: 'var(--bg-card)',
-        border: '1px solid color-mix(in srgb, var(--border) 50%, transparent)',
-        borderLeft: '4px solid var(--accent)',
-      }}
-    >
-      <p className="text-xs font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>
-        ✦ Sinezon AI
+    <div className="mt-4 rounded-xl p-4"
+      style={{ background: 'rgba(124,58,237,0.05)', border: '1px solid rgba(124,58,237,0.12)', borderLeft: '3px solid rgba(124,58,237,0.5)' }}>
+      <p className="text-[10px] font-bold uppercase tracking-wider mb-2" style={{ color: '#a78bfa' }}>
+        🤖 Sinezon AI Değerlendirmesi
       </p>
-      <p className="text-sm leading-relaxed italic" style={{ color: 'var(--text-primary)' }}>
+      <p className="text-sm leading-relaxed italic" style={{ color: 'rgba(255,255,255,0.7)' }}>
         {summary}
       </p>
-      <p className="mt-2 text-xs" style={{ color: 'var(--text-secondary)', opacity: 0.6 }}>
-        Bu değerlendirme yapay zeka tarafından oluşturulmuştur.
+      <p className="mt-2 text-[10px]" style={{ color: 'rgba(255,255,255,0.25)' }}>
+        Yapay zeka tarafından oluşturulmuştur.
       </p>
     </div>
   )
