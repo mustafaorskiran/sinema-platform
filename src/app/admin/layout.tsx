@@ -10,6 +10,7 @@ import {
   IconList,
   IconEyeOff,
   IconClock,
+  IconBell,
 } from '@/components/icons'
 
 const NAV = [
@@ -22,6 +23,7 @@ const NAV = [
   { href: '/admin/ozel-secim',   label: 'Özel Seçim',   icon: IconStar },
   { href: '/admin/listeler',     label: 'Listeler',     icon: IconList },
   { href: '/admin/trivia',       label: 'Trivia',       icon: IconMessageSquare },
+  { href: '/admin/push',         label: 'Push',         icon: IconBell },
   { href: '/admin/loglar',       label: 'Loglar',       icon: IconClock },
 ]
 
