@@ -38,7 +38,7 @@ export default function InviteSection() {
   return (
     <div
       className="mb-8 p-5 rounded-2xl"
-      style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+      style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
     >
       <div className="flex items-center gap-2 mb-3">
         <span className="text-lg">🔗</span>
@@ -51,7 +51,7 @@ export default function InviteSection() {
       </p>
 
       {loading ? (
-        <div className="h-10 rounded-lg animate-pulse" style={{ background: 'var(--bg-secondary)' }} />
+        <div className="h-10 rounded-lg animate-pulse" style={{ background: 'rgba(255,255,255,0.06)' }} />
       ) : code ? (
         <div className="flex items-center gap-2">
           <input
@@ -59,9 +59,9 @@ export default function InviteSection() {
             value={inviteLink}
             className="flex-1 rounded-lg px-3 py-2 text-xs outline-none truncate"
             style={{
-              background: 'var(--bg-secondary)',
-              border: '1px solid var(--border)',
-              color: 'var(--text-secondary)',
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              color: 'rgba(255,255,255,0.5)',
             }}
           />
           <button

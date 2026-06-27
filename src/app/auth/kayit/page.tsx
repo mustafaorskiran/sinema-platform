@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { IconEye, IconEyeOff, IconFilm, IconMail } from '@/components/icons'
 import { createClient } from '@/lib/supabase/client'
 import GoogleAuthButton from '@/components/GoogleAuthButton'
@@ -29,6 +29,13 @@ export default function KayitPage() {
   const [loading, setLoading]           = useState(false)
   const [error, setError]               = useState('')
   const [success, setSuccess]           = useState(false)
+  const [refUser, setRefUser]           = useState<string | null>(null)
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const ref = params.get('ref')
+    if (ref) setRefUser(ref)
+  }, [])
 
   const strength = useMemo(() => getPasswordStrength(password), [password])
 
@@ -43,9 +50,10 @@ export default function KayitPage() {
     const supabase = createClient()
     const { data: existing } = await supabase.from('profiles').select('id').eq('username', trimmedUser).maybeSingle()
     if (existing) { setError('Bu kullanıcı adı zaten kullanılıyor.'); setLoading(false); return }
+    const nextUrl = refUser ? `/auth/callback?next=/onboarding&ref=${refUser}` : `/auth/callback?next=/onboarding`
     const { error: authError } = await supabase.auth.signUp({
       email, password,
-      options: { data: { username: trimmedUser }, emailRedirectTo: `${window.location.origin}/auth/callback?next=/profil` },
+      options: { data: { username: trimmedUser }, emailRedirectTo: `${window.location.origin}${nextUrl}` },
     })
     if (authError) {
       setError(authError.message === 'User already registered' ? 'Bu e-posta adresi zaten kayıtlı.' : 'Kayıt sırasında bir hata oluştu. Lütfen tekrar dene.')
@@ -118,6 +126,12 @@ export default function KayitPage() {
           border: '1px solid rgba(212,168,67,0.1)',
           boxShadow: '0 32px 80px rgba(0,0,0,0.6)',
         }}>
+          {refUser && (
+            <div className="mb-4 p-3 rounded-xl text-xs text-center"
+              style={{ background: 'rgba(225,29,72,0.08)', border: '1px solid rgba(225,29,72,0.15)', color: 'rgba(255,255,255,0.6)' }}>
+              <span className="font-bold text-white">@{refUser}</span> seni Sinezon&apos;a davet etti! 🎬
+            </div>
+          )}
           <GoogleAuthButton next="/" label="Google ile kayıt ol" />
 
           <div className="relative my-5">

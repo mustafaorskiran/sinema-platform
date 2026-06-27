@@ -37,6 +37,7 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get('code')
   const type = searchParams.get('type')
   const next = searchParams.get('next') ?? '/'
+  const ref  = searchParams.get('ref')
 
   // Şifre sıfırlama akışı — hemen yönlendir
   if (type === 'recovery' && code) {
@@ -83,6 +84,23 @@ export async function GET(request: NextRequest) {
             avatar_url: avatarUrl,
           })
         }
+      }
+
+      // Davet eden kullanıcıyı otomatik takip et
+      if (ref) {
+        try {
+          const { data: refProfile } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('username', ref)
+            .maybeSingle()
+          if (refProfile && refProfile.id !== user.id) {
+            await supabase.from('follows').upsert(
+              { follower_id: user.id, following_id: refProfile.id },
+              { onConflict: 'follower_id,following_id' }
+            )
+          }
+        } catch { /* ignore referral errors */ }
       }
 
       // Yeni kullanıcı veya onboarding tamamlanmamış → onboarding'e yönlendir
