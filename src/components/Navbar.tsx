@@ -266,6 +266,7 @@ export default function Navbar({ user }: NavbarProps) {
                 items={[
                   { label: 'En Çok Yorumlanan',   href: '/en-cok-yorumlanan',    description: 'Platform sıralamaları' },
                   { label: 'Ne İzlesem?',          href: '/ne-izlesem',           description: 'Ruh haline göre öner' },
+                  { label: '🎭 Ruh Haline Göre',   href: '/mood',                 description: 'Duyguna uygun film seç' },
                   { label: 'Benzer Kullanıcılar',  href: '/benzer-kullanicilar',  description: 'Zevkine yakın kişiler' },
                   { label: 'Quiz',                 href: '/quiz',                 description: 'Sinema bilgi yarışması' },
                   { label: 'Özel Listeler',        href: '/ozel-listeler',        description: 'Editöryal seçkiler' },
