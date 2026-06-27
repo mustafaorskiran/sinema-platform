@@ -104,11 +104,11 @@ export default async function YilOzetiPage({ params, searchParams }: Props) {
             <Link
               key={y}
               href={`/profil/${username}/yil-ozeti?yil=${y}`}
-              className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
-                y === year
-                  ? 'bg-[--accent] text-white'
-                  : 'bg-[--bg-card] border border-[--border] text-[--text-secondary] hover:text-white'
-              }`}
+              className="px-3 py-1.5 rounded-full text-sm transition-all hover:-translate-y-0.5"
+              style={y === year
+                ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff', boxShadow: '0 2px 8px rgba(225,29,72,0.3)' }
+                : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }
+              }
             >
               {y}
             </Link>
@@ -125,19 +125,19 @@ export default async function YilOzetiPage({ params, searchParams }: Props) {
         <div className="space-y-6">
           {/* Ana istatistikler */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="rounded-xl bg-[--bg-card] border border-[--border] p-4 text-center">
+            <div className="rounded-xl p-4 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               <p className="text-3xl font-bold text-white">{entries.length}</p>
               <p className="text-xs text-[--text-secondary] mt-0.5">İzleme</p>
             </div>
-            <div className="rounded-xl bg-[--bg-card] border border-[--border] p-4 text-center">
+            <div className="rounded-xl p-4 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               <p className="text-3xl font-bold text-[--gold]">{avgRating ?? '—'}</p>
               <p className="text-xs text-[--text-secondary] mt-0.5">Ort. Puan</p>
             </div>
-            <div className="rounded-xl bg-[--bg-card] border border-[--border] p-4 text-center">
+            <div className="rounded-xl p-4 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               <p className="text-3xl font-bold text-white">{totalReviews}</p>
               <p className="text-xs text-[--text-secondary] mt-0.5">Yorum</p>
             </div>
-            <div className="rounded-xl bg-[--bg-card] border border-[--border] p-4 text-center">
+            <div className="rounded-xl p-4 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               <p className="text-3xl font-bold text-white">{rewatchCount}</p>
               <p className="text-xs text-[--text-secondary] mt-0.5">Rewatch</p>
             </div>
@@ -145,7 +145,7 @@ export default async function YilOzetiPage({ params, searchParams }: Props) {
 
           {/* Film vs Dizi */}
           {entries.length > 0 && (
-            <div className="rounded-xl bg-[--bg-card] border border-[--border] p-5">
+            <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               <p className="text-sm font-semibold text-white mb-3">Film vs Dizi</p>
               <div className="flex gap-4 items-center">
                 <div className="flex-1">
@@ -164,7 +164,7 @@ export default async function YilOzetiPage({ params, searchParams }: Props) {
 
           {/* Aylık aktivite */}
           {entries.length > 0 && (
-            <div className="rounded-xl bg-[--bg-card] border border-[--border] p-5">
+            <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               <p className="text-sm font-semibold text-white mb-4">Aylık Aktivite</p>
               <div className="flex items-end gap-1.5 h-28">
                 {monthCounts.map((count, i) => (
@@ -183,7 +183,7 @@ export default async function YilOzetiPage({ params, searchParams }: Props) {
 
           {/* En yüksek puan verilen */}
           {bestEntry && bestTitle && (
-            <div className="rounded-xl bg-[--bg-card] border border-[--border] p-5">
+            <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               <p className="text-sm font-semibold text-white mb-3">⭐ 10 Puan Verdiğin</p>
               <Link href={`/${bestEntry.media_type}/${bestEntry.media_id}`} className="flex items-center gap-3 hover:opacity-90 transition-opacity">
                 {bestPoster && (
