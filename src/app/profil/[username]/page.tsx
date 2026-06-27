@@ -309,8 +309,8 @@ export default async function ProfilPage({ params }: Props) {
           {profile.bio && (
             <p className="mt-3 text-sm text-[--text-secondary] leading-relaxed max-w-md">{profile.bio}</p>
           )}
-          {(profile.location || profile.website) && (
-            <div className="flex flex-wrap items-center gap-4 mt-2 text-xs text-[--text-secondary]">
+          {(profile.location || profile.website || (profile as any).twitter_url || (profile as any).letterboxd_url || (profile as any).imdb_url) && (
+            <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-[--text-secondary]">
               {profile.location && (
                 <span className="flex items-center gap-1.5">
                   <IconMapPin className="h-3 w-3 shrink-0" />
@@ -322,6 +322,24 @@ export default async function ProfilPage({ params }: Props) {
                   className="flex items-center gap-1.5 hover:text-[--accent] transition-colors">
                   <IconGlobe className="h-3 w-3 shrink-0" />
                   {profile.website.replace(/^https?:\/\//, '')}
+                </a>
+              )}
+              {(profile as any).twitter_url && (
+                <a href={(profile as any).twitter_url} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-1 hover:text-white transition-colors font-medium">
+                  𝕏
+                </a>
+              )}
+              {(profile as any).letterboxd_url && (
+                <a href={(profile as any).letterboxd_url} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-1 hover:text-white transition-colors">
+                  🎬 Letterboxd
+                </a>
+              )}
+              {(profile as any).imdb_url && (
+                <a href={(profile as any).imdb_url} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-1 hover:text-white transition-colors">
+                  ⭐ IMDb
                 </a>
               )}
             </div>

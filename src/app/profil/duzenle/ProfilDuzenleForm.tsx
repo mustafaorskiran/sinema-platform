@@ -44,9 +44,12 @@ interface Props {
   initialEmailOnFollow?: boolean
   initialEmailOnLike?: boolean
   initialEmailOnReply?: boolean
+  initialTwitterUrl?: string | null
+  initialLetterboxdUrl?: string | null
+  initialImdbUrl?: string | null
 }
 
-export default function ProfilDuzenleForm({ userId, initialUsername, initialAvatarUrl, initialBannerUrl, initialBio, initialLocation, initialWebsite, initialThemeColor, initialEmailNotifications = true, initialEmailOnFollow = true, initialEmailOnLike = false, initialEmailOnReply = true }: Props) {
+export default function ProfilDuzenleForm({ userId, initialUsername, initialAvatarUrl, initialBannerUrl, initialBio, initialLocation, initialWebsite, initialThemeColor, initialEmailNotifications = true, initialEmailOnFollow = true, initialEmailOnLike = false, initialEmailOnReply = true, initialTwitterUrl, initialLetterboxdUrl, initialImdbUrl }: Props) {
   const router = useRouter()
   const fileRef = useRef<HTMLInputElement>(null)
   const bannerFileRef = useRef<HTMLInputElement>(null)
@@ -122,6 +125,9 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
   const [emailOnFollow, setEmailOnFollow] = useState(initialEmailOnFollow)
   const [emailOnLike, setEmailOnLike] = useState(initialEmailOnLike)
   const [emailOnReply, setEmailOnReply] = useState(initialEmailOnReply)
+  const [twitterUrl, setTwitterUrl] = useState(initialTwitterUrl ?? '')
+  const [letterboxdUrl, setLetterboxdUrl] = useState(initialLetterboxdUrl ?? '')
+  const [imdbUrl, setImdbUrl] = useState(initialImdbUrl ?? '')
 
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -213,6 +219,9 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
         bio: bio.trim() || null,
         location: location.trim() || null,
         website: website.trim() || null,
+        twitter_url: twitterUrl.trim() || null,
+        letterboxd_url: letterboxdUrl.trim() || null,
+        imdb_url: imdbUrl.trim() || null,
         theme_color: themeColor,
         email_notifications: emailNotifications,
         email_on_follow: emailOnFollow,
@@ -315,6 +324,31 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
         <input type="url" value={website} onChange={e => setWebsite(e.target.value)} maxLength={200} placeholder="https://..."
           className="w-full rounded-lg bg-[--bg-secondary] border border-[--border] px-4 py-3 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
         />
+      </div>
+
+      {/* Sosyal Bağlantılar */}
+      <div>
+        <label className="block text-sm font-medium text-[--text-secondary] mb-3">Sosyal Bağlantılar</label>
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <span className="text-lg w-6 text-center">𝕏</span>
+            <input type="url" value={twitterUrl} onChange={e => setTwitterUrl(e.target.value)} maxLength={200} placeholder="https://x.com/kullaniciadi"
+              className="flex-1 rounded-lg bg-[--bg-secondary] border border-[--border] px-3 py-2.5 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-lg w-6 text-center">🎬</span>
+            <input type="url" value={letterboxdUrl} onChange={e => setLetterboxdUrl(e.target.value)} maxLength={200} placeholder="https://letterboxd.com/kullaniciadi"
+              className="flex-1 rounded-lg bg-[--bg-secondary] border border-[--border] px-3 py-2.5 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-lg w-6 text-center">⭐</span>
+            <input type="url" value={imdbUrl} onChange={e => setImdbUrl(e.target.value)} maxLength={200} placeholder="https://imdb.com/user/..."
+              className="flex-1 rounded-lg bg-[--bg-secondary] border border-[--border] px-3 py-2.5 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
+            />
+          </div>
+        </div>
       </div>
 
       {/* Profil Teması */}
