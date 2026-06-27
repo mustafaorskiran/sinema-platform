@@ -39,15 +39,16 @@ export default function LikeButton({ reviewId, initialCount, initialLiked, isLog
   return (
     <button
       onClick={handleClick}
-      className={`flex items-center gap-1.5 text-sm transition-colors ${
+      disabled={loading}
+      className={`flex items-center gap-1.5 text-sm transition-all duration-150 disabled:opacity-60 ${
         liked ? 'text-red-400 hover:text-red-300' : 'text-[--text-secondary] hover:text-red-400'
       }`}
     >
       {liked
-        ? <IconHeartFilled className="h-4 w-4 transition-transform active:scale-125" />
-        : <IconHeart className="h-4 w-4 transition-transform active:scale-125" />
+        ? <IconHeartFilled className="h-4 w-4 transition-all duration-150 scale-110" style={{ filter: 'drop-shadow(0 0 4px rgba(248,113,113,0.5))' }} />
+        : <IconHeart className="h-4 w-4 transition-transform hover:scale-110 active:scale-125" />
       }
-      {count > 0 && <span className="text-xs font-medium">{count}</span>}
+      {count > 0 && <span className="text-xs font-medium tabular-nums">{count}</span>}
     </button>
   )
 }

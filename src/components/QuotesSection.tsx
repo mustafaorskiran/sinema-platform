@@ -54,24 +54,36 @@ export default function QuotesSection({ mediaId, mediaType, isLoggedIn, title }:
   return (
     <div className="mt-10">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-white">Alıntılar</h2>
+        <div className="flex items-center gap-3">
+          <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
+          <h2 className="text-xl font-bold text-white tracking-tight">Alıntılar</h2>
+          {quotes.length > 0 && (
+            <span className="text-sm" style={{ color: 'rgba(255,255,255,0.3)' }}>({quotes.length})</span>
+          )}
+        </div>
         {isLoggedIn && !adding && (
           <button onClick={() => setAdding(true)}
-            className="text-sm text-[--accent] hover:underline">+ Alıntı Ekle</button>
+            className="text-xs px-3 py-1.5 rounded-full transition-all hover:scale-105"
+            style={{ background: 'rgba(212,168,67,0.1)', border: '1px solid rgba(212,168,67,0.2)', color: '#D4A843' }}>
+            + Alıntı Ekle
+          </button>
         )}
       </div>
 
       {quotes.length > 0 && (
         <div className="space-y-3 mb-4">
           {quotes.map(q => (
-            <blockquote key={q.id} className="rounded-xl bg-[--bg-card] border border-[--border] p-5 relative">
-              <div className="absolute -top-2 left-4 text-4xl text-[--accent]/30 font-serif leading-none select-none">"</div>
-              <p className="text-sm text-white leading-relaxed pt-2 italic">"{q.content}"</p>
+            <blockquote key={q.id}
+              className="rounded-xl p-5 relative overflow-hidden transition-all duration-200 hover:-translate-y-0.5"
+              style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.85), rgba(14,20,32,0.9))', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <span className="absolute top-2 right-4 text-5xl font-serif leading-none select-none pointer-events-none"
+                style={{ color: '#D4A843', opacity: 0.12 }} aria-hidden>"</span>
+              <p className="text-sm text-white leading-relaxed pt-1 italic">"{q.content}"</p>
               {q.character_name && (
-                <footer className="mt-2 text-xs text-[--accent] font-semibold">— {q.character_name}</footer>
+                <footer className="mt-2 text-xs font-semibold" style={{ color: '#D4A843' }}>— {q.character_name}</footer>
               )}
               {q.profiles && (
-                <p className="mt-1 text-[10px] text-[--text-secondary]">ekleyen: {q.profiles.username}</p>
+                <p className="mt-1.5 text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>ekleyen: @{q.profiles.username}</p>
               )}
             </blockquote>
           ))}
@@ -79,11 +91,13 @@ export default function QuotesSection({ mediaId, mediaType, isLoggedIn, title }:
       )}
 
       {quotes.length === 0 && !adding && (
-        <div className="rounded-xl bg-[--bg-card] border border-[--border] p-6 text-center">
-          <p className="text-[--text-secondary] text-sm mb-3">Henüz alıntı eklenmemiş.</p>
+        <div className="rounded-xl p-6 text-center"
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.7), rgba(14,20,32,0.8))', border: '1px solid rgba(255,255,255,0.05)' }}>
+          <p className="text-sm mb-3" style={{ color: 'rgba(255,255,255,0.4)' }}>Henüz alıntı eklenmemiş.</p>
           {isLoggedIn && (
             <button onClick={() => setAdding(true)}
-              className="text-sm bg-[--accent] hover:bg-[--accent-hover] text-white px-4 py-2 rounded-lg transition-colors">
+              className="text-sm px-5 py-2 rounded-lg transition-all hover:scale-105"
+              style={{ background: 'linear-gradient(135deg, #D4A843, #b8922a)', color: '#000', fontWeight: 600 }}>
               İlk Alıntıyı Ekle
             </button>
           )}
@@ -91,31 +105,45 @@ export default function QuotesSection({ mediaId, mediaType, isLoggedIn, title }:
       )}
 
       {adding && (
-        <form onSubmit={submitQuote} className="rounded-xl bg-[--bg-card] border border-[--border] p-5 space-y-3">
+        <form onSubmit={submitQuote} className="rounded-xl p-5 space-y-3"
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.95), rgba(14,20,32,0.98))', border: '1px solid rgba(212,168,67,0.15)' }}>
           {sent ? (
-            <p className="text-green-400 text-sm text-center py-4">✓ Alıntın incelemeye alındı, onaylandıktan sonra görünecek.</p>
+            <div className="text-center py-4">
+              <p className="text-2xl mb-2">✓</p>
+              <p className="text-green-400 text-sm">Alıntın incelemeye alındı, onaylandıktan sonra görünecek.</p>
+            </div>
           ) : (
             <>
               <div>
-                <label className="text-xs text-[--text-secondary] mb-1 block">Alıntı <span className="text-red-400">*</span></label>
+                <label className="text-xs font-semibold uppercase tracking-widest mb-2 block"
+                  style={{ color: 'rgba(255,255,255,0.4)' }}>Alıntı <span className="text-red-400 normal-case tracking-normal">*</span></label>
                 <textarea value={content} onChange={e => setContent(e.target.value)} rows={3} maxLength={500}
                   placeholder={`"${title}" filminden unutulmaz bir replik...`}
-                  className="w-full rounded-lg bg-[--bg-secondary] border border-[--border] px-3 py-2.5 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors resize-none"
+                  className="w-full rounded-lg px-3 py-2.5 text-sm text-white outline-none resize-none transition-all"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  onFocus={e => (e.target.style.borderColor = 'rgba(212,168,67,0.4)')}
+                  onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.08)')}
                 />
               </div>
               <div>
-                <label className="text-xs text-[--text-secondary] mb-1 block">Karakter (opsiyonel)</label>
+                <label className="text-xs font-semibold uppercase tracking-widest mb-2 block"
+                  style={{ color: 'rgba(255,255,255,0.4)' }}>Karakter <span className="font-normal normal-case tracking-normal">(opsiyonel)</span></label>
                 <input value={character} onChange={e => setCharacter(e.target.value)} maxLength={100}
                   placeholder="Tony Stark"
-                  className="w-full rounded-lg bg-[--bg-secondary] border border-[--border] px-3 py-2.5 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
+                  className="w-full rounded-lg px-3 py-2.5 text-sm text-white outline-none transition-all"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  onFocus={e => (e.target.style.borderColor = 'rgba(212,168,67,0.4)')}
+                  onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.08)')}
                 />
               </div>
-              <div className="flex gap-2 justify-end">
+              <div className="flex gap-2 justify-end pt-1">
                 <button type="button" onClick={() => setAdding(false)}
-                  className="px-4 py-2 text-sm text-[--text-secondary] hover:text-white transition-colors">İptal</button>
+                  className="px-4 py-2 text-sm rounded-lg transition-colors"
+                  style={{ color: 'rgba(255,255,255,0.4)' }}>İptal</button>
                 <button type="submit" disabled={sending || !content.trim()}
-                  className="px-4 py-2 text-sm bg-[--accent] hover:bg-[--accent-hover] text-white rounded-lg transition-colors disabled:opacity-50">
-                  {sending ? 'Gönderiliyor...' : 'Gönder'}
+                  className="px-5 py-2 text-sm rounded-lg font-semibold transition-all hover:scale-105 disabled:opacity-40 disabled:cursor-not-allowed"
+                  style={{ background: 'linear-gradient(135deg, #D4A843, #b8922a)', color: '#000' }}>
+                  {sending ? '⟳ Gönderiliyor...' : '✨ Gönder'}
                 </button>
               </div>
             </>

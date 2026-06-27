@@ -104,7 +104,8 @@ export default async function AlintilarPage() {
           {restQuotes.map((quote) => (
             <div
               key={quote.id}
-              className="break-inside-avoid bg-[--bg-card] border border-[--border] rounded-2xl p-6 mb-4 relative overflow-hidden group hover:border-[--accent]/30 transition-colors"
+              className="break-inside-avoid rounded-2xl p-6 mb-4 relative overflow-hidden group transition-all duration-200 hover:-translate-y-0.5"
+              style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
             >
               {/* Büyük tırnak işareti */}
               <span
@@ -125,7 +126,7 @@ export default async function AlintilarPage() {
                 </p>
               )}
 
-              <div className="flex items-center justify-between flex-wrap gap-2 mt-4 pt-3 border-t border-[--border]">
+              <div className="flex items-center justify-between flex-wrap gap-2 mt-4 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                 <Link
                   href={`/${quote.media_type === 'film' ? 'film' : 'dizi'}/${quote.media_id}`}
                   className="text-xs text-[--accent] hover:underline font-medium"
