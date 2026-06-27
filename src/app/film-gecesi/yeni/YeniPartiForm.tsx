@@ -65,14 +65,16 @@ export default function YeniPartiForm() {
       <div>
         <label className="block text-sm font-medium text-[--text-secondary] mb-2">Etkinlik Adı *</label>
         <input value={title} onChange={e => setTitle(e.target.value)} maxLength={200} placeholder="Haftalık Film Gecesi"
-          className="w-full rounded-lg bg-[--bg-secondary] border border-[--border] px-4 py-3 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
+          className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/25 outline-none transition-colors"
+          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
         />
       </div>
 
       <div>
         <label className="block text-sm font-medium text-[--text-secondary] mb-2">Açıklama</label>
         <textarea value={description} onChange={e => setDescription(e.target.value)} rows={3} maxLength={500}
-          className="w-full rounded-lg bg-[--bg-secondary] border border-[--border] px-4 py-3 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors resize-none"
+          className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/25 outline-none transition-colors resize-none"
+          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
         />
       </div>
 
@@ -89,16 +91,18 @@ export default function YeniPartiForm() {
           <input value={searchQ} onChange={e => setSearchQ(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), search())}
             placeholder="Film veya dizi ara..."
-            className="flex-1 rounded-lg bg-[--bg-secondary] border border-[--border] px-3 py-2.5 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
+            className="flex-1 rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-white/25 outline-none transition-colors"
+            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
           />
           <button type="button" onClick={search} disabled={searching}
-            className="px-4 py-2 bg-[--bg-secondary] border border-[--border] rounded-lg text-sm text-white hover:border-[--accent]/50 transition-colors">
+            className="px-4 py-2 rounded-lg text-sm text-white transition-colors hover:bg-white/10"
+            style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)' }}>
             {searching ? '...' : 'Ara'}
           </button>
         </div>
 
         {searchResults.length > 0 && (
-          <div className="rounded-lg border border-[--border] bg-[--bg-secondary] overflow-hidden mb-2">
+          <div className="rounded-lg overflow-hidden mb-2" style={{ background: 'rgba(14,20,32,0.95)', border: '1px solid rgba(255,255,255,0.08)' }}>
             {searchResults.map((r: any) => (
               <button key={r.id} type="button" onClick={() => addItem(r)}
                 className="w-full text-left px-3 py-2 text-sm text-white hover:bg-white/5 transition-colors border-b border-[--border]/50 last:border-0">
@@ -115,7 +119,8 @@ export default function YeniPartiForm() {
           <div className="space-y-1">
             {items.map((item, idx) => (
               <div key={`${item.media_id}-${item.media_type}`}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[--bg-secondary] border border-[--border]">
+                className="flex items-center gap-2 px-3 py-2 rounded-lg"
+                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
                 <span className="text-xs text-[--text-secondary] w-5">{idx + 1}.</span>
                 <span className="flex-1 text-sm text-white truncate">{item.title}</span>
                 <span className={`text-[10px] px-1.5 py-0.5 rounded ${item.media_type === 'film' ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-500/20 text-purple-400'}`}>
