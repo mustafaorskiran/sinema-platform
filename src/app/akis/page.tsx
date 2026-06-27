@@ -258,15 +258,25 @@ function EmptyFeed() {
         <IconUsers className="h-7 w-7 text-[--accent]" />
         <h1 className="text-2xl font-bold text-white">Arkadaş Akışı</h1>
       </div>
-      <div className="rounded-2xl bg-[--bg-card] border border-[--border] py-20 text-center px-6">
-        <IconUsers className="h-12 w-12 mx-auto mb-4 text-[--text-secondary] opacity-40" />
-        <p className="text-lg font-medium text-white mb-2">Akışın boş</p>
-        <p className="text-sm text-[--text-secondary] mb-6">
+      <div className="rounded-2xl py-20 text-center px-6"
+        style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="text-5xl mb-4">👥</div>
+        <p className="text-lg font-bold text-white mb-2">Akışın boş</p>
+        <p className="text-sm mb-6" style={{ color: 'rgba(255,255,255,0.4)' }}>
           Kullanıcıları takip etmeye başladığında yorumları, izledikleri ve günlükleri burada görünür.
         </p>
-        <Link href="/en-cok-yorumlanan" className="inline-block bg-[--accent] hover:bg-[--accent-hover] text-white text-sm font-semibold px-6 py-2.5 rounded-full transition-colors">
-          Popüler İçerikleri Keşfet
-        </Link>
+        <div className="flex flex-wrap justify-center gap-3">
+          <Link href="/kullanicilar"
+            className="inline-flex items-center gap-2 text-white text-sm font-semibold px-6 py-2.5 rounded-full transition-all hover:scale-105"
+            style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', boxShadow: '0 4px 14px rgba(225,29,72,0.3)' }}>
+            <IconUsers className="h-4 w-4" /> Kullanıcıları Keşfet
+          </Link>
+          <Link href="/benzer-kullanicilar"
+            className="inline-flex items-center gap-2 text-sm font-semibold px-6 py-2.5 rounded-full transition-all hover:scale-105"
+            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)' }}>
+            Sana Benzer Kullanıcılar →
+          </Link>
+        </div>
       </div>
     </div>
   )
