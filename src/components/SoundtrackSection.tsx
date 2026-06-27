@@ -54,24 +54,38 @@ export default function SoundtrackSection({ mediaId, mediaType, isLoggedIn }: Pr
   return (
     <div className="mt-10">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-white">🎵 Soundtrack</h2>
+        <div className="flex items-center gap-3">
+          <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #4ade80 0%, #22c55e 100%)' }} />
+          <h2 className="text-xl font-bold text-white tracking-tight">🎵 Soundtrack</h2>
+          {tracks.length > 0 && (
+            <span className="text-sm" style={{ color: 'rgba(255,255,255,0.3)' }}>({tracks.length})</span>
+          )}
+        </div>
         {isLoggedIn && !adding && (
-          <button onClick={() => setAdding(true)} className="text-sm text-[--accent] hover:underline">+ Şarkı Ekle</button>
+          <button onClick={() => setAdding(true)}
+            className="text-xs px-3 py-1.5 rounded-full transition-all hover:scale-105"
+            style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.2)', color: '#4ade80' }}>
+            + Şarkı Ekle
+          </button>
         )}
       </div>
 
       {tracks.length > 0 && (
         <div className="space-y-2 mb-4">
           {tracks.map(t => (
-            <div key={t.id} className="flex items-center gap-3 p-3 rounded-xl bg-[--bg-card] border border-[--border] hover:border-[--accent]/30 transition-colors">
-              <div className="h-10 w-10 rounded-lg bg-[--bg-secondary] flex items-center justify-center text-xl shrink-0">🎵</div>
+            <div key={t.id}
+              className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 hover:-translate-y-0.5"
+              style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.85), rgba(14,20,32,0.9))', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <div className="h-10 w-10 rounded-lg flex items-center justify-center text-xl shrink-0"
+                style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.15)' }}>🎵</div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-white truncate">{t.title}</p>
-                {t.artist && <p className="text-xs text-[--text-secondary] truncate">{t.artist}</p>}
+                {t.artist && <p className="text-xs truncate" style={{ color: 'rgba(255,255,255,0.4)' }}>{t.artist}</p>}
               </div>
               {t.spotify_url && (
                 <a href={t.spotify_url} target="_blank" rel="noopener noreferrer"
-                  className="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-[10px] font-semibold bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30 transition-colors">
+                  className="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-[10px] font-semibold transition-all hover:scale-105"
+                  style={{ background: 'rgba(29,185,84,0.15)', color: '#1db954', border: '1px solid rgba(29,185,84,0.3)' }}>
                   ▶ Spotify
                 </a>
               )}
@@ -81,11 +95,13 @@ export default function SoundtrackSection({ mediaId, mediaType, isLoggedIn }: Pr
       )}
 
       {tracks.length === 0 && !adding && (
-        <div className="rounded-xl bg-[--bg-card] border border-[--border] p-6 text-center">
-          <p className="text-[--text-secondary] text-sm mb-3">Henüz soundtrack eklenmemiş.</p>
+        <div className="rounded-xl p-6 text-center"
+          style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
+          <p className="text-sm mb-3" style={{ color: 'rgba(255,255,255,0.35)' }}>Henüz soundtrack eklenmemiş.</p>
           {isLoggedIn && (
             <button onClick={() => setAdding(true)}
-              className="text-sm bg-[--accent] hover:bg-[--accent-hover] text-white px-4 py-2 rounded-lg transition-colors">
+              className="text-sm px-5 py-2 rounded-lg transition-all hover:scale-105"
+              style={{ background: 'rgba(74,222,128,0.15)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.25)', fontWeight: 600 }}>
               Şarkı Ekle
             </button>
           )}
@@ -93,34 +109,51 @@ export default function SoundtrackSection({ mediaId, mediaType, isLoggedIn }: Pr
       )}
 
       {adding && (
-        <form onSubmit={submit} className="rounded-xl bg-[--bg-card] border border-[--border] p-5 space-y-3">
+        <form onSubmit={submit} className="rounded-xl p-5 space-y-3"
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.95), rgba(14,20,32,0.98))', border: '1px solid rgba(74,222,128,0.15)' }}>
           {sent ? (
-            <p className="text-green-400 text-sm text-center py-4">✓ Şarkı incelemeye alındı.</p>
+            <div className="text-center py-4">
+              <p className="text-2xl mb-2">✓</p>
+              <p className="text-green-400 text-sm">Şarkı incelemeye alındı.</p>
+            </div>
           ) : (
             <>
               <div>
-                <label className="text-xs text-[--text-secondary] mb-1 block">Şarkı Adı <span className="text-red-400">*</span></label>
+                <label className="text-xs font-semibold uppercase tracking-widest mb-2 block" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                  Şarkı Adı <span className="text-red-400 normal-case tracking-normal">*</span>
+                </label>
                 <input value={title} onChange={e => setTitle(e.target.value)} maxLength={200} placeholder="Şarkı adı"
-                  className="w-full rounded-lg bg-[--bg-secondary] border border-[--border] px-3 py-2.5 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
+                  className="w-full rounded-lg px-3 py-2.5 text-sm text-white outline-none transition-all"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  onFocus={e => (e.target.style.borderColor = 'rgba(74,222,128,0.4)')}
+                  onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.08)')}
                 />
               </div>
               <div>
-                <label className="text-xs text-[--text-secondary] mb-1 block">Sanatçı</label>
+                <label className="text-xs font-semibold uppercase tracking-widest mb-2 block" style={{ color: 'rgba(255,255,255,0.4)' }}>Sanatçı</label>
                 <input value={artist} onChange={e => setArtist(e.target.value)} maxLength={200} placeholder="Sanatçı adı"
-                  className="w-full rounded-lg bg-[--bg-secondary] border border-[--border] px-3 py-2.5 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
+                  className="w-full rounded-lg px-3 py-2.5 text-sm text-white outline-none transition-all"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  onFocus={e => (e.target.style.borderColor = 'rgba(74,222,128,0.4)')}
+                  onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.08)')}
                 />
               </div>
               <div>
-                <label className="text-xs text-[--text-secondary] mb-1 block">Spotify Linki</label>
+                <label className="text-xs font-semibold uppercase tracking-widest mb-2 block" style={{ color: 'rgba(255,255,255,0.4)' }}>Spotify Linki</label>
                 <input value={spotifyUrl} onChange={e => setSpotifyUrl(e.target.value)} maxLength={500} placeholder="https://open.spotify.com/..."
-                  className="w-full rounded-lg bg-[--bg-secondary] border border-[--border] px-3 py-2.5 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
+                  className="w-full rounded-lg px-3 py-2.5 text-sm text-white outline-none transition-all"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  onFocus={e => (e.target.style.borderColor = 'rgba(74,222,128,0.4)')}
+                  onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.08)')}
                 />
               </div>
-              <div className="flex gap-2 justify-end">
-                <button type="button" onClick={() => setAdding(false)} className="px-4 py-2 text-sm text-[--text-secondary] hover:text-white transition-colors">İptal</button>
+              <div className="flex gap-2 justify-end pt-1">
+                <button type="button" onClick={() => setAdding(false)}
+                  className="px-4 py-2 text-sm rounded-lg transition-colors" style={{ color: 'rgba(255,255,255,0.4)' }}>İptal</button>
                 <button type="submit" disabled={sending || !title.trim()}
-                  className="px-4 py-2 text-sm bg-[--accent] hover:bg-[--accent-hover] text-white rounded-lg transition-colors disabled:opacity-50">
-                  {sending ? 'Gönderiliyor...' : 'Gönder'}
+                  className="px-5 py-2 text-sm rounded-lg font-semibold transition-all hover:scale-105 disabled:opacity-40"
+                  style={{ background: 'rgba(74,222,128,0.2)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.3)' }}>
+                  {sending ? '⟳ Gönderiliyor...' : '🎵 Ekle'}
                 </button>
               </div>
             </>
