@@ -121,7 +121,11 @@ export default async function EnCokYorumlananPage({ searchParams }: Props) {
               <Link
                 key={`${item.media_type}-${item.media_id}`}
                 href={href}
-                className="flex items-center gap-4 rounded-xl bg-[--bg-card] border border-[--border] p-3 hover:border-[--accent]/40 transition-colors group"
+                className="flex items-center gap-4 rounded-xl p-3 transition-all duration-200 hover:-translate-y-0.5 group"
+                style={{
+                  background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))',
+                  border: `1px solid ${rank <= 3 ? 'rgba(212,168,67,0.15)' : 'rgba(255,255,255,0.06)'}`,
+                }}
               >
                 {/* Sıra numarası */}
                 <div className={`w-8 text-center text-lg font-bold shrink-0 ${
