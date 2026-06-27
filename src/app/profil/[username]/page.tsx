@@ -255,7 +255,7 @@ export default async function ProfilPage({ params }: Props) {
                   İstatistikler
                 </Link>
                 <Link
-                  href={`/profil/${username}/yil-ozeti`}
+                  href={`/ozet/${new Date().getFullYear()}`}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[--border] text-sm text-[--text-secondary] hover:text-white hover:border-white/30 transition-colors"
                 >
                   <IconClapperboard className="h-3.5 w-3.5" />
@@ -280,7 +280,7 @@ export default async function ProfilPage({ params }: Props) {
                   İstatistikler
                 </Link>
                 <Link
-                  href={`/profil/${username}/yil-ozeti`}
+                  href={`/ozet/${new Date().getFullYear()}`}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[--border] text-sm text-[--text-secondary] hover:text-white hover:border-white/30 transition-colors"
                 >
                   <IconClapperboard className="h-3.5 w-3.5" />
