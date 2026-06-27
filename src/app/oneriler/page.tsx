@@ -4,6 +4,7 @@ import { discoverMovies, discoverSeries, getPosterUrl, getMovieMini, getSeriesMi
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { GENRE_MAP } from '@/lib/genres'
+import AiOneriWidget from '@/components/AiOneriWidget'
 
 export const metadata: Metadata = { title: 'Öneriler | Sinezon' }
 
@@ -165,6 +166,11 @@ export default async function OnerilerPage() {
             ? `${totalSeen} izlediğin içeriğe ve zevklerine göre hazırlandı`
             : 'Film ve dizi izledikçe öneriler daha da kişiselleşir'}
         </p>
+      </div>
+
+      {/* AI Öneri Widget */}
+      <div className="mb-10">
+        <AiOneriWidget />
       </div>
 
       {/* İstatistikler */}
