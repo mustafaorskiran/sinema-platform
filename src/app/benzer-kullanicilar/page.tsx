@@ -106,7 +106,8 @@ function LowDataPage({ count }: { count: number }) {
           Film Keşfet →
         </Link>
         <Link href="/diziler"
-          className="px-6 py-2.5 bg-[--bg-card] border border-[--border] hover:border-[--accent]/50 text-white text-sm rounded-full transition-colors">
+          className="px-6 py-2.5 text-white text-sm rounded-full transition-all hover:scale-105"
+          style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
           Dizi Keşfet →
         </Link>
       </div>

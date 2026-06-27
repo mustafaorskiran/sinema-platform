@@ -193,7 +193,8 @@ export default async function DizilerPage({ searchParams }: Props) {
             <>
               <div className="space-y-2">
                 {results.map((s: any) => (
-                  <div key={s.id} className="flex gap-3 p-3 rounded-xl bg-[--bg-card] border border-[--border] hover:border-[--accent]/30 transition-colors">
+                  <div key={s.id} className="flex gap-3 p-3 rounded-xl transition-all hover:-translate-y-0.5"
+                    style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                     <a href={`/dizi/${s.id}`}>
                       <img
                         src={s.poster_path ? `https://image.tmdb.org/t/p/w92${s.poster_path}` : '/placeholder.png'}

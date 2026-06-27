@@ -102,7 +102,8 @@ export default function BenzerClient({ similarUsers, picks, followingIds: initia
           </div>
 
           {/* Tab filtresi */}
-          <div className="flex items-center gap-1 bg-[--bg-card] border border-[--border] rounded-xl p-1 shrink-0">
+          <div className="flex items-center gap-1 rounded-xl p-1 shrink-0"
+            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
             {([
               ['tumu',  `Tümü (${picks.length})`],
               ['film',  `Film (${filmCount})`],
@@ -202,7 +203,8 @@ function UserCard({ user, isFollowing, loading, onFollow }: {
 function PickCard({ pick }: { pick: Pick }) {
   return (
     <Link href={`/${pick.media_type}/${pick.media_id}`} className="group block">
-      <div className="aspect-[2/3] rounded-xl overflow-hidden bg-[--bg-card] border border-[--border] group-hover:border-[--accent]/50 transition-colors relative">
+      <div className="aspect-[2/3] rounded-xl overflow-hidden relative transition-all group-hover:border-[--accent]/50"
+        style={{ background: 'rgba(20,28,47,0.9)', border: '1px solid rgba(255,255,255,0.06)' }}>
         {pick.poster
           ? <img src={pick.poster} alt={pick.title}
               className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" />
