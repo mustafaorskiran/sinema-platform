@@ -60,7 +60,7 @@ export default function ArkadaOnerisiWidget() {
           <a href={`/profil/${s.username}`}>
             {s.avatar_url
               ? <img src={s.avatar_url} alt="" className="h-12 w-12 rounded-full object-cover shrink-0" />
-              : <div className="h-12 w-12 rounded-full bg-[--bg-secondary] flex items-center justify-center text-white font-bold text-lg shrink-0">{s.username[0]?.toUpperCase()}</div>}
+              : <div className="h-12 w-12 rounded-full flex items-center justify-center text-white font-bold text-lg shrink-0" style={{ background: 'rgba(225,29,72,0.25)' }}>{s.username[0]?.toUpperCase()}</div>}
           </a>
           <div className="flex-1 min-w-0">
             <a href={`/profil/${s.username}`} className="text-sm font-semibold text-white hover:text-[--accent] transition-colors">@{s.username}</a>

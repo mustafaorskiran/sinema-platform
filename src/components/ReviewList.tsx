@@ -183,7 +183,7 @@ export default function ReviewList({ reviews, currentUserId, likeData = {}, repl
                     </span>
                   )}
                   {/* Puan */}
-                  <div className="flex items-center gap-1 rounded-full px-3 py-1" style={{ background: 'var(--bg-secondary)' }}>
+                  <div className="flex items-center gap-1 rounded-full px-3 py-1" style={{ background: 'rgba(212,168,67,0.1)', border: '1px solid rgba(212,168,67,0.2)' }}>
                     <IconStarFilled className="h-3.5 w-3.5 text-[--gold]" />
                     <span className="text-sm font-bold text-[--gold]">{review.rating}/10</span>
                   </div>
