@@ -90,7 +90,7 @@ export default async function EmbedProfilPage({ params }: Props) {
               <div style={{
                 width: '48px', height: '48px', borderRadius: '50%', overflow: 'hidden',
                 background: 'rgba(255,255,255,0.08)', flexShrink: 0,
-                border: profile.is_premium ? '2px solid #D4A843' : '2px solid rgba(255,255,255,0.1)',
+                border: '2px solid rgba(255,255,255,0.1)',
               }}>
                 {profile.avatar_url && (
                   <img src={profile.avatar_url} alt={username} width={48} height={48} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -101,9 +101,6 @@ export default async function EmbedProfilPage({ params }: Props) {
                   <span style={{ fontWeight: 700, fontSize: '15px', color: '#fff' }}>
                     {profile.full_name || username}
                   </span>
-                  {profile.is_premium && (
-                    <span style={{ fontSize: '12px', color: '#D4A843' }}>⭐</span>
-                  )}
                 </div>
                 <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.45)' }}>@{username}</span>
               </div>

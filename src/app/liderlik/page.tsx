@@ -199,9 +199,6 @@ export default async function LiderlikPage({ searchParams }: Props) {
                       {user.username[0]?.toUpperCase()}
                     </div>
                 }
-                {user.is_premium && (
-                  <span className="absolute -bottom-0.5 -right-0.5 text-[9px]">⭐</span>
-                )}
               </div>
               {/* İsim */}
               <div className="flex-1 min-w-0">

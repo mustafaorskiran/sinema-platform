@@ -24,7 +24,7 @@ const FEATURES = [
 const FAQ = [
   {
     q: 'Sinezon ücretsiz mi?',
-    a: 'Temel özellikler tamamen ücretsiz. Premium üyelik ile daha fazla liste, özel rozetler ve reklamsız deneyim sunarız.',
+    a: 'Evet! Sinezon\'daki tüm özellikler sonsuza kadar tamamen ücretsizdir. Kredi kartı veya abonelik gerekmez.',
   },
   {
     q: 'Hangi dilleri destekliyor?',
