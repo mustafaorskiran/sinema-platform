@@ -382,14 +382,18 @@ export default async function DiziPage({ params }: Props) {
             <div className="flex flex-wrap gap-2 mt-4">
               {series.genres?.map((g) => {
                 const slug = tvGenreToSlug(g.id)
+                const cls = 'text-[11px] font-medium px-3.5 py-1.5 rounded-full transition-all duration-200 hover:scale-105'
+                const style = { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.55)' }
+                const activeStyle = { background: 'rgba(212,168,67,0.08)', border: '1px solid rgba(212,168,67,0.3)', color: 'rgba(212,168,67,0.85)' }
                 return slug ? (
-                  <a key={g.id} href={`/tur/${slug}`} className="px-3 py-1 rounded-full bg-[--bg-card] border border-[--border] text-xs text-[--text-secondary] hover:border-[--accent]/60 hover:text-white transition-colors">
+                  <a key={g.id} href={`/tur/${slug}`} className={cls}
+                    style={style}
+                    onMouseEnter={e => Object.assign((e.currentTarget as HTMLElement).style, activeStyle)}
+                    onMouseLeave={e => Object.assign((e.currentTarget as HTMLElement).style, style)}>
                     {g.name}
                   </a>
                 ) : (
-                  <span key={g.id} className="px-3 py-1 rounded-full bg-[--bg-card] border border-[--border] text-xs text-[--text-secondary]">
-                    {g.name}
-                  </span>
+                  <span key={g.id} className={cls} style={style}>{g.name}</span>
                 )
               })}
             </div>
@@ -398,15 +402,16 @@ export default async function DiziPage({ params }: Props) {
             {(series as { networks?: { id: number; name: string; logo_path: string | null }[] }).networks?.length ? (
               <div className="flex flex-wrap gap-2 mt-3">
                 {(series as { networks?: { id: number; name: string; logo_path: string | null }[] }).networks!.map(n => (
-                  <div key={n.id} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[--bg-card] border border-[--border]">
+                  <div key={n.id} className="flex items-center gap-2 px-3 py-2 rounded-xl"
+                    style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
                     {n.logo_path && (
                       <img
                         src={`https://image.tmdb.org/t/p/w45${n.logo_path}`}
                         alt={n.name}
-                        className="h-4 object-contain"
+                        className="h-4 object-contain opacity-70"
                       />
                     )}
-                    <span className="text-xs text-[--text-secondary]">{n.name}</span>
+                    <span className="text-[12px]" style={{ color: 'rgba(255,255,255,0.45)' }}>{n.name}</span>
                   </div>
                 ))}
               </div>
@@ -476,59 +481,66 @@ export default async function DiziPage({ params }: Props) {
             )}
 
             {/* ── Bilgi Kartları ── */}
-            <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-x-5 gap-y-4 rounded-2xl p-5 max-w-xl" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-              {series.first_air_date && (
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.1em] mb-1" style={{ color: 'var(--text-secondary)', opacity: 0.55 }}>İlk Yayın</p>
-                  <p className="text-[13px] font-medium" style={{ color: 'var(--text-primary)' }}>
-                    {new Date(series.first_air_date).toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' })}
-                  </p>
-                </div>
-              )}
-              {series.number_of_seasons && (
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.1em] mb-1" style={{ color: 'var(--text-secondary)', opacity: 0.55 }}>Sezon / Bölüm</p>
-                  <p className="text-[13px] font-medium" style={{ color: 'var(--text-primary)' }}>
-                    {series.number_of_seasons} sezon{series.number_of_episodes ? ` · ${series.number_of_episodes} bölüm` : ''}
-                  </p>
-                </div>
-              )}
-              {(series as any).spoken_languages?.[0] && (
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.1em] mb-1" style={{ color: 'var(--text-secondary)', opacity: 0.55 }}>Orijinal Dil</p>
-                  <p className="text-[13px] font-medium" style={{ color: 'var(--text-primary)' }}>
-                    {((series as any).spoken_languages as Array<{ english_name?: string; name: string }>)
-                      .slice(0, 2).map((l) => l.english_name || l.name).join(', ')}
-                  </p>
-                </div>
-              )}
-              {(series as any).production_countries?.[0] && (
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.1em] mb-1" style={{ color: 'var(--text-secondary)', opacity: 0.55 }}>Ülke</p>
-                  <p className="text-[13px] font-medium" style={{ color: 'var(--text-primary)' }}>
-                    {((series as any).production_countries as Array<{ name: string }>)
-                      .slice(0, 2).map((c) => c.name).join(', ')}
-                  </p>
-                </div>
-              )}
-              {director && (
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.1em] mb-1" style={{ color: 'var(--text-secondary)', opacity: 0.55 }}>
-                    {director.job === 'Creator' ? 'Yaratıcı' : 'Yönetmen'}
-                  </p>
-                  <a href={`/oyuncu/${director.id}`} className="text-[13px] font-medium hover:text-[--accent] transition-colors" style={{ color: 'var(--text-primary)' }}>
-                    {director.name}
-                  </a>
-                </div>
-              )}
-              {(series as any).networks?.[0] && (
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.1em] mb-1" style={{ color: 'var(--text-secondary)', opacity: 0.55 }}>Yayın Ağı</p>
-                  <p className="text-[13px] font-medium" style={{ color: 'var(--text-primary)' }}>
-                    {(series as any).networks[0].name}
-                  </p>
-                </div>
-              )}
+            <div className="mt-6 rounded-2xl overflow-hidden max-w-xl"
+              style={{
+                background: 'linear-gradient(160deg, rgba(20,28,47,0.95) 0%, rgba(14,20,32,0.98) 100%)',
+                border: '1px solid rgba(212,168,67,0.12)',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+              }}>
+              <div className="grid grid-cols-2 sm:grid-cols-3 divide-y sm:divide-y-0">
+                {[
+                  series.first_air_date && {
+                    label: 'İlk Yayın',
+                    value: new Date(series.first_air_date).toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' }),
+                    link: null,
+                  },
+                  series.number_of_seasons && {
+                    label: 'Sezon / Bölüm',
+                    value: `${series.number_of_seasons} sezon${series.number_of_episodes ? ` · ${series.number_of_episodes} bölüm` : ''}`,
+                    link: null,
+                  },
+                  (series as any).spoken_languages?.[0] && {
+                    label: 'Orijinal Dil',
+                    value: ((series as any).spoken_languages as Array<{ english_name?: string; name: string }>)
+                      .slice(0, 2).map(l => l.english_name || l.name).join(', '),
+                    link: null,
+                  },
+                  (series as any).production_countries?.[0] && {
+                    label: 'Ülke',
+                    value: ((series as any).production_countries as Array<{ name: string }>)
+                      .slice(0, 2).map(c => c.name).join(', '),
+                    link: null,
+                  },
+                  director && {
+                    label: director.job === 'Creator' ? 'Yaratıcı' : 'Yönetmen',
+                    value: director.name,
+                    link: `/oyuncu/${director.id}`,
+                  },
+                  (series as any).networks?.[0] && {
+                    label: 'Yayın Ağı',
+                    value: (series as any).networks[0].name,
+                    link: null,
+                  },
+                ].filter(Boolean).map((item: any, i, arr) => (
+                  <div key={item.label}
+                    className="px-5 py-4"
+                    style={{
+                      borderRight: (i + 1) % 3 !== 0 && i < arr.length - 1 ? '1px solid rgba(212,168,67,0.08)' : undefined,
+                      borderBottom: i < arr.length - 3 ? '1px solid rgba(212,168,67,0.08)' : undefined,
+                    }}>
+                    <p className="text-[9.5px] font-bold uppercase tracking-[0.14em] mb-1.5" style={{ color: 'rgba(212,168,67,0.45)' }}>
+                      {item.label}
+                    </p>
+                    {item.link ? (
+                      <a href={item.link} className="text-[13px] font-semibold transition-colors hover:text-[--accent]" style={{ color: 'rgba(255,255,255,0.85)' }}>
+                        {item.value}
+                      </a>
+                    ) : (
+                      <p className="text-[13px] font-semibold" style={{ color: 'rgba(255,255,255,0.85)' }}>{item.value}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
 
             <WatchProviders allProviders={watchProviders} mediaType="dizi" />
@@ -555,10 +567,11 @@ export default async function DiziPage({ params }: Props) {
 
         {/* ── Featured Fragman ── */}
         {trailer && (
-          <div className="mt-10">
-            <h2 className="text-xl font-bold text-white mb-4" style={{ borderLeft: '3px solid var(--accent)', paddingLeft: '12px' }}>
-              Fragman
-            </h2>
+          <div className="mt-12">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
+              <h2 className="text-xl font-bold text-white tracking-tight">Fragman</h2>
+            </div>
             <div className="relative w-full rounded-2xl overflow-hidden" style={{ paddingBottom: '56.25%', background: 'var(--bg-card)' }}>
               <iframe
                 src={`https://www.youtube.com/embed/${trailer.key}?modestbranding=1&rel=0`}
@@ -606,22 +619,31 @@ export default async function DiziPage({ params }: Props) {
 
         {/* Arkadaşların Puanları */}
         {friendsRatings.length > 0 && (
-          <div className="mt-10">
-            <h2 className="text-lg font-bold text-white mb-3">👥 Takip Ettiklerinin Puanları</h2>
-            <div className="flex flex-wrap gap-3">
+          <div className="mt-12">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%)' }} />
+              <h2 className="text-xl font-bold text-white tracking-tight">Takip Ettiklerinin Puanları</h2>
+            </div>
+            <div className="flex flex-wrap gap-2.5">
               {friendsRatings.map(fr => (
-                <a key={fr.username} href={`/profil/${fr.username}`} className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[--bg-card] border border-[--border] hover:border-[--accent]/50 transition-colors">
-                  <div className="h-7 w-7 rounded-full bg-[--accent] flex items-center justify-center text-xs font-bold text-white overflow-hidden shrink-0">
+                <a key={fr.username} href={`/profil/${fr.username}`}
+                  className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl transition-all duration-200 hover:scale-105"
+                  style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  onMouseEnter={e => Object.assign((e.currentTarget as HTMLElement).style, { background: 'rgba(212,168,67,0.07)', border: '1px solid rgba(212,168,67,0.25)' })}
+                  onMouseLeave={e => Object.assign((e.currentTarget as HTMLElement).style, { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' })}
+                >
+                  <div className="h-7 w-7 rounded-full bg-[--accent] flex items-center justify-center text-xs font-bold text-white overflow-hidden shrink-0"
+                    style={{ border: '1px solid rgba(255,255,255,0.1)' }}>
                     {fr.avatar_url ? <img src={fr.avatar_url} alt={fr.username} className="w-full h-full object-cover" /> : fr.username[0]?.toUpperCase()}
                   </div>
-                  <span className="text-sm text-[--text-secondary]">{fr.username}</span>
-                  <span className="text-sm font-bold text-[--gold]">★ {fr.rating}/10</span>
+                  <span className="text-[12px]" style={{ color: 'rgba(255,255,255,0.55)' }}>{fr.username}</span>
+                  <span className="text-[13px] font-bold" style={{ color: '#D4A843' }}>★ {fr.rating}</span>
                 </a>
               ))}
             </div>
             {friendsRatings.length > 1 && (
-              <p className="text-xs text-[--text-secondary] mt-2">
-                Takip ettiklerin ortalaması: <span className="font-bold text-white">{(friendsRatings.reduce((s, r) => s + r.rating, 0) / friendsRatings.length).toFixed(1)}/10</span>
+              <p className="text-[11px] mt-3" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                Ortalama: <span className="font-bold" style={{ color: '#D4A843' }}>{(friendsRatings.reduce((s, r) => s + r.rating, 0) / friendsRatings.length).toFixed(1)}/10</span>
               </p>
             )}
           </div>
@@ -659,9 +681,12 @@ export default async function DiziPage({ params }: Props) {
 
         <div className="mt-12 grid lg:grid-cols-3 gap-8" id="yorumlar">
           <div className="lg:col-span-1">
-            <h2 className="text-xl font-bold text-white mb-5">
-              {userReview ? 'Yorumunu Düzenle' : 'Yorum Yaz'}
-            </h2>
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #E11D48 0%, #E11D4880 100%)' }} />
+              <h2 className="text-xl font-bold text-white tracking-tight">
+                {userReview ? 'Yorumunu Düzenle' : 'Yorum Yaz'}
+              </h2>
+            </div>
             {user && (
               <div className="mb-5">
                 <PrivateNoteWidget mediaId={seriesId} mediaType="dizi" initialNote={privateNote} />
@@ -685,9 +710,12 @@ export default async function DiziPage({ params }: Props) {
           </div>
 
           <div className="lg:col-span-2">
-            <h2 className="text-xl font-bold text-white mb-5">
-              Yorumlar <span className="text-[--text-secondary] font-normal text-base">({reviews?.length ?? 0})</span>
-            </h2>
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #E11D48 0%, #E11D4880 100%)' }} />
+              <h2 className="text-xl font-bold text-white tracking-tight">
+                Yorumlar <span className="font-normal text-base" style={{ color: 'rgba(255,255,255,0.35)' }}>({reviews?.length ?? 0})</span>
+              </h2>
+            </div>
             <ReviewList reviews={reviews ?? []} currentUserId={user?.id} likeData={likeData} replyCount={replyCount} helpfulData={helpfulData} />
           </div>
         </div>
@@ -698,13 +726,20 @@ export default async function DiziPage({ params }: Props) {
         {/* Benzer Diziler */}
         {similar.length > 0 && (
           <div className="mt-12" id="benzer">
-            <h2 className="text-xl font-bold text-white mb-5" style={{ borderLeft: '3px solid var(--accent)', paddingLeft: '12px' }}>Benzer Diziler</h2>
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
+              <h2 className="text-xl font-bold text-white tracking-tight">Benzer Diziler</h2>
+            </div>
             <div className="home-carousel-scroll flex gap-3 overflow-x-auto pb-3">
               {similar.map((item) => (
                 <a key={item.id} href={`/dizi/${item.id}`} className="group shrink-0 w-[128px]" style={{ scrollSnapAlign: 'start' }}>
                   <div
-                    className="aspect-[2/3] rounded-xl overflow-hidden transition-all duration-200 group-hover:-translate-y-1.5 movie-card-grid"
-                    style={{ background: 'var(--bg-card)' }}
+                    className="aspect-[2/3] rounded-xl overflow-hidden transition-all duration-200 group-hover:-translate-y-1.5"
+                    style={{
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.06)',
+                      boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
+                    }}
                   >
                     {getPosterUrl(item.poster_path, 'w342') ? (
                       <img
@@ -713,16 +748,16 @@ export default async function DiziPage({ params }: Props) {
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-[--text-secondary] text-xs p-2 text-center">
+                      <div className="w-full h-full flex items-center justify-center text-xs p-2 text-center" style={{ color: 'rgba(255,255,255,0.3)' }}>
                         {getMediaTitle(item)}
                       </div>
                     )}
                   </div>
-                  <p className="mt-1.5 text-[12px] leading-tight text-[--text-secondary] line-clamp-2 group-hover:text-white transition-colors">
+                  <p className="mt-1.5 text-[12px] leading-tight line-clamp-2 transition-colors" style={{ color: 'rgba(255,255,255,0.45)' }}>
                     {getMediaTitle(item)}
                   </p>
                   {getMediaYear(item) && (
-                    <p className="text-[11px] mt-0.5 text-[--text-secondary]/50">{getMediaYear(item)}</p>
+                    <p className="text-[11px] mt-0.5" style={{ color: 'rgba(255,255,255,0.25)' }}>{getMediaYear(item)}</p>
                   )}
                 </a>
               ))}

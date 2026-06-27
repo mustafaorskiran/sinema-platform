@@ -194,8 +194,11 @@ export default function SinezonStats({
       {/* Topluluk istatistikleri */}
       {(watchedCount + wantCount + reviewCount) > 0 && (
         <div
-          className="flex flex-wrap gap-4 rounded-xl px-4 py-3"
-          style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+          className="flex flex-wrap gap-4 rounded-2xl px-4 py-3"
+          style={{
+            background: 'linear-gradient(160deg, rgba(20,28,47,0.9) 0%, rgba(14,20,32,0.95) 100%)',
+            border: '1px solid rgba(212,168,67,0.1)',
+          }}
         >
           {watchedCount > 0 && (
             <StatChip icon={<IconEye className="h-3.5 w-3.5" />} value={fmt(watchedCount)} label="izledi" iconColor="#4ade80" />
