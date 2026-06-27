@@ -10,6 +10,7 @@ import LikeButton from './LikeButton'
 import ReviewReplySection from './ReviewReplySection'
 import ReportButton from './ReportButton'
 import HelpfulButton from './HelpfulButton'
+import UserHoverCard from './UserHoverCard'
 
 interface ReviewListProps {
   reviews: Review[]
@@ -158,9 +159,11 @@ export default function ReviewList({ reviews, currentUserId, likeData = {}, repl
                   </Link>
                   <div>
                     <div className="flex items-center gap-1.5">
-                      <Link href={`/profil/${username}`} className="font-semibold text-white text-sm hover:text-[--accent] transition-colors">
-                        {username}
-                      </Link>
+                      <UserHoverCard username={username}>
+                        <Link href={`/profil/${username}`} className="font-semibold text-white text-sm hover:text-[--accent] transition-colors">
+                          {username}
+                        </Link>
+                      </UserHoverCard>
                       {isAdmin && (
                         <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded"
                           style={{ background: 'rgba(225,29,72,0.12)', color: 'var(--accent)', border: '1px solid rgba(225,29,72,0.25)' }}>
