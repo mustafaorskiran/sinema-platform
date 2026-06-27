@@ -2,11 +2,13 @@ import { IconSearch, IconUser } from '@/components/icons'
 import { getProfileUrl, searchPeople } from '@/lib/tmdb'
 import MovieCard from '@/components/MovieCard'
 import Link from 'next/link'
+import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
+import AramaFiltreler from './AramaFiltreler'
 import type { Metadata } from 'next'
 
 interface Props {
-  searchParams: Promise<{ q?: string; sayfa?: string; tip?: string }>
+  searchParams: Promise<{ q?: string; sayfa?: string; tip?: string; yil?: string; tur?: string; min_puan?: string }>
 }
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
@@ -31,7 +33,7 @@ const DEPT_TR: Record<string, string> = {
 }
 
 export default async function AramaPage({ searchParams }: Props) {
-  const { q, sayfa, tip = 'hepsi' } = await searchParams
+  const { q, sayfa, tip = 'hepsi', yil, tur, min_puan } = await searchParams
   const page   = Math.max(1, Number(sayfa) || 1)
   const offset = (page - 1) * PAGE_SIZE
 
@@ -56,17 +58,27 @@ export default async function AramaPage({ searchParams }: Props) {
     kisilerData,
   ] = await Promise.all([
     (tip === 'hepsi' || tip === 'film')
-      ? supabase.from('movies').select('*', { count: 'exact' })
-          .or(`title.ilike.%${term}%,original_title.ilike.%${term}%`)
-          .order('popularity', { ascending: false })
-          .range(tip === 'film' ? offset : 0, tip === 'film' ? offset + PAGE_SIZE - 1 : 9)
+      ? (() => {
+          let q2 = supabase.from('movies').select('*', { count: 'exact' })
+            .or(`title.ilike.%${term}%,original_title.ilike.%${term}%`)
+          if (yil) q2 = q2.eq('release_year', Number(yil))
+          if (tur) q2 = (q2 as any).contains('genre_ids', [Number(tur)])
+          if (min_puan) q2 = q2.gte('vote_average', Number(min_puan))
+          return q2.order('popularity', { ascending: false })
+            .range(tip === 'film' ? offset : 0, tip === 'film' ? offset + PAGE_SIZE - 1 : 9)
+        })()
       : Promise.resolve({ data: [], count: 0 }),
 
     (tip === 'hepsi' || tip === 'dizi')
-      ? supabase.from('series').select('*', { count: 'exact' })
-          .or(`name.ilike.%${term}%,original_name.ilike.%${term}%`)
-          .order('popularity', { ascending: false })
-          .range(tip === 'dizi' ? offset : 0, tip === 'dizi' ? offset + PAGE_SIZE - 1 : 9)
+      ? (() => {
+          let q2 = supabase.from('series').select('*', { count: 'exact' })
+            .or(`name.ilike.%${term}%,original_name.ilike.%${term}%`)
+          if (yil) q2 = (q2 as any).eq('first_air_year', Number(yil))
+          if (tur) q2 = (q2 as any).contains('genre_ids', [Number(tur)])
+          if (min_puan) q2 = (q2 as any).gte('vote_average', Number(min_puan))
+          return q2.order('popularity', { ascending: false })
+            .range(tip === 'dizi' ? offset : 0, tip === 'dizi' ? offset + PAGE_SIZE - 1 : 9)
+        })()
       : Promise.resolve({ data: [], count: 0 }),
 
     (tip === 'hepsi' || tip === 'kullanici')
@@ -103,7 +115,7 @@ export default async function AramaPage({ searchParams }: Props) {
     { key: 'kullanici', label: 'Kullanıcılar',       count: totalKullanicilar },
   ]
 
-  const baseUrl = `/arama?q=${encodeURIComponent(q)}&tip=${tip}`
+  const baseUrl = `/arama?q=${encodeURIComponent(q)}&tip=${tip}${yil ? `&yil=${yil}` : ''}${tur ? `&tur=${tur}` : ''}${min_puan ? `&min_puan=${min_puan}` : ''}`
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -117,7 +129,7 @@ export default async function AramaPage({ searchParams }: Props) {
       </div>
 
       {/* Sekmeler */}
-      <div className="flex items-center gap-1 border-b border-[--border] mb-8 overflow-x-auto">
+      <div className="flex items-center gap-1 border-b border-[--border] mb-4 overflow-x-auto">
         {tabs.map(t => (
           <Link key={t.key} href={`/arama?q=${encodeURIComponent(q)}&tip=${t.key}`}
             className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap ${
@@ -128,6 +140,11 @@ export default async function AramaPage({ searchParams }: Props) {
           </Link>
         ))}
       </div>
+
+      {/* Gelişmiş Filtreler */}
+      <Suspense fallback={null}>
+        <AramaFiltreler tip={tip} q={q} />
+      </Suspense>
 
       {/* Oyuncu & Yönetmen */}
       {(tip === 'hepsi' || tip === 'kisi') && kisiler.length > 0 && (
