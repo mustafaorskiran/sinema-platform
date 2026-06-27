@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import SinezonStats from '@/components/SinezonStats'
-import { getSeriesDetail, getSimilarSeries, getBackdropUrl, getPosterUrl, getMediaTitle, getMediaYear, getTVWatchProviders, getSeriesImages, getSeriesKeywords, getSeriesCertification, getTVVideos } from '@/lib/tmdb'
+import { getSeriesDetail, getSimilarSeries, getBackdropUrl, getPosterUrl, getMediaTitle, getMediaYear, getTVWatchProviders, getSeriesImages, getSeriesKeywords, getSeriesCertification, getTVVideos, getPersonCredits } from '@/lib/tmdb'
 import { tvGenreToSlug } from '@/lib/genres'
 import { createClient } from '@/lib/supabase/server'
 import ReviewForm from '@/components/ReviewForm'
@@ -253,6 +253,18 @@ export default async function DiziPage({ params, searchParams }: Props) {
   const cast = series.credits?.cast?.slice(0, 12) ?? []
   const director = series.credits?.crew?.find((c) => c.job === 'Director' || c.job === 'Series Director' || c.job === 'Creator')
   const trailer = series.videos?.results?.find((v) => v.type === 'Trailer' && v.site === 'YouTube')
+
+  // Creator/yönetmenin diğer dizileri
+  let directorOtherSeries: { id: number; name: string; poster_path: string | null; first_air_date: string; vote_average: number }[] = []
+  if (director?.id) {
+    try {
+      const dcredits = await getPersonCredits(director.id)
+      directorOtherSeries = (dcredits.crew ?? [])
+        .filter((c: any) => (c.job === 'Director' || c.job === 'Creator' || c.job === 'Series Director') && c.id !== seriesId && c.poster_path && c.vote_average > 5 && (c.first_air_date || c.release_date))
+        .sort((a: any, b: any) => b.vote_average - a.vote_average)
+        .slice(0, 8) as typeof directorOtherSeries
+    } catch {}
+  }
 
   // Tam ekip
   const seriesCrew = series.credits?.crew ?? []
@@ -776,6 +788,41 @@ export default async function DiziPage({ params, searchParams }: Props) {
 
         {/* Bunu İzleyenler */}
         <SimilarWatchers mediaId={seriesId} mediaType="dizi" />
+
+        {/* Yaratıcının/Yönetmenin Diğer Dizileri */}
+        {directorOtherSeries.length > 0 && director && (
+          <div className="mt-12">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%)' }} />
+              <h2 className="text-xl font-bold text-white tracking-tight">
+                {director.name} — Diğer Yapımları
+              </h2>
+              <a href={`/kisi/${director.id}`} className="ml-auto text-xs hover:underline" style={{ color: 'var(--accent)' }}>
+                Tüm Filmografi →
+              </a>
+            </div>
+            <div className="home-carousel-scroll flex gap-3 overflow-x-auto pb-3">
+              {directorOtherSeries.map((s) => (
+                <a key={s.id} href={`/dizi/${s.id}`} className="group shrink-0 w-[120px]" style={{ scrollSnapAlign: 'start' }}>
+                  <div className="relative aspect-[2/3] rounded-xl overflow-hidden transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-2xl"
+                    style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    {getPosterUrl(s.poster_path, 'w342') && (
+                      <img src={getPosterUrl(s.poster_path, 'w342')!} alt={s.name}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                    )}
+                    <div className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded text-[10px] font-bold"
+                      style={{ background: 'rgba(0,0,0,0.75)', color: '#D4A843', backdropFilter: 'blur(4px)' }}>
+                      ★ {s.vote_average.toFixed(1)}
+                    </div>
+                  </div>
+                  <p className="mt-1.5 text-xs font-medium line-clamp-2 group-hover:text-white transition-colors"
+                    style={{ color: 'rgba(255,255,255,0.6)' }}>{s.name}</p>
+                  <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>{(s.first_air_date || '').slice(0,4)}</p>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Benzer Diziler */}
         {similar.length > 0 && (
