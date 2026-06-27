@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { IconHome, IconFilm, IconSearch, IconList, IconUser } from '@/components/icons'
+import { IconHome, IconFilm, IconSearch, IconBell, IconUser } from '@/components/icons'
 
 interface BottomNavProps {
   user?: { id?: string; email?: string; username?: string; is_admin?: boolean } | null
@@ -20,10 +20,10 @@ export default function BottomNav({ user }: BottomNavProps) {
   }
 
   const tabs = [
-    { href: '/',         label: 'Ana Sayfa', Icon: IconHome },
-    { href: '/filmler',  label: 'Keşfet',    Icon: IconFilm },
-    { href: '/arama',    label: 'Arama',     Icon: IconSearch },
-    { href: '/listeler', label: 'Listeler',  Icon: IconList },
+    { href: '/',              label: 'Ana Sayfa',    Icon: IconHome },
+    { href: '/filmler',       label: 'Keşfet',       Icon: IconFilm },
+    { href: '/arama',         label: 'Ara',          Icon: IconSearch },
+    { href: '/bildirimler',   label: 'Bildirimler',  Icon: IconBell },
   ]
 
   return (
@@ -31,77 +31,56 @@ export default function BottomNav({ user }: BottomNavProps) {
       className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
       style={{
         paddingBottom: 'env(safe-area-inset-bottom)',
-        background: 'rgba(8, 10, 15, 0.92)',
-        backdropFilter: 'blur(20px) saturate(180%)',
-        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-        borderTop: '1px solid var(--border)',
-        boxShadow: '0 -8px 32px rgba(0,0,0,0.4)',
+        background: 'rgba(6,8,14,0.96)',
+        backdropFilter: 'blur(24px) saturate(200%)',
+        WebkitBackdropFilter: 'blur(24px) saturate(200%)',
+        borderTop: '1px solid rgba(255,255,255,0.06)',
+        boxShadow: '0 -1px 0 rgba(212,168,67,0.08), 0 -12px 40px rgba(0,0,0,0.6)',
       }}
     >
-      <div className="flex items-center h-14">
+      <div className="flex items-center h-16">
         {tabs.map(({ href, label, Icon }) => {
           const active = isActive(href)
           return (
-            <Link
-              key={href}
-              href={href}
-              className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full relative transition-all duration-200"
-            >
-              <div
-                className="flex flex-col items-center justify-center gap-0.5 px-3 py-1.5 rounded-xl transition-all duration-200"
-                style={
-                  active
-                    ? { background: 'rgba(225,29,72,0.18)', color: 'var(--accent)' }
-                    : { color: 'var(--text-secondary)' }
-                }
-              >
-                <Icon className="h-5 w-5" />
-                <span
-                  className="text-[10px] font-semibold"
-                  style={{ color: active ? 'var(--accent)' : 'var(--text-secondary)' }}
-                >
-                  {label}
-                </span>
-              </div>
+            <Link key={href} href={href}
+              className="flex flex-col items-center justify-center flex-1 h-full gap-1 relative">
+              {active && (
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full"
+                  style={{ background: 'linear-gradient(90deg, #D4A843, #E11D48)' }} />
+              )}
+              <Icon className="h-[22px] w-[22px] transition-all duration-200"
+                style={{ color: active ? 'var(--accent)' : 'rgba(255,255,255,0.28)' }} />
+              <span className="text-[9.5px] font-bold tracking-wide transition-all duration-200"
+                style={{ color: active ? 'rgba(225,29,72,0.9)' : 'rgba(255,255,255,0.22)' }}>
+                {label}
+              </span>
             </Link>
           )
         })}
 
         {/* Profil */}
-        <Link
-          href={profileHref}
-          className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full relative"
-        >
-          <div
-            className="flex flex-col items-center justify-center gap-0.5 px-3 py-1.5 rounded-xl transition-all duration-200"
-            style={
-              profileActive
-                ? { background: 'rgba(225,29,72,0.18)', color: 'var(--accent)' }
-                : { color: 'var(--text-secondary)' }
-            }
-          >
-            {user?.username ? (
-              <div
-                className="h-5 w-5 rounded-full flex items-center justify-center text-[9px] font-black text-white"
-                style={{
-                  background: profileActive
-                    ? 'var(--accent)'
-                    : 'linear-gradient(135deg, var(--accent), #7F0D2E)',
-                  boxShadow: profileActive ? '0 0 8px rgba(225,29,72,0.5)' : 'none',
-                }}
-              >
-                {user.username[0].toUpperCase()}
-              </div>
-            ) : (
-              <IconUser className="h-5 w-5" />
-            )}
-            <span
-              className="text-[10px] font-semibold"
-              style={{ color: profileActive ? 'var(--accent)' : 'var(--text-secondary)' }}
-            >
-              Profil
-            </span>
-          </div>
+        <Link href={profileHref}
+          className="flex flex-col items-center justify-center flex-1 h-full gap-1 relative">
+          {profileActive && (
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full"
+              style={{ background: 'linear-gradient(90deg, #D4A843, #E11D48)' }} />
+          )}
+          {user?.username ? (
+            <div className="h-[22px] w-[22px] rounded-full flex items-center justify-center text-[9px] font-black text-white transition-all duration-200"
+              style={{
+                background: profileActive ? 'var(--accent)' : 'rgba(255,255,255,0.12)',
+                boxShadow: profileActive ? '0 0 10px rgba(225,29,72,0.5)' : 'none',
+              }}>
+              {user.username[0].toUpperCase()}
+            </div>
+          ) : (
+            <IconUser className="h-[22px] w-[22px]"
+              style={{ color: profileActive ? 'var(--accent)' : 'rgba(255,255,255,0.28)' }} />
+          )}
+          <span className="text-[9.5px] font-bold tracking-wide transition-all duration-200"
+            style={{ color: profileActive ? 'rgba(225,29,72,0.9)' : 'rgba(255,255,255,0.22)' }}>
+            Profil
+          </span>
         </Link>
       </div>
     </nav>
