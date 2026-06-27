@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import SinezonStats from '@/components/SinezonStats'
-import { getMovieDetail, getSimilarMovies, getBackdropUrl, getPosterUrl, getMediaTitle, getMediaYear, getMovieWatchProviders, getMovieImages, getMovieKeywords, getMovieCertification, getMovieVideos } from '@/lib/tmdb'
+import { getMovieDetail, getSimilarMovies, getBackdropUrl, getPosterUrl, getMediaTitle, getMediaYear, getMovieWatchProviders, getMovieImages, getMovieKeywords, getMovieCertification, getMovieVideos, getPersonCredits } from '@/lib/tmdb'
 import { movieGenreToSlug } from '@/lib/genres'
 import { createClient } from '@/lib/supabase/server'
 import ReviewForm from '@/components/ReviewForm'
@@ -254,6 +254,18 @@ export default async function FilmPage({ params, searchParams }: Props) {
   const title = getMediaTitle(movie)
   const director = movie.credits?.crew?.find((c) => c.job === 'Director')
   const cast = movie.credits?.cast?.slice(0, 12) ?? []
+
+  // Yönetmenin diğer filmleri
+  let directorOtherMovies: { id: number; title: string; poster_path: string | null; release_date: string; vote_average: number }[] = []
+  if (director?.id) {
+    try {
+      const dcredits = await getPersonCredits(director.id)
+      directorOtherMovies = (dcredits.crew ?? [])
+        .filter(c => c.job === 'Director' && c.id !== movieId && c.poster_path && c.vote_average > 5)
+        .sort((a, b) => b.vote_average - a.vote_average)
+        .slice(0, 8) as typeof directorOtherMovies
+    } catch {}
+  }
   const trailer = movie.videos?.results?.find((v) => v.type === 'Trailer' && v.site === 'YouTube')
 
   // Tam ekip
@@ -868,6 +880,41 @@ export default async function FilmPage({ params, searchParams }: Props) {
 
         {/* Bunu İzleyenler */}
         <SimilarWatchers mediaId={movieId} mediaType="film" />
+
+        {/* Yönetmenin Diğer Filmleri */}
+        {directorOtherMovies.length > 0 && director && (
+          <div className="mt-12">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%)' }} />
+              <h2 className="text-xl font-bold text-white tracking-tight">
+                {director.name} — Diğer Filmleri
+              </h2>
+              <a href={`/kisi/${director.id}`} className="ml-auto text-xs hover:underline" style={{ color: 'var(--accent)' }}>
+                Tüm Filmografi →
+              </a>
+            </div>
+            <div className="home-carousel-scroll flex gap-3 overflow-x-auto pb-3">
+              {directorOtherMovies.map((film) => (
+                <a key={film.id} href={`/film/${film.id}`} className="group shrink-0 w-[120px]" style={{ scrollSnapAlign: 'start' }}>
+                  <div className="relative aspect-[2/3] rounded-xl overflow-hidden transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-2xl"
+                    style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    {getPosterUrl(film.poster_path, 'w342') && (
+                      <img src={getPosterUrl(film.poster_path, 'w342')!} alt={film.title}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                    )}
+                    <div className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded text-[10px] font-bold"
+                      style={{ background: 'rgba(0,0,0,0.75)', color: '#D4A843', backdropFilter: 'blur(4px)' }}>
+                      ★ {film.vote_average.toFixed(1)}
+                    </div>
+                  </div>
+                  <p className="mt-1.5 text-xs font-medium line-clamp-2 group-hover:text-white transition-colors"
+                    style={{ color: 'rgba(255,255,255,0.6)' }}>{film.title}</p>
+                  <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>{film.release_date?.slice(0,4)}</p>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Benzer Filmler */}
         {similar.length > 0 && (
