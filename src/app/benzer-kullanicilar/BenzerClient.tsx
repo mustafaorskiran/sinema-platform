@@ -183,11 +183,11 @@ function UserCard({ user, isFollowing, loading, onFollow }: {
       <button
         onClick={onFollow}
         disabled={loading}
-        className={`w-full flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition-all disabled:opacity-60 ${
-          isFollowing
-            ? 'bg-[--accent]/10 text-[--accent] border border-[--accent]/30 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30'
-            : 'bg-[--bg-secondary] text-[--text-secondary] border border-[--border] hover:bg-[--accent]/10 hover:text-[--accent] hover:border-[--accent]/40'
-        }`}
+        className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition-all disabled:opacity-60"
+        style={isFollowing
+          ? { background: 'rgba(225,29,72,0.08)', border: '1px solid rgba(225,29,72,0.25)', color: '#E11D48' }
+          : { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.55)' }
+        }
       >
         {loading
           ? <IconLoader className="h-3.5 w-3.5 animate-spin" />

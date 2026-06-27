@@ -155,7 +155,7 @@ export default async function AkisPage({ searchParams }: Props) {
                   </span>
                 </div>
                 <Link href={`/${r.media_type}/${r.media_id}`} className="flex gap-3 group">
-                  <div className="w-12 aspect-[2/3] rounded-lg overflow-hidden bg-[--bg-secondary] shrink-0">
+                  <div className="w-12 aspect-[2/3] rounded-lg overflow-hidden shrink-0" style={{ background: 'rgba(255,255,255,0.06)' }}>
                     {media?.poster ? <img src={media.poster} alt="" className="w-full h-full object-cover" /> : <div className="w-full h-full" />}
                   </div>
                   <div className="flex-1 min-w-0">
