@@ -2,28 +2,46 @@ import Link from 'next/link'
 import { MOODS } from '@/lib/moods'
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Ruh Haline Göre İzle' }
+export const metadata: Metadata = { title: 'Ruh Haline Göre İzle | Sinezon' }
 
 export default function RuhHaliPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
-      <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold text-white">Şu an nasıl hissediyorsun?</h1>
-        <p className="text-[--text-secondary] mt-2 text-sm">
-          Ruh haline göre sana özel film ve dizi önerileri
+      <div className="text-center mb-12">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color: 'rgba(212,168,67,0.5)' }}>
+          Kişiselleştirilmiş
+        </p>
+        <h1 className="text-3xl sm:text-4xl font-extrabold mb-3" style={{ color: 'var(--text-primary)' }}>
+          Şu an nasıl hissediyorsun?
+        </h1>
+        <p className="text-sm max-w-sm mx-auto" style={{ color: 'var(--text-secondary)' }}>
+          Ruh haline göre sana özel film ve dizi önerileri hazırlıyoruz
         </p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-        {MOODS.map(mood => (
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+        {MOODS.map((mood, i) => (
           <Link
             key={mood.slug}
             href={`/ruh-hali/${mood.slug}`}
-            className={`group flex flex-col items-center text-center p-5 rounded-2xl bg-gradient-to-br ${mood.color} border transition-all hover:scale-105 hover:shadow-lg`}
+            className="group flex flex-col items-center text-center p-5 rounded-2xl transition-all duration-300 hover:-translate-y-1.5"
+            style={{
+              background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))',
+              border: '1px solid rgba(255,255,255,0.06)',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+            }}
           >
-            <span className="text-4xl mb-3">{mood.emoji}</span>
-            <p className="font-semibold text-white text-sm leading-tight">{mood.title}</p>
-            <p className="text-[10px] text-[--text-secondary] mt-1 leading-relaxed line-clamp-2">{mood.subtitle}</p>
+            <span className="text-4xl mb-3 transition-transform duration-300 group-hover:scale-110 block">
+              {mood.emoji}
+            </span>
+            <p className="font-bold text-sm leading-tight mb-1" style={{ color: 'var(--text-primary)' }}>
+              {mood.title}
+            </p>
+            <p className="text-[11px] leading-relaxed line-clamp-2" style={{ color: 'rgba(255,255,255,0.35)' }}>
+              {mood.subtitle}
+            </p>
+            <div className="mt-3 w-8 h-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+              style={{ background: 'linear-gradient(90deg, #D4A843, #E11D48)' }} />
           </Link>
         ))}
       </div>
