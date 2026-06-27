@@ -10,6 +10,8 @@ interface InfiniteGridProps {
   apiPath: string
   searchParams: Record<string, string>
   type: 'film' | 'dizi'
+  watchedIds?: number[]
+  filterMode?: 'gormediklerim'
 }
 
 export default function InfiniteGrid({
@@ -18,6 +20,8 @@ export default function InfiniteGrid({
   apiPath,
   searchParams,
   type,
+  watchedIds,
+  filterMode,
 }: InfiniteGridProps) {
   const [items, setItems] = useState(initialItems)
   const [page, setPage] = useState(1)
@@ -55,10 +59,15 @@ export default function InfiniteGrid({
     return () => observer.disconnect()
   }, [loadMore])
 
+  const watchedSet = watchedIds ? new Set(watchedIds) : null
+  const visibleItems = filterMode === 'gormediklerim' && watchedSet
+    ? items.filter((item: any) => !watchedSet.has(item.id))
+    : items
+
   return (
     <div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4">
-        {items.map((item: any) => (
+        {visibleItems.map((item: any) => (
           <MovieCard key={item.id} media={item} type={type} />
         ))}
         {loading && Array.from({ length: 6 }).map((_, i) => (

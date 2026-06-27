@@ -10,11 +10,19 @@ interface MovieCardProps {
   type: 'film' | 'dizi'
 }
 
+function formatReleaseDate(media: TMDbMovie): string {
+  const raw = media.release_date || media.first_air_date || ''
+  if (!raw) return ''
+  const d = new Date(raw)
+  if (isNaN(d.getTime())) return raw.slice(0, 4)
+  return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })
+}
+
 export default function MovieCard({ media, type }: MovieCardProps) {
-  const title  = getMediaTitle(media)
-  const year   = getMediaYear(media)
-  const poster = getPosterUrl(media.poster_path, 'w342')
-  const rating = media.vote_average.toFixed(1)
+  const title       = getMediaTitle(media)
+  const displayDate = formatReleaseDate(media)
+  const poster      = getPosterUrl(media.poster_path, 'w342')
+  const rating      = media.vote_average.toFixed(1)
 
   return (
     <div className="group">
@@ -64,8 +72,8 @@ export default function MovieCard({ media, type }: MovieCardProps) {
             >
               {title}
             </h3>
-            {year && (
-              <p className="mt-1 text-[11px]" style={{ color: 'var(--text-secondary)', opacity: 0.65 }}>{year}</p>
+            {displayDate && (
+              <p className="mt-1 text-[11px]" style={{ color: 'var(--text-secondary)', opacity: 0.65 }}>{displayDate}</p>
             )}
           </div>
 

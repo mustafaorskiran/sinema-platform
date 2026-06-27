@@ -47,6 +47,15 @@ interface Provider {
   logo_path: string
 }
 
+const CERTIFICATION_OPTIONS = [
+  { value: '',     label: 'Tümü' },
+  { value: 'G',    label: 'G — Genel İzleyici' },
+  { value: 'PG',   label: 'PG — Ebeveyn Rehberliği' },
+  { value: 'PG-13',label: 'PG-13 — 13 Yaş Altı Uyarısı' },
+  { value: 'R',    label: 'R — Kısıtlı' },
+  { value: 'NC-17',label: 'NC-17 — Yetişkin' },
+]
+
 interface Props {
   providers: Provider[]
   initialGenre?: string
@@ -61,6 +70,9 @@ interface Props {
   initialMaxSure?: string
   initialKeyword?: string
   initialUlke?: string
+  initialGoster?: string
+  initialSertifikasyon?: string
+  isLoggedIn?: boolean
 }
 
 /* ── Alt bölüm ayırıcısı – gold gradient ── */
@@ -137,27 +149,33 @@ export default function FilmlerSidebar({
   initialMaxSure = '400',
   initialKeyword = '',
   initialUlke = 'TR',
+  initialGoster = 'hepsi',
+  initialSertifikasyon = '',
+  isLoggedIn = false,
 }: Props) {
   const router = useRouter()
   const sp = useSearchParams()
 
-  const [sirala,   setSirala]   = useState(initialSirala || 'popularity.desc')
-  const [genres,   setGenres]   = useState<string[]>(
+  const [sirala,        setSirala]        = useState(initialSirala || 'popularity.desc')
+  const [genres,        setGenres]        = useState<string[]>(
     initialGenre ? initialGenre.split(',').filter(Boolean) : []
   )
-  const [platform, setPlatform] = useState(initialPlatform)
-  const [dil,      setDil]      = useState(initialDil)
-  const [tarihten, setTarihten] = useState(initialTarihten)
-  const [tarihe,   setTarihe]   = useState(initialTarihe)
-  const [minPuan,  setMinPuan]  = useState(Number(initialMinPuan) || 0)
-  const [minOy,    setMinOy]    = useState(Number(initialMinOy) || 0)
-  const [minSure,  setMinSure]  = useState(Number(initialMinSure) || 0)
-  const [maxSure,  setMaxSure]  = useState(Number(initialMaxSure) || 400)
-  const [keyword,  setKeyword]  = useState(initialKeyword)
-  const [ulke,     setUlke]     = useState(initialUlke || 'TR')
+  const [platform,      setPlatform]      = useState(initialPlatform)
+  const [dil,           setDil]           = useState(initialDil)
+  const [tarihten,      setTarihten]      = useState(initialTarihten)
+  const [tarihe,        setTarihe]        = useState(initialTarihe)
+  const [minPuan,       setMinPuan]       = useState(Number(initialMinPuan) || 0)
+  const [minOy,         setMinOy]         = useState(Number(initialMinOy) || 0)
+  const [minSure,       setMinSure]       = useState(Number(initialMinSure) || 0)
+  const [maxSure,       setMaxSure]       = useState(Number(initialMaxSure) || 400)
+  const [keyword,       setKeyword]       = useState(initialKeyword)
+  const [ulke,          setUlke]          = useState(initialUlke || 'TR')
+  const [goster,        setGoster]        = useState(initialGoster || 'hepsi')
+  const [sertifikasyon, setSertifikasyon] = useState(initialSertifikasyon || '')
   const [providerList,  setProviderList]  = useState<Provider[]>(providers)
   const [loadingProv,   setLoadingProv]   = useState(false)
 
+  const [gosterOpen,   setGosterOpen]   = useState(true)
   const [providerOpen, setProviderOpen] = useState(true)
   const [dilOpen,      setDilOpen]      = useState(false)
   const [filterOpen,   setFilterOpen]   = useState(true)
@@ -197,6 +215,8 @@ export default function FilmlerSidebar({
     if (maxSure < 400)      params.set('max_sure', String(maxSure))
     if (keyword.trim())     params.set('keyword',  keyword.trim())
     if (ulke && ulke !== 'TR') params.set('ulke',  ulke)
+    if (goster && goster !== 'hepsi') params.set('goster', goster)
+    if (sertifikasyon)      params.set('sertifikasyon', sertifikasyon)
     return `/filmler${params.toString() ? `?${params}` : ''}`
   }
 
@@ -206,6 +226,7 @@ export default function FilmlerSidebar({
     setGenres([]); setPlatform(''); setSirala('popularity.desc')
     setDil(''); setTarihten(''); setTarihe('')
     setMinPuan(0); setMinOy(0); setMinSure(0); setMaxSure(400); setKeyword('')
+    setGoster('hepsi'); setSertifikasyon('')
     changeRegion('TR')
     const params = new URLSearchParams()
     const kategori = sp.get('kategori')
@@ -215,7 +236,8 @@ export default function FilmlerSidebar({
 
   const hasFilters = !!(genres.length > 0 || platform || sirala !== 'popularity.desc' ||
     dil || tarihten || tarihe || minPuan > 0 || minOy > 0 ||
-    minSure > 0 || maxSure < 400 || keyword.trim())
+    minSure > 0 || maxSure < 400 || keyword.trim() ||
+    (goster && goster !== 'hepsi') || sertifikasyon)
 
   const [drawerOpen, setDrawerOpen] = useState(false)
 
@@ -327,6 +349,54 @@ export default function FilmlerSidebar({
             background: `linear-gradient(90deg, transparent 0%, ${GOLD} 30%, ${GOLD_B} 50%, ${GOLD} 70%, transparent 100%)`,
             opacity: 0.65,
           }} />
+
+          {/* ── Gösterme Ölçütü ── */}
+          <>
+            <SectionHeader
+              label="Gösterme Ölçütü"
+              open={gosterOpen}
+              onToggle={() => setGosterOpen(o => !o)}
+            />
+            {gosterOpen && (
+              <div className="px-5 pb-4 space-y-2">
+                {[
+                  { value: 'hepsi',        label: 'Her Şey' },
+                  { value: 'gormediklerim', label: 'Görmediğim Filmler' },
+                  { value: 'gorduklerim',  label: 'Gördüğüm Filmler' },
+                ].map(opt => {
+                  const needsAuth = opt.value !== 'hepsi' && !isLoggedIn
+                  const active = goster === opt.value
+                  return (
+                    <label
+                      key={opt.value}
+                      className={`flex items-center gap-2.5 cursor-pointer group ${needsAuth ? 'opacity-40' : ''}`}
+                      title={needsAuth ? 'Bu seçenek için giriş yapmanız gerekiyor' : undefined}
+                    >
+                      <div
+                        onClick={() => !needsAuth && setGoster(opt.value)}
+                        className="w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all"
+                        style={active
+                          ? { borderColor: GOLD, background: GOLD }
+                          : { borderColor: 'rgba(212,168,67,0.25)', background: 'transparent' }
+                        }
+                      >
+                        {active && <div className="w-1.5 h-1.5 rounded-full bg-[#0b0f19]" />}
+                      </div>
+                      <span
+                        className="text-[12px] transition-colors"
+                        style={{ color: active ? GOLD_B : needsAuth ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.55)' }}
+                        onClick={() => !needsAuth && setGoster(opt.value)}
+                      >
+                        {opt.label}
+                        {needsAuth && <span className="ml-1 text-[10px]">🔒</span>}
+                      </span>
+                    </label>
+                  )
+                })}
+              </div>
+            )}
+            <GoldDivider />
+          </>
 
           {/* ── Sırala ── */}
           <div className="px-5 pt-5 pb-4">
@@ -547,6 +617,36 @@ export default function FilmlerSidebar({
                         }}
                       >
                         {g.name}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Sertifikasyon */}
+              <div>
+                <FilterLabel>Sertifikasyon</FilterLabel>
+                <div className="flex flex-wrap gap-1.5">
+                  {CERTIFICATION_OPTIONS.map(cert => {
+                    const active = sertifikasyon === cert.value
+                    return (
+                      <button
+                        key={cert.value}
+                        onClick={() => setSertifikasyon(active ? '' : cert.value)}
+                        className="text-[11px] px-2.5 py-1 rounded-full transition-all duration-150"
+                        title={cert.label}
+                        style={active ? {
+                          background: 'rgba(212,168,67,0.1)',
+                          border: `1px solid rgba(212,168,67,0.45)`,
+                          color: GOLD_B,
+                          fontWeight: 600,
+                        } : {
+                          background: 'rgba(255,255,255,0.02)',
+                          border: '1px solid rgba(255,255,255,0.07)',
+                          color: 'rgba(255,255,255,0.35)',
+                        }}
+                      >
+                        {cert.value || 'Tümü'}
                       </button>
                     )
                   })}

@@ -39,6 +39,7 @@ interface Props {
     sayfa?: string; genre?: string; sirala?: string; platform?: string; ozel?: string
     kategori?: string; tarihten?: string; tarihe?: string; min_puan?: string; min_oy?: string
     dil?: string; min_sure?: string; max_sure?: string; keyword?: string; ulke?: string
+    goster?: string; sertifikasyon?: string
     // legacy params kept for compat
     yil?: string; puan?: string
   }>
@@ -49,6 +50,7 @@ export default async function FilmlerPage({ searchParams }: Props) {
     sayfa, genre, sirala, platform, ozel,
     kategori = 'populer', tarihten, tarihe, min_puan, min_oy,
     dil, min_sure, max_sure, keyword, ulke,
+    goster, sertifikasyon,
     yil, puan,
   } = await searchParams
 
@@ -57,9 +59,23 @@ export default async function FilmlerPage({ searchParams }: Props) {
   const minRating = min_puan || puan  // new param takes priority
 
   const isEnCokPuan = sirala === 'en-cok-puan'
-  const hasCustomFilters = !isEnCokPuan && !!(genre || tarihten || tarihe || min_puan || min_oy || platform || sirala || dil || min_sure || max_sure || keyword)
+  const hasCustomFilters = !isEnCokPuan && !!(genre || tarihten || tarihe || min_puan || min_oy || platform || sirala || dil || min_sure || max_sure || keyword || sertifikasyon)
 
   const supabase = await createClient()
+
+  // Kullanıcı oturumu ve izleme listesi
+  const { data: { user } } = await supabase.auth.getUser()
+  const isLoggedIn = !!user
+
+  let userWatchedIds: number[] = []
+  if (isLoggedIn && (goster === 'gormediklerim' || goster === 'gorduklerim')) {
+    const { data: watched } = await supabase
+      .from('reviews')
+      .select('media_id')
+      .eq('user_id', user!.id)
+      .eq('media_type', 'film')
+    userWatchedIds = (watched ?? []).map((r: any) => Number(r.media_id))
+  }
 
   const [movieProviders, { count: catalogCount }] = await Promise.all([
     getMovieProviderList('TR').catch(() => []),
@@ -71,7 +87,17 @@ export default async function FilmlerPage({ searchParams }: Props) {
   let totalCount = 0
 
   // Special categories bypass normal flow
-  if (isEnCokPuan) {
+  if (goster === 'gorduklerim' && isLoggedIn && userWatchedIds.length > 0) {
+    // Sadece kullanıcının izlediği filmler
+    total_pages = Math.max(1, Math.ceil(userWatchedIds.length / PAGE_SIZE))
+    const pageIds = userWatchedIds.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+    results = await getMoviesByIds(pageIds).catch(() => [])
+    const orderMap = new Map(pageIds.map((id, i) => [id, i]))
+    results.sort((a, b) => (orderMap.get(a.id) ?? 999) - (orderMap.get(b.id) ?? 999))
+  } else if (goster === 'gorduklerim' && isLoggedIn && userWatchedIds.length === 0) {
+    results = []
+    total_pages = 1
+  } else if (isEnCokPuan) {
     // Sinezon kullanıcı yorumlarına göre en çok puanlanan filmler
     const { data: topMedia } = await supabase.rpc('get_top_rated_media', {
       p_media_type: 'film',
@@ -142,6 +168,7 @@ export default async function FilmlerPage({ searchParams }: Props) {
       language: dil,
       minRuntime: min_sure,
       maxRuntime: max_sure && Number(max_sure) < 400 ? max_sure : undefined,
+      certification: sertifikasyon,
     }).catch(() => ({ results: [], total_pages: 1 }))
     results     = data.results
     total_pages = data.total_pages
@@ -218,6 +245,7 @@ export default async function FilmlerPage({ searchParams }: Props) {
   if (keyword)    gridParams.keyword    = keyword
   if (ulke && ulke !== 'TR') gridParams.ulke = ulke
   if (kategori && kategori !== 'populer') gridParams.kategori = kategori
+  if (sertifikasyon)        gridParams.sertifikasyon = sertifikasyon
 
   // Active genre/kategori label for page title
   const activeGenreName = genre
@@ -225,7 +253,11 @@ export default async function FilmlerPage({ searchParams }: Props) {
       ? 'Seçili Türler'
       : FILM_GENRES.find(g => String(g.id) === genre)?.name ?? null)
     : null
-  const pageTitle = isEnCokPuan
+  const pageTitle = goster === 'gorduklerim'
+    ? 'İzlediğim Filmler'
+    : goster === 'gormediklerim'
+    ? 'İzlemediğim Popüler Filmler'
+    : isEnCokPuan
     ? 'Sinezon\'da En Çok Puanlanan Filmler'
     : ozelKat?.label
       ?? (activeGenreName ? `${activeGenreName} Filmleri` : KATEGORI_TITLES[kategori] ?? 'Popüler Filmler')
@@ -264,6 +296,9 @@ export default async function FilmlerPage({ searchParams }: Props) {
           initialMaxSure={max_sure}
           initialKeyword={keyword}
           initialUlke={ulke}
+          initialGoster={goster}
+          initialSertifikasyon={sertifikasyon}
+          isLoggedIn={isLoggedIn}
         />
 
         {/* ── Main Content ── */}
@@ -311,6 +346,8 @@ export default async function FilmlerPage({ searchParams }: Props) {
               apiPath="/api/filmler"
               searchParams={gridParams}
               type="film"
+              watchedIds={goster === 'gormediklerim' && isLoggedIn ? userWatchedIds : undefined}
+              filterMode={goster === 'gormediklerim' && isLoggedIn ? 'gormediklerim' : undefined}
             />
           )}
         </main>
