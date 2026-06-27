@@ -290,9 +290,9 @@ export default function FilmlerSidebar({
       {/* ── Sidebar: mobilde drawer, desktop'ta sticky ── */}
       <aside
         className={[
-          'z-50 pb-6 overflow-y-auto scrollbar-thin',
+          'pb-6 overflow-y-auto scrollbar-thin',
           drawerOpen
-            ? 'fixed top-0 right-0 h-full w-[290px] pt-3 px-3'
+            ? 'fixed top-0 right-0 h-full w-[290px] pt-3 px-3 z-50'
             : 'hidden',
           'lg:block lg:static lg:w-[270px] lg:shrink-0 lg:sticky lg:top-20 lg:self-start lg:max-h-[calc(100vh-6rem)]',
         ].join(' ')}
