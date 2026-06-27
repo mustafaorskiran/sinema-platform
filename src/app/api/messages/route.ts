@@ -79,5 +79,17 @@ export async function POST(req: NextRequest) {
 
   await supabase.from('conversations').update({ updated_at: new Date().toISOString() }).eq('id', conversation_id)
 
+  // Alıcıya bildirim gönder
+  const recipientId = conv.participant_1 === user.id ? conv.participant_2 : conv.participant_1
+  const { data: senderProfile } = await supabase.from('profiles').select('username').eq('id', user.id).single()
+  await supabase.from('notifications').insert({
+    user_id: recipientId,
+    actor_id: user.id,
+    type: 'message',
+    content: `${senderProfile?.username ?? 'Biri'} sana mesaj gönderdi`,
+    link: '/mesajlar',
+    read: false,
+  })
+
   return NextResponse.json(data)
 }
