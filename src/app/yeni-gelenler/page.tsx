@@ -101,9 +101,9 @@ export default async function YeniGelenlerPage({ searchParams }: PageProps) {
                       boxShadow: `0 0 16px ${platform.color}55`,
                     }
                   : {
-                      background: 'var(--bg-card)',
-                      color: 'var(--text-secondary)',
-                      border: '1px solid var(--border)',
+                      background: 'rgba(255,255,255,0.05)',
+                      color: 'rgba(255,255,255,0.5)',
+                      border: '1px solid rgba(255,255,255,0.08)',
                     }
               }
             >
@@ -134,7 +134,7 @@ export default async function YeniGelenlerPage({ searchParams }: PageProps) {
       ) : (
         <div
           className="flex flex-col items-center justify-center py-20 rounded-2xl"
-          style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.85), rgba(14,20,32,0.9))', border: '1px solid rgba(255,255,255,0.06)' }}
         >
           <IconTv className="h-12 w-12 mb-4" style={{ color: 'var(--text-secondary)', opacity: 0.4 }} />
           <p className="text-base font-medium" style={{ color: 'var(--text-secondary)' }}>
