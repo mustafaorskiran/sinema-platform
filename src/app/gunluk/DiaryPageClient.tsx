@@ -57,7 +57,8 @@ export default function DiaryPageClient({ grouped, totalPages, currentPage }: Pr
               {entries.map(entry => (
                 <div
                   key={entry.id}
-                  className="flex items-center gap-4 p-3 rounded-xl bg-[--bg-card] border border-[--border] hover:border-[--border]/80 transition-colors group"
+                  className="flex items-center gap-4 p-3 rounded-xl transition-all duration-200 hover:-translate-y-0.5 group"
+                  style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
                 >
                   {/* Tarih */}
                   <div className="w-14 shrink-0 text-center">
