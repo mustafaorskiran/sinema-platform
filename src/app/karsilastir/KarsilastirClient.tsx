@@ -105,9 +105,9 @@ function MediaSearch({ label, selected, onSelect }: {
                   <button
                     key={r.id}
                     onClick={() => { onSelect(r.id, type); setQuery(''); setOpen(false) }}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-[--bg-secondary] transition-colors text-left"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 transition-colors text-left"
                   >
-                    <div className="w-8 h-11 rounded bg-[--bg-secondary] shrink-0 overflow-hidden">
+                    <div className="w-8 h-11 rounded shrink-0 overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
                       {r.poster_path && (
                         <img src={`https://image.tmdb.org/t/p/w92${r.poster_path}`} alt={title} className="w-full h-full object-cover" />
                       )}
@@ -129,7 +129,7 @@ function MediaSearch({ label, selected, onSelect }: {
 
 function CompareRow({ label, a, b, highlight = false }: { label: string; a: React.ReactNode; b: React.ReactNode; highlight?: boolean }) {
   return (
-    <tr className={highlight ? 'bg-[--bg-secondary]/40' : ''}>
+    <tr style={highlight ? { background: 'rgba(255,255,255,0.04)' } : undefined}>
       <td className="py-3 px-4 text-xs text-[--text-secondary] font-medium w-1/4 text-center border-b border-[--border]">{label}</td>
       <td className="py-3 px-4 text-sm text-white text-center border-b border-[--border] border-x border-[--border]/50">{a ?? <span className="text-[--text-secondary]">—</span>}</td>
       <td className="py-3 px-4 text-sm text-white text-center border-b border-[--border]">{b ?? <span className="text-[--text-secondary]">—</span>}</td>
@@ -200,10 +200,10 @@ export default function KarsilastirClient({ itemA, itemB }: { itemA: MediaItem |
 
       {/* Comparison table */}
       {selA && selB && (
-        <div className="rounded-2xl border border-[--border] bg-[--bg-card] overflow-hidden">
+        <div className="rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <table className="w-full">
             <thead>
-              <tr className="bg-[--bg-secondary]">
+              <tr style={{ background: 'rgba(255,255,255,0.05)' }}>
                 <th className="py-3 px-4 text-xs text-[--text-secondary] font-medium w-1/4 text-center">Özellik</th>
                 <th className="py-3 px-4 text-sm text-white font-semibold text-center border-x border-[--border]/50 w-[37.5%]">{selA.title}</th>
                 <th className="py-3 px-4 text-sm text-white font-semibold text-center w-[37.5%]">{selB.title}</th>

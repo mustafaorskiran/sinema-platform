@@ -155,7 +155,7 @@ export default async function KisiPage({ params }: Props) {
                     {credit.poster_path ? (
                       <img src={`https://image.tmdb.org/t/p/w342${credit.poster_path}`} alt={title} className="w-full h-full object-cover" />
                     ) : (
-                      <div className="w-full h-full bg-[--bg-secondary]" />
+                      <div className="w-full h-full" style={{ background: 'rgba(255,255,255,0.06)' }} />
                     )}
                     {credit.vote_average > 0 && (
                       <div className="absolute bottom-1 right-1 bg-black/70 rounded px-1.5 py-0.5 text-[10px] font-bold text-[--gold]">
@@ -193,7 +193,7 @@ export default async function KisiPage({ params }: Props) {
                     {credit.poster_path ? (
                       <img src={`https://image.tmdb.org/t/p/w342${credit.poster_path}`} alt={title} className="w-full h-full object-cover" />
                     ) : (
-                      <div className="w-full h-full bg-[--bg-secondary]" />
+                      <div className="w-full h-full" style={{ background: 'rgba(255,255,255,0.06)' }} />
                     )}
                     {credit.vote_average > 0 && (
                       <div className="absolute bottom-1 right-1 bg-black/70 rounded px-1.5 py-0.5 text-[10px] font-bold text-[--gold]">

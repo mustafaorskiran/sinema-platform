@@ -190,7 +190,8 @@ export default function ForumThreadClient({ thread, initialPosts, currentUser, i
             onChange={e => setReplyText(e.target.value)}
             placeholder="Yanıtını yaz..."
             rows={4}
-            className="w-full bg-[--bg-secondary] border border-[--border] rounded-lg px-3 py-2.5 text-sm text-white placeholder-[--text-secondary] focus:outline-none focus:border-[--accent]/60 resize-none"
+            className="w-full rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-white/25 focus:outline-none resize-none"
+            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
           />
           {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
           <div className="flex justify-end mt-2">
