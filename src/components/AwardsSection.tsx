@@ -32,7 +32,7 @@ export default function AwardsSection({ editorialListIds }: Props) {
       <h3 className="text-sm font-semibold text-[--text-secondary] uppercase tracking-wider mb-3">Ödüller & Listeler</h3>
       <div className="flex flex-wrap gap-2">
         {awards.map((award, i) => (
-          <div key={i} className="flex items-center gap-2 px-3 py-2 rounded-xl rounded-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <div key={i} className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <span className="text-lg">{award.emoji}</span>
             <div>
               <p className={`text-xs font-bold ${award.color}`}>{award.title}</p>

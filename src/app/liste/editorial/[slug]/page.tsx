@@ -170,7 +170,7 @@ export default async function EditorialListPage({ params }: Props) {
             <a
               key={`${item.media_type}-${item.media_id}`}
               href={`/${item.media_type}/${item.media_id}`}
-              className="group flex items-center gap-4 rounded-xl rounded-xl hover:border-[--accent]/40 transition-all p-3 hover:bg-[--bg-card]/80" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
+              className="group flex items-center gap-4 rounded-xl hover:border-[--accent]/40 transition-all p-3 hover:bg-[--bg-card]/80" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
             >
               {/* Sıra numarası */}
               <div className={`shrink-0 w-8 text-center font-bold text-sm ${

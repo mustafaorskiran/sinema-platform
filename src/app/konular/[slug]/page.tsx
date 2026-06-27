@@ -131,7 +131,7 @@ export default async function KonuDetayPage({ params }: Props) {
           })}
         </div>
       ) : (
-        <div className="rounded-xl rounded-xl py-16 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="rounded-xl py-16 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <p className="text-4xl mb-4">{topic.emoji}</p>
           <p className="text-[--text-secondary] text-sm">
             Bu konuya henüz film/dizi eklenmemiş.

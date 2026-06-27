@@ -58,7 +58,7 @@ export default async function KullanicilarPage({ searchParams }: Props) {
             type="text"
             defaultValue={q ?? ''}
             placeholder="Kullanıcı adı ara..."
-            className="w-full rounded-xl rounded-xl py-3 pl-10 pr-4 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
+            className="w-full rounded-xl py-3 pl-10 pr-4 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
           />
         </div>
       </form>

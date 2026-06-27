@@ -71,7 +71,7 @@ export default function DiaryButton({ mediaId, mediaType, mediaTitle, isLoggedIn
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 mt-2 z-20 w-72 rounded-xl rounded-xl shadow-2xl shadow-black/40 p-4" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="absolute top-full left-0 mt-2 z-20 w-72 rounded-xl shadow-2xl shadow-black/40 p-4" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <p className="text-sm font-semibold text-white mb-3 line-clamp-1">{mediaTitle}</p>
           <form onSubmit={handleSubmit} className="space-y-3">
             <div>

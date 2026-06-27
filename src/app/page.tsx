@@ -331,7 +331,7 @@ export default async function HomePage() {
         ))}
 
         {userOnboarded && (
-          <div className="flex items-center justify-between px-5 py-3.5 rounded-xl rounded-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="flex items-center justify-between px-5 py-3.5 rounded-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <div>
               <p className="text-sm font-medium text-white">Kişisel Öneri Sayfan</p>
               <p className="text-xs text-[--text-secondary] mt-0.5">Zevklerine göre seçilmiş filmler ve diziler</p>

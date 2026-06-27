@@ -25,7 +25,7 @@ export default function ConversationList({ conversations, currentUserId }: Props
         value={search}
         onChange={e => setSearch(e.target.value)}
         placeholder="Konuşma ara..."
-        className="w-full rounded-xl rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-[--text-secondary] outline-none focus:border-[--accent] mb-4" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
+        className="w-full rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-[--text-secondary] outline-none focus:border-[--accent] mb-4" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
       />
 
       {filtered.length === 0 ? (

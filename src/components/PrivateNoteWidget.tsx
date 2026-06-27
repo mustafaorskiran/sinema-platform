@@ -28,7 +28,7 @@ export default function PrivateNoteWidget({ mediaId, mediaType, initialNote }: P
   }
 
   return (
-    <div className="rounded-xl rounded-xl p-4" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
+    <div className="rounded-xl p-4" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
       <div className="flex items-center justify-between mb-2">
         <p className="text-xs font-semibold text-[--text-secondary] uppercase tracking-wider">🔒 Özel Notum</p>
         {!editing && (

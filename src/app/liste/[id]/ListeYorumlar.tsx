@@ -113,7 +113,7 @@ export default function ListeYorumlar({ listId, initialComments, currentUserId }
             placeholder="Yorumunuzu yazın..."
             rows={2}
             maxLength={1000}
-            className="flex-1 rounded-xl rounded-xl px-4 py-2.5 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors resize-none" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
+            className="flex-1 rounded-xl px-4 py-2.5 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors resize-none" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
           />
           <button type="submit" disabled={submitting || !text.trim()}
             className="px-5 py-2.5 rounded-xl bg-[--accent] hover:bg-[--accent-hover] text-white text-sm font-semibold transition-colors disabled:opacity-40 self-end">

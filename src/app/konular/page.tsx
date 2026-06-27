@@ -57,7 +57,7 @@ export default async function KonularPage() {
             <Link
               key={topic.id}
               href={`/konular/${topic.slug}`}
-              className="flex items-center gap-4 p-4 rounded-xl rounded-xl hover:border-[--accent]/40 transition-colors group" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
+              className="flex items-center gap-4 p-4 rounded-xl hover:border-[--accent]/40 transition-colors group" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
             >
               <span className="text-2xl shrink-0">{topic.emoji}</span>
               <div className="flex-1 min-w-0">

@@ -44,7 +44,7 @@ export default function SinemalarClient({ nowPlaying, upcoming, zincirleri }: Pr
   return (
     <div>
       {/* Tab bar */}
-      <div className="flex gap-1 mb-8 rounded-xl rounded-xl p-1 w-fit" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
+      <div className="flex gap-1 mb-8 rounded-xl p-1 w-fit" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
         {tabs.map(t => (
           <button
             key={t.key}
@@ -157,7 +157,7 @@ export default function SinemalarClient({ nowPlaying, upcoming, zincirleri }: Pr
                 href={z.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-4 p-5 rounded-xl rounded-xl hover:border-[--accent]/40 transition-colors group" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
+                className="flex items-center gap-4 p-5 rounded-xl hover:border-[--accent]/40 transition-colors group" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
               >
                 <span className="text-3xl shrink-0">{z.logo}</span>
                 <div className="flex-1">
@@ -169,7 +169,7 @@ export default function SinemalarClient({ nowPlaying, upcoming, zincirleri }: Pr
             ))}
           </div>
 
-          <div className="mt-8 rounded-xl rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="mt-8 rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <p className="text-sm font-semibold text-white mb-2">📍 Şehrine göre sinema bul</p>
             <p className="text-xs text-[--text-secondary] mb-3">
               Bulunduğun şehirdeki sinemaları ve seans saatlerini görmek için aşağıdaki siteleri kullanabilirsin:
