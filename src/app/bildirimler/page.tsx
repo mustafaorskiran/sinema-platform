@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { IconBell, IconHeart, IconUserPlus, IconReply } from '@/components/icons'
+import { IconBell, IconHeart, IconUserPlus, IconReply, IconMail } from '@/components/icons'
 import { createClient } from '@/lib/supabase/server'
 import BildirimlerClient from './BildirimlerClient'
 import type { Metadata } from 'next'
@@ -21,7 +21,8 @@ function getDetails(n: any) {
   if (n.type === 'like')         return { label: 'yorumunu beğendi',           href: n.review ? `/${n.review.media_type}/${n.review.media_id}` : '#', badgeColor: '#f87171',     Icon: IconHeart   }
   if (n.type === 'follow')       return { label: 'seni takip etmeye başladı',  href: `/profil/${username}`,                                           badgeColor: 'var(--accent)', Icon: IconUserPlus }
   if (n.type === 'reply')        return { label: 'yorumuna yanıt verdi',        href: n.review ? `/${n.review.media_type}/${n.review.media_id}` : '#', badgeColor: '#60a5fa',    Icon: IconReply   }
-  if (n.type === 'forum_reply')  return { label: n.content ?? 'Konuna yanıt geldi', href: n.link ?? '/forum',                                         badgeColor: '#a78bfa',    Icon: IconReply   }
+  if (n.type === 'forum_reply')  return { label: n.content ?? 'Konuna yanıt geldi', href: n.link ?? '/forum',   badgeColor: '#a78bfa',             Icon: IconReply }
+  if (n.type === 'message')      return { label: n.content ?? 'Sana mesaj gönderdi', href: n.link ?? '/mesajlar', badgeColor: '#34d399',            Icon: IconMail  }
   return                                { label: n.content ?? '',               href: n.link ?? '#',                                                   badgeColor: 'rgba(212,168,67,0.7)', Icon: IconBell }
 }
 
