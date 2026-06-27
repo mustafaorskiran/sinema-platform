@@ -276,6 +276,19 @@ export default async function DiziPage({ params, searchParams }: Props) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sinezon.com'
   const imdbId = (series as any).external_ids?.imdb_id as string | null | undefined
 
+  const anniversary = (() => {
+    if (!series.first_air_date) return null
+    const rd = new Date(series.first_air_date)
+    const now = new Date()
+    const years = now.getFullYear() - rd.getFullYear()
+    if (years <= 0) return null
+    const sameDay = rd.getMonth() === now.getMonth() && rd.getDate() === now.getDate()
+    const sameWeek = Math.abs(rd.getMonth() * 31 + rd.getDate() - now.getMonth() * 31 - now.getDate()) <= 3
+    if (sameDay) return { years, type: 'exact' as const }
+    if (sameWeek) return { years, type: 'week' as const }
+    return null
+  })()
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'TVSeries',
@@ -374,6 +387,12 @@ export default async function DiziPage({ params, searchParams }: Props) {
               </div>
             )}
 
+            {anniversary && (
+              <div className="mb-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold animate-pulse"
+                style={{ background: 'rgba(212,168,67,0.15)', border: '1px solid rgba(212,168,67,0.3)', color: '#D4A843' }}>
+                🎂 {anniversary.type === 'exact' ? `${anniversary.years}. yıl dönümü bugün!` : `${anniversary.years}. yıl dönümü bu hafta!`}
+              </div>
+            )}
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight tracking-tight">{title}</h1>
             {(series as any).original_name && (series as any).original_name !== title && (
               <p className="mt-1.5 text-base italic" style={{ color: 'var(--text-secondary)' }}>
