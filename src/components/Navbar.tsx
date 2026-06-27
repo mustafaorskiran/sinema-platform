@@ -270,6 +270,7 @@ export default function Navbar({ user }: NavbarProps) {
                   { label: 'Quiz',                 href: '/quiz',                 description: 'Sinema bilgi yarışması' },
                   { label: 'Özel Listeler',        href: '/ozel-listeler',        description: 'Editöryal seçkiler' },
                   { label: 'Yayın Takvimi',        href: '/yayin-takvimi',        description: 'Çıkış tarihleri' },
+                  { label: '📅 Yakında Çıkacaklar', href: '/yakinda',             description: 'Gelecek 6 ay içinde' },
                   { label: 'Gişe Sıralaması',      href: '/gise',                 description: 'Box office verileri' },
                   { label: 'Alıntılar',            href: '/alintilar',            description: 'Unutulmaz replikler' },
                   { label: '🏆 Liderlik Tablosu', href: '/liderlik',             description: 'En aktif yorumcular' },
