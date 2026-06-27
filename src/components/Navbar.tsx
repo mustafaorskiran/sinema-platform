@@ -9,6 +9,7 @@ import NotificationBell from './NotificationBell'
 import LanguageSwitcher from './LanguageSwitcher'
 import { NavDropdown } from './NavDropdown'
 import UserDropdown from './UserDropdown'
+import ThemeToggle from './ThemeToggle'
 import { useLocale } from '@/context/LocaleContext'
 
 interface NavbarProps {
@@ -308,9 +309,10 @@ export default function Navbar({ user }: NavbarProps) {
             </div>
           </div>
 
-          {/* RIGHT: Notification + Language + User */}
+          {/* RIGHT: Notification + Theme + Language + User */}
           <div className="flex items-center gap-2 shrink-0">
             {user?.id && <NotificationBell userId={user.id} />}
+            <ThemeToggle />
             <LanguageSwitcher />
             {user?.id ? (
               <UserDropdown user={{ id: user.id, email: user.email, username: user.username, is_admin: user.is_admin }} />
