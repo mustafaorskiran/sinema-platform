@@ -47,20 +47,24 @@ export default async function AlintilarPage() {
       {/* Bugünün Alıntısı */}
       {heroQuote ? (
         <div
-          className="mb-10 rounded-2xl bg-[--bg-card] border border-[--border] p-8 relative overflow-hidden"
-          style={{ borderLeft: '4px solid var(--accent)' }}
+          className="mb-10 rounded-2xl p-8 relative overflow-hidden"
+          style={{
+            background: 'linear-gradient(160deg, rgba(20,28,47,0.95), rgba(14,20,32,0.98))',
+            border: '1px solid rgba(212,168,67,0.2)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(212,168,67,0.05)',
+          }}
         >
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[--accent] mb-4">
+          <p className="text-[9.5px] font-bold uppercase tracking-[0.2em] mb-5" style={{ color: 'rgba(212,168,67,0.6)' }}>
             ✦ Öne Çıkan Alıntı
           </p>
           <span
-            className="absolute top-4 right-6 text-8xl font-serif leading-none select-none pointer-events-none"
-            style={{ color: 'var(--accent)', opacity: 0.08 }}
+            className="absolute top-2 right-5 text-[9rem] font-serif leading-none select-none pointer-events-none"
+            style={{ color: '#D4A843', opacity: 0.06 }}
             aria-hidden
           >
             "
           </span>
-          <p className="text-2xl sm:text-3xl font-semibold text-white leading-snug mb-4">
+          <p className="text-2xl sm:text-3xl font-semibold leading-snug mb-4" style={{ color: 'var(--text-primary)' }}>
             "{heroQuote.content}"
           </p>
           {heroQuote.character_name && (
