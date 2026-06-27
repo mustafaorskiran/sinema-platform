@@ -169,8 +169,9 @@ export default async function AramaPage({ searchParams }: Props) {
                 .join(', ')
               return (
                 <Link key={p.id} href={`/oyuncu/${p.id}`}
-                  className="group flex flex-col items-center gap-2 p-3 rounded-xl bg-[--bg-card] border border-[--border] hover:border-[--accent]/50 transition-colors text-center">
-                  <div className="h-20 w-20 rounded-full bg-[--bg-secondary] overflow-hidden border-2 border-[--border] group-hover:border-[--accent]/50 transition-colors shrink-0">
+                  className="group flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-200 hover:-translate-y-1 text-center"
+                  style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.85), rgba(14,20,32,0.9))', border: '1px solid rgba(255,255,255,0.06)' }}>
+                  <div className="h-20 w-20 rounded-full overflow-hidden shrink-0" style={{ border: '2px solid rgba(255,255,255,0.08)' }}>
                     {profileImg ? (
                       <img src={profileImg} alt={p.name} className="w-full h-full object-cover" />
                     ) : (
@@ -236,7 +237,8 @@ export default async function AramaPage({ searchParams }: Props) {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
             {kullanicilar.map((u: any) => (
               <Link key={u.id} href={`/profil/${u.username}`}
-                className="flex flex-col items-center gap-2 p-3 rounded-xl bg-[--bg-card] border border-[--border] hover:border-[--accent]/50 transition-colors text-center">
+                className="flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-200 hover:-translate-y-1 text-center"
+                style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.85), rgba(14,20,32,0.9))', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="h-14 w-14 rounded-full bg-[--accent] flex items-center justify-center text-xl font-bold text-white overflow-hidden">
                   {u.avatar_url
                     ? <img src={u.avatar_url} alt="" className="w-full h-full object-cover" />
@@ -266,16 +268,18 @@ export default async function AramaPage({ searchParams }: Props) {
         <div className="flex justify-center gap-2 mt-10">
           {page > 1 && (
             <Link href={`${baseUrl}&sayfa=${page - 1}`}
-              className="px-4 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white transition-colors">
+              className="px-4 py-2 rounded-lg text-sm transition-all hover:scale-105"
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.6)' }}>
               ← Önceki
             </Link>
           )}
-          <span className="px-4 py-2 text-sm text-[--text-secondary] flex items-center">
+          <span className="px-4 py-2 text-sm flex items-center" style={{ color: 'rgba(255,255,255,0.4)' }}>
             <span className="text-white font-semibold mx-1">{page}</span>/<span className="mx-1">{totalPages}</span>
           </span>
           {page < totalPages && (
             <Link href={`${baseUrl}&sayfa=${page + 1}`}
-              className="px-4 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white transition-colors">
+              className="px-4 py-2 rounded-lg text-sm transition-all hover:scale-105"
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.6)' }}>
               Sonraki →
             </Link>
           )}
