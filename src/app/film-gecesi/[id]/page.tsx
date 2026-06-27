@@ -52,7 +52,7 @@ export default async function FilmGecesiDetailPage({ params }: Props) {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
       <Link href="/film-gecesi" className="text-sm text-[--text-secondary] hover:text-white transition-colors mb-6 inline-block">← Film Geceleri</Link>
 
-      <div className="rounded-2xl bg-[--bg-card] border border-[--border] p-6 mb-6">
+      <div className="rounded-2xl p-6 mb-6" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(212,168,67,0.08)' }}>
         <div className="flex items-start justify-between gap-4 mb-4">
           <div className="flex-1">
             <h1 className="text-2xl font-bold text-white mb-2">{party.title}</h1>
@@ -89,12 +89,14 @@ export default async function FilmGecesiDetailPage({ params }: Props) {
         <div className="md:col-span-2">
           <h2 className="text-lg font-bold text-white mb-4">İzleme Listesi</h2>
           {withMedia.length === 0 ? (
-            <p className="text-sm text-[--text-secondary] bg-[--bg-card] border border-[--border] rounded-xl p-6 text-center">Liste boş</p>
+            <p className="text-sm text-[--text-secondary] rounded-xl p-6 text-center"
+              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>Liste boş</p>
           ) : (
             <div className="space-y-2">
               {withMedia.map((item, idx) => (
                 <Link key={item.id} href={`/${item.media_type}/${item.media_id}`}
-                  className="flex items-center gap-3 p-3 rounded-xl bg-[--bg-card] border border-[--border] hover:border-[--accent]/30 transition-colors group">
+                  className="flex items-center gap-3 p-3 rounded-xl transition-all hover:-translate-y-0.5 group"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
                   <span className="text-sm font-bold text-[--text-secondary] w-6 text-center shrink-0">{idx + 1}</span>
                   <div className="w-10 aspect-[2/3] rounded-lg overflow-hidden bg-[--bg-secondary] shrink-0">
                     {item.poster && <img src={item.poster} alt={item.title} className="w-full h-full object-cover" />}

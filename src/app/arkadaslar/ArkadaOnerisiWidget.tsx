@@ -43,7 +43,7 @@ export default function ArkadaOnerisiWidget() {
 
   if (suggestions.length === 0) {
     return (
-      <div className="rounded-2xl bg-[--bg-card] border border-[--border] p-12 text-center">
+      <div className="rounded-2xl p-12 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
         <p className="text-4xl mb-3">🤝</p>
         <p className="text-sm text-[--text-secondary]">
           Henüz yeterli veri yok. Daha fazla film izleyerek başla!
@@ -55,7 +55,8 @@ export default function ArkadaOnerisiWidget() {
   return (
     <div className="space-y-3">
       {suggestions.map(s => (
-        <div key={s.id} className="flex items-center gap-3 bg-[--bg-card] border border-[--border] rounded-xl p-4">
+        <div key={s.id} className="flex items-center gap-3 rounded-xl p-4 transition-all hover:-translate-y-0.5"
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <a href={`/profil/${s.username}`}>
             {s.avatar_url
               ? <img src={s.avatar_url} alt="" className="h-12 w-12 rounded-full object-cover shrink-0" />
