@@ -880,7 +880,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
               {similar.map((item) => (
                 <a key={item.id} href={`/film/${item.id}`} className="group shrink-0 w-[128px]" style={{ scrollSnapAlign: 'start' }}>
                   <div
-                    className="aspect-[2/3] rounded-xl overflow-hidden transition-all duration-200 group-hover:-translate-y-1.5"
+                    className="relative aspect-[2/3] rounded-xl overflow-hidden transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-2xl"
                     style={{
                       background: 'rgba(255,255,255,0.04)',
                       border: '1px solid rgba(255,255,255,0.06)',
@@ -898,8 +898,14 @@ export default async function FilmPage({ params, searchParams }: Props) {
                         {getMediaTitle(item)}
                       </div>
                     )}
+                    {item.vote_average > 0 && (
+                      <div className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded text-[10px] font-bold"
+                        style={{ background: 'rgba(0,0,0,0.75)', color: '#D4A843', backdropFilter: 'blur(4px)' }}>
+                        ★ {item.vote_average.toFixed(1)}
+                      </div>
+                    )}
                   </div>
-                  <p className="mt-1.5 text-[12px] leading-tight line-clamp-2" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                  <p className="mt-1.5 text-[12px] leading-tight line-clamp-2 transition-colors group-hover:text-white/70" style={{ color: 'rgba(255,255,255,0.45)' }}>
                     {getMediaTitle(item)}
                   </p>
                   {getMediaYear(item) && (
