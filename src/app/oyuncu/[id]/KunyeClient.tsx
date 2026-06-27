@@ -4,6 +4,10 @@ import { useState } from 'react'
 import FilmografiClient from './FilmografiClient'
 import type { TMDbPersonCredit } from '@/lib/types'
 
+const GOLD = '#D4A843'
+const GOLD_B = '#F0C060'
+const GOLD_DIM = 'rgba(212,168,67,0.45)'
+
 type CreditWithRole = TMDbPersonCredit & { role: string }
 
 interface Props {
@@ -55,24 +59,28 @@ export default function KunyeClient({
 
   return (
     <div>
-      {/* Sekme başlıkları */}
-      <div className="flex items-center gap-1 border-b border-[--border] mb-6">
+      {/* ── Sekme başlıkları ── */}
+      <div className="flex items-center gap-1 mb-8" style={{ borderBottom: '1px solid rgba(212,168,67,0.12)' }}>
         {tabs.map(t => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${
-              tab === t.key
-                ? 'border-[--accent] text-white'
-                : 'border-transparent text-[--text-secondary] hover:text-white'
-            }`}
+            className="relative px-5 py-3 text-[11px] font-bold uppercase tracking-[0.12em] transition-all duration-200 -mb-px"
+            style={tab === t.key
+              ? { color: GOLD_B, borderBottom: `2px solid ${GOLD}` }
+              : { color: GOLD_DIM, borderBottom: '2px solid transparent' }
+            }
           >
             {t.label}
+            {tab === t.key && (
+              <span className="absolute inset-x-0 bottom-0 h-4 pointer-events-none"
+                style={{ background: `linear-gradient(to top, rgba(212,168,67,0.06), transparent)` }} />
+            )}
           </button>
         ))}
       </div>
 
-      {/* Filmografi */}
+      {/* ── Filmografi ── */}
       {tab === 'filmografi' && (
         <FilmografiClient
           castCredits={castCredits}
@@ -81,75 +89,108 @@ export default function KunyeClient({
         />
       )}
 
-      {/* Künye */}
+      {/* ── Künye ── */}
       {tab === 'kunye' && (
-        <div className="space-y-6">
-          {/* Kariyer özeti kartları */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {firstYear && (
-              <div className="rounded-xl border border-[--border] bg-[--bg-card] p-4 text-center">
-                <p className="text-2xl font-bold text-white">{firstYear}</p>
-                <p className="text-xs text-[--text-secondary] mt-1">İlk Yapım</p>
-              </div>
-            )}
-            {careerYears !== null && careerYears > 0 && (
-              <div className="rounded-xl border border-[--border] bg-[--bg-card] p-4 text-center">
-                <p className="text-2xl font-bold text-white">{careerYears}</p>
-                <p className="text-xs text-[--text-secondary] mt-1">Yıllık Kariyer</p>
-              </div>
-            )}
-            {totalMovies > 0 && (
-              <div className="rounded-xl border border-[--border] bg-[--bg-card] p-4 text-center">
-                <p className="text-2xl font-bold text-white">{totalMovies}</p>
-                <p className="text-xs text-[--text-secondary] mt-1">Film</p>
-              </div>
-            )}
-            {totalTV > 0 && (
-              <div className="rounded-xl border border-[--border] bg-[--bg-card] p-4 text-center">
-                <p className="text-2xl font-bold text-white">{totalTV}</p>
-                <p className="text-xs text-[--text-secondary] mt-1">Dizi</p>
-              </div>
-            )}
-          </div>
+        <div className="space-y-8">
+
+          {/* Kariyer istatistikleri */}
+          {(firstYear || careerYears || totalMovies > 0 || totalTV > 0) && (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                { value: firstYear, label: 'İlk Yapım', icon: '🎬' },
+                { value: careerYears ? `${careerYears}` : null, label: 'Yıllık Kariyer', icon: '⏳' },
+                { value: totalMovies > 0 ? String(totalMovies) : null, label: 'Film', icon: '🎥' },
+                { value: totalTV > 0 ? String(totalTV) : null, label: 'Dizi', icon: '📺' },
+              ].filter(s => s.value).map(stat => (
+                <div key={stat.label}
+                  className="relative overflow-hidden rounded-2xl p-5 text-center"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(212,168,67,0.07) 0%, rgba(212,168,67,0.02) 100%)',
+                    border: '1px solid rgba(212,168,67,0.18)',
+                  }}>
+                  <div className="absolute inset-0 opacity-[0.05]"
+                    style={{ background: 'radial-gradient(circle at 50% 0%, var(--gold) 0%, transparent 70%)' }} />
+                  <p className="text-xl mb-0.5">{stat.icon}</p>
+                  <p className="relative text-3xl font-black tabular-nums mt-1"
+                     style={{
+                       background: `linear-gradient(135deg, ${GOLD_B} 0%, ${GOLD} 100%)`,
+                       WebkitBackgroundClip: 'text',
+                       WebkitTextFillColor: 'transparent',
+                       backgroundClip: 'text',
+                     }}>
+                    {stat.value}
+                  </p>
+                  <p className="relative text-[9.5px] font-semibold uppercase tracking-[0.12em] mt-1.5"
+                     style={{ color: GOLD_DIM }}>
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* Kişisel bilgiler */}
-          <div className="rounded-xl border border-[--border] bg-[--bg-card] overflow-hidden">
-            <div className="px-5 py-3 border-b border-[--border] bg-[--bg-secondary]">
-              <h3 className="text-sm font-semibold text-white">Kişisel Bilgiler</h3>
+          <div className="rounded-2xl overflow-hidden"
+            style={{ border: '1px solid rgba(212,168,67,0.12)', background: 'rgba(255,255,255,0.02)' }}>
+            <div className="px-5 py-4"
+              style={{ borderBottom: '1px solid rgba(212,168,67,0.1)', background: 'rgba(212,168,67,0.03)' }}>
+              <h3 className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: GOLD_DIM }}>
+                Kişisel Bilgiler
+              </h3>
             </div>
-            <div className="divide-y divide-[--border]">
+            <div className="divide-y" style={{ borderColor: 'rgba(212,168,67,0.08)' }}>
               {knownForDepartment && (
-                <Row label="Meslek" value={knownForLabel[knownForDepartment] ?? knownForDepartment} />
+                <InfoRow label="Meslek" value={knownForLabel[knownForDepartment] ?? knownForDepartment} />
               )}
               {birthday && (
-                <Row label="Doğum Tarihi" value={`${formatDate(birthday)}${age !== null && !deathday ? ` (${age} yaşında)` : ''}`} />
+                <InfoRow
+                  label="Doğum Tarihi"
+                  value={`${formatDate(birthday)}${age !== null && !deathday ? ` (${age} yaşında)` : ''}`}
+                />
               )}
               {deathday && (
-                <Row label="Ölüm Tarihi" value={`${formatDate(deathday)}${age !== null ? ` (${age} yaşında)` : ''}`} />
+                <InfoRow
+                  label="Ölüm Tarihi"
+                  value={`${formatDate(deathday)}${age !== null ? ` (${age} yaşında)` : ''}`}
+                />
               )}
               {placeOfBirth && (
-                <Row label="Doğum Yeri" value={placeOfBirth} />
+                <InfoRow label="Doğum Yeri" value={placeOfBirth} />
               )}
               {firstYear && (
-                <Row label="Kariyer Başlangıcı" value={firstYear} />
+                <InfoRow label="Kariyer Başlangıcı" value={firstYear} />
               )}
               {alsoKnownAs.length > 0 && (
-                <div className="flex gap-4 px-5 py-3">
-                  <span className="text-xs text-[--text-secondary] w-32 shrink-0 pt-0.5">Diğer Adlar</span>
+                <div className="flex gap-5 px-5 py-4" style={{ borderColor: 'rgba(212,168,67,0.08)' }}>
+                  <span className="text-[11px] w-36 shrink-0 pt-0.5" style={{ color: GOLD_DIM }}>Diğer Adlar</span>
                   <div className="flex flex-wrap gap-1.5">
                     {alsoKnownAs.map(n => (
-                      <span key={n} className="text-xs px-2 py-0.5 rounded bg-[--bg-secondary] border border-[--border] text-[--text-secondary]">{n}</span>
+                      <span key={n}
+                        className="text-[11px] px-2.5 py-1 rounded-lg"
+                        style={{
+                          background: 'rgba(255,255,255,0.04)',
+                          border: '1px solid rgba(255,255,255,0.08)',
+                          color: 'var(--text-secondary)',
+                        }}>
+                        {n}
+                      </span>
                     ))}
                   </div>
                 </div>
               )}
               {imdbId && (
-                <div className="flex gap-4 px-5 py-3">
-                  <span className="text-xs text-[--text-secondary] w-32 shrink-0 pt-0.5">Dış Bağlantılar</span>
-                  <div className="flex gap-2">
+                <div className="flex gap-5 px-5 py-4">
+                  <span className="text-[11px] w-36 shrink-0 pt-1" style={{ color: GOLD_DIM }}>Dış Bağlantılar</span>
+                  <div className="flex flex-wrap gap-2">
                     <a href={`https://www.imdb.com/name/${imdbId}`} target="_blank" rel="noopener noreferrer"
-                      className="text-xs px-2.5 py-1 rounded-lg bg-[--gold]/10 border border-[--gold]/30 text-[--gold] hover:bg-[--gold]/20 transition-colors font-semibold">
+                      className="text-[12px] px-3 py-1.5 rounded-xl font-bold transition-all hover:scale-105"
+                      style={{ background: 'rgba(212,168,67,0.12)', border: '1px solid rgba(212,168,67,0.3)', color: GOLD }}>
                       IMDb
+                    </a>
+                    <a href={`https://www.imdb.com/name/${imdbId}/awards`} target="_blank" rel="noopener noreferrer"
+                      className="text-[12px] px-3 py-1.5 rounded-xl transition-all hover:scale-105"
+                      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-secondary)' }}>
+                      🏆 Ödüller
                     </a>
                   </div>
                 </div>
@@ -159,72 +200,94 @@ export default function KunyeClient({
 
           {/* Tam biyografi */}
           {biography && (
-            <div className="rounded-xl border border-[--border] bg-[--bg-card] overflow-hidden">
-              <div className="px-5 py-3 border-b border-[--border] bg-[--bg-secondary]">
-                <h3 className="text-sm font-semibold text-white">Biyografi</h3>
+            <div className="rounded-2xl overflow-hidden"
+              style={{ border: '1px solid rgba(212,168,67,0.12)', background: 'rgba(255,255,255,0.02)' }}>
+              <div className="px-5 py-4"
+                style={{ borderBottom: '1px solid rgba(212,168,67,0.1)', background: 'rgba(212,168,67,0.03)' }}>
+                <h3 className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: GOLD_DIM }}>
+                  Biyografi
+                </h3>
               </div>
-              <div className="px-5 py-4">
-                <p className="text-sm text-[--text-secondary] leading-relaxed whitespace-pre-line">{biography}</p>
+              <div className="px-5 py-5">
+                <p className="text-[13px] leading-[1.85] whitespace-pre-line"
+                   style={{ color: 'rgba(255,255,255,0.65)' }}>
+                  {biography}
+                </p>
               </div>
             </div>
           )}
         </div>
       )}
 
-      {/* Ödüller */}
+      {/* ── Ödüller ── */}
       {tab === 'oduller' && (
         <div className="space-y-4">
           {imdbId ? (
             <>
-              {/* IMDb Ödüller linki */}
               <a
                 href={`https://www.imdb.com/name/${imdbId}/awards`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-between p-5 rounded-xl border border-[--gold]/30 bg-[--gold]/5 hover:bg-[--gold]/10 transition-colors group"
+                target="_blank" rel="noopener noreferrer"
+                className="flex items-center justify-between p-5 rounded-2xl transition-all duration-200 group hover:scale-[1.01]"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(212,168,67,0.08) 0%, rgba(212,168,67,0.03) 100%)',
+                  border: '1px solid rgba(212,168,67,0.25)',
+                }}
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-[--gold]/20 flex items-center justify-center text-2xl shrink-0">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0"
+                       style={{ background: 'rgba(212,168,67,0.15)' }}>
                     🏆
                   </div>
                   <div>
-                    <p className="text-white font-semibold">IMDb Ödüller & Adaylıklar</p>
-                    <p className="text-xs text-[--text-secondary] mt-0.5">Oscar, Emmy, BAFTA, Golden Globe ve daha fazlası</p>
+                    <p className="text-white font-semibold text-sm">IMDb Ödüller & Adaylıklar</p>
+                    <p className="text-[11px] mt-0.5" style={{ color: 'var(--text-secondary)' }}>
+                      Oscar, Emmy, BAFTA, Golden Globe ve daha fazlası
+                    </p>
                   </div>
                 </div>
                 <span className="text-[--text-secondary] group-hover:text-white transition-colors text-lg">→</span>
               </a>
 
-              {/* Önemli ödül törenleri */}
-              <div className="rounded-xl border border-[--border] bg-[--bg-card] overflow-hidden">
-                <div className="px-5 py-3 border-b border-[--border] bg-[--bg-secondary]">
-                  <h3 className="text-sm font-semibold text-white">Başlıca Ödül Törenleri</h3>
+              <div className="rounded-2xl overflow-hidden"
+                style={{ border: '1px solid rgba(212,168,67,0.12)', background: 'rgba(255,255,255,0.02)' }}>
+                <div className="px-5 py-4"
+                  style={{ borderBottom: '1px solid rgba(212,168,67,0.1)', background: 'rgba(212,168,67,0.03)' }}>
+                  <h3 className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: GOLD_DIM }}>
+                    Başlıca Ödül Törenleri
+                  </h3>
                 </div>
-                <div className="divide-y divide-[--border]">
+                <div className="divide-y" style={{ borderColor: 'rgba(212,168,67,0.08)' }}>
                   {[
-                    { name: 'Academy Awards (Oscar)', emoji: '🎬', url: `https://www.imdb.com/name/${imdbId}/awards` },
-                    { name: 'Emmy Awards', emoji: '📺', url: `https://www.imdb.com/name/${imdbId}/awards` },
-                    { name: 'Golden Globe Awards', emoji: '🌟', url: `https://www.imdb.com/name/${imdbId}/awards` },
-                    { name: 'BAFTA Awards', emoji: '🎭', url: `https://www.imdb.com/name/${imdbId}/awards` },
-                    { name: 'Screen Actors Guild Awards', emoji: '🎪', url: `https://www.imdb.com/name/${imdbId}/awards` },
+                    { name: 'Academy Awards (Oscar)', emoji: '🎬' },
+                    { name: 'Emmy Awards', emoji: '📺' },
+                    { name: 'Golden Globe Awards', emoji: '🌟' },
+                    { name: 'BAFTA Awards', emoji: '🎭' },
+                    { name: 'Screen Actors Guild Awards', emoji: '🎪' },
                   ].map(award => (
-                    <a key={award.name} href={award.url} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-3 px-5 py-3 hover:bg-[--bg-secondary] transition-colors group">
-                      <span className="text-lg">{award.emoji}</span>
-                      <span className="text-sm text-[--text-secondary] group-hover:text-white transition-colors flex-1">{award.name}</span>
-                      <span className="text-[--text-secondary]/40 group-hover:text-[--text-secondary] text-xs transition-colors">IMDb →</span>
+                    <a key={award.name}
+                       href={`https://www.imdb.com/name/${imdbId}/awards`}
+                       target="_blank" rel="noopener noreferrer"
+                       className="flex items-center gap-3 px-5 py-3.5 transition-colors group"
+                       style={{ background: 'transparent' }}
+                       onMouseEnter={e => (e.currentTarget.style.background = 'rgba(212,168,67,0.04)')}
+                       onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                    >
+                      <span className="text-lg w-6 shrink-0">{award.emoji}</span>
+                      <span className="text-[13px] flex-1 transition-colors"
+                            style={{ color: 'var(--text-secondary)' }}>
+                        {award.name}
+                      </span>
+                      <span className="text-[10px] transition-colors" style={{ color: GOLD_DIM }}>
+                        IMDb →
+                      </span>
                     </a>
                   ))}
                 </div>
               </div>
-
-              <p className="text-xs text-[--text-secondary] text-center">
-                Ödül verileri IMDb tarafından sağlanmaktadır.
-              </p>
             </>
           ) : (
-            <div className="text-center py-16 text-[--text-secondary]">
-              <p className="text-4xl mb-3">🏆</p>
+            <div className="text-center py-20" style={{ color: 'var(--text-secondary)' }}>
+              <p className="text-4xl mb-4">🏆</p>
               <p className="text-sm">Bu kişi için ödül bilgisi bulunamadı.</p>
             </div>
           )}
@@ -234,11 +297,11 @@ export default function KunyeClient({
   )
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function InfoRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex gap-4 px-5 py-3">
-      <span className="text-xs text-[--text-secondary] w-32 shrink-0 pt-0.5">{label}</span>
-      <span className="text-sm text-white">{value}</span>
+    <div className="flex gap-5 px-5 py-3.5" style={{ borderColor: 'rgba(212,168,67,0.08)' }}>
+      <span className="text-[11px] w-36 shrink-0 pt-0.5 font-medium" style={{ color: GOLD_DIM }}>{label}</span>
+      <span className="text-[13px]" style={{ color: 'rgba(255,255,255,0.75)' }}>{value}</span>
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
-import { IconCalendarDays, IconMapPin } from '@/components/icons'
+import Image from 'next/image'
+import { IconCalendarDays, IconMapPin, IconStarFilled } from '@/components/icons'
 import { getPersonDetail, getPersonCredits, getProfileUrl, getPersonExternalIds, getPersonImages } from '@/lib/tmdb'
 import FilmografiClient from './FilmografiClient'
 import KunyeClient from './KunyeClient'
@@ -30,12 +31,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         type: 'profile',
         url: `/oyuncu/${id}`,
       },
-      twitter: {
-        card: 'summary',
-        title: `${person.name} | Sinezon`,
-        description,
-        images: ogImage ? [ogImage] : [],
-      },
     }
   } catch {
     return { title: 'Kişi bulunamadı' }
@@ -56,6 +51,7 @@ export default async function OyuncuPage({ params }: Props) {
   if (!person) notFound()
 
   const profileUrl = getProfileUrl(person.profile_path, 'w342')
+  const profileUrlLarge = person.profile_path ? `https://image.tmdb.org/t/p/h632${person.profile_path}` : null
 
   const seenIds = new Set<string>()
   const castCredits: (TMDbPersonCredit & { role: string })[] = []
@@ -88,7 +84,9 @@ export default async function OyuncuPage({ params }: Props) {
     Production: 'Yapımcılık', Crew: 'Ekip', Sound: 'Ses', 'Visual Effects': 'Görsel Efekt',
   }
 
-  const popularFilms = castCredits.filter(c => c.media_type === 'movie').slice(0, 6)
+  const popularFilms = castCredits
+    .filter(c => c.media_type === 'movie' && c.poster_path)
+    .slice(0, 6)
 
   const allCreditsForStats = [...castCredits, ...directorCredits, ...writerCredits]
   const firstYear = allCreditsForStats
@@ -99,159 +97,321 @@ export default async function OyuncuPage({ params }: Props) {
     + directorCredits.filter(c => c.media_type === 'movie').length
   const totalTV = castCredits.filter(c => c.media_type === 'tv').length
     + directorCredits.filter(c => c.media_type === 'tv').length
+  const careerYears = firstYear ? new Date().getFullYear() - Number(firstYear) : null
+
+  const deptLabel = knownForLabel[person.known_for_department] ?? person.known_for_department
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="min-h-screen">
 
-      {/* Üst bölüm */}
-      <div className="flex flex-col sm:flex-row gap-8 mb-10">
-        <div className="shrink-0">
-          <div className="w-44 rounded-xl overflow-hidden bg-[--bg-card] border border-[--border] shadow-xl shadow-black/40">
-            {profileUrl ? (
-              <img src={profileUrl} alt={person.name} className="w-full aspect-[2/3] object-cover" />
-            ) : (
-              <div className="w-full aspect-[2/3] flex items-center justify-center">
-                <span className="text-5xl font-bold text-[--text-secondary] opacity-20">{person.name[0]}</span>
-              </div>
-            )}
-          </div>
-          {popularFilms.length > 0 && (
-            <div className="mt-4">
-              <p className="text-xs text-[--text-secondary] mb-2">Bilinen Filmler</p>
-              <div className="grid grid-cols-3 gap-1">
-                {popularFilms.map(c => (
-                  <a key={c.id} href={`/film/${c.id}`} className="group">
-                    <div className="aspect-[2/3] rounded overflow-hidden bg-[--bg-card] border border-[--border] group-hover:border-[--accent]/50 transition-colors">
-                      {c.poster_path
-                        ? <img src={`https://image.tmdb.org/t/p/w92${c.poster_path}`} alt={c.title ?? ''} className="w-full h-full object-cover" />
-                        : <div className="w-full h-full bg-[--bg-secondary]" />
-                      }
-                    </div>
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
+      {/* ── HERO BACKDROP ── */}
+      <div className="relative h-[340px] sm:h-[400px] overflow-hidden">
+        {profileUrlLarge && (
+          <>
+            <Image
+              src={profileUrlLarge}
+              alt={person.name}
+              fill
+              sizes="100vw"
+              className="object-cover object-top scale-110"
+              style={{ filter: 'blur(24px)', opacity: 0.18 }}
+              priority
+            />
+            <div className="absolute inset-0"
+              style={{ background: 'linear-gradient(to bottom, rgba(8,10,15,0.3) 0%, rgba(8,10,15,0.7) 60%, var(--bg-primary) 100%)' }} />
+          </>
+        )}
+        {!profileUrlLarge && (
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #0d1226 0%, #080a0f 100%)' }} />
+        )}
 
-        {/* Bilgiler */}
-        <div className="flex-1">
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">{person.name}</h1>
-
-          <div className="flex flex-wrap gap-2 mb-4">
-            {person.known_for_department && (
-              <span className="px-3 py-1 rounded-full bg-[--accent]/20 text-[--accent] text-sm font-medium">
-                {knownForLabel[person.known_for_department] ?? person.known_for_department}
-              </span>
-            )}
-            {castCredits.length > 0 && (
-              <span className="px-3 py-1 rounded-full bg-[--bg-card] border border-[--border] text-[--text-secondary] text-xs">
-                {castCredits.length} yapım
-              </span>
-            )}
-            {directorCredits.length > 0 && (
-              <span className="px-3 py-1 rounded-full bg-[--bg-card] border border-[--border] text-[--text-secondary] text-xs">
-                {directorCredits.length} yönetmenlik
-              </span>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2 text-sm text-[--text-secondary] mb-5">
-            {person.birthday && (
-              <div className="flex items-center gap-2">
-                <IconCalendarDays className="h-4 w-4 shrink-0" />
-                <span>
-                  {formatDate(person.birthday)}
-                  {age !== null && !person.deathday && ` (${age} yaşında)`}
-                  {person.deathday && ` — ${formatDate(person.deathday)} (${age} yaşında)`}
-                </span>
-              </div>
-            )}
-            {person.place_of_birth && (
-              <div className="flex items-center gap-2">
-                <IconMapPin className="h-4 w-4 shrink-0" />
-                <span>{person.place_of_birth}</span>
-              </div>
-            )}
-            {person.also_known_as && person.also_known_as.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mt-1">
-                <span className="text-xs text-[--text-secondary]/70 shrink-0">Diğer adları:</span>
-                {person.also_known_as.slice(0, 4).map(n => (
-                  <span key={n} className="text-xs px-2 py-0.5 rounded bg-[--bg-card] border border-[--border] text-[--text-secondary]">{n}</span>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Dış linkler */}
-          <div className="flex flex-wrap gap-2 mb-5">
-            {externalIds.imdb_id && (
-              <a href={`https://www.imdb.com/name/${externalIds.imdb_id}`} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[--border] bg-[--bg-card] text-xs text-[--text-secondary] hover:text-white hover:border-white/30 transition-colors">
-                <span className="font-bold text-[--gold]">IMDb</span> Profil
-              </a>
-            )}
-            {externalIds.imdb_id && (
-              <a href={`https://www.imdb.com/name/${externalIds.imdb_id}/awards`} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[--border] bg-[--bg-card] text-xs text-[--text-secondary] hover:text-white hover:border-white/30 transition-colors">
-                🏆 IMDb Ödülleri
-              </a>
-            )}
-            {externalIds.instagram_id && (
-              <a href={`https://www.instagram.com/${externalIds.instagram_id}`} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[--border] bg-[--bg-card] text-xs text-[--text-secondary] hover:text-white hover:border-white/30 transition-colors">
-                📷 Instagram
-              </a>
-            )}
-          </div>
-
-          {person.biography && (
-            <div>
-              <h3 className="text-sm font-semibold text-[--text-secondary] uppercase tracking-wider mb-2">Biyografi</h3>
-              <p className="text-sm text-[--text-secondary] leading-relaxed line-clamp-5">{person.biography}</p>
-              {person.biography.length > 400 && (
-                <details className="mt-1">
-                  <summary className="text-xs text-[--accent] cursor-pointer hover:underline list-none">Tümünü oku</summary>
-                  <p className="text-sm text-[--text-secondary] leading-relaxed mt-2">{person.biography}</p>
-                </details>
-              )}
-            </div>
-          )}
-
-          {/* Fotoğraf Galerisi */}
-          {personImages.profiles.length > 1 && (
-            <div className="mt-5">
-              <h3 className="text-sm font-semibold text-[--text-secondary] uppercase tracking-wider mb-2">Fotoğraflar</h3>
-              <div className="flex gap-2 overflow-x-auto pb-2">
-                {personImages.profiles.slice(0, 10).map((img, i) => (
-                  <a key={i} href={`https://image.tmdb.org/t/p/w780${img.file_path}`} target="_blank" rel="noopener noreferrer"
-                    className="shrink-0 w-20 rounded-lg overflow-hidden bg-[--bg-card] border border-[--border] hover:border-[--accent]/50 transition-colors">
-                    <img src={`https://image.tmdb.org/t/p/w185${img.file_path}`} alt="" className="w-full aspect-[2/3] object-cover" />
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
+        {/* Subtle gold grain overlay */}
+        <div className="absolute inset-0 opacity-[0.015]"
+          style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\' opacity=\'1\'/%3E%3C/svg%3E")' }} />
       </div>
 
-      {/* Sekmeli alt bölüm: Filmografi / Künye / Ödüller */}
-      <KunyeClient
-        castCredits={castCredits}
-        directorCredits={directorCredits}
-        writerCredits={writerCredits}
-        biography={person.biography ?? ''}
-        birthday={person.birthday}
-        deathday={person.deathday}
-        placeOfBirth={person.place_of_birth}
-        alsoKnownAs={person.also_known_as ?? []}
-        knownForDepartment={person.known_for_department}
-        firstYear={firstYear}
-        totalMovies={totalMovies}
-        totalTV={totalTV}
-        imdbId={externalIds.imdb_id}
-        knownForLabel={knownForLabel}
-      />
+      {/* ── MAIN CONTENT ── */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-56 relative z-10">
+
+        {/* ── ÜSTTEN PROFIL KARTI ── */}
+        <div className="flex flex-col sm:flex-row gap-7 mb-10">
+
+          {/* Sol: Fotoğraf + filmler */}
+          <div className="shrink-0 flex flex-col items-center sm:items-start">
+            {/* Profile photo */}
+            <div className="relative w-48 sm:w-56">
+              <div
+                className="absolute -inset-1 rounded-2xl opacity-60"
+                style={{ background: 'linear-gradient(135deg, var(--gold) 0%, var(--accent) 100%)', filter: 'blur(12px)' }}
+              />
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl"
+                style={{ border: '2px solid rgba(212,168,67,0.3)' }}>
+                {profileUrl ? (
+                  <Image
+                    src={profileUrl}
+                    alt={person.name}
+                    width={224}
+                    height={336}
+                    className="w-full aspect-[2/3] object-cover"
+                    priority
+                  />
+                ) : (
+                  <div className="w-full aspect-[2/3] flex items-center justify-center"
+                    style={{ background: 'var(--bg-card)' }}>
+                    <span className="text-6xl font-black opacity-20" style={{ color: 'var(--gold)' }}>
+                      {person.name[0]}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Bilinen Filmler */}
+            {popularFilms.length > 0 && (
+              <div className="mt-5 w-48 sm:w-56">
+                <p className="text-[10px] font-bold uppercase tracking-[0.15em] mb-2.5"
+                   style={{ color: 'rgba(212,168,67,0.5)' }}>
+                  Bilinen Yapımlar
+                </p>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {popularFilms.map(c => (
+                    <a key={`${c.media_type}-${c.id}`}
+                       href={`/${c.media_type === 'movie' ? 'film' : 'dizi'}/${c.id}`}
+                       className="group">
+                      <div className="aspect-[2/3] rounded-lg overflow-hidden transition-all duration-200 group-hover:scale-105 group-hover:shadow-lg"
+                           style={{ border: '1px solid rgba(212,168,67,0.15)' }}>
+                        <Image
+                          src={`https://image.tmdb.org/t/p/w92${c.poster_path}`}
+                          alt={c.title ?? ''}
+                          width={92}
+                          height={138}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Sağ: Tüm bilgiler */}
+          <div className="flex-1 pt-2 sm:pt-20">
+
+            {/* Departman rozeti */}
+            <div className="flex items-center gap-2 mb-3">
+              {deptLabel && (
+                <span className="text-[11px] font-bold uppercase tracking-[0.15em] px-3 py-1 rounded-full"
+                  style={{ background: 'rgba(225,29,72,0.15)', color: 'var(--accent)', border: '1px solid rgba(225,29,72,0.3)' }}>
+                  {deptLabel}
+                </span>
+              )}
+              {(castCredits.length + directorCredits.length) > 0 && (
+                <span className="text-[11px] px-2.5 py-1 rounded-full"
+                  style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}>
+                  {castCredits.length + directorCredits.length} yapım
+                </span>
+              )}
+            </div>
+
+            {/* İsim */}
+            <h1 className="text-4xl sm:text-5xl font-black tracking-tight mb-4 leading-none"
+              style={{
+                background: 'linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.75) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}>
+              {person.name}
+            </h1>
+
+            {/* Meta bilgiler */}
+            <div className="flex flex-col gap-2 mb-5">
+              {person.birthday && (
+                <div className="flex items-center gap-2.5 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                  <IconCalendarDays className="h-4 w-4 shrink-0" style={{ color: 'rgba(212,168,67,0.6)' }} />
+                  <span>
+                    {formatDate(person.birthday)}
+                    {age !== null && !person.deathday && (
+                      <span className="ml-1.5 text-[12px] px-1.5 py-0.5 rounded"
+                        style={{ background: 'rgba(255,255,255,0.06)', color: 'var(--text-secondary)' }}>
+                        {age} yaşında
+                      </span>
+                    )}
+                    {person.deathday && ` — ${formatDate(person.deathday)}`}
+                  </span>
+                </div>
+              )}
+              {person.place_of_birth && (
+                <div className="flex items-center gap-2.5 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                  <IconMapPin className="h-4 w-4 shrink-0" style={{ color: 'rgba(212,168,67,0.6)' }} />
+                  <span>{person.place_of_birth}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Diğer adlar */}
+            {person.also_known_as && person.also_known_as.length > 0 && (
+              <div className="flex flex-wrap items-center gap-1.5 mb-5">
+                <span className="text-[11px] shrink-0" style={{ color: 'rgba(255,255,255,0.3)' }}>Diğer adları:</span>
+                {person.also_known_as.slice(0, 5).map(n => (
+                  <span key={n}
+                    className="text-[11px] px-2 py-0.5 rounded-full"
+                    style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-secondary)' }}>
+                    {n}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Dış linkler */}
+            <div className="flex flex-wrap gap-2 mb-6">
+              {externalIds.imdb_id && (
+                <a href={`https://www.imdb.com/name/${externalIds.imdb_id}`}
+                   target="_blank" rel="noopener noreferrer"
+                   className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[12px] font-semibold transition-all hover:scale-105"
+                   style={{ background: 'rgba(212,168,67,0.12)', border: '1px solid rgba(212,168,67,0.3)', color: 'var(--gold)' }}>
+                  <span className="font-black">IMDb</span> Profil
+                </a>
+              )}
+              {externalIds.imdb_id && (
+                <a href={`https://www.imdb.com/name/${externalIds.imdb_id}/awards`}
+                   target="_blank" rel="noopener noreferrer"
+                   className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[12px] font-semibold transition-all hover:scale-105"
+                   style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-secondary)' }}>
+                  🏆 Ödüller
+                </a>
+              )}
+              {externalIds.instagram_id && (
+                <a href={`https://www.instagram.com/${externalIds.instagram_id}`}
+                   target="_blank" rel="noopener noreferrer"
+                   className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[12px] font-semibold transition-all hover:scale-105"
+                   style={{ background: 'rgba(131,58,180,0.12)', border: '1px solid rgba(131,58,180,0.3)', color: '#c084fc' }}>
+                  📷 Instagram
+                </a>
+              )}
+            </div>
+
+            {/* ── Kariyer İstatistikleri ── */}
+            {(firstYear || careerYears || totalMovies > 0 || totalTV > 0) && (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+                {[
+                  { value: firstYear, label: 'İlk Yapım' },
+                  { value: careerYears ? `${careerYears}` : null, label: 'Yıllık Kariyer' },
+                  { value: totalMovies > 0 ? String(totalMovies) : null, label: 'Film' },
+                  { value: totalTV > 0 ? String(totalTV) : null, label: 'Dizi' },
+                ].filter(s => s.value).map(stat => (
+                  <div key={stat.label}
+                    className="relative overflow-hidden rounded-2xl p-4 text-center"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(212,168,67,0.06) 0%, rgba(212,168,67,0.02) 100%)',
+                      border: '1px solid rgba(212,168,67,0.15)',
+                    }}>
+                    <div className="absolute inset-0 opacity-[0.04]"
+                      style={{ background: 'radial-gradient(circle at 50% 0%, var(--gold) 0%, transparent 70%)' }} />
+                    <p className="relative text-3xl font-black tabular-nums"
+                       style={{
+                         background: 'linear-gradient(135deg, var(--gold-bright, #F0C060) 0%, var(--gold, #D4A843) 100%)',
+                         WebkitBackgroundClip: 'text',
+                         WebkitTextFillColor: 'transparent',
+                         backgroundClip: 'text',
+                       }}>
+                      {stat.value}
+                    </p>
+                    <p className="relative text-[10px] font-medium uppercase tracking-[0.1em] mt-1"
+                       style={{ color: 'rgba(212,168,67,0.5)' }}>
+                      {stat.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Kısa biyografi */}
+            {person.biography && (
+              <div className="relative">
+                <h3 className="text-[10px] font-bold uppercase tracking-[0.18em] mb-2"
+                    style={{ color: 'rgba(212,168,67,0.45)' }}>
+                  Biyografi
+                </h3>
+                <p className="text-[13px] leading-relaxed line-clamp-4"
+                   style={{ color: 'var(--text-secondary)' }}>
+                  {person.biography}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ── FOTOĞRAF GALERİSİ ── */}
+        {personImages.profiles.length > 1 && (
+          <div className="mb-10">
+            <div className="flex items-center gap-3 mb-4">
+              <h2 className="text-[10px] font-bold uppercase tracking-[0.18em]"
+                  style={{ color: 'rgba(212,168,67,0.5)' }}>Fotoğraflar</h2>
+              <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, rgba(212,168,67,0.2) 0%, transparent 100%)' }} />
+              <span className="text-[11px]" style={{ color: 'var(--text-secondary)' }}>
+                {personImages.profiles.length} fotoğraf
+              </span>
+            </div>
+            <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-thin">
+              {personImages.profiles.slice(0, 12).map((img, i) => (
+                <a key={i}
+                   href={`https://image.tmdb.org/t/p/w780${img.file_path}`}
+                   target="_blank" rel="noopener noreferrer"
+                   className="shrink-0 group">
+                  <div className="w-24 sm:w-28 overflow-hidden rounded-xl transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl"
+                       style={{ border: '1px solid rgba(212,168,67,0.15)' }}>
+                    <Image
+                      src={`https://image.tmdb.org/t/p/w185${img.file_path}`}
+                      alt=""
+                      width={185}
+                      height={278}
+                      className="w-full aspect-[2/3] object-cover"
+                    />
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── ALT SEKMELER ── */}
+        <div
+          className="rounded-2xl overflow-hidden"
+          style={{
+            background: 'linear-gradient(160deg, rgba(20,28,47,0.9) 0%, rgba(14,20,32,0.95) 100%)',
+            border: '1px solid rgba(212,168,67,0.1)',
+            boxShadow: '0 30px 60px rgba(0,0,0,0.5)',
+          }}
+        >
+          {/* Gold top line */}
+          <div style={{
+            height: 2,
+            background: 'linear-gradient(90deg, transparent 0%, rgba(212,168,67,0.6) 30%, rgba(240,192,96,0.8) 50%, rgba(212,168,67,0.6) 70%, transparent 100%)',
+          }} />
+
+          <div className="p-6 sm:p-8">
+            <KunyeClient
+              castCredits={castCredits}
+              directorCredits={directorCredits}
+              writerCredits={writerCredits}
+              biography={person.biography ?? ''}
+              birthday={person.birthday}
+              deathday={person.deathday}
+              placeOfBirth={person.place_of_birth}
+              alsoKnownAs={person.also_known_as ?? []}
+              knownForDepartment={person.known_for_department}
+              firstYear={firstYear}
+              totalMovies={totalMovies}
+              totalTV={totalTV}
+              imdbId={externalIds.imdb_id}
+              knownForLabel={knownForLabel}
+            />
+          </div>
+        </div>
+
+      </div>
     </div>
   )
 }
