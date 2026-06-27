@@ -93,7 +93,8 @@ export default async function AlintilarPage() {
           </div>
         </div>
       ) : (
-        <div className="mb-10 rounded-2xl bg-[--bg-card] border border-[--border] p-10 text-center text-[--text-secondary]">
+        <div className="mb-10 rounded-2xl p-10 text-center text-[--text-secondary]"
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           Henüz alıntı eklenmemiş.
         </div>
       )}
@@ -148,7 +149,8 @@ export default async function AlintilarPage() {
       )}
 
       {allQuotes.length === 0 && (
-        <div className="rounded-2xl bg-[--bg-card] border border-[--border] p-16 text-center text-[--text-secondary]">
+        <div className="rounded-2xl p-16 text-center text-[--text-secondary]"
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           Henüz alıntı eklenmemiş.
         </div>
       )}

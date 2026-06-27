@@ -72,7 +72,8 @@ export default async function KategoriPage({ params, searchParams }: Props) {
         </Link>
       </div>
 
-      <div className="rounded-xl bg-[--bg-card] border border-[--border] divide-y divide-[--border]">
+      <div className="rounded-xl divide-y overflow-hidden"
+        style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.04)' }}>
         {(threads ?? []).length === 0 ? (
           <div className="py-16 text-center">
             <p className="text-[--text-secondary] text-sm">Bu kategoride henüz konu yok.</p>
@@ -112,14 +113,16 @@ export default async function KategoriPage({ params, searchParams }: Props) {
         <div className="flex justify-center gap-3 mt-6">
           {page > 1 && (
             <Link href={`/forum/kategori/${slug}?sayfa=${page - 1}`}
-              className="px-5 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white transition-colors">
+              className="px-5 py-2 rounded-lg text-sm transition-all hover:text-white hover:scale-105"
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
               ← Önceki
             </Link>
           )}
           <span className="px-5 py-2 text-sm text-[--text-secondary] flex items-center">{page} / {totalPages}</span>
           {page < totalPages && (
             <Link href={`/forum/kategori/${slug}?sayfa=${page + 1}`}
-              className="px-5 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white transition-colors">
+              className="px-5 py-2 rounded-lg text-sm transition-all hover:text-white hover:scale-105"
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
               Sonraki →
             </Link>
           )}

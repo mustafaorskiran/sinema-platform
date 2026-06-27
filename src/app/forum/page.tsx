@@ -76,7 +76,8 @@ export default async function ForumPage({ searchParams }: Props) {
             type="search"
             defaultValue={query}
             placeholder="Konularda ara..."
-            className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-[--bg-card] border border-[--border] text-white placeholder-[--text-secondary] text-sm focus:outline-none focus:border-[--accent]/60 transition-colors"
+            className="w-full pl-9 pr-4 py-2.5 rounded-xl text-white placeholder-[--text-secondary] text-sm focus:outline-none transition-colors"
+            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.09)' }}
           />
           {query && (
             <a
@@ -123,7 +124,8 @@ export default async function ForumPage({ searchParams }: Props) {
             ? `"${query}" için sonuçlar`
             : 'Son Konular'}
         </h2>
-        <div className="rounded-xl bg-[--bg-card] border border-[--border] divide-y divide-[--border]">
+        <div className="rounded-xl divide-y overflow-hidden"
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.04)' }}>
           {(recentThreads ?? []).length === 0 ? (
             <div className="py-12 text-center text-[--text-secondary] text-sm">
               {query ? `"${query}" için sonuç bulunamadı.` : 'Henüz konu açılmamış.'}
