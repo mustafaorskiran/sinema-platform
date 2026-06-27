@@ -100,7 +100,8 @@ export default async function ForumPage({ searchParams }: Props) {
                 <Link
                   key={cat.id}
                   href={`/forum/kategori/${cat.slug}`}
-                  className="flex items-start gap-4 p-4 rounded-xl bg-[--bg-card] border border-[--border] hover:border-[--accent]/40 transition-colors group"
+                  className="flex items-start gap-4 p-4 rounded-xl transition-all duration-200 hover:-translate-y-0.5 group"
+                  style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
                 >
                   <span className="text-2xl shrink-0">{cat.icon}</span>
                   <div className="flex-1 min-w-0">
