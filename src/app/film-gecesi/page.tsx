@@ -39,19 +39,22 @@ export default async function FilmGecesiPage() {
         </div>
         {user && (
           <Link href="/film-gecesi/yeni"
-            className="flex items-center gap-2 px-4 py-2 rounded-full bg-[--accent] hover:bg-[--accent-hover] text-white text-sm font-semibold transition-colors">
+            className="flex items-center gap-2 px-4 py-2 rounded-full text-white text-sm font-semibold transition-all hover:scale-105 active:scale-95"
+            style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', boxShadow: '0 4px 14px rgba(225,29,72,0.3)' }}>
             <IconPlus className="h-4 w-4" /> Etkinlik Oluştur
           </Link>
         )}
       </div>
 
       {(!parties || parties.length === 0) ? (
-        <div className="text-center py-24 rounded-2xl bg-[--bg-card] border border-[--border]">
+        <div className="text-center py-24 rounded-2xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <p className="text-4xl mb-4">🎬</p>
           <p className="text-lg font-medium text-white mb-2">Henüz etkinlik yok</p>
           <p className="text-sm text-[--text-secondary] mb-6">Film gecesi oluştur, arkadaşlarını davet et!</p>
           {user && (
-            <Link href="/film-gecesi/yeni" className="inline-block bg-[--accent] hover:bg-[--accent-hover] text-white text-sm font-semibold px-6 py-2.5 rounded-full transition-colors">
+            <Link href="/film-gecesi/yeni"
+              className="inline-block text-white text-sm font-semibold px-6 py-2.5 rounded-full transition-all hover:scale-105"
+              style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', boxShadow: '0 4px 14px rgba(225,29,72,0.3)' }}>
               İlk Etkinliği Oluştur
             </Link>
           )}
