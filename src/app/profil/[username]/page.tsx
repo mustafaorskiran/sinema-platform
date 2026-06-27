@@ -413,7 +413,7 @@ export default async function ProfilPage({ params }: Props) {
 
       {/* Veri dışa aktarma (sadece kendi profilinde) */}
       {isOwnProfile && (
-        <div className="mb-8 p-4 rounded-xl bg-[--bg-card] border border-[--border]">
+        <div className="mb-8 p-4 rounded-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <p className="text-xs font-semibold text-[--text-secondary] uppercase tracking-wider mb-3">Verilerimi İndir</p>
           <div className="flex flex-wrap gap-2">
             {[
@@ -594,7 +594,8 @@ export default async function ProfilPage({ params }: Props) {
       </h2>
 
       {reviewsWithMedia.length === 0 ? (
-        <div className="rounded-xl bg-[--bg-card] border border-[--border] py-16 text-center text-[--text-secondary]">
+        <div className="rounded-xl py-16 text-center text-[--text-secondary]"
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           {isOwnProfile
             ? 'Henüz yorum yapmadın. Bir film veya dizi sayfasına gidip yorum yaz!'
             : 'Bu kullanıcı henüz yorum yapmamış.'}
@@ -608,7 +609,8 @@ export default async function ProfilPage({ params }: Props) {
             const date = new Date(review.created_at).toLocaleDateString('tr-TR')
 
             return (
-              <div key={review.id} className="flex gap-4 rounded-xl bg-[--bg-card] border border-[--border] p-4 hover:border-[--accent]/40 transition-colors">
+              <div key={review.id} className="flex gap-4 rounded-xl p-4 transition-all duration-200 hover:-translate-y-0.5"
+                style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <Link href={href} className="shrink-0">
                   <div className="w-14 aspect-[2/3] rounded-lg overflow-hidden bg-[--bg-secondary]">
                     {poster
