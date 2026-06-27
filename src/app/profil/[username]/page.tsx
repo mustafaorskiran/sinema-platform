@@ -610,11 +610,19 @@ export default async function ProfilPage({ params }: Props) {
       )}
 
       {/* Yorumlar */}
-      <h2 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
-        <IconMessageSquare className="h-5 w-5 text-[--accent]" />
-        Yorumlar
-        <span className="text-base font-normal text-[--text-secondary]">({totalReviews})</span>
-      </h2>
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="text-xl font-bold text-white flex items-center gap-2">
+          <IconMessageSquare className="h-5 w-5 text-[--accent]" />
+          Yorumlar
+          <span className="text-base font-normal text-[--text-secondary]">({totalReviews})</span>
+        </h2>
+        {totalReviews > 5 && (
+          <Link href={`/profil/${username}/yorumlar`}
+            className="text-sm hover:underline" style={{ color: 'var(--accent)' }}>
+            Tümünü gör →
+          </Link>
+        )}
+      </div>
 
       {reviewsWithMedia.length === 0 ? (
         <div className="rounded-xl py-16 text-center text-[--text-secondary]"
