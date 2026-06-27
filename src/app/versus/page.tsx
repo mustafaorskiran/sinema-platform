@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { getMovieDetail, getPosterUrl, getMediaTitle } from '@/lib/tmdb'
 import VersusClient from './VersusClient'
+import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -100,6 +101,16 @@ export default async function VersusPage() {
       </div>
 
       <VersusClient items={items} userId={user?.id ?? null} />
+
+      {user && (
+        <div className="mt-8 text-center">
+          <Link href="/versus/yeni"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all hover:scale-105"
+            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)' }}>
+            + Kendi karşılaştırmanı oluştur
+          </Link>
+        </div>
+      )}
     </div>
   )
 }
