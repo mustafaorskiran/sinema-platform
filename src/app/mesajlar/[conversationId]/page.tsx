@@ -42,7 +42,7 @@ export default async function ConversationPage({ params }: { params: Promise<{ c
         <a href="/mesajlar" className="text-[--text-secondary] hover:text-white text-sm transition-colors">← Geri</a>
         {other.avatar_url
           ? <img src={other.avatar_url} alt="" className="h-9 w-9 rounded-full object-cover" />
-          : <div className="h-9 w-9 rounded-full bg-[--bg-secondary] flex items-center justify-center text-white font-semibold">{other.username[0]?.toUpperCase()}</div>}
+          : <div className="h-9 w-9 rounded-full flex items-center justify-center text-white font-semibold" style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)' }}>{other.username[0]?.toUpperCase()}</div>}
         <div>
           <a href={`/profil/${other.username}`} className="text-sm font-semibold text-white hover:text-[--accent] transition-colors">@{other.username}</a>
         </div>

@@ -67,7 +67,7 @@ export default function ChatWindow({ conversationId, currentUserId, initialMessa
               {!isMe && (
                 m.profiles.avatar_url
                   ? <img src={m.profiles.avatar_url} alt="" className="h-7 w-7 rounded-full object-cover shrink-0 mt-1" />
-                  : <div className="h-7 w-7 rounded-full bg-[--bg-secondary] flex items-center justify-center text-xs text-white shrink-0 mt-1">{m.profiles.username[0]?.toUpperCase()}</div>
+                  : <div className="h-7 w-7 rounded-full flex items-center justify-center text-xs text-white shrink-0 mt-1" style={{ background: 'rgba(225,29,72,0.3)' }}>{m.profiles.username[0]?.toUpperCase()}</div>
               )}
               <div
                 className={`max-w-[75%] rounded-2xl px-3.5 py-2.5 text-sm ${isMe ? 'rounded-tr-sm' : 'rounded-tl-sm'}`}
