@@ -172,58 +172,61 @@ export default async function HaberlerPage({ searchParams }: PageProps) {
       {filteredNews.length > 0 ? (
         <div className="flex flex-col gap-3">
           {filteredNews.map((item, i) => {
-            const sourceColor = sourceColors[item.source] ?? 'var(--text-secondary)'
+            const sourceColor = sourceColors[item.source] ?? 'rgba(255,255,255,0.3)'
+            const isFeatured = i === 0
             return (
               <a
                 key={`${item.link}-${i}`}
                 href={item.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block rounded-xl p-4 transition-all duration-200 hover:border-[--accent]/30"
+                className="block rounded-2xl p-4 transition-all duration-200 group"
                 style={{
-                  background: 'var(--bg-card)',
-                  border: '1px solid var(--border)',
+                  background: isFeatured
+                    ? 'linear-gradient(160deg, rgba(20,28,47,0.95), rgba(14,20,32,0.98))'
+                    : 'rgba(255,255,255,0.025)',
+                  border: `1px solid ${isFeatured ? 'rgba(212,168,67,0.15)' : 'rgba(255,255,255,0.06)'}`,
                 }}
               >
+                {isFeatured && (
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <div className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: 'var(--accent)' }} />
+                    <span className="text-[9.5px] font-bold uppercase tracking-[0.16em]" style={{ color: 'rgba(225,29,72,0.7)' }}>
+                      Öne Çıkan
+                    </span>
+                  </div>
+                )}
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
-                    <h2
-                      className="text-[15px] font-semibold leading-snug mb-1 line-clamp-2"
-                      style={{ color: 'var(--text-primary)' }}
-                    >
+                    <h2 className={`font-semibold leading-snug mb-1.5 line-clamp-2 transition-colors group-hover:opacity-80 ${isFeatured ? 'text-[16px]' : 'text-[14px]'}`}
+                      style={{ color: 'var(--text-primary)' }}>
                       {item.title}
                     </h2>
-                    {item.description && (
-                      <p
-                        className="text-[13px] leading-relaxed line-clamp-2 mb-2"
-                        style={{ color: 'var(--text-secondary)' }}
-                      >
+                    {item.description && !isFeatured && (
+                      <p className="text-[12px] leading-relaxed line-clamp-1 mb-2" style={{ color: 'var(--text-secondary)' }}>
                         {item.description}
-                        {item.description.length >= 150 ? '…' : ''}
                       </p>
                     )}
-                    <div className="flex items-center gap-3 text-[12px]">
-                      <span className="font-semibold" style={{ color: sourceColor }}>
+                    {item.description && isFeatured && (
+                      <p className="text-[13px] leading-relaxed line-clamp-2 mb-2" style={{ color: 'var(--text-secondary)' }}>
+                        {item.description}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-2 text-[11px]">
+                      <span className="px-2 py-0.5 rounded font-semibold"
+                        style={{ background: `${sourceColor}15`, color: sourceColor, border: `1px solid ${sourceColor}30` }}>
                         {item.source}
                       </span>
                       {item.pubDate && (
-                        <>
-                          <span style={{ color: 'var(--border)' }}>·</span>
-                          <span
-                            className="flex items-center gap-1"
-                            style={{ color: 'var(--text-secondary)' }}
-                          >
-                            <IconClock className="h-3 w-3" />
-                            {formatRelativeTime(item.pubDate)}
-                          </span>
-                        </>
+                        <span className="flex items-center gap-1" style={{ color: 'rgba(255,255,255,0.25)' }}>
+                          <IconClock className="h-3 w-3" />
+                          {formatRelativeTime(item.pubDate)}
+                        </span>
                       )}
                     </div>
                   </div>
-                  <IconGlobe
-                    className="h-4 w-4 shrink-0 mt-0.5"
-                    style={{ color: 'var(--text-secondary)', opacity: 0.5 }}
-                  />
+                  <IconGlobe className="h-4 w-4 shrink-0 mt-1 opacity-0 group-hover:opacity-40 transition-opacity"
+                    style={{ color: 'var(--text-secondary)' }} />
                 </div>
               </a>
             )
