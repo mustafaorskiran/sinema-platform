@@ -1,62 +1,80 @@
-﻿'use client'
+'use client'
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { IconArrowLeft, IconCheckCircle, IconFilm } from '@/components/icons'
+import { IconArrowLeft, IconFilm, IconMail } from '@/components/icons'
 import { createClient } from '@/lib/supabase/client'
 
 export default function SifremiUnuttumPage() {
-  const [email, setEmail] = useState('')
+  const [email, setEmail]   = useState('')
   const [loading, setLoading] = useState(false)
-  const [sent, setSent] = useState(false)
-  const [error, setError] = useState('')
+  const [sent, setSent]     = useState(false)
+  const [error, setError]   = useState('')
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError('')
-
     const supabase = createClient()
     const { error: authError } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/auth/callback?type=recovery`,
     })
-
     if (authError) {
       setError('Bir hata oluştu. Lütfen tekrar deneyin.')
       setLoading(false)
       return
     }
-
     setSent(true)
     setLoading(false)
   }
 
+  const inputBase = {
+    background: 'rgba(255,255,255,0.04)',
+    border: '1px solid rgba(255,255,255,0.09)',
+    color: 'var(--text-primary)',
+  }
+
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
+    <div className="w-full min-h-[calc(100vh-64px)] flex items-center justify-center px-4 py-12 relative overflow-hidden"
+      style={{ background: 'var(--bg-primary)' }}>
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(225,29,72,0.1) 0%, transparent 70%)' }} />
+
+      <div className="w-full max-w-sm relative z-10">
+        {/* Logo */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 mb-6">
-            <IconFilm className="h-8 w-8 text-[--accent]" />
-            <span className="text-2xl font-bold text-white">Sine<span className="text-[--accent]">Ma</span></span>
+          <Link href="/" className="inline-flex items-center gap-2.5 mb-5">
+            <IconFilm className="h-7 w-7" style={{ color: 'var(--accent)' }} />
+            <span className="text-2xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>
+              Sine<span style={{ color: 'var(--accent)' }}>zon</span>
+            </span>
           </Link>
-          <h1 className="text-2xl font-bold text-white">Şifremi Unuttum</h1>
-          <p className="text-[--text-secondary] text-sm mt-1">
-            E-postana sıfırlama bağlantısı gönderelim
-          </p>
+          <h1 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>Şifremi Unuttum</h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>E-postana sıfırlama bağlantısı gönderelim</p>
         </div>
 
-        <div className="bg-[--bg-card] border border-[--border] rounded-2xl p-8">
+        <div className="rounded-2xl p-7" style={{
+          background: 'linear-gradient(160deg, rgba(20,28,47,0.95) 0%, rgba(14,20,32,0.98) 100%)',
+          border: '1px solid rgba(212,168,67,0.1)',
+          boxShadow: '0 32px 80px rgba(0,0,0,0.6)',
+        }}>
           {sent ? (
             <div className="text-center py-4">
-              <IconCheckCircle className="h-12 w-12 text-green-400 mx-auto mb-4" />
-              <h2 className="text-lg font-semibold text-white mb-2">E-posta Gönderildi</h2>
-              <p className="text-sm text-[--text-secondary] mb-6">
-                <span className="text-white font-medium">{email}</span> adresine şifre sıfırlama bağlantısı gönderdik. Gelen kutunu kontrol et.
+              <div className="h-16 w-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
+                style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.25)' }}>
+                <IconMail className="h-7 w-7" style={{ color: '#4ade80' }} />
+              </div>
+              <p className="text-[9.5px] font-bold uppercase tracking-[0.18em] mb-2" style={{ color: 'rgba(212,168,67,0.5)' }}>
+                E-posta Gönderildi
               </p>
-              <Link
-                href="/auth/giris"
-                className="inline-flex items-center gap-2 text-sm text-[--accent] hover:underline"
-              >
+              <h2 className="text-lg font-bold mb-3" style={{ color: 'var(--text-primary)' }}>Gelen Kutunu Kontrol Et</h2>
+              <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{email}</span> adresine şifre sıfırlama bağlantısı gönderdik.
+              </p>
+              <p className="mt-2 text-[11px]" style={{ color: 'rgba(255,255,255,0.2)' }}>Mail gelmediyse spam klasörünü kontrol et.</p>
+              <Link href="/auth/giris"
+                className="inline-flex items-center gap-2 mt-6 text-sm font-medium hover:underline"
+                style={{ color: 'var(--accent)' }}>
                 <IconArrowLeft className="h-4 w-4" />
                 Giriş sayfasına dön
               </Link>
@@ -64,32 +82,33 @@ export default function SifremiUnuttumPage() {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-[--text-secondary] mb-2">E-posta</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  placeholder="ornek@email.com"
-                  className="w-full rounded-lg bg-[--bg-secondary] border border-[--border] px-4 py-3 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
+                <label className="block text-[10px] font-bold mb-1.5 uppercase tracking-[0.12em]" style={{ color: 'rgba(212,168,67,0.5)' }}>
+                  E-posta
+                </label>
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+                  required placeholder="ornek@email.com"
+                  className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-all" style={inputBase}
+                  onFocus={e => (e.target.style.borderColor = 'rgba(212,168,67,0.4)')}
+                  onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.09)')}
                 />
               </div>
 
-              {error && <p className="text-sm text-red-400">{error}</p>}
+              {error && (
+                <div className="rounded-xl px-4 py-3" style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)' }}>
+                  <p className="text-sm" style={{ color: '#f87171' }}>{error}</p>
+                </div>
+              )}
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-3 rounded-lg bg-[--accent] hover:bg-[--accent-hover] text-white font-semibold text-sm transition-colors disabled:opacity-50"
-              >
+              <button type="submit" disabled={loading}
+                className="w-full py-2.5 rounded-xl font-bold text-sm transition-all disabled:opacity-50 hover:opacity-90"
+                style={{ background: 'linear-gradient(135deg, var(--accent) 0%, #be1a3e 100%)', color: '#fff', boxShadow: '0 4px 16px rgba(225,29,72,0.3)' }}>
                 {loading ? 'Gönderiliyor...' : 'Sıfırlama Bağlantısı Gönder'}
               </button>
 
               <div className="text-center">
-                <Link
-                  href="/auth/giris"
-                  className="inline-flex items-center gap-1.5 text-sm text-[--text-secondary] hover:text-white transition-colors"
-                >
+                <Link href="/auth/giris"
+                  className="inline-flex items-center gap-1.5 text-[12px] hover:underline"
+                  style={{ color: 'var(--text-secondary)' }}>
                   <IconArrowLeft className="h-3.5 w-3.5" />
                   Giriş sayfasına dön
                 </Link>
