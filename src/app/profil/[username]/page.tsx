@@ -457,6 +457,12 @@ export default async function ProfilPage({ params }: Props) {
       {/* İzleme Listeleri */}
       {(izlemekIstiyorum.length > 0 || izledim.length > 0) && (
         <div className="mb-12 space-y-8">
+          <div className="flex justify-end -mt-4 mb-2">
+            <Link href={`/profil/${username}/izleme-listesi`}
+              className="text-xs hover:underline" style={{ color: 'rgba(255,255,255,0.35)' }}>
+              Tümünü gör →
+            </Link>
+          </div>
           {izlemekIstiyorum.length > 0 && (
             <WatchlistSection
               title="İzlemek İstiyorum"
