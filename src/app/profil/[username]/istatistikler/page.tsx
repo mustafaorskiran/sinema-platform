@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getMovieMini, getSeriesMini } from '@/lib/tmdb'
 import { computeBadges, ALL_BADGE_COUNT } from '@/lib/badges'
 import ActivityHeatmap from '@/components/ActivityHeatmap'
+import WatchCalendar from '@/components/WatchCalendar'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 
@@ -187,6 +188,13 @@ export default async function IstatistiklerPage({ params }: Props) {
     ...allReviews.map(r => ({ date: r.created_at })),
   ]
 
+  // Takvim için günlük girişler
+  const calendarEntries = allDiary.map(e => ({
+    date: e.watched_at,
+    mediaId: e.media_id,
+    mediaType: e.media_type,
+  }))
+
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
       {/* Breadcrumb */}
@@ -272,6 +280,11 @@ export default async function IstatistiklerPage({ params }: Props) {
           {/* Aktivite ısı haritası */}
           {heatmapEntries.length > 0 && (
             <ActivityHeatmap entries={heatmapEntries} />
+          )}
+
+          {/* İzleme takvimi */}
+          {calendarEntries.length > 0 && (
+            <WatchCalendar entries={calendarEntries} />
           )}
 
           {/* Film / Dizi oranı */}
