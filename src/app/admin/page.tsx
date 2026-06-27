@@ -79,7 +79,8 @@ export default async function AdminDashboard() {
       {/* İstatistik kartları */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-10">
         {stats.map(({ label, value, icon: Icon, color }) => (
-          <div key={label} className="rounded-xl bg-[--bg-card] border border-[--border] p-4">
+          <div key={label} className="rounded-xl p-4"
+            style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <Icon className={`h-5 w-5 mb-2 ${color}`} />
             <p className="text-2xl font-bold text-white">{value.toLocaleString('tr-TR')}</p>
             <p className="text-xs text-[--text-secondary] mt-0.5">{label}</p>
@@ -110,7 +111,7 @@ export default async function AdminDashboard() {
           { title: 'Yorum Aktivitesi', data: reviewGrowth, max: maxReview, color: 'var(--accent)' },
         ].map(chart => (
           <div key={chart.title} className="rounded-xl p-5 overflow-hidden"
-            style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+            style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <p className="text-sm font-bold text-white mb-4">{chart.title}</p>
             <div className="flex items-end gap-2 h-20">
               {chart.data.map((m, i) => (
@@ -131,12 +132,13 @@ export default async function AdminDashboard() {
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Son yorumlar */}
-        <div className="rounded-xl bg-[--bg-card] border border-[--border] overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-[--border]">
+        <div className="rounded-xl overflow-hidden"
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
             <h2 className="font-semibold text-white">Son Yorumlar</h2>
             <a href="/admin/yorumlar" className="text-xs text-[--accent] hover:underline">Tümü →</a>
           </div>
-          <div className="divide-y divide-[--border]">
+          <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.04)' }}>
             {(recentReviews ?? []).map(r => (
               <div key={r.id} className="px-5 py-3 flex items-center justify-between gap-3">
                 <div className="min-w-0">
@@ -153,12 +155,13 @@ export default async function AdminDashboard() {
         </div>
 
         {/* Son kullanıcılar */}
-        <div className="rounded-xl bg-[--bg-card] border border-[--border] overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-[--border]">
+        <div className="rounded-xl overflow-hidden"
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
             <h2 className="font-semibold text-white">Son Kayıtlar</h2>
             <a href="/admin/kullanicilar" className="text-xs text-[--accent] hover:underline">Tümü →</a>
           </div>
-          <div className="divide-y divide-[--border]">
+          <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.04)' }}>
             {(recentUsers ?? []).map(u => (
               <div key={u.id} className="px-5 py-3 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2 min-w-0">
