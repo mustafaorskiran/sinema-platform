@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { IconFilm, IconStar, IconTv, IconUsers, IconBookmark, IconCheck, IconCalendarDays, IconList } from '@/components/icons'
 import { createClient } from '@/lib/supabase/server'
 import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle } from '@/lib/tmdb'
+import UserHoverCard from '@/components/UserHoverCard'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Akış | SineMa' }
@@ -141,7 +142,7 @@ export default async function AkisPage({ searchParams }: Props) {
                   </Link>
                   <div className="flex-1 min-w-0">
                     <span className="text-xs text-[--text-secondary]">
-                      <Link href={profileHref} className="font-semibold text-white hover:text-[--accent] transition-colors">{profile?.username}</Link>
+                      <UserHoverCard username={profile?.username ?? ''}><Link href={profileHref} className="font-semibold text-white hover:text-[--accent] transition-colors">{profile?.username}</Link></UserHoverCard>
                       {' '}<span className="text-[--gold]">★ {r.rating}/10</span> puan verdi
                     </span>
                     <p className="text-[10px] text-[--text-secondary]/60">{timeAgo(r.created_at)}</p>
@@ -179,7 +180,7 @@ export default async function AkisPage({ searchParams }: Props) {
                   <div className="flex items-center gap-2 flex-1 min-w-0">
                     <IconCheck className="h-3.5 w-3.5 text-green-400 shrink-0" />
                     <span className="text-xs text-[--text-secondary] truncate">
-                      <Link href={profileHref} className="font-semibold text-white hover:text-[--accent] transition-colors">{profile?.username}</Link>
+                      <UserHoverCard username={profile?.username ?? ''}><Link href={profileHref} className="font-semibold text-white hover:text-[--accent] transition-colors">{profile?.username}</Link></UserHoverCard>
                       {' '}izledi: {' '}
                       <Link href={`/${w.media_type}/${w.media_id}`} className="text-white hover:text-[--accent] transition-colors">{media?.title ?? `#${w.media_id}`}</Link>
                     </span>
@@ -206,7 +207,7 @@ export default async function AkisPage({ searchParams }: Props) {
                   <div className="flex items-center gap-2 flex-1 min-w-0">
                     <IconCalendarDays className="h-3.5 w-3.5 text-blue-400 shrink-0" />
                     <span className="text-xs text-[--text-secondary] truncate">
-                      <Link href={profileHref} className="font-semibold text-white hover:text-[--accent] transition-colors">{profile?.username}</Link>
+                      <UserHoverCard username={profile?.username ?? ''}><Link href={profileHref} className="font-semibold text-white hover:text-[--accent] transition-colors">{profile?.username}</Link></UserHoverCard>
                       {' '}günlüğüne ekledi: {' '}
                       <Link href={`/${d.media_type}/${d.media_id}`} className="text-white hover:text-[--accent] transition-colors">{media?.title ?? `#${d.media_id}`}</Link>
                       {d.rating && <span className="text-[--gold] ml-1">★ {d.rating}</span>}
@@ -233,7 +234,7 @@ export default async function AkisPage({ searchParams }: Props) {
                   <div className="flex items-center gap-2 flex-1 min-w-0">
                     <IconList className="h-3.5 w-3.5 text-purple-400 shrink-0" />
                     <span className="text-xs text-[--text-secondary] truncate">
-                      <Link href={profileHref} className="font-semibold text-white hover:text-[--accent] transition-colors">{profile?.username}</Link>
+                      <UserHoverCard username={profile?.username ?? ''}><Link href={profileHref} className="font-semibold text-white hover:text-[--accent] transition-colors">{profile?.username}</Link></UserHoverCard>
                       {' '}yeni liste oluşturdu: {' '}
                       <Link href={`/liste/${l.id}`} className="text-white hover:text-[--accent] transition-colors">"{l.title}"</Link>
                     </span>
