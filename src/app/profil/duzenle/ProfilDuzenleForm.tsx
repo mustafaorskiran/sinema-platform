@@ -1,9 +1,24 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import { IconCamera, IconCheckCircle, IconLoader } from '@/components/icons'
+import { IconCamera, IconCheckCircle, IconLoader, IconEye, IconEyeOff } from '@/components/icons'
 import { createClient } from '@/lib/supabase/client'
+
+function getPasswordStrength(pw: string): { score: number; label: string; color: string } {
+  if (!pw) return { score: 0, label: '', color: '' }
+  let s = 0
+  if (pw.length >= 6) s++
+  if (pw.length >= 10) s++
+  if (/[A-Z]/.test(pw)) s++
+  if (/[0-9]/.test(pw)) s++
+  if (/[^A-Za-z0-9]/.test(pw)) s++
+  if (s <= 1) return { score: s, label: 'Çok Zayıf', color: '#f87171' }
+  if (s === 2) return { score: s, label: 'Zayıf', color: '#fb923c' }
+  if (s === 3) return { score: s, label: 'Orta', color: '#facc15' }
+  if (s === 4) return { score: s, label: 'Güçlü', color: '#4ade80' }
+  return { score: s, label: 'Çok Güçlü', color: '#22c55e' }
+}
 
 const THEME_COLORS = [
   { value: '#e50914', label: 'Sinema Kırmızısı' },
@@ -35,6 +50,62 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
   const router = useRouter()
   const fileRef = useRef<HTMLInputElement>(null)
   const bannerFileRef = useRef<HTMLInputElement>(null)
+
+  // Security section state
+  const [newEmail, setNewEmail]       = useState('')
+  const [emailMsg, setEmailMsg]       = useState('')
+  const [emailErr, setEmailErr]       = useState('')
+  const [emailLoading, setEmailLoading] = useState(false)
+
+  const [curPass, setCurPass]         = useState('')
+  const [newPass, setNewPass]         = useState('')
+  const [confPass, setConfPass]       = useState('')
+  const [showNewPass, setShowNewPass] = useState(false)
+  const [passMsg, setPassMsg]         = useState('')
+  const [passErr, setPassErr]         = useState('')
+  const [passLoading, setPassLoading] = useState(false)
+
+  const [deleteInput, setDeleteInput] = useState('')
+  const [deleteLoading, setDeleteLoading] = useState(false)
+  const [deleteErr, setDeleteErr]     = useState('')
+  const [secOpen, setSecOpen]         = useState(false)
+
+  const strength = useMemo(() => getPasswordStrength(newPass), [newPass])
+
+  async function handleEmailChange(e: React.FormEvent) {
+    e.preventDefault()
+    if (!newEmail) return
+    setEmailLoading(true); setEmailErr(''); setEmailMsg('')
+    const supabase = createClient()
+    const { error } = await supabase.auth.updateUser({ email: newEmail })
+    if (error) { setEmailErr('E-posta değiştirilemedi. Lütfen tekrar deneyin.'); setEmailLoading(false); return }
+    setEmailMsg('Doğrulama e-postası gönderildi. Yeni adresinizi onaylayın.')
+    setNewEmail(''); setEmailLoading(false)
+  }
+
+  async function handlePassChange(e: React.FormEvent) {
+    e.preventDefault()
+    if (newPass.length < 6) { setPassErr('Yeni şifre en az 6 karakter olmalıdır.'); return }
+    if (newPass !== confPass) { setPassErr('Yeni şifreler eşleşmiyor.'); return }
+    setPassLoading(true); setPassErr(''); setPassMsg('')
+    const supabase = createClient()
+    const { error } = await supabase.auth.updateUser({ password: newPass })
+    if (error) { setPassErr('Şifre değiştirilemedi. Mevcut şifrenizi kontrol edin.'); setPassLoading(false); return }
+    setPassMsg('Şifreniz başarıyla güncellendi.')
+    setCurPass(''); setNewPass(''); setConfPass(''); setPassLoading(false)
+  }
+
+  async function handleDeleteAccount() {
+    if (deleteInput !== initialUsername) { setDeleteErr('Kullanıcı adını doğru girmediniz.'); return }
+    setDeleteLoading(true); setDeleteErr('')
+    try {
+      const res = await fetch('/api/account/delete', { method: 'DELETE' })
+      if (!res.ok) throw new Error()
+      const supabase = createClient()
+      await supabase.auth.signOut()
+      window.location.href = '/'
+    } catch { setDeleteErr('Hesap silinirken hata oluştu.'); setDeleteLoading(false) }
+  }
 
   const [username, setUsername] = useState(initialUsername)
   const [avatarUrl, setAvatarUrl] = useState<string | null>(initialAvatarUrl)
@@ -166,6 +237,7 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
   const initial = username[0]?.toUpperCase() ?? '?'
 
   return (
+    <>
     <form onSubmit={handleSubmit} className="space-y-7">
 
       {/* Banner kapak fotoğrafı */}
@@ -303,22 +375,118 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
       )}
 
       <div className="flex gap-3">
-        <button
-          type="button"
-          onClick={() => router.back()}
-          className="flex-1 py-3 rounded-lg border border-[--border] text-[--text-secondary] hover:text-white hover:border-white/30 text-sm font-medium transition-colors"
-        >
+        <button type="button" onClick={() => router.back()}
+          className="flex-1 py-3 rounded-lg border border-[--border] text-[--text-secondary] hover:text-white hover:border-white/30 text-sm font-medium transition-colors">
           Vazgeç
         </button>
-        <button
-          type="submit"
-          disabled={loading || success}
-          className="flex-1 py-3 rounded-lg bg-[--accent] hover:bg-[--accent-hover] text-white font-semibold text-sm transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-        >
+        <button type="submit" disabled={loading || success}
+          className="flex-1 py-3 rounded-lg bg-[--accent] hover:bg-[--accent-hover] text-white font-semibold text-sm transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
           {loading && <IconLoader className="h-4 w-4 animate-spin" />}
           {loading ? 'Kaydediliyor...' : 'Kaydet'}
         </button>
       </div>
     </form>
+
+    {/* ── Güvenlik Ayarları ── */}
+    <div className="mt-6 rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
+      <button type="button" onClick={() => setSecOpen(!secOpen)}
+        className="w-full flex items-center justify-between px-5 py-4 text-left transition-colors hover:bg-white/[0.02]"
+        style={{ background: 'rgba(255,255,255,0.02)' }}>
+        <div className="flex items-center gap-3">
+          <span className="text-base">🔐</span>
+          <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Güvenlik Ayarları</span>
+        </div>
+        <span className="text-xs transition-transform" style={{ color: 'var(--text-secondary)', transform: secOpen ? 'rotate(180deg)' : 'none' }}>▼</span>
+      </button>
+
+      {secOpen && (
+        <div className="px-5 pb-5 pt-3 space-y-6" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          {/* E-posta değiştir */}
+          <form onSubmit={handleEmailChange} className="space-y-3">
+            <p className="text-[10px] font-bold uppercase tracking-[0.14em]" style={{ color: 'rgba(212,168,67,0.5)' }}>E-posta Değiştir</p>
+            <input type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)}
+              required placeholder="Yeni e-posta adresi"
+              className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-all"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)', color: 'var(--text-primary)' }}
+              onFocus={e => (e.target.style.borderColor = 'rgba(212,168,67,0.4)')}
+              onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.09)')}
+            />
+            {emailMsg && <p className="text-[12px] text-green-400">{emailMsg}</p>}
+            {emailErr && <p className="text-[12px]" style={{ color: '#f87171' }}>{emailErr}</p>}
+            <button type="submit" disabled={emailLoading}
+              className="px-4 py-2 rounded-xl text-sm font-semibold transition-all disabled:opacity-50 hover:opacity-80"
+              style={{ background: 'rgba(212,168,67,0.12)', border: '1px solid rgba(212,168,67,0.25)', color: '#D4A843' }}>
+              {emailLoading ? 'Gönderiliyor...' : 'Doğrulama Gönder'}
+            </button>
+          </form>
+
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }} />
+
+          {/* Şifre değiştir */}
+          <form onSubmit={handlePassChange} className="space-y-3">
+            <p className="text-[10px] font-bold uppercase tracking-[0.14em]" style={{ color: 'rgba(212,168,67,0.5)' }}>Şifre Değiştir</p>
+            <div className="relative">
+              <input type={showNewPass ? 'text' : 'password'} value={newPass} onChange={e => setNewPass(e.target.value)}
+                required placeholder="Yeni şifre (en az 6 karakter)"
+                className="w-full rounded-xl px-4 py-2.5 pr-10 text-sm outline-none transition-all"
+                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)', color: 'var(--text-primary)' }}
+                onFocus={e => (e.target.style.borderColor = 'rgba(212,168,67,0.4)')}
+                onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.09)')}
+              />
+              <button type="button" onClick={() => setShowNewPass(!showNewPass)}
+                className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                {showNewPass ? <IconEyeOff className="h-4 w-4" /> : <IconEye className="h-4 w-4" />}
+              </button>
+            </div>
+            {newPass.length > 0 && (
+              <div>
+                <div className="flex gap-1 mb-1">
+                  {[1,2,3,4,5].map(i => (
+                    <div key={i} className="h-1 flex-1 rounded-full transition-all"
+                      style={{ background: i <= strength.score ? strength.color : 'rgba(255,255,255,0.08)' }} />
+                  ))}
+                </div>
+                <p className="text-[11px]" style={{ color: strength.color }}>{strength.label}</p>
+              </div>
+            )}
+            <input type={showNewPass ? 'text' : 'password'} value={confPass} onChange={e => setConfPass(e.target.value)}
+              required placeholder="Yeni şifreyi tekrar gir"
+              className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-all"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)', color: 'var(--text-primary)' }}
+              onFocus={e => (e.target.style.borderColor = 'rgba(212,168,67,0.4)')}
+              onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.09)')}
+            />
+            {passMsg && <p className="text-[12px] text-green-400">{passMsg}</p>}
+            {passErr && <p className="text-[12px]" style={{ color: '#f87171' }}>{passErr}</p>}
+            <button type="submit" disabled={passLoading}
+              className="px-4 py-2 rounded-xl text-sm font-semibold transition-all disabled:opacity-50 hover:opacity-80"
+              style={{ background: 'rgba(212,168,67,0.12)', border: '1px solid rgba(212,168,67,0.25)', color: '#D4A843' }}>
+              {passLoading ? 'Güncelleniyor...' : 'Şifreyi Değiştir'}
+            </button>
+          </form>
+        </div>
+      )}
+    </div>
+
+    {/* ── Tehlikeli Alan ── */}
+    <div className="mt-4 rounded-2xl p-5" style={{ background: 'rgba(248,113,113,0.04)', border: '1px solid rgba(248,113,113,0.15)' }}>
+      <p className="text-[10px] font-bold uppercase tracking-[0.14em] mb-1" style={{ color: 'rgba(248,113,113,0.5)' }}>Tehlikeli Alan</p>
+      <p className="text-sm font-semibold mb-1" style={{ color: '#f87171' }}>Hesabı Sil</p>
+      <p className="text-[12px] mb-4" style={{ color: 'rgba(255,255,255,0.35)' }}>
+        Bu işlem geri alınamaz. Tüm yorum, puan ve listeler kalıcı olarak silinir.
+      </p>
+      <input value={deleteInput} onChange={e => setDeleteInput(e.target.value)}
+        placeholder={`Onaylamak için "${initialUsername}" yaz`}
+        className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-all mb-3"
+        style={{ background: 'rgba(248,113,113,0.06)', border: '1px solid rgba(248,113,113,0.2)', color: 'var(--text-primary)' }}
+      />
+      {deleteErr && <p className="text-[12px] mb-2" style={{ color: '#f87171' }}>{deleteErr}</p>}
+      <button onClick={handleDeleteAccount} disabled={deleteLoading || deleteInput !== initialUsername}
+        className="px-5 py-2 rounded-xl text-sm font-bold transition-all disabled:opacity-30"
+        style={{ background: 'rgba(248,113,113,0.15)', border: '1px solid rgba(248,113,113,0.3)', color: '#f87171' }}>
+        {deleteLoading ? 'Siliniyor...' : 'Hesabı Kalıcı Olarak Sil'}
+      </button>
+    </div>
+    </>
   )
 }
