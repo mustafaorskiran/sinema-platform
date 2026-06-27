@@ -574,9 +574,10 @@ export default async function ProfilPage({ params }: Props) {
               <IconCalendarDays className="h-5 w-5 text-[--accent]" />
               Son İzlemeler
             </h2>
-            {isOwnProfile && (
-              <Link href="/gunluk" className="text-sm text-[--accent] hover:underline">Tüm Günlük →</Link>
-            )}
+            <Link href={isOwnProfile ? '/gunluk' : `/profil/${username}/gunluk`}
+              className="text-sm hover:underline" style={{ color: 'var(--accent)' }}>
+              Tüm Günlük →
+            </Link>
           </div>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
             {diaryWithMedia.map(entry => (
