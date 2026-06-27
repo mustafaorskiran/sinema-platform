@@ -28,16 +28,26 @@ function formatDate(dateStr: string) {
 
 function SpoilerContent({ content }: { content: string }) {
   const [revealed, setRevealed] = useState(false)
-  if (revealed) return <p className="mt-3 text-sm text-[--text-secondary] leading-relaxed whitespace-pre-wrap">{content}</p>
-  return (
+  if (revealed) return (
     <div className="mt-3 relative">
-      <p className="text-sm text-[--text-secondary] leading-relaxed whitespace-pre-wrap blur-sm select-none">{content}</p>
-      <div className="absolute inset-0 flex items-center justify-center">
-        <button
-          onClick={() => setRevealed(true)}
-          className="bg-[--bg-secondary] border border-[--border] text-white text-xs font-semibold px-4 py-2 rounded-full hover:border-[--accent] transition-colors"
-        >
-          ⚠️ Spoiler — Görmek için tıkla
+      <div className="absolute -left-3 top-0 bottom-0 w-0.5 rounded-full" style={{ background: 'rgba(248,113,113,0.4)' }} />
+      <p className="text-[15px] leading-[1.75] whitespace-pre-wrap" style={{ color: 'var(--text-secondary)' }}>{content}</p>
+    </div>
+  )
+  return (
+    <div className="mt-3 relative overflow-hidden rounded-xl"
+      style={{ border: '1px solid rgba(248,113,113,0.15)', background: 'rgba(248,113,113,0.03)' }}>
+      <p className="text-sm leading-relaxed whitespace-pre-wrap px-4 py-3 blur-[5px] select-none pointer-events-none"
+        style={{ color: 'var(--text-secondary)' }}>{content}</p>
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-2"
+        style={{ background: 'rgba(10,12,20,0.75)', backdropFilter: 'blur(2px)' }}>
+        <span className="text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: 'rgba(248,113,113,0.6)' }}>
+          Spoiler İçerik
+        </span>
+        <button onClick={() => setRevealed(true)}
+          className="text-[12px] font-semibold px-4 py-2 rounded-xl transition-all hover:scale-105"
+          style={{ background: 'rgba(248,113,113,0.12)', border: '1px solid rgba(248,113,113,0.3)', color: '#f87171' }}>
+          ⚠️ Görmek için tıkla
         </button>
       </div>
     </div>
