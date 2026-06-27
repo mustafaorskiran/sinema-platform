@@ -47,7 +47,8 @@ export default async function OzelSecimPage() {
           <h2 className="text-lg font-bold text-white mb-4">Geçmiş Seçimler</h2>
           <div className="space-y-3">
             {enriched.map((p: any) => (
-              <div key={p.id} className="flex items-center gap-4 p-4 rounded-xl border border-[--border] bg-[--bg-card]">
+              <div key={p.id} className="flex items-center gap-4 p-4 rounded-xl"
+                style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                 {p.poster && (
                   <img src={p.poster} alt={p.title} className="w-12 h-18 rounded-lg object-cover shrink-0" style={{ height: '72px' }} />
                 )}

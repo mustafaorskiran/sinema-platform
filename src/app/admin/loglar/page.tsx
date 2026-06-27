@@ -45,13 +45,14 @@ export default async function AdminLoglarPage({ searchParams }: Props) {
       </div>
 
       {!logs || logs.length === 0 ? (
-        <p className="text-[--text-secondary] bg-[--bg-card] border border-[--border] rounded-xl p-8 text-center">
+        <p className="text-[--text-secondary] rounded-xl p-8 text-center"
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           Henüz log kaydı yok.
         </p>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-[--border]">
+        <div className="overflow-x-auto rounded-xl" style={{ border: '1px solid rgba(255,255,255,0.06)' }}>
           <table className="w-full text-sm">
-            <thead className="bg-[--bg-secondary] text-left">
+            <thead className="text-left" style={{ background: 'rgba(255,255,255,0.04)' }}>
               <tr>
                 <th className="px-4 py-3 text-xs font-semibold text-[--text-secondary] uppercase tracking-wider">Zaman</th>
                 <th className="px-4 py-3 text-xs font-semibold text-[--text-secondary] uppercase tracking-wider">Admin</th>
@@ -60,7 +61,7 @@ export default async function AdminLoglarPage({ searchParams }: Props) {
                 <th className="px-4 py-3 text-xs font-semibold text-[--text-secondary] uppercase tracking-wider">Detay</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[--border] bg-[--bg-card]">
+            <tbody style={{ background: 'rgba(14,20,32,0.95)', borderTop: '1px solid rgba(255,255,255,0.04)' }}>
               {logs.map((log: any) => {
                 const meta = ACTION_LABEL[log.action]
                 return (

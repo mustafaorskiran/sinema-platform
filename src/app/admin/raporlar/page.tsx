@@ -71,14 +71,16 @@ export default async function AdminRaporlarPage() {
       </div>
 
       {deduped.length === 0 ? (
-        <p className="text-[--text-secondary] bg-[--bg-card] border border-[--border] rounded-xl p-8 text-center">Bekleyen rapor yok.</p>
+        <p className="text-[--text-secondary] rounded-xl p-8 text-center"
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>Bekleyen rapor yok.</p>
       ) : (
         <div className="space-y-3">
           {deduped.map((r: any) => {
             const count = countMap[`${r.target_type}:${r.target_id}`]
             const link = targetLink(r.target_type, r.target_id)
             return (
-              <div key={r.id} className="rounded-xl bg-[--bg-card] border border-[--border] p-5">
+              <div key={r.id} className="rounded-xl p-5 transition-all hover:-translate-y-0.5"
+                style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2 flex-wrap">

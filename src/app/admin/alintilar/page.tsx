@@ -19,11 +19,13 @@ export default async function AdminAlıntilarPage() {
     <div>
       <h1 className="text-2xl font-bold text-white mb-6">Alıntı Onaylama</h1>
       {(!pending || pending.length === 0) ? (
-        <p className="text-[--text-secondary] bg-[--bg-card] border border-[--border] rounded-xl p-8 text-center">Bekleyen alıntı yok.</p>
+        <p className="text-[--text-secondary] rounded-xl p-8 text-center"
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>Bekleyen alıntı yok.</p>
       ) : (
         <div className="space-y-3">
           {pending.map((q: any) => (
-            <div key={q.id} className="rounded-xl bg-[--bg-card] border border-[--border] p-5">
+            <div key={q.id} className="rounded-xl p-5 transition-all hover:-translate-y-0.5"
+              style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
                   <p className="text-sm text-white italic">"{q.content}"</p>

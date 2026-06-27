@@ -39,7 +39,8 @@ export default async function AdminListelerPage() {
       </div>
 
       {/* Haftanın Listeleri */}
-      <div className="mb-12 bg-[--bg-card] border border-[--border] rounded-2xl p-6">
+      <div className="mb-12 rounded-2xl p-6"
+        style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
         <FeaturedListManager lists={sortedTopLists} />
       </div>
 
