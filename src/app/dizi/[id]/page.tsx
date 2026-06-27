@@ -382,18 +382,12 @@ export default async function DiziPage({ params }: Props) {
             <div className="flex flex-wrap gap-2 mt-4">
               {series.genres?.map((g) => {
                 const slug = tvGenreToSlug(g.id)
-                const cls = 'text-[11px] font-medium px-3.5 py-1.5 rounded-full transition-all duration-200 hover:scale-105'
-                const style = { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.55)' }
-                const activeStyle = { background: 'rgba(212,168,67,0.08)', border: '1px solid rgba(212,168,67,0.3)', color: 'rgba(212,168,67,0.85)' }
                 return slug ? (
-                  <a key={g.id} href={`/tur/${slug}`} className={cls}
-                    style={style}
-                    onMouseEnter={e => Object.assign((e.currentTarget as HTMLElement).style, activeStyle)}
-                    onMouseLeave={e => Object.assign((e.currentTarget as HTMLElement).style, style)}>
+                  <a key={g.id} href={`/tur/${slug}`} className="genre-chip text-[11px] font-medium px-3.5 py-1.5 rounded-full">
                     {g.name}
                   </a>
                 ) : (
-                  <span key={g.id} className={cls} style={style}>{g.name}</span>
+                  <span key={g.id} className="genre-chip text-[11px] font-medium px-3.5 py-1.5 rounded-full">{g.name}</span>
                 )
               })}
             </div>
@@ -627,10 +621,7 @@ export default async function DiziPage({ params }: Props) {
             <div className="flex flex-wrap gap-2.5">
               {friendsRatings.map(fr => (
                 <a key={fr.username} href={`/profil/${fr.username}`}
-                  className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl transition-all duration-200 hover:scale-105"
-                  style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}
-                  onMouseEnter={e => Object.assign((e.currentTarget as HTMLElement).style, { background: 'rgba(212,168,67,0.07)', border: '1px solid rgba(212,168,67,0.25)' })}
-                  onMouseLeave={e => Object.assign((e.currentTarget as HTMLElement).style, { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' })}
+                  className="friend-card flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl"
                 >
                   <div className="h-7 w-7 rounded-full bg-[--accent] flex items-center justify-center text-xs font-bold text-white overflow-hidden shrink-0"
                     style={{ border: '1px solid rgba(255,255,255,0.1)' }}>

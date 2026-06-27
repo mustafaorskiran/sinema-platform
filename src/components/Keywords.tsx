@@ -20,22 +20,7 @@ export default function Keywords({ keywords, mediaType }: Props) {
           <a
             key={kw.id}
             href={`${page}?keyword=${kw.id}`}
-            className="px-2.5 py-1 rounded-lg text-[11px] transition-all duration-150 hover:scale-105"
-            style={{
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              color: 'rgba(255,255,255,0.4)',
-            }}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.border = '1px solid rgba(212,168,67,0.35)'
-              ;(e.currentTarget as HTMLElement).style.color = 'rgba(212,168,67,0.8)'
-              ;(e.currentTarget as HTMLElement).style.background = 'rgba(212,168,67,0.05)'
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.border = '1px solid rgba(255,255,255,0.08)'
-              ;(e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.4)'
-              ;(e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.03)'
-            }}
+            className="gold-chip px-2.5 py-1 rounded-lg text-[11px]"
           >
             {kw.name}
           </a>
