@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { IconBell, IconHeart, IconUserPlus, IconReply, IconMail } from '@/components/icons'
 import { createClient } from '@/lib/supabase/server'
 import BildirimlerClient from './BildirimlerClient'
+import PushSubscribeButton from '@/components/PushSubscribeButton'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Bildirimler | Sinezon' }
@@ -60,7 +61,10 @@ export default async function BildirimlerPage() {
             </p>
           </div>
         </div>
-        {unreadCount > 0 && <BildirimlerClient />}
+        <div className="flex items-center gap-2">
+          {unreadCount > 0 && <BildirimlerClient />}
+          <PushSubscribeButton />
+        </div>
       </div>
 
       {/* Liste */}
