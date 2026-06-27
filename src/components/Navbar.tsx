@@ -203,6 +203,9 @@ export default function Navbar({ user }: NavbarProps) {
               <Link href="/listeler" className="self-stretch flex items-center px-2.5 transition-colors text-[--text-secondary] hover:text-[--text-primary]">
                 {t('nav.lists')}
               </Link>
+              <Link href="/kisiler" className="self-stretch flex items-center px-2.5 transition-colors text-[--text-secondary] hover:text-[--text-primary]">
+                Kişiler
+              </Link>
               <Link href="/yayin-takvimi" className="self-stretch flex items-center px-2.5 transition-colors text-[--text-secondary] hover:text-[--text-primary]">
                 Takvim
               </Link>
@@ -371,6 +374,7 @@ export default function Navbar({ user }: NavbarProps) {
             <Link href="/sinema" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🌍 Dünya Sineması</Link>
             <Link href="/donem" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>📅 Dönemlere Göre</Link>
             <Link href="/ruh-hali" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>✨ Ruh Haline Göre</Link>
+            <Link href="/kisiler" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Kişiler</Link>
             <Link href="/kullanicilar" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Kullanıcılar</Link>
 
             {/* Authenticated section */}

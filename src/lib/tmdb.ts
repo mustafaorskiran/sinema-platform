@@ -511,8 +511,24 @@ export async function getCompanyMovies(id: number, page = 1): Promise<TMDbSearch
   })
 }
 
-export async function getPopularPeople(): Promise<{ results: Array<{ id: number; name: string; profile_path: string | null; known_for_department: string; popularity: number }> }> {
-  return tmdbFetch('/person/popular')
+export interface TMDbPersonListItem {
+  id: number
+  name: string
+  profile_path: string | null
+  known_for_department: string
+  popularity: number
+  known_for: Array<{ id: number; title?: string; name?: string; media_type: string; poster_path: string | null }>
+}
+
+export interface PeopleResult {
+  results: TMDbPersonListItem[]
+  total_pages: number
+  total_results: number
+  page: number
+}
+
+export async function getPopularPeople(page = 1): Promise<PeopleResult> {
+  return tmdbFetch('/person/popular', { page: String(page) })
 }
 
 export async function getCompanyTV(id: number, page = 1): Promise<TMDbSearchResult> {
