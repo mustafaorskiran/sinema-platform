@@ -121,7 +121,8 @@ export default function BenzerClient({ similarUsers, picks, followingIds: initia
         </div>
 
         {filteredPicks.length === 0 ? (
-          <div className="py-16 text-center text-[--text-secondary] rounded-2xl bg-[--bg-card] border border-[--border]">
+          <div className="py-16 text-center text-[--text-secondary] rounded-2xl"
+            style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             Bu kategoride öneri bulunamadı.
           </div>
         ) : (
@@ -144,7 +145,8 @@ function UserCard({ user, isFollowing, loading, onFollow }: {
 }) {
 
   return (
-    <div className="bg-[--bg-card] border border-[--border] rounded-2xl p-5 flex flex-col items-center text-center gap-3 hover:border-[--accent]/30 transition-colors">
+    <div className="rounded-2xl p-5 flex flex-col items-center text-center gap-3 transition-all duration-200 hover:-translate-y-1"
+      style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
       <Link href={`/profil/${user.username}`} className="hover:opacity-80 transition-opacity">
         <div className="h-16 w-16 rounded-full bg-[--accent] flex items-center justify-center text-xl font-bold text-white overflow-hidden ring-2 ring-[--border]">
           {user.avatar_url
@@ -159,18 +161,19 @@ function UserCard({ user, isFollowing, loading, onFollow }: {
           className="text-sm font-semibold text-white hover:text-[--accent] transition-colors block truncate">
           @{user.username}
         </Link>
+        <div className="mt-2 flex items-center justify-center gap-1">
+          <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+            <div className="h-full rounded-full" style={{ width: `${Math.min(user.similarity_score * 10, 100)}%`, background: 'linear-gradient(90deg, #D4A843, #E11D48)' }} />
+          </div>
+          <span className="text-[10px] font-bold shrink-0" style={{ color: '#D4A843' }}>{Math.round(user.similarity_score * 10)}%</span>
+        </div>
         <div className="mt-1.5 space-y-0.5">
-          <p className="text-[11px] text-[--text-secondary]">
-            <span className="text-white font-medium">{user.common_high_ratings}</span> ortak yüksek puan
+          <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
+            <span className="font-medium text-white">{user.common_high_ratings}</span> ortak yüksek puan
           </p>
           {user.common_watched > 0 && (
-            <p className="text-[11px] text-[--text-secondary]">
-              <span className="text-white font-medium">{user.common_watched}</span> ortak izlenen
-            </p>
-          )}
-          {user.common_list_items > 0 && (
-            <p className="text-[11px] text-[--text-secondary]">
-              <span className="text-white font-medium">{user.common_list_items}</span> ortak liste içeriği
+            <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
+              <span className="font-medium text-white">{user.common_watched}</span> ortak izlenen
             </p>
           )}
         </div>
