@@ -23,15 +23,16 @@ export default function StarRating({ value, onChange, readonly = false, size = '
           onClick={() => onChange?.(star)}
           onMouseEnter={() => !readonly && setHovered(star)}
           onMouseLeave={() => !readonly && setHovered(0)}
-          className={`transition-transform ${readonly ? 'cursor-default' : 'cursor-pointer hover:scale-110'}`}
+          className={`transition-all duration-100 ${readonly ? 'cursor-default' : 'cursor-pointer hover:scale-125 active:scale-95'}`}
+          style={{ filter: star <= display && !readonly ? 'drop-shadow(0 0 4px rgba(212,168,67,0.5))' : undefined }}
         >
           {star <= display
-            ? <IconStarFilled className={`${sizes[size]} text-[--gold] transition-colors`} />
-            : <IconStar className={`${sizes[size]} text-[--border] transition-colors`} />
+            ? <IconStarFilled className={`${sizes[size]} transition-colors`} style={{ color: '#D4A843' }} />
+            : <IconStar className={`${sizes[size]} transition-colors`} style={{ color: 'rgba(255,255,255,0.15)' }} />
           }
         </button>
       ))}
-      {value > 0 && <span className="ml-2 text-sm font-semibold text-[--gold]">{value}/10</span>}
+      {value > 0 && <span className="ml-2 text-sm font-bold" style={{ color: '#D4A843' }}>{value}/10</span>}
     </div>
   )
 }
