@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { containsProfanity } from '@/lib/profanityFilter'
 
 interface Profile { username: string; avatar_url: string | null }
 
@@ -73,6 +74,10 @@ export default function ForumThreadClient({ thread, initialPosts, currentUser, i
 
   async function submitReply() {
     if (!replyText.trim() || submitting) return
+    if (containsProfanity(replyText)) {
+      setError('Yanıtın uygunsuz ifadeler içeriyor. Lütfen düzenleyerek tekrar gönder.')
+      return
+    }
     setSubmitting(true)
     setError('')
     try {

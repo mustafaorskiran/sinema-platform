@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import StarRating from './StarRating'
 import type { MediaType } from '@/lib/types'
+import { containsProfanity } from '@/lib/profanityFilter'
 
 interface ReviewFormProps {
   mediaId: number
@@ -43,6 +44,7 @@ export default function ReviewForm({ mediaId, mediaType, existingReview }: Revie
     e.preventDefault()
     if (rating === 0) { setError('Lütfen bir puan verin.'); return }
     if (content.trim().length < 10) { setError('Yorum en az 10 karakter olmalı.'); return }
+    if (containsProfanity(content)) { setError('Yorumun uygunsuz ifadeler içeriyor. Lütfen düzenleyerek tekrar gönder.'); return }
     setLoading(true); setError('')
     try {
       const res = await fetch('/api/reviews', {
