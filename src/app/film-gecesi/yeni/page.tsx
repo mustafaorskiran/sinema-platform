@@ -13,7 +13,7 @@ export default async function YeniFilmGecesiPage() {
   return (
     <div className="max-w-lg mx-auto px-4 py-10">
       <h1 className="text-2xl font-bold text-white mb-8">🎬 Film Gecesi Planla</h1>
-      <div className="bg-[--bg-card] border border-[--border] rounded-2xl p-8">
+      <div className="rounded-2xl p-8" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.95), rgba(14,20,32,0.98))', border: '1px solid rgba(212,168,67,0.1)', boxShadow: '0 20px 60px rgba(0,0,0,0.4)' }}>
         <YeniPartiForm />
       </div>
     </div>
