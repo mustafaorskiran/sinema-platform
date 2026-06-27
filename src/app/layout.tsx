@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_NAME}`,
   },
   description: 'Film ve dizi puan ver, yorum yap, listeler oluştur. Türkçe sinema topluluğu.',
-  manifest: '/manifest.webmanifest',
+  manifest: '/manifest.json',
   openGraph: {
     siteName: SITE_NAME,
     locale: 'tr_TR',
