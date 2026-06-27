@@ -257,20 +257,26 @@ export default function Navbar({ user }: NavbarProps) {
                   { label: 'Polisiye',       href: '/diziler?ozel=polisiye',                description: 'Dedektif ve suç dizileri' },
                 ]}
               />
-              <Link href="/en-cok-yorumlanan" className="self-stretch flex items-center px-2.5 transition-colors text-[--text-secondary] hover:text-[--text-primary]">
-                Popüler
-              </Link>
-              <Link href="/ne-izlesem" className="self-stretch flex items-center px-2.5 transition-colors text-[--text-secondary] hover:text-[--text-primary]">
-                Ne İzlesem?
-              </Link>
+              <NavDropdown
+                label="Keşfet"
+                href="/en-cok-yorumlanan"
+                columns={2}
+                items={[
+                  { label: 'En Çok Yorumlanan',   href: '/en-cok-yorumlanan',    description: 'Platform sıralamaları' },
+                  { label: 'Ne İzlesem?',          href: '/ne-izlesem',           description: 'Ruh haline göre öner' },
+                  { label: 'Benzer Kullanıcılar',  href: '/benzer-kullanicilar',  description: 'Zevkine yakın kişiler' },
+                  { label: 'Quiz',                 href: '/quiz',                 description: 'Sinema bilgi yarışması' },
+                  { label: 'Özel Listeler',        href: '/ozel-listeler',        description: 'Editöryal seçkiler' },
+                  { label: 'Yayın Takvimi',        href: '/yayin-takvimi',        description: 'Çıkış tarihleri' },
+                  { label: 'Gişe Sıralaması',      href: '/gise',                 description: 'Box office verileri' },
+                  { label: 'Alıntılar',            href: '/alintilar',            description: 'Unutulmaz replikler' },
+                ]}
+              />
               <Link href="/listeler" className="self-stretch flex items-center px-2.5 transition-colors text-[--text-secondary] hover:text-[--text-primary]">
                 {t('nav.lists')}
               </Link>
               <Link href="/kisiler" className="self-stretch flex items-center px-2.5 transition-colors text-[--text-secondary] hover:text-[--text-primary]">
                 Kişiler
-              </Link>
-              <Link href="/yayin-takvimi" className="self-stretch flex items-center px-2.5 transition-colors text-[--text-secondary] hover:text-[--text-primary]">
-                Takvim
               </Link>
             </div>
           </div>
