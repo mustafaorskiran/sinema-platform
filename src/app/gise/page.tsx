@@ -32,6 +32,8 @@ async function fetchGise(endpoint: string): Promise<TMDbMovie[]> {
   }
 }
 
+const MEDAL = ['🥇', '🥈', '🥉']
+
 interface PageProps {
   searchParams: Promise<{ tab?: string }>
 }
@@ -49,11 +51,14 @@ export default async function GisePage({ searchParams }: PageProps) {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      {/* Başlık */}
+      {/* Hero başlık */}
       <div className="mb-8">
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: 'rgba(225,29,72,0.7)' }}>
+          ✦ Canlı Güncelleme
+        </p>
         <div className="flex items-center gap-2.5 mb-2">
-          <IconTrendingUp className="h-6 w-6" style={{ color: 'var(--accent)' }} />
-          <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
+          <IconTrendingUp className="h-7 w-7" style={{ color: 'var(--accent)' }} />
+          <h1 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
             Gişe Sıralaması
           </h1>
         </div>
@@ -66,11 +71,11 @@ export default async function GisePage({ searchParams }: PageProps) {
       <div className="flex gap-2 mb-8">
         <Link
           href="/gise?tab=turkiye"
-          className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 hover:scale-105"
           style={
             tab === 'turkiye'
-              ? { background: 'var(--accent)', color: '#fff' }
-              : { background: 'var(--bg-card)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }
+              ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff', boxShadow: '0 4px 16px rgba(225,29,72,0.3)' }
+              : { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.08)' }
           }
         >
           <IconMapPin className="h-4 w-4" />
@@ -78,11 +83,11 @@ export default async function GisePage({ searchParams }: PageProps) {
         </Link>
         <Link
           href="/gise?tab=dunya"
-          className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 hover:scale-105"
           style={
             tab === 'dunya'
-              ? { background: 'var(--accent)', color: '#fff' }
-              : { background: 'var(--bg-card)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }
+              ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff', boxShadow: '0 4px 16px rgba(225,29,72,0.3)' }
+              : { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.08)' }
           }
         >
           <IconGlobe className="h-4 w-4" />
@@ -90,86 +95,66 @@ export default async function GisePage({ searchParams }: PageProps) {
         </Link>
       </div>
 
-      {/* Tablo */}
+      {/* Liste */}
       {movies.length > 0 ? (
-        <div
-          className="rounded-2xl overflow-hidden"
-          style={{ border: '1px solid var(--border)' }}
-        >
+        <div className="space-y-2">
           {movies.map((movie, index) => {
             const poster = getPosterUrl(movie.poster_path, 'w342')
             const title = getMediaTitle(movie)
             const year = getMediaYear(movie)
-            const isEven = index % 2 === 0
+            const isTop3 = index < 3
 
             return (
               <Link
                 key={movie.id}
                 href={`/film/${movie.id}`}
-                className="flex items-center gap-4 px-4 py-3 transition-colors duration-150 hover:bg-[--bg-secondary]"
+                className="group flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 hover:-translate-y-0.5"
                 style={{
-                  background: isEven ? 'var(--bg-card)' : 'var(--bg-secondary)',
-                  borderBottom: index < movies.length - 1 ? '1px solid var(--border)' : 'none',
+                  background: 'linear-gradient(160deg, rgba(20,28,47,0.85), rgba(14,20,32,0.9))',
+                  border: `1px solid ${isTop3 ? 'rgba(212,168,67,0.15)' : 'rgba(255,255,255,0.06)'}`,
                 }}
               >
                 {/* Sıra */}
-                <div
-                  className="w-8 text-center font-bold text-lg shrink-0"
-                  style={{
-                    color: index < 3 ? 'var(--gold-bright)' : 'var(--text-secondary)',
-                    opacity: index < 3 ? 1 : 0.6,
-                  }}
-                >
-                  {index + 1}
+                <div className="w-8 text-center shrink-0">
+                  {isTop3
+                    ? <span className="text-xl">{MEDAL[index]}</span>
+                    : <span className="text-lg font-bold" style={{ color: 'rgba(255,255,255,0.25)' }}>{index + 1}</span>
+                  }
                 </div>
 
                 {/* Poster */}
                 <div
-                  className="relative shrink-0 rounded-lg overflow-hidden"
-                  style={{ width: 40, height: 60, background: 'var(--bg-secondary)' }}
+                  className="relative shrink-0 rounded-lg overflow-hidden transition-transform duration-200 group-hover:scale-105"
+                  style={{ width: 40, height: 60, background: 'rgba(255,255,255,0.04)' }}
                 >
                   {poster ? (
-                    <Image
-                      src={poster}
-                      alt={title}
-                      fill
-                      sizes="40px"
-                      className="object-cover"
-                    />
+                    <Image src={poster} alt={title} fill sizes="40px" className="object-cover" />
                   ) : (
-                    <div
-                      className="absolute inset-0 flex items-center justify-center text-[10px] text-center p-1"
-                      style={{ color: 'var(--text-secondary)' }}
-                    >
-                      —
-                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center text-[10px]"
+                      style={{ color: 'rgba(255,255,255,0.3)' }}>—</div>
                   )}
                 </div>
 
                 {/* Bilgi */}
                 <div className="flex-1 min-w-0">
-                  <p
-                    className="text-[14px] font-semibold leading-tight truncate"
-                    style={{ color: 'var(--text-primary)' }}
-                  >
+                  <p className="text-[14px] font-semibold leading-tight truncate group-hover:text-white transition-colors"
+                    style={{ color: isTop3 ? 'white' : 'rgba(255,255,255,0.85)' }}>
                     {title}
                   </p>
                   {year && (
-                    <p className="text-[12px] mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-                      {year}
-                    </p>
+                    <p className="text-[12px] mt-0.5" style={{ color: 'rgba(255,255,255,0.3)' }}>{year}</p>
                   )}
                 </div>
 
-                {/* Puan + Oy Sayısı */}
+                {/* Puan */}
                 <div className="flex flex-col items-end shrink-0 gap-0.5">
                   <div className="flex items-center gap-1">
-                    <IconStarFilled className="h-3.5 w-3.5" style={{ color: 'var(--gold)' }} />
-                    <span className="text-[13px] font-bold" style={{ color: 'var(--gold-bright)' }}>
+                    <IconStarFilled className="h-3.5 w-3.5" style={{ color: '#D4A843' }} />
+                    <span className="text-[13px] font-bold" style={{ color: '#D4A843' }}>
                       {movie.vote_average.toFixed(1)}
                     </span>
                   </div>
-                  <span className="text-[11px]" style={{ color: 'var(--text-secondary)' }}>
+                  <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>
                     {movie.vote_count >= 1000
                       ? `${(movie.vote_count / 1000).toFixed(1)}k oy`
                       : `${movie.vote_count} oy`}
@@ -182,13 +167,10 @@ export default async function GisePage({ searchParams }: PageProps) {
       ) : (
         <div
           className="flex flex-col items-center justify-center py-20 rounded-2xl"
-          style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.85), rgba(14,20,32,0.9))', border: '1px solid rgba(255,255,255,0.06)' }}
         >
-          <IconTrendingUp
-            className="h-12 w-12 mb-4"
-            style={{ color: 'var(--text-secondary)', opacity: 0.4 }}
-          />
-          <p className="text-base font-medium" style={{ color: 'var(--text-secondary)' }}>
+          <IconTrendingUp className="h-12 w-12 mb-4" style={{ color: 'rgba(255,255,255,0.15)' }} />
+          <p className="text-base font-medium" style={{ color: 'rgba(255,255,255,0.3)' }}>
             Gişe verisi yüklenemedi.
           </p>
         </div>
