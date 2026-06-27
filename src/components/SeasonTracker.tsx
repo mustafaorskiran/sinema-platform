@@ -221,11 +221,12 @@ export default function SeasonTracker({ seriesId, seasons, isLoggedIn }: Props) 
           const data = seasonData[season.season_number]
 
           return (
-            <div key={season.season_number} className="rounded-xl border border-[--border] overflow-hidden">
+            <div key={season.season_number} className="rounded-xl overflow-hidden"
+              style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               {/* Sezon başlık satırı */}
               <button
                 onClick={() => openSeasonPanel(season.season_number)}
-                className="w-full flex items-center gap-3 px-4 py-3 bg-[--bg-card] hover:bg-[--bg-secondary] transition-colors text-left"
+                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors text-left"
               >
                 {season.poster_path && (
                   <img
