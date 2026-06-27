@@ -32,11 +32,16 @@ export default function WatchlistButton({ mediaId, mediaType, initialStatus, isL
   }
 
   return (
-    <div className="flex gap-2">
-      <button onClick={() => handleClick('izlemek-istiyorum')} disabled={loading}
-        className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors disabled:opacity-60 ${
-          status === 'izlemek-istiyorum' ? 'bg-blue-600 text-white' : 'bg-[--bg-card] border border-[--border] text-[--text-secondary] hover:text-white hover:border-blue-500'
-        }`}>
+    <div className="flex gap-2 flex-wrap">
+      <button
+        onClick={() => handleClick('izlemek-istiyorum')}
+        disabled={loading}
+        className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-60"
+        style={status === 'izlemek-istiyorum'
+          ? { background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: '#fff', boxShadow: '0 4px 14px rgba(59,130,246,0.35)' }
+          : { background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)', color: 'rgba(255,255,255,0.7)' }
+        }
+      >
         {loading && status !== 'izlemek-istiyorum'
           ? <IconLoader className="h-4 w-4 animate-spin" />
           : status === 'izlemek-istiyorum'
@@ -46,10 +51,15 @@ export default function WatchlistButton({ mediaId, mediaType, initialStatus, isL
         İzlemek İstiyorum
       </button>
 
-      <button onClick={() => handleClick('izledim')} disabled={loading}
-        className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors disabled:opacity-60 ${
-          status === 'izledim' ? 'bg-green-600 text-white' : 'bg-[--bg-card] border border-[--border] text-[--text-secondary] hover:text-white hover:border-green-500'
-        }`}>
+      <button
+        onClick={() => handleClick('izledim')}
+        disabled={loading}
+        className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-60"
+        style={status === 'izledim'
+          ? { background: 'linear-gradient(135deg, #22c55e, #15803d)', color: '#fff', boxShadow: '0 4px 14px rgba(34,197,94,0.35)' }
+          : { background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', color: 'rgba(255,255,255,0.7)' }
+        }
+      >
         {loading && status !== 'izledim'
           ? <IconLoader className="h-4 w-4 animate-spin" />
           : <IconCheck className="h-4 w-4" />
