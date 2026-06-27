@@ -18,5 +18,23 @@ export async function POST(req: NextRequest) {
     .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  // Thread sahibine bildirim gönder (kendisi değilse)
+  const { data: thread } = await supabase
+    .from('forum_threads')
+    .select('user_id, title')
+    .eq('id', thread_id)
+    .single()
+
+  if (thread && thread.user_id !== user.id) {
+    await supabase.from('notifications').insert({
+      user_id: thread.user_id,
+      type: 'forum_reply',
+      content: `Konuna yeni bir yanıt geldi: "${thread.title?.slice(0, 60)}"`,
+      link: `/forum/${thread_id}`,
+      read: false,
+    })
+  }
+
   return NextResponse.json(data)
 }

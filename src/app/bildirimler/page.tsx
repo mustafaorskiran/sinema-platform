@@ -18,10 +18,11 @@ function timeAgo(date: string) {
 
 function getDetails(n: any) {
   const username = n.actor?.username ?? 'Biri'
-  if (n.type === 'like')   return { label: 'yorumunu beğendi',           href: n.review ? `/${n.review.media_type}/${n.review.media_id}` : '#', badgeColor: '#f87171',           Icon: IconHeart   }
-  if (n.type === 'follow') return { label: 'seni takip etmeye başladı',  href: `/profil/${username}`,                                           badgeColor: 'var(--accent)',      Icon: IconUserPlus }
-  if (n.type === 'reply')  return { label: 'yorumuna yanıt verdi',        href: n.review ? `/${n.review.media_type}/${n.review.media_id}` : '#', badgeColor: '#60a5fa',           Icon: IconReply   }
-  return                           { label: '',                            href: '#',                                                             badgeColor: 'var(--text-secondary)', Icon: IconBell }
+  if (n.type === 'like')         return { label: 'yorumunu beğendi',           href: n.review ? `/${n.review.media_type}/${n.review.media_id}` : '#', badgeColor: '#f87171',     Icon: IconHeart   }
+  if (n.type === 'follow')       return { label: 'seni takip etmeye başladı',  href: `/profil/${username}`,                                           badgeColor: 'var(--accent)', Icon: IconUserPlus }
+  if (n.type === 'reply')        return { label: 'yorumuna yanıt verdi',        href: n.review ? `/${n.review.media_type}/${n.review.media_id}` : '#', badgeColor: '#60a5fa',    Icon: IconReply   }
+  if (n.type === 'forum_reply')  return { label: n.content ?? 'Konuna yanıt geldi', href: n.link ?? '/forum',                                         badgeColor: '#a78bfa',    Icon: IconReply   }
+  return                                { label: n.content ?? '',               href: n.link ?? '#',                                                   badgeColor: 'rgba(212,168,67,0.7)', Icon: IconBell }
 }
 
 export default async function BildirimlerPage() {
@@ -31,7 +32,7 @@ export default async function BildirimlerPage() {
 
   const { data: notifications } = await supabase
     .from('notifications')
-    .select('id, type, read, created_at, review_id, actor:profiles!actor_id(username, avatar_url), review:reviews(media_id, media_type)')
+    .select('id, type, read, created_at, review_id, content, link, actor:profiles!actor_id(username, avatar_url), review:reviews(media_id, media_type)')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(100)
