@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
+import UserHoverCard from '@/components/UserHoverCard'
+import QuoteLikeButton from '@/components/QuoteLikeButton'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -14,24 +16,34 @@ interface Quote {
   media_id: number
   media_type: 'film' | 'dizi'
   created_at: string
+  likes_count: number
   profiles: { username: string } | null
 }
 
 export default async function AlintilarPage() {
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
 
   const { data: quotes } = await supabase
     .from('quotes')
-    .select('id, content, character_name, media_id, media_type, profiles(username), created_at')
+    .select('id, content, character_name, media_id, media_type, likes_count, profiles(username), created_at')
     .eq('approved', true)
-    .order('created_at', { ascending: false })
+    .order('likes_count', { ascending: false })
     .limit(50)
 
   const allQuotes = (quotes ?? []) as unknown as Quote[]
 
-  // "Bugünün Alıntısı": en son alıntı
+  let likedIds = new Set<string>()
+  if (user) {
+    const { data: likes } = await supabase
+      .from('quote_likes')
+      .select('quote_id')
+      .eq('user_id', user.id)
+      .in('quote_id', allQuotes.map(q => q.id))
+    likedIds = new Set((likes ?? []).map(l => l.quote_id as string))
+  }
+
   const heroQuote = allQuotes[0] ?? null
-  // Geri kalanlar (hero hariç)
   const restQuotes = allQuotes.slice(1)
 
   return (
@@ -44,7 +56,7 @@ export default async function AlintilarPage() {
         </p>
       </div>
 
-      {/* Bugünün Alıntısı */}
+      {/* Öne Çıkan Alıntı */}
       {heroQuote ? (
         <div
           className="mb-10 rounded-2xl p-8 relative overflow-hidden"
@@ -55,7 +67,7 @@ export default async function AlintilarPage() {
           }}
         >
           <p className="text-[9.5px] font-bold uppercase tracking-[0.2em] mb-5" style={{ color: 'rgba(212,168,67,0.6)' }}>
-            ✦ Öne Çıkan Alıntı
+            ✦ En Çok Beğenilen
           </p>
           <span
             className="absolute top-2 right-5 text-[9rem] font-serif leading-none select-none pointer-events-none"
@@ -65,7 +77,7 @@ export default async function AlintilarPage() {
             "
           </span>
           <p className="text-2xl sm:text-3xl font-semibold leading-snug mb-4" style={{ color: 'var(--text-primary)' }}>
-            "{heroQuote.content}"
+            &ldquo;{heroQuote.content}&rdquo;
           </p>
           {heroQuote.character_name && (
             <p className="italic text-[--text-secondary] text-base mb-3">
@@ -82,14 +94,18 @@ export default async function AlintilarPage() {
             {heroQuote.profiles?.username && (
               <span className="text-xs text-[--text-secondary]">
                 paylaşan:{' '}
-                <Link
-                  href={`/profil/${heroQuote.profiles.username}`}
-                  className="hover:text-white transition-colors"
-                >
-                  @{heroQuote.profiles.username}
-                </Link>
+                <UserHoverCard username={heroQuote.profiles.username}>
+                  <Link href={`/profil/${heroQuote.profiles.username}`} className="hover:text-white transition-colors">
+                    @{heroQuote.profiles.username}
+                  </Link>
+                </UserHoverCard>
               </span>
             )}
+            <QuoteLikeButton
+              quoteId={heroQuote.id}
+              initialLiked={likedIds.has(heroQuote.id)}
+              initialCount={heroQuote.likes_count}
+            />
           </div>
         </div>
       ) : (
@@ -114,11 +130,11 @@ export default async function AlintilarPage() {
                 style={{ color: 'var(--accent)', opacity: 0.10 }}
                 aria-hidden
               >
-                "
+                &quot;
               </span>
 
               <p className="text-lg font-medium text-white leading-snug mb-3 pr-4">
-                "{quote.content}"
+                &ldquo;{quote.content}&rdquo;
               </p>
 
               {quote.character_name && (
@@ -128,19 +144,28 @@ export default async function AlintilarPage() {
               )}
 
               <div className="flex items-center justify-between flex-wrap gap-2 mt-4 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                <Link
-                  href={`/${quote.media_type === 'film' ? 'film' : 'dizi'}/${quote.media_id}`}
-                  className="text-xs text-[--accent] hover:underline font-medium"
-                >
-                  {quote.media_type === 'film' ? '🎬 Film' : '📺 Dizi'} →
-                </Link>
-                {quote.profiles?.username && (
+                <div className="flex items-center gap-3">
                   <Link
-                    href={`/profil/${quote.profiles.username}`}
-                    className="text-xs text-[--text-secondary] hover:text-white transition-colors"
+                    href={`/${quote.media_type === 'film' ? 'film' : 'dizi'}/${quote.media_id}`}
+                    className="text-xs text-[--accent] hover:underline font-medium"
                   >
-                    @{quote.profiles.username}
+                    {quote.media_type === 'film' ? '🎬 Film' : '📺 Dizi'} →
                   </Link>
+                  <QuoteLikeButton
+                    quoteId={quote.id}
+                    initialLiked={likedIds.has(quote.id)}
+                    initialCount={quote.likes_count}
+                  />
+                </div>
+                {quote.profiles?.username && (
+                  <UserHoverCard username={quote.profiles.username}>
+                    <Link
+                      href={`/profil/${quote.profiles.username}`}
+                      className="text-xs text-[--text-secondary] hover:text-white transition-colors"
+                    >
+                      @{quote.profiles.username}
+                    </Link>
+                  </UserHoverCard>
                 )}
               </div>
             </div>
