@@ -12,9 +12,11 @@ export default async function MesajlarPage() {
 
   const { data: conversations } = await supabase
     .from('conversations')
-    .select(`id, updated_at, p1:profiles!participant_1(id, username, avatar_url), p2:profiles!participant_2(id, username, avatar_url)`)
+    .select(`id, updated_at, p1:profiles!participant_1(id, username, avatar_url), p2:profiles!participant_2(id, username, avatar_url), messages(content, created_at, sender_id)`)
     .or(`participant_1.eq.${user.id},participant_2.eq.${user.id}`)
     .order('updated_at', { ascending: false })
+    .order('created_at', { referencedTable: 'messages', ascending: false })
+    .limit(1, { referencedTable: 'messages' })
     .limit(30)
 
   return (
