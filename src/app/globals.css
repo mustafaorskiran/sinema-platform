@@ -67,6 +67,10 @@ html.light {
 .animate-pulse {
   animation: pulse-skeleton 2s ease-in-out infinite;
 }
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(200%); }
+}
 
 /* ────────────────────────────────────────────────────────
    TAILWIND THEME TOKENS
