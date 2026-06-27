@@ -37,6 +37,7 @@ export default async function HomePage() {
     { data: recentWatchlistRaw },
     { count: reviewCount },
     { count: userCount },
+    { data: topReviewsRaw },
   ] = await Promise.all([
     getTrendingAll().catch(() => ({ results: [] as TMDbMovie[] })),
     discoverMovies({ sortBy: 'popularity.desc' }).catch(() => ({ results: [] })),
@@ -56,6 +57,13 @@ export default async function HomePage() {
       .gte('created_at', sevenDaysAgoISO),
     supabase.from('reviews').select('*', { count: 'exact', head: true }),
     supabase.from('profiles').select('*', { count: 'exact', head: true }),
+    supabase.from('reviews')
+      .select('id, media_id, media_type, content, rating, created_at, profiles(username, avatar_url)')
+      .not('content', 'is', null)
+      .neq('content', '')
+      .gte('rating', 7)
+      .order('created_at', { ascending: false })
+      .limit(3),
   ])
 
   // Hero
@@ -440,6 +448,59 @@ export default async function HomePage() {
               </footer>
             </blockquote>
             <div className="absolute bottom-4 right-6 text-8xl text-[--accent]/10 font-serif leading-none rotate-180 select-none">"</div>
+          </div>
+        )}
+
+        {/* ── Son Yorumlar ─────────────────────────────────────── */}
+        {topReviewsRaw && topReviewsRaw.length > 0 && (
+          <div>
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
+              <h2 className="text-xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Son Yorumlar</h2>
+              <Link href="/en-cok-yorumlanan" className="ml-auto text-xs flex items-center gap-1 hover:underline" style={{ color: 'var(--accent)' }}>
+                Tümü <IconChevronRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+            <div className="grid sm:grid-cols-3 gap-4">
+              {(topReviewsRaw as any[]).map((review) => {
+                const profile = review.profiles as { username: string; avatar_url: string | null } | null
+                const initial = (profile?.username?.[0] ?? '?').toUpperCase()
+                return (
+                  <div key={review.id} className="rounded-2xl p-5 flex flex-col gap-3"
+                    style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    <div className="flex items-center gap-2.5">
+                      <Link href={`/profil/${profile?.username ?? ''}`}>
+                        <div className="h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0 overflow-hidden"
+                          style={{ background: 'var(--accent)' }}>
+                          {profile?.avatar_url
+                            ? <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
+                            : initial}
+                        </div>
+                      </Link>
+                      <div className="flex-1 min-w-0">
+                        <Link href={`/profil/${profile?.username ?? ''}`} className="text-[13px] font-semibold hover:opacity-80 transition-opacity" style={{ color: 'var(--text-primary)' }}>
+                          {profile?.username ?? 'Anonim'}
+                        </Link>
+                      </div>
+                      <div className="flex items-center gap-1 shrink-0">
+                        <IconStar className="h-3.5 w-3.5" style={{ color: '#D4A843', fill: '#D4A843' }} />
+                        <span className="text-sm font-bold" style={{ color: '#D4A843' }}>{review.rating}</span>
+                      </div>
+                    </div>
+                    {review.content && (
+                      <Link href={`/${review.media_type}/${review.media_id}`} className="text-[13px] leading-relaxed line-clamp-3 hover:opacity-80 transition-opacity" style={{ color: 'rgba(255,255,255,0.55)' }}>
+                        {review.content}
+                      </Link>
+                    )}
+                    <Link href={`/${review.media_type}/${review.media_id}`}
+                      className="text-[11px] font-medium mt-auto hover:underline"
+                      style={{ color: review.media_type === 'film' ? 'rgba(96,165,250,0.7)' : 'rgba(167,139,250,0.7)' }}>
+                      {review.media_type === 'film' ? '🎬 Film' : '📺 Dizi'} →
+                    </Link>
+                  </div>
+                )
+              })}
+            </div>
           </div>
         )}
 
