@@ -43,6 +43,7 @@ export default function QuizClient({ films }: Props) {
   const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS)
   const [score, setScore] = useState(0)
   const [finished, setFinished] = useState(false)
+  const [scoreSaved, setScoreSaved] = useState(false)
 
   const currentFilm = questions[current]
 
@@ -75,9 +76,18 @@ export default function QuizClient({ films }: Props) {
     }
   }, [selected, currentFilm])
 
-  function nextQuestion() {
+  async function nextQuestion() {
     if (current + 1 >= TOTAL_QUESTIONS) {
       setFinished(true)
+      // Skoru kaydet (score state handleAnswer ile zaten güncellenmiş)
+      try {
+        await fetch('/api/quiz/score', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ score, correct: Math.round(score / 10), total: TOTAL_QUESTIONS }),
+        })
+        setScoreSaved(true)
+      } catch {}
     } else {
       setCurrent(c => c + 1)
     }

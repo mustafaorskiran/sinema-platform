@@ -44,7 +44,14 @@ export default async function QuizPage() {
     redirect('/auth/giris?next=/quiz')
   }
 
-  const films = await fetchQuizFilms()
+  const [films, { data: leaderboard }] = await Promise.all([
+    fetchQuizFilms(),
+    supabase
+      .from('quiz_scores')
+      .select('score, correct, total, profiles(username, avatar_url)')
+      .order('score', { ascending: false })
+      .limit(10),
+  ])
 
   if (films.length < 10) {
     return (
@@ -62,16 +69,48 @@ export default async function QuizPage() {
   }
 
   return (
-    <>
-      <div className="max-w-2xl mx-auto px-4 pt-8 pb-2">
-        <h1 className="text-2xl font-extrabold text-center" style={{ color: 'var(--text-primary)' }}>
-          🎬 Film Quiz
-        </h1>
-        <p className="text-sm text-center mt-1" style={{ color: 'var(--text-secondary)' }}>
-          Posteri gör, filmi bul — 10 soruluk tur
-        </p>
-      </div>
+    <div className="max-w-2xl mx-auto px-4 pt-8 pb-16">
+      <h1 className="text-2xl font-extrabold text-center mb-1" style={{ color: 'var(--text-primary)' }}>
+        🎬 Film Quiz
+      </h1>
+      <p className="text-sm text-center mb-6" style={{ color: 'var(--text-secondary)' }}>
+        Posteri gör, filmi bul — 10 soruluk tur
+      </p>
       <QuizClient films={films} />
-    </>
+
+      {leaderboard && leaderboard.length > 0 && (
+        <div className="mt-10 rounded-2xl overflow-hidden"
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(212,168,67,0.1)' }}>
+          <div className="px-5 py-4 flex items-center gap-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+            <span className="text-lg">🏆</span>
+            <h2 className="font-bold" style={{ color: 'var(--text-primary)' }}>Liderlik Tablosu</h2>
+          </div>
+          <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.04)' }}>
+            {leaderboard.map((entry: any, i) => {
+              const profile = entry.profiles
+              const medals = ['🥇', '🥈', '🥉']
+              return (
+                <div key={i} className="px-5 py-3 flex items-center gap-3">
+                  <span className="text-lg w-6 text-center shrink-0">{medals[i] ?? `${i + 1}`}</span>
+                  <div className="h-7 w-7 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0 overflow-hidden"
+                    style={{ background: 'var(--accent)' }}>
+                    {profile?.avatar_url
+                      ? <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
+                      : (profile?.username?.[0] ?? '?').toUpperCase()}
+                  </div>
+                  <span className="flex-1 text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                    {profile?.username ?? 'Anonim'}
+                  </span>
+                  <div className="text-right">
+                    <p className="text-sm font-bold" style={{ color: '#D4A843' }}>{entry.score} puan</p>
+                    <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>{entry.correct}/{entry.total} doğru</p>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
