@@ -269,6 +269,7 @@ export default function Navbar({ user }: NavbarProps) {
                   { label: '🎭 Ruh Haline Göre',   href: '/mood',                 description: 'Duyguna uygun film seç' },
                   { label: 'Benzer Kullanıcılar',  href: '/benzer-kullanicilar',  description: 'Zevkine yakın kişiler' },
                   { label: '👥 Arkadaş Önerileri', href: '/sosyal-oneri',          description: 'Takip ettiğin kişiler ne beğendi' },
+                  { label: '⚔️ Film vs Film',      href: '/versus',               description: 'Hangisi daha iyi? Oy ver' },
                   { label: 'Quiz',                 href: '/quiz',                 description: 'Sinema bilgi yarışması' },
                   { label: 'Özel Listeler',        href: '/ozel-listeler',        description: 'Editöryal seçkiler' },
                   { label: '🌌 Sinema Evrenler',   href: '/evren',                description: 'MCU, DC, Star Wars ve daha fazlası' },
