@@ -12,7 +12,8 @@ export default function Loading() {
         <div className="h-5 w-52 bg-[--skeleton] rounded mb-5" />
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="bg-[--bg-card] border border-[--border] rounded-2xl p-5 flex flex-col items-center gap-3">
+            <div key={i} className="rounded-2xl p-5 flex flex-col items-center gap-3"
+              style={{ background: 'rgba(20,28,47,0.9)', border: '1px solid rgba(255,255,255,0.06)' }}>
               <div className="h-16 w-16 rounded-full bg-[--skeleton]" />
               <div className="h-4 w-24 bg-[--skeleton] rounded" />
               <div className="space-y-1.5 w-full">

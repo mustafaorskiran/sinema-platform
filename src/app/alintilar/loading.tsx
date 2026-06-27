@@ -9,8 +9,8 @@ export default function AlintilarLoading() {
 
       {/* Hero skeleton */}
       <div
-        className="mb-10 rounded-2xl bg-[--bg-card] border border-[--border] p-8"
-        style={{ borderLeft: '4px solid var(--accent)' }}
+        className="mb-10 rounded-2xl p-8"
+        style={{ background: 'rgba(20,28,47,0.9)', border: '1px solid rgba(255,255,255,0.06)', borderLeft: '4px solid var(--accent)' }}
       >
         <div className="h-3 w-32 rounded bg-[--bg-secondary] animate-pulse mb-4" />
         <div className="space-y-2 mb-4">
@@ -26,7 +26,8 @@ export default function AlintilarLoading() {
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
-            className="break-inside-avoid bg-[--bg-card] border border-[--border] rounded-2xl p-6 mb-4"
+            className="break-inside-avoid rounded-2xl p-6 mb-4"
+            style={{ background: 'rgba(20,28,47,0.9)', border: '1px solid rgba(255,255,255,0.06)' }}
           >
             <div className="space-y-2 mb-4">
               <div className="h-5 rounded bg-[--bg-secondary] animate-pulse" />

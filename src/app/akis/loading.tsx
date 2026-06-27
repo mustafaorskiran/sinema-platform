@@ -9,7 +9,8 @@ export default function AkisLoading() {
       </div>
       <div className="space-y-4">
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="rounded-2xl bg-[--bg-card] border border-[--border] p-4 space-y-4">
+          <div key={i} className="rounded-2xl p-4 space-y-4"
+            style={{ background: 'rgba(20,28,47,0.9)', border: '1px solid rgba(255,255,255,0.06)' }}>
             <div className="flex items-center gap-3">
               <SkAvatar />
               <div className="space-y-1.5 flex-1">
