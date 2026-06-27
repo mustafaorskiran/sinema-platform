@@ -70,18 +70,27 @@ export default async function KullanicilarPage({ searchParams }: Props) {
           {q && <p className="text-sm">"{q}" için sonuç yok</p>}
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
           {users.map(user => (
-            <Link key={user.id} href={`/profil/${user.username}`} className="group text-center">
-              <div className="relative mx-auto w-20 h-20 rounded-full bg-[--accent] flex items-center justify-center text-2xl font-bold text-white overflow-hidden ring-2 ring-transparent group-hover:ring-[--accent]/50 transition-all">
+            <Link key={user.id} href={`/profil/${user.username}`}
+              className="group flex items-center gap-3 p-3 rounded-xl transition-all duration-200 hover:-translate-y-0.5"
+              style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.85), rgba(14,20,32,0.9))', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <div className="relative w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold text-white overflow-hidden shrink-0 ring-2 ring-transparent group-hover:ring-[--accent]/40 transition-all"
+                style={{ background: 'var(--accent)' }}>
                 {user.avatar_url
                   ? <img src={user.avatar_url} alt={user.username} className="w-full h-full object-cover" />
                   : user.username[0]?.toUpperCase()
                 }
               </div>
-              <p className="mt-2 text-sm font-semibold text-white group-hover:text-[--accent] transition-colors truncate">{user.username}</p>
-              {user.bio && <p className="text-[10px] text-[--text-secondary] line-clamp-1 mt-0.5 px-1">{user.bio}</p>}
-              <p className="text-[10px] text-[--text-secondary]/60 mt-0.5">{countMap[user.id] ?? 0} yorum</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-[13px] font-semibold truncate transition-colors group-hover:text-[--accent]" style={{ color: 'var(--text-primary)' }}>
+                  {user.username}
+                </p>
+                {user.bio
+                  ? <p className="text-[11px] line-clamp-1" style={{ color: 'rgba(255,255,255,0.3)' }}>{user.bio}</p>
+                  : <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.2)' }}>{countMap[user.id] ?? 0} yorum</p>
+                }
+              </div>
             </Link>
           ))}
         </div>
