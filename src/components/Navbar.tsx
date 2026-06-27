@@ -312,6 +312,10 @@ export default function Navbar({ user }: NavbarProps) {
           {/* RIGHT: Notification + Theme + Language + User */}
           <div className="flex items-center gap-2 shrink-0">
             {user?.id && <NotificationBell userId={user.id} />}
+            <Link href="/premium" className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:scale-105"
+              style={{ background: 'linear-gradient(135deg, rgba(212,168,67,0.15), rgba(212,168,67,0.08))', border: '1px solid rgba(212,168,67,0.25)', color: '#D4A843' }}>
+              ⭐ Premium
+            </Link>
             <ThemeToggle />
             <LanguageSwitcher />
             {user?.id ? (
