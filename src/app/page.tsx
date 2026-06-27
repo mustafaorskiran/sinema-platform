@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Suspense } from 'react'
 import {
-  IconChevronRight, IconFilm, IconStar, IconTrendingUp, IconTv, IconFire,
+  IconChevronRight, IconFilm, IconStar, IconTrendingUp, IconTv, IconFire, IconMessageSquare,
 } from '@/components/icons'
 import {
   getTrendingAll, getBackdropUrl, getPosterUrl, getMediaTitle, getMediaYear,
@@ -35,6 +35,8 @@ export default async function HomePage() {
     { data: featuredPick },
     { data: { user } },
     { data: recentWatchlistRaw },
+    { count: reviewCount },
+    { count: userCount },
   ] = await Promise.all([
     getTrendingAll().catch(() => ({ results: [] as TMDbMovie[] })),
     discoverMovies({ sortBy: 'popularity.desc' }).catch(() => ({ results: [] })),
@@ -52,6 +54,8 @@ export default async function HomePage() {
       .select('media_id,media_type')
       .eq('media_type', 'film')
       .gte('created_at', sevenDaysAgoISO),
+    supabase.from('reviews').select('*', { count: 'exact', head: true }),
+    supabase.from('profiles').select('*', { count: 'exact', head: true }),
   ])
 
   // Hero
@@ -216,6 +220,25 @@ export default async function HomePage() {
                 <span className="text-white font-bold">{(diziCount ?? 0).toLocaleString('tr-TR')}</span>
                 <span className="text-[--text-secondary]">dizi</span>
               </div>
+              {(reviewCount ?? 0) > 0 && (
+                <>
+                  <div className="w-px h-4 bg-[--border]" />
+                  <div className="flex items-center gap-2">
+                    <IconMessageSquare className="h-4 w-4 text-[--gold]" />
+                    <span className="text-white font-bold">{(reviewCount ?? 0).toLocaleString('tr-TR')}</span>
+                    <span className="text-[--text-secondary]">yorum</span>
+                  </div>
+                </>
+              )}
+              {(userCount ?? 0) > 1 && (
+                <>
+                  <div className="w-px h-4 bg-[--border]" />
+                  <div className="flex items-center gap-2">
+                    <span className="text-white font-bold">{(userCount ?? 0).toLocaleString('tr-TR')}</span>
+                    <span className="text-[--text-secondary]">üye</span>
+                  </div>
+                </>
+              )}
             </div>
             <div className="flex items-center gap-3">
               <Link href="/filmler?dil=tr" className="text-xs text-[--accent] hover:underline font-medium">
