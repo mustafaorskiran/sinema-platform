@@ -241,6 +241,14 @@ export default async function FilmPage({ params }: Props) {
   const cast = movie.credits?.cast?.slice(0, 12) ?? []
   const trailer = movie.videos?.results?.find((v) => v.type === 'Trailer' && v.site === 'YouTube')
 
+  // Tam ekip
+  const crew = movie.credits?.crew ?? []
+  const writers = crew.filter((c) => c.job === 'Screenplay' || c.job === 'Writer' || c.job === 'Story').slice(0, 3)
+  const composers = crew.filter((c) => c.job === 'Original Music Composer' || c.job === 'Music').slice(0, 2)
+  const dops = crew.filter((c) => c.job === 'Director of Photography' || c.job === 'Cinematography').slice(0, 2)
+  const editors = crew.filter((c) => c.job === 'Editor').slice(0, 2)
+  const producers = crew.filter((c) => c.job === 'Producer' || c.job === 'Executive Producer').slice(0, 3)
+
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sinezon.com'
   const imdbId = (movie as any).external_ids?.imdb_id as string | null | undefined
 
@@ -629,6 +637,46 @@ export default async function FilmPage({ params }: Props) {
         {/* Cast & Crew */}
         <div id="oyuncular">
           <CastRow cast={cast} director={director} />
+
+          {/* Tam Ekip */}
+          {(writers.length > 0 || composers.length > 0 || dops.length > 0 || editors.length > 0 || producers.length > 0) && (
+            <div className="mt-6 rounded-2xl overflow-hidden"
+              style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(212,168,67,0.1)' }}>
+              <div className="px-4 py-3" style={{ borderBottom: '1px solid rgba(212,168,67,0.08)', background: 'rgba(212,168,67,0.02)' }}>
+                <p className="text-[9.5px] font-bold uppercase tracking-[0.18em]" style={{ color: 'rgba(212,168,67,0.5)' }}>Yapım Ekibi</p>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-px" style={{ background: 'rgba(212,168,67,0.06)' }}>
+                {[
+                  writers.length > 0 && { label: 'Senarist', people: writers },
+                  composers.length > 0 && { label: 'Müzik', people: composers },
+                  dops.length > 0 && { label: 'Görüntü Yönetmeni', people: dops },
+                  editors.length > 0 && { label: 'Editör', people: editors },
+                  producers.length > 0 && { label: 'Yapımcı', people: producers },
+                ].filter(Boolean).map((item: any) => (
+                  <div key={item.label} className="px-4 py-3" style={{ background: 'rgba(14,20,32,0.95)' }}>
+                    <p className="text-[9.5px] font-bold uppercase tracking-[0.14em] mb-2" style={{ color: 'rgba(212,168,67,0.4)' }}>{item.label}</p>
+                    {item.people.map((p: any) => (
+                      <a key={p.id} href={`/oyuncu/${p.id}`}
+                        className="company-link block text-[12px] font-medium leading-snug mb-0.5">
+                        {p.name}
+                      </a>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* IMDb Linki */}
+          {imdbId && (
+            <div className="mt-4">
+              <a href={`https://www.imdb.com/title/${imdbId}`} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[12px] font-semibold transition-all hover:scale-105"
+                style={{ background: 'rgba(212,168,67,0.1)', border: '1px solid rgba(212,168,67,0.25)', color: '#D4A843' }}>
+                ⭐ IMDb Sayfasını Aç →
+              </a>
+            </div>
+          )}
         </div>
 
         {/* Ödüller */}
