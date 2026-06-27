@@ -31,6 +31,7 @@ import StickyRating from '@/components/StickyRating'
 import PageNav from '@/components/PageNav'
 import CriticScores from '@/components/CriticScores'
 import AISummary from '@/components/AISummary'
+import AIChatWidget from '@/components/AIChatWidget'
 import ReviewSortButton from '@/components/ReviewSortButton'
 import type { Review } from '@/lib/types'
 import type { Metadata } from 'next'
@@ -499,6 +500,17 @@ export default async function FilmPage({ params, searchParams }: Props) {
               year={getMediaYear(movie) ?? ''}
               genres={(movie.genres ?? []).map((g: any) => g.name).join(', ')}
               director={director?.name ?? ''}
+            />
+
+            {/* AI Sohbet Asistanı */}
+            <AIChatWidget
+              mediaId={movieId}
+              mediaType="film"
+              title={title}
+              year={getMediaYear(movie) ?? ''}
+              genres={(movie.genres ?? []).map((g: any) => g.name).join(', ')}
+              director={director?.name}
+              isLoggedIn={!!user}
             />
 
             {/* ── Bilgi Kartları ── */}

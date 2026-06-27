@@ -33,6 +33,8 @@ import PageNav from '@/components/PageNav'
 import WatchStatusButton from '@/components/WatchStatusButton'
 import CriticScores from '@/components/CriticScores'
 import ReviewSortButton from '@/components/ReviewSortButton'
+import AISummary from '@/components/AISummary'
+import AIChatWidget from '@/components/AIChatWidget'
 import type { Review } from '@/lib/types'
 import type { Metadata } from 'next'
 
@@ -411,6 +413,25 @@ export default async function DiziPage({ params, searchParams }: Props) {
             />
 
             <CriticScores imdbId={imdbId} />
+
+            {/* AI Özet + Sohbet */}
+            <AISummary
+              mediaId={seriesId}
+              mediaType="dizi"
+              title={title}
+              year={getMediaYear(series) ?? ''}
+              genres={(series.genres ?? []).map((g: any) => g.name).join(', ')}
+              director={director?.name ?? ''}
+            />
+            <AIChatWidget
+              mediaId={seriesId}
+              mediaType="dizi"
+              title={title}
+              year={getMediaYear(series) ?? ''}
+              genres={(series.genres ?? []).map((g: any) => g.name).join(', ')}
+              director={director?.name}
+              isLoggedIn={!!user}
+            />
 
             <div className="flex flex-wrap gap-2 mt-4">
               {series.genres?.map((g) => {
