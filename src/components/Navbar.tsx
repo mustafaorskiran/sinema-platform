@@ -243,6 +243,7 @@ export default function Navbar({ user }: NavbarProps) {
                   { label: 'Gişe Sıralaması',         href: '/gise',                                 description: 'Türkiye ve dünya' },
                   { label: 'Platforma Yeni Gelenler', href: '/yeni-gelenler',                        description: 'Netflix, Disney+ ve diğerleri' },
                   { label: 'Sinema Haberleri',        href: '/haberler',                             description: 'Beyazperde, HR, Variety' },
+                  { label: '🔥 Top 10',              href: '/top10',                                description: 'Haftanın en çok izlenenleri' },
                 ]}
               />
               <NavDropdown
