@@ -483,12 +483,17 @@ export default async function ProfilPage({ params }: Props) {
       {earnedBadges.length > 0 && (
         <div className="mb-12">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-white flex items-center gap-2">
-              <span className="text-[--accent]">🏅</span>
-              Rozetler
-              <span className="text-sm font-normal text-[--text-secondary]">{earnedBadges.length}/{badges.length}</span>
-            </h2>
-            <Link href={`/profil/${username}/istatistikler`} className="text-sm text-[--accent] hover:underline">
+            <div className="flex items-center gap-3">
+              <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
+              <h2 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                Rozetler
+              </h2>
+              <span className="text-xs font-bold px-2 py-0.5 rounded-full"
+                style={{ background: 'rgba(212,168,67,0.1)', color: '#D4A843', border: '1px solid rgba(212,168,67,0.2)' }}>
+                {earnedBadges.length}/{badges.length}
+              </span>
+            </div>
+            <Link href={`/profil/${username}/istatistikler`} className="text-sm hover:underline" style={{ color: 'var(--accent)' }}>
               Tüm başarımlar →
             </Link>
           </div>
@@ -497,12 +502,17 @@ export default async function ProfilPage({ params }: Props) {
               <div
                 key={badge.id}
                 title={badge.desc}
-                className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[--bg-card] border border-[--border] hover:border-[--accent]/40 transition-colors cursor-default group"
+                className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl cursor-default group transition-all duration-200 hover:-translate-y-0.5"
+                style={{
+                  background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))',
+                  border: '1px solid rgba(212,168,67,0.12)',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                }}
               >
-                <span className="text-xl">{badge.emoji}</span>
+                <span className="text-2xl">{badge.emoji}</span>
                 <div>
-                  <p className="text-xs font-semibold text-white leading-none">{badge.name}</p>
-                  <p className="text-[10px] text-[--text-secondary] mt-0.5 hidden group-hover:block">{badge.desc}</p>
+                  <p className="text-[12px] font-semibold leading-none" style={{ color: 'var(--text-primary)' }}>{badge.name}</p>
+                  <p className="text-[10px] mt-0.5 max-w-[140px]" style={{ color: 'rgba(255,255,255,0.35)' }}>{badge.desc}</p>
                 </div>
               </div>
             ))}
