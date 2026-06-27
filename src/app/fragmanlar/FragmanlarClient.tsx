@@ -41,16 +41,14 @@ export default function FragmanlarClient({ trailers }: { trailers: TrailerItem[]
           <button
             key={tab.key}
             onClick={() => handleTabChange(tab.key)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              activeTab === tab.key
-                ? 'bg-[--accent] text-white'
-                : 'bg-[--bg-card] border border-[--border] text-[--text-secondary] hover:text-white hover:border-white/30'
-            }`}
+            className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all hover:scale-105"
+            style={activeTab === tab.key
+              ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff', boxShadow: '0 2px 8px rgba(225,29,72,0.3)' }
+              : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }
+            }
           >
             {tab.label}
-            <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-              activeTab === tab.key ? 'bg-white/20' : 'bg-[--bg-secondary]'
-            }`}>
+            <span className="text-xs px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.15)' }}>
               {counts[tab.key]}
             </span>
           </button>
@@ -58,7 +56,8 @@ export default function FragmanlarClient({ trailers }: { trailers: TrailerItem[]
       </div>
 
       {filtered.length === 0 ? (
-        <div className="rounded-2xl bg-[--bg-card] border border-[--border] py-20 text-center text-[--text-secondary]">
+        <div className="rounded-2xl py-20 text-center text-[--text-secondary]"
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <IconPlay className="h-12 w-12 mx-auto mb-4 opacity-20" />
           <p>Bu kategoride fragman bulunamadı.</p>
         </div>
@@ -98,7 +97,8 @@ function TrailerCard({
   const ytUrl = `https://www.youtube.com/watch?v=${trailer.trailerKey}`
 
   return (
-    <div className="rounded-2xl overflow-hidden bg-[--bg-card] border border-[--border]">
+    <div className="rounded-2xl overflow-hidden transition-all hover:-translate-y-0.5"
+      style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
       {/* Video alanı */}
       <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
         {playing ? (
