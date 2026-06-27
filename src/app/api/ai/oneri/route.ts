@@ -1,0 +1,87 @@
+import { NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
+
+export async function GET() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  if (!apiKey) return NextResponse.json({ error: 'AI kullanılamıyor' }, { status: 503 })
+  const tmdbKey = process.env.TMDB_API_KEY
+  if (!tmdbKey) return NextResponse.json({ error: 'TMDB kullanılamıyor' }, { status: 503 })
+
+  // Kullanıcının son yorumları (beğendiği filmler — puan >= 7)
+  const { data: reviews } = await supabase
+    .from('reviews')
+    .select('media_id, media_type, rating')
+    .eq('user_id', user.id)
+    .gte('rating', 7)
+    .order('created_at', { ascending: false })
+    .limit(20)
+
+  if (!reviews || reviews.length === 0) {
+    return NextResponse.json({ error: 'Yeterli izleme geçmişi yok. En az 1 film/dizi değerlendirmen gerekiyor (≥7 puan).' }, { status: 400 })
+  }
+
+  // Filmlerin başlıklarını çek
+  const tmdbTitles: string[] = []
+  for (const r of reviews.slice(0, 8)) {
+    try {
+      const endpoint = r.media_type === 'film' ? 'movie' : 'tv'
+      const res = await fetch(`https://api.themoviedb.org/3/${endpoint}/${r.media_id}?language=tr-TR`, {
+        headers: { Authorization: `Bearer ${tmdbKey}`, accept: 'application/json' },
+        next: { revalidate: 3600 },
+      })
+      if (res.ok) {
+        const d = await res.json()
+        const title = d.title ?? d.name ?? d.original_title ?? d.original_name
+        if (title) tmdbTitles.push(`${title} (${r.rating}/10)`)
+      }
+    } catch {}
+  }
+
+  if (tmdbTitles.length === 0) {
+    return NextResponse.json({ error: 'Film bilgileri alınamadı.' }, { status: 500 })
+  }
+
+  // Claude'dan öneri iste
+  const prompt = `Bir kullanıcı şu filmleri/dizileri beğeniyor (parantez içindeki sayı 10 üzerinden verdiği puan):
+${tmdbTitles.map(t => `• ${t}`).join('\n')}
+
+Bu zevke göre izlemediğini düşündüğün 5 film veya dizi öner. Her biri için:
+- Başlık ve yıl
+- 1-2 cümle neden önerdiğini açıkla
+- Nasıl benzer olduğunu belirt
+
+Türkçe yanıt ver. Önerileri JSON formatında döndür:
+[{"title": "Film Adı (Yıl)", "reason": "Neden öneririz açıklaması"}]
+
+Sadece JSON döndür, başka metin ekleme.`
+
+  const aiRes = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 800,
+      messages: [{ role: 'user', content: prompt }],
+    }),
+  })
+
+  if (!aiRes.ok) return NextResponse.json({ error: 'AI yanıt veremedi.' }, { status: 500 })
+  const aiData = await aiRes.json()
+  const text = aiData.content?.[0]?.text ?? '[]'
+
+  try {
+    const jsonMatch = text.match(/\[[\s\S]*\]/)
+    const suggestions = JSON.parse(jsonMatch ? jsonMatch[0] : text)
+    return NextResponse.json({ suggestions, basedOn: tmdbTitles.slice(0, 5) })
+  } catch {
+    return NextResponse.json({ error: 'AI yanıtı işlenemedi.' }, { status: 500 })
+  }
+}
