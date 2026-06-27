@@ -66,22 +66,24 @@ export default async function HomePage() {
       .order('created_at', { ascending: false })
       .limit(3),
     supabase.from('reviews')
-      .select('profiles(username, avatar_url)')
+      .select('user_id, profiles(username, avatar_url)')
       .gte('created_at', sevenDaysAgoISO)
       .order('created_at', { ascending: false })
-      .limit(50),
+      .limit(200),
   ])
 
-  // Aktif kullanıcılar (son 7 gün, tekrarsız)
-  const seenUsernames = new Set<string>()
-  const activeReviewers: { username: string; avatar_url: string | null }[] = []
+  // Haftalık liderlik — kullanıcı başına yorum sayısı
+  const weeklyCountMap: Record<string, { username: string; avatar_url: string | null; count: number }> = {}
   for (const row of (activeReviewersRaw ?? []) as any[]) {
     const p = row.profiles as { username: string; avatar_url: string | null } | null
-    if (p?.username && !seenUsernames.has(p.username)) {
-      seenUsernames.add(p.username)
-      activeReviewers.push(p)
+    const uid = (row as any).user_id as string | null
+    if (p?.username && uid) {
+      if (!weeklyCountMap[uid]) weeklyCountMap[uid] = { username: p.username, avatar_url: p.avatar_url, count: 0 }
+      weeklyCountMap[uid].count++
     }
   }
+  const activeReviewers = Object.values(weeklyCountMap).sort((a, b) => b.count - a.count)
+  const weeklyTop = activeReviewers.slice(0, 5)
 
   // Hero
   const hero         = trendingRes.results[0]
@@ -481,6 +483,41 @@ export default async function HomePage() {
               </footer>
             </blockquote>
             <div className="absolute bottom-4 right-6 text-8xl text-[--accent]/10 font-serif leading-none rotate-180 select-none">"</div>
+          </div>
+        )}
+
+        {/* ── Haftanın Yorumcuları ─────────────────────────────── */}
+        {weeklyTop.length > 0 && (
+          <div className="rounded-2xl p-5"
+            style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.95), rgba(14,20,32,0.98))', border: '1px solid rgba(212,168,67,0.12)' }}>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
+              <h2 className="text-lg font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Bu Haftanın Yorumcuları</h2>
+              <Link href="/kullanicilar" className="ml-auto text-xs hover:underline" style={{ color: 'var(--accent)' }}>Tümü →</Link>
+            </div>
+            <div className="grid grid-cols-5 gap-3">
+              {weeklyTop.map((u, i) => (
+                <Link key={u.username} href={`/profil/${u.username}`}
+                  className="flex flex-col items-center text-center gap-1.5 group">
+                  <div className="relative">
+                    <div className={`h-12 w-12 rounded-full overflow-hidden flex items-center justify-center text-sm font-bold text-white ring-2 transition-all duration-200 ${i === 0 ? 'ring-yellow-400' : i === 1 ? 'ring-slate-400' : i === 2 ? 'ring-amber-700' : 'ring-transparent'}`}
+                      style={{ background: 'var(--accent)' }}>
+                      {u.avatar_url
+                        ? <img src={u.avatar_url} alt={u.username} className="w-full h-full object-cover" />
+                        : u.username[0]?.toUpperCase()
+                      }
+                    </div>
+                    {i < 3 && (
+                      <div className="absolute -top-1 -right-1 text-xs">
+                        {['🥇','🥈','🥉'][i]}
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-[11px] font-semibold truncate w-full group-hover:text-[--accent] transition-colors" style={{ color: 'var(--text-primary)' }}>{u.username}</p>
+                  <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.35)' }}>{u.count} yorum</p>
+                </Link>
+              ))}
+            </div>
           </div>
         )}
 
