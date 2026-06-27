@@ -8,6 +8,24 @@ interface Data {
   year: number
 }
 
+function ProgressRing({ pct, size = 80, color }: { pct: number; size?: number; color: string }) {
+  const r = (size - 10) / 2
+  const circ = 2 * Math.PI * r
+  const offset = circ - (pct / 100) * circ
+  return (
+    <svg width={size} height={size} className="-rotate-90">
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={6} />
+      <circle
+        cx={size / 2} cy={size / 2} r={r} fill="none"
+        stroke={color} strokeWidth={6}
+        strokeDasharray={circ} strokeDashoffset={offset}
+        strokeLinecap="round"
+        style={{ transition: 'stroke-dashoffset 0.8s cubic-bezier(0.4,0,0.2,1)' }}
+      />
+    </svg>
+  )
+}
+
 export default function YearlyChallenge() {
   const [data, setData] = useState<Data | null>(null)
   const [editing, setEditing] = useState(false)
@@ -47,14 +65,20 @@ export default function YearlyChallenge() {
   const filmPct = filmGoalVal > 0 ? Math.min(100, Math.round((filmWatched / filmGoalVal) * 100)) : 0
   const seriesPct = seriesGoalVal > 0 ? Math.min(100, Math.round((seriesWatched / seriesGoalVal) * 100)) : 0
 
+  const glassCard = { background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }
+  const goldBorder = { background: 'linear-gradient(160deg, rgba(20,28,47,0.95), rgba(14,20,32,0.98))', border: '1px solid rgba(212,168,67,0.15)' }
+
   if (!data.challenge && !editing) {
     return (
-      <div className="rounded-2xl bg-[--bg-card] border border-[--border] p-5 text-center">
-        <p className="text-2xl mb-2">🏆</p>
-        <p className="text-sm font-semibold text-white mb-1">{year} Meydan Okuma</p>
-        <p className="text-xs text-[--text-secondary] mb-4">Bu yıl kaç film izlemek istiyorsun?</p>
-        <button onClick={() => setEditing(true)}
-          className="inline-block px-4 py-2 bg-[--accent] hover:bg-[--accent-hover] text-white text-sm font-semibold rounded-full transition-colors">
+      <div className="rounded-2xl p-6 text-center" style={goldBorder}>
+        <p className="text-3xl mb-3">🏆</p>
+        <p className="text-sm font-bold text-white mb-1">{year} Yıl Meydan Okuma</p>
+        <p className="text-xs mb-4" style={{ color: 'rgba(255,255,255,0.4)' }}>Bu yıl kaç film ve dizi izleyeceksin?</p>
+        <button
+          onClick={() => setEditing(true)}
+          className="inline-block px-5 py-2 rounded-full text-sm font-semibold text-white transition-all hover:scale-105 active:scale-95"
+          style={{ background: 'linear-gradient(135deg, #D4A843, #b8922a)', color: '#000', boxShadow: '0 4px 16px rgba(212,168,67,0.25)' }}
+        >
           Hedef Belirle
         </button>
       </div>
@@ -63,32 +87,58 @@ export default function YearlyChallenge() {
 
   if (editing) {
     return (
-      <div className="rounded-2xl bg-[--bg-card] border border-[--border] p-5">
-        <p className="text-sm font-bold text-white mb-4">🏆 {year} Hedefini Belirle</p>
+      <div className="rounded-2xl p-5" style={glassCard}>
+        <div className="flex items-center gap-2 mb-5">
+          <div className="w-1 h-5 rounded-full" style={{ background: 'linear-gradient(180deg, #D4A843, #E11D48)' }} />
+          <p className="text-sm font-bold text-white">🏆 {year} Hedefini Belirle</p>
+        </div>
         <div className="space-y-4">
-          <div>
-            <label className="text-xs text-[--text-secondary] mb-1 block">Film hedefi</label>
-            <div className="flex items-center gap-3">
-              <button onClick={() => setFilmGoal(Math.max(0, filmGoal - 1))} className="w-8 h-8 rounded-lg bg-[--bg-secondary] border border-[--border] text-white font-bold hover:border-[--accent]/50 transition-colors">-</button>
-              <input type="number" value={filmGoal} onChange={e => setFilmGoal(Number(e.target.value))} min={0} max={1000}
-                className="w-20 text-center rounded-lg bg-[--bg-secondary] border border-[--border] py-1.5 text-sm text-white outline-none focus:border-[--accent]" />
-              <button onClick={() => setFilmGoal(filmGoal + 1)} className="w-8 h-8 rounded-lg bg-[--bg-secondary] border border-[--border] text-white font-bold hover:border-[--accent]/50 transition-colors">+</button>
+          {[
+            { label: '🎬 Film hedefi', value: filmGoal, set: setFilmGoal, max: 1000 },
+            { label: '📺 Dizi hedefi', value: seriesGoal, set: setSeriesGoal, max: 500 },
+          ].map(({ label, value, set, max }) => (
+            <div key={label}>
+              <label className="text-xs mb-2 block" style={{ color: 'rgba(255,255,255,0.4)' }}>{label}</label>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => set(Math.max(0, value - 1))}
+                  className="w-9 h-9 rounded-xl text-white font-bold text-lg transition-all hover:scale-105"
+                  style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
+                >−</button>
+                <input
+                  type="number" value={value}
+                  onChange={e => set(Math.max(0, Math.min(max, Number(e.target.value))))}
+                  min={0} max={max}
+                  className="w-20 text-center rounded-xl py-2 text-sm font-bold text-white outline-none"
+                  style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
+                />
+                <button
+                  onClick={() => set(Math.min(max, value + 1))}
+                  className="w-9 h-9 rounded-xl text-white font-bold text-lg transition-all hover:scale-105"
+                  style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
+                >+</button>
+                <div className="flex gap-1 ml-2">
+                  {[12, 24, 52, 100].filter(n => n <= max).map(n => (
+                    <button key={n} onClick={() => set(n)}
+                      className="text-[10px] px-2 py-1 rounded-lg transition-colors hover:text-white"
+                      style={{ background: value === n ? 'rgba(212,168,67,0.15)' : 'rgba(255,255,255,0.04)', color: value === n ? '#D4A843' : 'rgba(255,255,255,0.3)', border: `1px solid ${value === n ? 'rgba(212,168,67,0.3)' : 'rgba(255,255,255,0.06)'}` }}
+                    >{n}</button>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
-          <div>
-            <label className="text-xs text-[--text-secondary] mb-1 block">Dizi hedefi</label>
-            <div className="flex items-center gap-3">
-              <button onClick={() => setSeriesGoal(Math.max(0, seriesGoal - 1))} className="w-8 h-8 rounded-lg bg-[--bg-secondary] border border-[--border] text-white font-bold hover:border-[--accent]/50 transition-colors">-</button>
-              <input type="number" value={seriesGoal} onChange={e => setSeriesGoal(Number(e.target.value))} min={0} max={500}
-                className="w-20 text-center rounded-lg bg-[--bg-secondary] border border-[--border] py-1.5 text-sm text-white outline-none focus:border-[--accent]" />
-              <button onClick={() => setSeriesGoal(seriesGoal + 1)} className="w-8 h-8 rounded-lg bg-[--bg-secondary] border border-[--border] text-white font-bold hover:border-[--accent]/50 transition-colors">+</button>
-            </div>
-          </div>
+          ))}
           <div className="flex gap-2 pt-2">
-            <button onClick={() => setEditing(false)} className="flex-1 py-2 rounded-lg border border-[--border] text-[--text-secondary] text-sm hover:text-white transition-colors">İptal</button>
-            <button onClick={save} disabled={saving} className="flex-1 py-2 rounded-lg bg-[--accent] hover:bg-[--accent-hover] text-white text-sm font-semibold transition-colors disabled:opacity-50">
-              {saving ? 'Kaydediliyor...' : 'Kaydet'}
-            </button>
+            <button
+              onClick={() => setEditing(false)}
+              className="flex-1 py-2 rounded-xl text-sm transition-colors"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}
+            >İptal</button>
+            <button
+              onClick={save} disabled={saving}
+              className="flex-1 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:scale-[1.02] disabled:opacity-50"
+              style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', boxShadow: '0 4px 14px rgba(225,29,72,0.25)' }}
+            >{saving ? 'Kaydediliyor...' : 'Kaydet'}</button>
           </div>
         </div>
       </div>
@@ -96,35 +146,62 @@ export default function YearlyChallenge() {
   }
 
   return (
-    <div className="rounded-2xl bg-[--bg-card] border border-[--border] p-5">
-      <div className="flex items-center justify-between mb-4">
-        <p className="text-sm font-bold text-white">🏆 {year} Meydan Okuma</p>
-        <button onClick={() => setEditing(true)} className="text-xs text-[--text-secondary] hover:text-white transition-colors">Düzenle</button>
+    <div className="rounded-2xl p-5" style={goldBorder}>
+      <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center gap-2">
+          <div className="w-1 h-5 rounded-full" style={{ background: 'linear-gradient(180deg, #D4A843, #E11D48)' }} />
+          <p className="text-sm font-bold text-white">🏆 {year} Meydan Okuma</p>
+        </div>
+        <button
+          onClick={() => setEditing(true)}
+          className="text-[11px] px-3 py-1.5 rounded-lg transition-all hover:scale-105"
+          style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.4)' }}
+        >Düzenle</button>
       </div>
 
-      {filmGoalVal > 0 && (
-        <div className="mb-3">
-          <div className="flex justify-between items-center mb-1">
-            <span className="text-xs text-[--text-secondary]">🎬 Film</span>
-            <span className="text-xs font-semibold text-white">{filmWatched} / {filmGoalVal}</span>
+      <div className="flex gap-4 justify-around">
+        {filmGoalVal > 0 && (
+          <div className="flex flex-col items-center gap-2">
+            <div className="relative">
+              <ProgressRing pct={filmPct} color={filmPct >= 100 ? '#4ade80' : '#E11D48'} />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-sm font-black text-white">{filmPct}%</span>
+              </div>
+            </div>
+            <div className="text-center">
+              <p className="text-lg font-black text-white leading-none">{filmWatched}<span className="text-xs font-normal text-white/30">/{filmGoalVal}</span></p>
+              <p className="text-[10px] mt-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>🎬 Film</p>
+              {filmPct >= 100 && <p className="text-[10px] text-green-400 font-bold mt-0.5">Tamamlandı ✓</p>}
+            </div>
           </div>
-          <div className="h-2 bg-[--bg-secondary] rounded-full overflow-hidden">
-            <div className={`h-full rounded-full transition-all duration-500 ${filmPct >= 100 ? 'bg-green-400' : 'bg-[--accent]'}`} style={{ width: `${filmPct}%` }} />
-          </div>
-          <p className="text-[10px] text-[--text-secondary] mt-0.5">%{filmPct} tamamlandı{filmPct >= 100 ? ' ✓' : ''}</p>
-        </div>
-      )}
+        )}
 
-      {seriesGoalVal > 0 && (
-        <div>
-          <div className="flex justify-between items-center mb-1">
-            <span className="text-xs text-[--text-secondary]">📺 Dizi</span>
-            <span className="text-xs font-semibold text-white">{seriesWatched} / {seriesGoalVal}</span>
+        {filmGoalVal > 0 && seriesGoalVal > 0 && (
+          <div className="w-px" style={{ background: 'rgba(255,255,255,0.06)' }} />
+        )}
+
+        {seriesGoalVal > 0 && (
+          <div className="flex flex-col items-center gap-2">
+            <div className="relative">
+              <ProgressRing pct={seriesPct} color={seriesPct >= 100 ? '#4ade80' : '#c4b5fd'} />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-sm font-black text-white">{seriesPct}%</span>
+              </div>
+            </div>
+            <div className="text-center">
+              <p className="text-lg font-black text-white leading-none">{seriesWatched}<span className="text-xs font-normal text-white/30">/{seriesGoalVal}</span></p>
+              <p className="text-[10px] mt-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>📺 Dizi</p>
+              {seriesPct >= 100 && <p className="text-[10px] text-green-400 font-bold mt-0.5">Tamamlandı ✓</p>}
+            </div>
           </div>
-          <div className="h-2 bg-[--bg-secondary] rounded-full overflow-hidden">
-            <div className={`h-full rounded-full transition-all duration-500 ${seriesPct >= 100 ? 'bg-green-400' : 'bg-purple-500'}`} style={{ width: `${seriesPct}%` }} />
-          </div>
-          <p className="text-[10px] text-[--text-secondary] mt-0.5">%{seriesPct} tamamlandı{seriesPct >= 100 ? ' ✓' : ''}</p>
+        )}
+      </div>
+
+      {(filmGoalVal > 0 || seriesGoalVal > 0) && (
+        <div className="mt-4 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
+          <p className="text-[10px] text-center" style={{ color: 'rgba(255,255,255,0.2)' }}>
+            {new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })} itibarıyla
+          </p>
         </div>
       )}
     </div>
