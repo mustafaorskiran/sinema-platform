@@ -83,10 +83,16 @@ export default function ActivityHeatmap({ entries }: Props) {
   })
 
   return (
-    <div className="rounded-xl bg-[--bg-card] border border-[--border] p-5 overflow-x-auto">
+    <div className="rounded-xl p-5 overflow-x-auto" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
       <div className="flex items-center justify-between mb-4">
-        <p className="text-sm font-semibold text-white">Aktivite Haritası</p>
-        <span className="text-xs text-[--text-secondary]">{totalThisYear} bu yıl</span>
+        <div className="flex items-center gap-2">
+          <div className="w-1 h-4 rounded-full" style={{ background: 'linear-gradient(180deg, #E11D48, #D4A843)' }} />
+          <p className="text-sm font-semibold text-white">Aktivite Haritası</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold" style={{ color: 'rgba(225,29,72,0.7)' }}>{totalThisYear}</span>
+          <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>bu yıl</span>
+        </div>
       </div>
 
       <div className="relative min-w-[680px]">
