@@ -26,6 +26,20 @@ interface SearchResult {
 
 const SEARCH_PLACEHOLDER = 'Film, dizi, oyuncu veya liste ara...'
 
+const SEARCH_HISTORY_KEY = 'sinezon_search_history'
+const MAX_HISTORY = 5
+
+function getHistory(): string[] {
+  try { return JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) ?? '[]') } catch { return [] }
+}
+function addToHistory(term: string) {
+  const prev = getHistory().filter(h => h !== term)
+  localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify([term, ...prev].slice(0, MAX_HISTORY)))
+}
+function removeFromHistory(term: string) {
+  localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(getHistory().filter(h => h !== term)))
+}
+
 export default function Navbar({ user }: NavbarProps) {
   const router = useRouter()
   const { t } = useLocale()
@@ -35,11 +49,14 @@ export default function Navbar({ user }: NavbarProps) {
   const [suggestions, setSuggestions] = useState<SearchResult[]>([])
   const [showDropdown, setShowDropdown] = useState(false)
   const [searching, setSearching] = useState(false)
+  const [searchHistory, setSearchHistory] = useState<string[]>([])
+  const [showHistory, setShowHistory] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const fetchSuggestions = useCallback(async (q: string) => {
     if (q.length < 2) { setSuggestions([]); setShowDropdown(false); return }
+    setShowHistory(false)
     setSearching(true)
     try {
       const res = await fetch(`/api/search?q=${encodeURIComponent(q)}&limit=6`)
@@ -72,6 +89,7 @@ export default function Navbar({ user }: NavbarProps) {
     function onClickOutside(e: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setShowDropdown(false)
+        setShowHistory(false)
       }
     }
     document.addEventListener('mousedown', onClickOutside)
@@ -81,7 +99,10 @@ export default function Navbar({ user }: NavbarProps) {
   function handleSearch(e: React.FormEvent) {
     e.preventDefault()
     if (query.trim()) {
+      addToHistory(query.trim())
+      setSearchHistory(getHistory())
       setShowDropdown(false)
+      setShowHistory(false)
       setMobileSearchOpen(false)
       router.push(`/arama?q=${encodeURIComponent(query.trim())}`)
       setQuery('')
@@ -90,7 +111,27 @@ export default function Navbar({ user }: NavbarProps) {
 
   function handleSuggestionClick() {
     setShowDropdown(false)
+    setShowHistory(false)
     setQuery('')
+  }
+
+  function handleSearchFocus() {
+    const history = getHistory()
+    setSearchHistory(history)
+    if (history.length > 0 && suggestions.length === 0) setShowHistory(true)
+  }
+
+  function handleHistoryClick(term: string) {
+    addToHistory(term)
+    setShowHistory(false)
+    router.push(`/arama?q=${encodeURIComponent(term)}`)
+  }
+
+  function handleRemoveHistory(term: string, e: React.MouseEvent) {
+    e.stopPropagation()
+    removeFromHistory(term)
+    setSearchHistory(getHistory())
+    if (getHistory().length === 0) setShowHistory(false)
   }
 
   const suggestionDropdown = showDropdown && (
@@ -144,6 +185,28 @@ export default function Navbar({ user }: NavbarProps) {
       </a>
     </div>
   )
+
+  const historyDropdown = showHistory && searchHistory.length > 0 && (
+    <div className="absolute top-full left-0 right-0 mt-2 rounded-2xl border border-[--border] shadow-2xl z-[9999] overflow-hidden backdrop-blur-xl"
+      style={{ background: 'rgba(11,15,25,0.97)' }}>
+      <div className="px-4 pt-3 pb-1 flex items-center justify-between">
+        <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: 'var(--text-secondary)' }}>Son Aramalar</p>
+        <button onClick={() => { localStorage.removeItem(SEARCH_HISTORY_KEY); setSearchHistory([]); setShowHistory(false) }}
+          className="text-[10px] hover:underline" style={{ color: 'rgba(255,255,255,0.2)' }}>Temizle</button>
+      </div>
+      {searchHistory.map(term => (
+        <div key={term} className="flex items-center gap-2 px-4 py-2 hover:bg-white/5 cursor-pointer group"
+          onClick={() => handleHistoryClick(term)}>
+          <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.3)' }}>🕐</span>
+          <span className="flex-1 text-sm" style={{ color: 'var(--text-primary)' }}>{term}</span>
+          <button onClick={e => handleRemoveHistory(term, e)}
+            className="opacity-0 group-hover:opacity-100 text-[11px] transition-opacity hover:text-white"
+            style={{ color: 'rgba(255,255,255,0.3)' }}>✕</button>
+        </div>
+      ))}
+    </div>
+  )
+
 
   return (
     <nav className="sticky top-0 z-50 glass-panel" style={{ overflow: 'visible' }}>
@@ -222,7 +285,10 @@ export default function Navbar({ user }: NavbarProps) {
                     type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    onFocus={() => suggestions.length > 0 && setShowDropdown(true)}
+                    onFocus={() => {
+                      if (suggestions.length > 0) setShowDropdown(true)
+                      else handleSearchFocus()
+                    }}
                     placeholder={SEARCH_PLACEHOLDER}
                     className="w-full rounded-full bg-[--bg-card] border border-[--border] py-2 pl-9 pr-4 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
                   />
@@ -232,6 +298,7 @@ export default function Navbar({ user }: NavbarProps) {
                 </div>
               </form>
               {suggestionDropdown}
+              {historyDropdown}
             </div>
           </div>
 
