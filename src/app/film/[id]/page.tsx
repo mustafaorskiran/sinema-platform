@@ -234,6 +234,18 @@ export default async function FilmPage({ params, searchParams }: Props) {
     .eq('media_type', 'film')
   const editorialListIds = (editorialMemberships ?? []).map((m: any) => m.list_id)
 
+  // Bu filmi içeren public kullanıcı listeleri
+  const { data: containingListsRaw } = await supabase
+    .from('list_items')
+    .select('list_id')
+    .eq('media_id', movieId)
+    .eq('media_type', 'film')
+    .limit(20)
+  const containingListIds = [...new Set((containingListsRaw ?? []).map((r: any) => r.list_id))]
+  const { data: containingLists } = containingListIds.length > 0
+    ? await supabase.from('lists').select('id, title, profiles(username)').in('id', containingListIds).eq('public', true).limit(6)
+    : { data: [] }
+
   // Konular
   const { data: topics } = await supabase.from('topics').select('id, name, slug, emoji').order('id')
   const { data: allVotes } = await supabase
@@ -990,6 +1002,29 @@ export default async function FilmPage({ params, searchParams }: Props) {
                   {getMediaYear(item) && (
                     <p className="text-[11px] mt-0.5" style={{ color: 'rgba(255,255,255,0.25)' }}>{getMediaYear(item)}</p>
                   )}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Bu Filmi İçeren Listeler */}
+        {(containingLists ?? []).length > 0 && (
+          <div className="mt-10">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
+              <h2 className="text-xl font-bold text-white tracking-tight">Bu Filmi İçeren Listeler</h2>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {(containingLists ?? []).map((l: any) => (
+                <a key={l.id} href={`/liste/${l.id}`}
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-all hover:-translate-y-0.5"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                  <span className="text-xs">📋</span>
+                  <span className="text-white font-medium">{l.title}</span>
+                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                    @{(l.profiles as any)?.username}
+                  </span>
                 </a>
               ))}
             </div>
