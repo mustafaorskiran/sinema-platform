@@ -271,6 +271,7 @@ export default function Navbar({ user }: NavbarProps) {
                   { label: '👥 Arkadaş Önerileri', href: '/sosyal-oneri',          description: 'Takip ettiğin kişiler ne beğendi' },
                   { label: 'Quiz',                 href: '/quiz',                 description: 'Sinema bilgi yarışması' },
                   { label: 'Özel Listeler',        href: '/ozel-listeler',        description: 'Editöryal seçkiler' },
+                  { label: '🌌 Sinema Evrenler',   href: '/evren',                description: 'MCU, DC, Star Wars ve daha fazlası' },
                   { label: 'Yayın Takvimi',        href: '/yayin-takvimi',        description: 'Çıkış tarihleri' },
                   { label: '📅 Yakında Çıkacaklar', href: '/yakinda',             description: 'Gelecek 6 ay içinde' },
                   { label: 'Gişe Sıralaması',      href: '/gise',                 description: 'Box office verileri' },
