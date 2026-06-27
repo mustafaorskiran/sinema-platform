@@ -153,9 +153,9 @@ export default async function HaberlerPage({ searchParams }: PageProps) {
                       color: '#fff',
                     }
                   : {
-                      background: 'var(--bg-card)',
-                      color: 'var(--text-secondary)',
-                      border: '1px solid var(--border)',
+                      background: 'rgba(255,255,255,0.05)',
+                      color: 'rgba(255,255,255,0.5)',
+                      border: '1px solid rgba(255,255,255,0.08)',
                     }
               }
             >
@@ -180,7 +180,7 @@ export default async function HaberlerPage({ searchParams }: PageProps) {
                 href={item.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block rounded-2xl p-4 transition-all duration-200 group"
+                className="block rounded-2xl p-4 transition-all duration-200 group hover:-translate-y-0.5"
                 style={{
                   background: isFeatured
                     ? 'linear-gradient(160deg, rgba(20,28,47,0.95), rgba(14,20,32,0.98))'
@@ -235,9 +235,9 @@ export default async function HaberlerPage({ searchParams }: PageProps) {
       ) : (
         <div
           className="flex flex-col items-center justify-center py-20 rounded-2xl"
-          style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.85), rgba(14,20,32,0.9))', border: '1px solid rgba(255,255,255,0.06)' }}
         >
-          <IconRss className="h-12 w-12 mb-4" style={{ color: 'var(--text-secondary)', opacity: 0.4 }} />
+          <IconRss className="h-12 w-12 mb-4" style={{ color: 'rgba(255,255,255,0.15)' }} />
           <p className="text-base font-medium" style={{ color: 'var(--text-secondary)' }}>
             Bu kategoride haber bulunamadı.
           </p>
