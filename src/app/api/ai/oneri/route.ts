@@ -1,10 +1,15 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { rateLimit } from '@/lib/rateLimit'
 
 export async function GET() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  // Rate limit: 3 istek / 10 dakika
+  const allowed = await rateLimit(`ai-oneri:${user.id}`, 10 * 60 * 1000, 3)
+  if (!allowed) return NextResponse.json({ error: 'Çok fazla istek. 10 dakika bekle.' }, { status: 429 })
 
   const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey) return NextResponse.json({ error: 'AI kullanılamıyor' }, { status: 503 })

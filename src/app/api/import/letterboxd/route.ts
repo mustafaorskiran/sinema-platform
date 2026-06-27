@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { rateLimit } from '@/lib/rateLimit'
 
 interface Entry {
   name: string
@@ -32,6 +33,10 @@ export async function POST(req: NextRequest) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  // Rate limit: 20 batch / saat
+  const allowed = await rateLimit(`import:${user.id}`, 60 * 60 * 1000, 20)
+  if (!allowed) return NextResponse.json({ error: 'Çok fazla istek. 1 saat bekle.' }, { status: 429 })
 
   const { entries } = await req.json() as { entries: Entry[] }
   if (!Array.isArray(entries) || entries.length === 0) {
