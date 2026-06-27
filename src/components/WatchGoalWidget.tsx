@@ -25,7 +25,7 @@ function Ring({ value, max, label, color }: { value: number; max: number; label:
     <div className="flex flex-col items-center gap-2">
       <div className="relative w-24 h-24">
         <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r={r} fill="none" stroke="var(--bg-secondary)" strokeWidth="10" />
+          <circle cx="50" cy="50" r={r} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="10" />
           <circle
             cx="50" cy="50" r={r} fill="none"
             stroke={color} strokeWidth="10"
@@ -78,7 +78,7 @@ export default function WatchGoalWidget() {
   }
 
   return (
-    <div className="rounded-2xl border border-[--border] bg-[--bg-card] p-5">
+    <div className="rounded-2xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
       <div className="flex items-center justify-between mb-5">
         <h3 className="text-base font-bold text-white">{year} İzleme Hedefi</h3>
         <button
@@ -94,23 +94,30 @@ export default function WatchGoalWidget() {
           <div>
             <label className="text-xs text-[--text-secondary] block mb-1">Film hedefi</label>
             <div className="flex items-center gap-3">
-              <button onClick={() => setFilms(f => Math.max(0, f - 10))} className="w-8 h-8 rounded-lg bg-[--bg-secondary] text-white text-lg flex items-center justify-center hover:bg-[--accent] transition-colors">-</button>
+              <button onClick={() => setFilms(f => Math.max(0, f - 10))} className="w-8 h-8 rounded-lg text-white text-lg flex items-center justify-center transition-colors hover:bg-white/10"
+                style={{ background: 'rgba(255,255,255,0.07)' }}>-</button>
               <input type="number" min={0} max={999} value={films} onChange={e => setFilms(Number(e.target.value))}
-                className="flex-1 text-center bg-[--bg-secondary] border border-[--border] rounded-lg py-1.5 text-white text-sm outline-none focus:border-[--accent]" />
-              <button onClick={() => setFilms(f => Math.min(999, f + 10))} className="w-8 h-8 rounded-lg bg-[--bg-secondary] text-white text-lg flex items-center justify-center hover:bg-[--accent] transition-colors">+</button>
+                className="flex-1 text-center rounded-lg py-1.5 text-white text-sm outline-none"
+                style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)' }} />
+              <button onClick={() => setFilms(f => Math.min(999, f + 10))} className="w-8 h-8 rounded-lg text-white text-lg flex items-center justify-center transition-colors hover:bg-white/10"
+                style={{ background: 'rgba(255,255,255,0.07)' }}>+</button>
             </div>
           </div>
           <div>
             <label className="text-xs text-[--text-secondary] block mb-1">Dizi hedefi</label>
             <div className="flex items-center gap-3">
-              <button onClick={() => setSeries(s => Math.max(0, s - 5))} className="w-8 h-8 rounded-lg bg-[--bg-secondary] text-white text-lg flex items-center justify-center hover:bg-[--accent] transition-colors">-</button>
+              <button onClick={() => setSeries(s => Math.max(0, s - 5))} className="w-8 h-8 rounded-lg text-white text-lg flex items-center justify-center transition-colors hover:bg-white/10"
+                style={{ background: 'rgba(255,255,255,0.07)' }}>-</button>
               <input type="number" min={0} max={999} value={series} onChange={e => setSeries(Number(e.target.value))}
-                className="flex-1 text-center bg-[--bg-secondary] border border-[--border] rounded-lg py-1.5 text-white text-sm outline-none focus:border-[--accent]" />
-              <button onClick={() => setSeries(s => Math.min(999, s + 5))} className="w-8 h-8 rounded-lg bg-[--bg-secondary] text-white text-lg flex items-center justify-center hover:bg-[--accent] transition-colors">+</button>
+                className="flex-1 text-center rounded-lg py-1.5 text-white text-sm outline-none"
+                style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)' }} />
+              <button onClick={() => setSeries(s => Math.min(999, s + 5))} className="w-8 h-8 rounded-lg text-white text-lg flex items-center justify-center transition-colors hover:bg-white/10"
+                style={{ background: 'rgba(255,255,255,0.07)' }}>+</button>
             </div>
           </div>
           <button onClick={save} disabled={saving}
-            className="w-full py-2.5 rounded-xl bg-[--accent] hover:bg-[--accent-hover] text-white text-sm font-semibold transition-colors disabled:opacity-50">
+            className="w-full py-2.5 rounded-xl text-white text-sm font-semibold transition-all hover:scale-[1.02] disabled:opacity-50"
+            style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', boxShadow: '0 2px 8px rgba(225,29,72,0.3)' }}>
             {saving ? 'Kaydediliyor...' : 'Kaydet'}
           </button>
         </div>
