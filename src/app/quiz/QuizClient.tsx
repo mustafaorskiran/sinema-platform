@@ -103,21 +103,21 @@ export default function QuizClient({ films }: Props) {
       <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 py-12" style={{ background: 'var(--bg-primary)' }}>
         <div
           className="w-full max-w-sm rounded-2xl p-8 text-center"
-          style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', boxShadow: '0 32px 80px rgba(0,0,0,0.5)' }}
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.97), rgba(14,20,32,0.99))', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 32px 80px rgba(0,0,0,0.6)' }}
         >
           <div className="text-6xl mb-4">
             {pct >= 80 ? '🏆' : pct >= 50 ? '🎬' : '🎭'}
           </div>
-          <h2 className="text-2xl font-extrabold mb-2" style={{ color: 'var(--text-primary)' }}>
+          <h2 className="text-2xl font-extrabold mb-2 text-white">
             Quiz Bitti!
           </h2>
-          <p className="text-5xl font-black my-4" style={{ color: 'var(--accent)' }}>
+          <p className="text-5xl font-black my-4" style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             {score / 10}/{TOTAL_QUESTIONS}
           </p>
-          <p className="text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
+          <p className="text-sm mb-2" style={{ color: 'rgba(255,255,255,0.5)' }}>
             doğru cevap · {score} puan
           </p>
-          <p className="text-sm mb-8" style={{ color: 'var(--text-secondary)' }}>
+          <p className="text-sm mb-8" style={{ color: 'rgba(255,255,255,0.4)' }}>
             {pct >= 80
               ? 'Harika! Gerçek bir sinema tutkunu!'
               : pct >= 50
@@ -126,10 +126,8 @@ export default function QuizClient({ films }: Props) {
           </p>
           <button
             onClick={restart}
-            className="w-full py-3 rounded-xl font-bold text-sm transition-all"
-            style={{ background: 'var(--accent)', color: '#fff' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--accent-hover)' }}
-            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--accent)' }}
+            className="w-full py-3 rounded-xl font-bold text-sm transition-all hover:scale-105"
+            style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff', boxShadow: '0 4px 16px rgba(225,29,72,0.3)' }}
           >
             Yeniden Oyna
           </button>
@@ -159,7 +157,7 @@ export default function QuizClient({ films }: Props) {
             {score} puan
           </span>
         </div>
-        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--bg-card)' }}>
+        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
           <div
             className="h-full rounded-full transition-all duration-500"
             style={{ width: `${((current) / TOTAL_QUESTIONS) * 100}%`, background: 'var(--accent)' }}
@@ -170,10 +168,10 @@ export default function QuizClient({ films }: Props) {
       {/* Card */}
       <div
         className="w-full max-w-lg rounded-2xl overflow-hidden"
-        style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', boxShadow: '0 24px 64px rgba(0,0,0,0.5)' }}
+        style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.97), rgba(14,20,32,0.99))', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 24px 64px rgba(0,0,0,0.6)' }}
       >
         {/* Poster */}
-        <div className="relative flex justify-center py-6" style={{ background: 'var(--bg-secondary)' }}>
+        <div className="relative flex justify-center py-6" style={{ background: 'rgba(255,255,255,0.03)' }}>
           {posterUrl ? (
             <div className="relative" style={{ filter: revealed ? 'none' : 'blur(18px)', transition: 'filter 0.4s ease' }}>
               <Image
@@ -189,7 +187,7 @@ export default function QuizClient({ films }: Props) {
           ) : (
             <div
               className="rounded-xl flex items-center justify-center text-3xl"
-              style={{ width: 160, height: 240, background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+              style={{ width: 160, height: 240, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
             >
               🎬
             </div>
@@ -219,9 +217,9 @@ export default function QuizClient({ films }: Props) {
             const isCorrect = choice === currentFilm.title
             const isSelected = choice === selected
 
-            let borderColor = 'var(--border)'
-            let bg = 'var(--bg-secondary)'
-            let textColor = 'var(--text-primary)'
+            let borderColor = 'rgba(255,255,255,0.08)'
+            let bg = 'rgba(255,255,255,0.05)'
+            let textColor = 'rgba(255,255,255,0.85)'
 
             if (selected !== null) {
               if (isCorrect) {
@@ -233,7 +231,7 @@ export default function QuizClient({ films }: Props) {
                 bg = 'rgba(239,68,68,0.12)'
                 textColor = '#ef4444'
               } else {
-                textColor = 'var(--text-secondary)'
+                textColor = 'rgba(255,255,255,0.3)'
               }
             }
 
@@ -266,10 +264,8 @@ export default function QuizClient({ films }: Props) {
           <div className="px-5 pb-6">
             <button
               onClick={nextQuestion}
-              className="w-full py-3 rounded-xl font-bold text-sm transition-all"
-              style={{ background: 'var(--accent)', color: '#fff' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--accent-hover)' }}
-              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--accent)' }}
+              className="w-full py-3 rounded-xl font-bold text-sm transition-all hover:scale-105"
+              style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff', boxShadow: '0 4px 16px rgba(225,29,72,0.3)' }}
             >
               {current + 1 >= TOTAL_QUESTIONS ? 'Sonucu Gör' : 'Sonraki Soru →'}
             </button>

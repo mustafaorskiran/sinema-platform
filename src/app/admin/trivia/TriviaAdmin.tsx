@@ -29,13 +29,15 @@ export default function TriviaAdmin({ items }: { items: TriviaItem[] }) {
   }
 
   if (items.length === 0) {
-    return <div className="py-16 text-center text-[--text-secondary] bg-[--bg-card] border border-[--border] rounded-2xl">Onay bekleyen içerik yok ✓</div>
+    return <div className="py-16 text-center text-[--text-secondary] rounded-2xl"
+      style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>Onay bekleyen içerik yok ✓</div>
   }
 
   return (
     <div className="space-y-3">
       {items.map(item => (
-        <div key={item.id} className="bg-[--bg-card] border border-[--border] rounded-xl p-5">
+        <div key={item.id} className="rounded-xl p-5"
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <div className="flex items-start gap-3">
             <span className={`shrink-0 text-xs font-bold px-2 py-0.5 rounded-full mt-0.5 ${item.type === 'trivia' ? 'bg-blue-500/20 text-blue-300' : 'bg-orange-500/20 text-orange-300'}`}>
               {item.type === 'trivia' ? 'Trivia' : 'Goof'}
