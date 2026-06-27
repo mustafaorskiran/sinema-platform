@@ -28,7 +28,11 @@ export default function VideoGallery({ videos, title }: Props) {
 
   return (
     <div className="mt-12" id="videolar">
-      <h2 className="text-xl font-bold text-white mb-4">🎬 Videolar</h2>
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #f87171 0%, #E11D48 100%)' }} />
+        <h2 className="text-xl font-bold text-white tracking-tight">🎬 Videolar</h2>
+        <span className="text-sm" style={{ color: 'rgba(255,255,255,0.3)' }}>({ytVideos.length})</span>
+      </div>
       <div className="flex gap-5 flex-col lg:flex-row">
         {/* Ana video */}
         <div className="flex-1 min-w-0">
@@ -53,7 +57,8 @@ export default function VideoGallery({ videos, title }: Props) {
               <button
                 key={v.key}
                 onClick={() => setActiveKey(v.key)}
-                className="group relative shrink-0 w-40 lg:w-full rounded-lg overflow-hidden bg-[--bg-card] border border-[--border] hover:border-[--accent]/50 transition-all"
+                className="group relative shrink-0 w-40 lg:w-full rounded-lg overflow-hidden transition-all hover:-translate-y-0.5"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
               >
                 <div className="aspect-video relative">
                   <img
