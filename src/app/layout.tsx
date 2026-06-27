@@ -43,6 +43,20 @@ export const metadata: Metadata = {
   },
   other: {
     'mobile-web-app-capable': 'yes',
+    'robots': 'index, follow, noai, noimageai',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    noarchive: false,
+    'max-snippet': -1,
+    'max-image-preview': 'large',
+    'max-video-preview': -1,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
   },
 }
 
@@ -121,7 +135,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <p className="font-semibold text-white mb-3">Hakkında</p>
                 <ul className="space-y-2">
                   <li><a href="/hakkinda" className="hover:text-white transition-colors">Hakkımızda</a></li>
-                  <li><a href="/premium" className="hover:text-white transition-colors">⭐ Premium</a></li>
                   <li><a href="/gizlilik" className="hover:text-white transition-colors">Gizlilik</a></li>
                   <li><a href="/kullanim-sartlari" className="hover:text-white transition-colors">Kullanım Şartları</a></li>
                 </ul>
