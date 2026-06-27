@@ -67,7 +67,7 @@ export default function ListeDuzenleClient({ list, items: initial }: { list: Lis
       </div>
 
       {/* Liste bilgileri */}
-      <div className="bg-[--bg-card] border border-[--border] rounded-2xl p-6 mb-6 space-y-5">
+      <div className="rounded-xl rounded-2xl p-6 mb-6 space-y-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
         <div>
           <label className="block text-sm font-medium text-[--text-secondary] mb-2">Başlık *</label>
           <input value={title} onChange={e => setTitle(e.target.value)} maxLength={100}
@@ -102,7 +102,7 @@ export default function ListeDuzenleClient({ list, items: initial }: { list: Lis
       </div>
 
       {/* Kapak Görseli */}
-      <div className="bg-[--bg-card] border border-[--border] rounded-2xl p-6 mb-6">
+      <div className="rounded-xl rounded-2xl p-6 mb-6" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
         <h2 className="font-semibold text-white mb-4 flex items-center gap-2">
           <IconCamera className="h-4 w-4 text-[--accent]" /> Kapak Görseli
         </h2>
@@ -161,7 +161,7 @@ export default function ListeDuzenleClient({ list, items: initial }: { list: Lis
       </div>
 
       {/* İçerikler */}
-      <div className="bg-[--bg-card] border border-[--border] rounded-2xl p-6 mb-6">
+      <div className="rounded-xl rounded-2xl p-6 mb-6" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
         <h2 className="font-semibold text-white mb-4">İçerikler ({items.length})</h2>
         {items.length === 0 ? (
           <p className="text-sm text-[--text-secondary] text-center py-8">Liste henüz boş.</p>

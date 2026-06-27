@@ -96,9 +96,11 @@ export default async function UlkeSinemasPage({ params, searchParams }: Props) {
           { key: 'diziler', label: `📺 Diziler (${(seriesCount ?? 0).toLocaleString()})` },
         ].map(t => (
           <Link key={t.key} href={`/sinema/${ulke}?tab=${t.key}`}
-            className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
-              tab === t.key ? 'bg-[--accent] text-white' : 'bg-[--bg-card] border border-[--border] text-[--text-secondary] hover:text-white'
-            }`}>
+            className="px-5 py-2 rounded-full text-sm font-medium transition-all hover:scale-105"
+            style={tab === t.key
+              ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff', boxShadow: '0 2px 8px rgba(225,29,72,0.3)' }
+              : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }
+            }>
             {t.label}
           </Link>
         ))}

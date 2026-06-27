@@ -99,11 +99,11 @@ export default function TopicTagger({ topics, mediaId, mediaType, userVotedIds, 
                   onClick={() => isLoggedIn ? toggle(t.id) : undefined}
                   disabled={loading !== null || !isLoggedIn}
                   title={!isLoggedIn ? 'Oy vermek için giriş yap' : undefined}
-                  className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs transition-colors ${
-                    isVoted
-                      ? 'bg-[--accent]/15 border border-[--accent]/40 text-[--accent] hover:bg-[--accent]/25'
-                      : 'bg-[--bg-card] border border-[--border] text-[--text-secondary] hover:border-white/30 hover:text-white'
-                  } ${!isLoggedIn ? 'opacity-60 cursor-default' : ''}`}
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs transition-all ${!isLoggedIn ? 'opacity-60 cursor-default' : ''}`}
+                  style={isVoted
+                    ? { background: 'rgba(225,29,72,0.15)', border: '1px solid rgba(225,29,72,0.4)', color: 'var(--accent)' }
+                    : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)', color: 'rgba(255,255,255,0.55)' }
+                  }
                 >
                   <span>{t.emoji}</span>
                   <span>{t.name}</span>

@@ -77,7 +77,7 @@ export default function BackdropGallery({ backdrops, posters = [], title }: Prop
             <button
               key={bd.file_path}
               onClick={() => setLightbox({ images: backdrops, index: i })}
-              className="relative group aspect-video rounded-xl overflow-hidden bg-[--bg-card] border border-[--border] hover:border-[--accent]/40 transition-colors"
+              className="relative group aspect-video rounded-xl overflow-hidden rounded-xl hover:border-[--accent]/40 transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
             >
               <img
                 src={`${BASE}w500${bd.file_path}`}
@@ -104,7 +104,7 @@ export default function BackdropGallery({ backdrops, posters = [], title }: Prop
             <button
               key={p.file_path}
               onClick={() => setLightbox({ images: posters, index: i })}
-              className="relative group aspect-[2/3] rounded-xl overflow-hidden bg-[--bg-card] border border-[--border] hover:border-[--accent]/40 transition-colors"
+              className="relative group aspect-[2/3] rounded-xl overflow-hidden rounded-xl hover:border-[--accent]/40 transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
             >
               <img
                 src={`${BASE}w342${p.file_path}`}

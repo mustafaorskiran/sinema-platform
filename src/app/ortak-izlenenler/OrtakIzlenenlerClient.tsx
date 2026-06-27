@@ -76,7 +76,7 @@ export default function OrtakIzlenenlerClient({ myProfile, following, defaultUse
               ))}
             </div>
           ) : items.length === 0 ? (
-            <div className="py-16 text-center rounded-2xl bg-[--bg-card] border border-[--border]">
+            <div className="py-16 text-center rounded-2xl rounded-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               <p className="text-4xl mb-3">🎬</p>
               <p className="text-sm text-[--text-secondary]">Henüz ortak izlenen içerik yok.</p>
             </div>
@@ -87,7 +87,7 @@ export default function OrtakIzlenenlerClient({ myProfile, following, defaultUse
                 {items.map(item => (
                   <a key={`${item.media_type}-${item.media_id}`}
                     href={`/${item.media_type}/${item.media_id}`}
-                    className="group relative aspect-[2/3] rounded-lg overflow-hidden bg-[--bg-card] border border-[--border] hover:border-[--accent]/50 transition-colors">
+                    className="group relative aspect-[2/3] rounded-lg overflow-hidden rounded-xl hover:border-[--accent]/50 transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                     {item.poster_path ? (
                       <img src={`https://image.tmdb.org/t/p/w342${item.poster_path}`} alt={item.title ?? ''} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     ) : (
@@ -102,7 +102,7 @@ export default function OrtakIzlenenlerClient({ myProfile, following, defaultUse
       )}
 
       {!selectedUser && following.length > 0 && (
-        <div className="py-16 text-center rounded-2xl bg-[--bg-card] border border-[--border]">
+        <div className="py-16 text-center rounded-2xl rounded-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <p className="text-4xl mb-3">👆</p>
           <p className="text-sm text-[--text-secondary]">Ortak izlenenleri görmek için bir kullanıcı seç.</p>
         </div>

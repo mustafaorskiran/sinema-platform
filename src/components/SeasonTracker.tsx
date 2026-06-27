@@ -360,7 +360,7 @@ export default function SeasonTracker({ seriesId, seasons, isLoggedIn }: Props) 
                                       </button>
 
                                       {isRatingOpen && (
-                                        <div className="absolute right-0 bottom-full mb-1 z-30 bg-[--bg-card] border border-[--border] rounded-xl p-2.5 shadow-xl">
+                                        <div className="absolute right-0 bottom-full mb-1 z-30 rounded-xl rounded-xl p-2.5 shadow-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                                           <p className="text-[10px] text-[--text-secondary] mb-2 text-center">Puan ver (1-10)</p>
                                           <div className="grid grid-cols-5 gap-1">
                                             {RATINGS.map(r => (

@@ -88,7 +88,7 @@ export default function EditorialListManager({ lists }: Props) {
 
       {/* Yeni liste formu */}
       {showForm ? (
-        <div className="bg-[--bg-card] border border-[--border] rounded-2xl p-6 mb-6">
+        <div className="rounded-xl rounded-2xl p-6 mb-6" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <h2 className="text-base font-bold text-white mb-4">Yeni Editöryal Liste</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div>
@@ -155,7 +155,7 @@ export default function EditorialListManager({ lists }: Props) {
       )}
 
       {/* Liste tablosu */}
-      <div className="bg-[--bg-card] border border-[--border] rounded-2xl overflow-hidden">
+      <div className="rounded-xl rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
         <table className="w-full text-sm">
           <thead className="border-b border-[--border] bg-[--bg-secondary]">
             <tr>

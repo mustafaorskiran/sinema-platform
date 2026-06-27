@@ -106,7 +106,7 @@ export default async function KonuDetayPage({ params }: Props) {
             return (
               <div key={`${media_type}-${media_id}`} className="group relative">
                 <Link href={`/${media_type}/${media_id}`}>
-                  <div className="aspect-[2/3] rounded-xl overflow-hidden bg-[--bg-card] border border-[--border] group-hover:border-[--accent]/40 transition-colors">
+                  <div className="aspect-[2/3] rounded-xl overflow-hidden rounded-xl group-hover:border-[--accent]/40 transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                     {poster
                       ? <img src={poster} alt={title} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" />
                       : <div className="w-full h-full flex items-center justify-center text-[--text-secondary] text-xs p-2 text-center">{title}</div>
@@ -131,7 +131,7 @@ export default async function KonuDetayPage({ params }: Props) {
           })}
         </div>
       ) : (
-        <div className="rounded-xl bg-[--bg-card] border border-[--border] py-16 text-center">
+        <div className="rounded-xl rounded-xl py-16 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <p className="text-4xl mb-4">{topic.emoji}</p>
           <p className="text-[--text-secondary] text-sm">
             Bu konuya henüz film/dizi eklenmemiş.

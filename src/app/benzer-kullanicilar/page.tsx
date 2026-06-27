@@ -125,7 +125,7 @@ function NoSimilarUsersPage() {
         algoritmamız sana uygun kullanıcılar bulacak.
       </p>
       <Link href="/kullanicilar"
-        className="inline-block px-6 py-2.5 bg-[--bg-card] border border-[--border] hover:border-[--accent]/50 text-white text-sm font-medium rounded-full transition-colors">
+        className="inline-block px-6 py-2.5 rounded-xl hover:border-[--accent]/50 text-white text-sm font-medium rounded-full transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
         Tüm Kullanıcıları Keşfet →
       </Link>
     </div>

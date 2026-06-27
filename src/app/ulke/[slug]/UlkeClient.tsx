@@ -36,11 +36,11 @@ export default function UlkeClient({ slug, activeTab, items, currentPage, totalP
           <button
             key={tab}
             onClick={() => switchTab(tab)}
-            className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
-              activeTab === tab
-                ? 'bg-[--accent] text-white'
-                : 'bg-[--bg-card] border border-[--border] text-[--text-secondary] hover:text-white'
-            }`}
+            className="px-5 py-2 rounded-full text-sm font-medium transition-all hover:scale-105"
+            style={activeTab === tab
+              ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff', boxShadow: '0 2px 8px rgba(225,29,72,0.3)' }
+              : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }
+            }
           >
             {tab === 'filmler' ? '🎬 Filmler' : '📺 Diziler'}
           </button>
@@ -63,7 +63,7 @@ export default function UlkeClient({ slug, activeTab, items, currentPage, totalP
               href={`/${item.mediaType}/${item.id}`}
               className="group relative"
             >
-              <div className="aspect-[2/3] rounded-xl overflow-hidden bg-[--bg-card] border border-[--border] group-hover:border-[--accent]/50 transition-colors relative">
+              <div className="aspect-[2/3] rounded-xl overflow-hidden rounded-xl group-hover:border-[--accent]/50 transition-colors relative" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                 {item.poster
                   ? <img src={item.poster} alt={item.title} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" />
                   : <div className="w-full h-full flex items-center justify-center text-[--text-secondary] text-xs p-2 text-center leading-tight">{item.title}</div>
@@ -92,7 +92,7 @@ export default function UlkeClient({ slug, activeTab, items, currentPage, totalP
           {currentPage > 1 && (
             <Link
               href={`/ulke/${slug}?tab=${activeTab}&sayfa=${currentPage - 1}`}
-              className="px-4 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white transition-colors"
+              className="px-4 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
             >
               ← Önceki
             </Link>
@@ -117,7 +117,7 @@ export default function UlkeClient({ slug, activeTab, items, currentPage, totalP
           {currentPage < totalPages && (
             <Link
               href={`/ulke/${slug}?tab=${activeTab}&sayfa=${currentPage + 1}`}
-              className="px-4 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white transition-colors"
+              className="px-4 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
             >
               Sonraki →
             </Link>

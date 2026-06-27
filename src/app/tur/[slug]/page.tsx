@@ -142,7 +142,7 @@ export default async function TurPage({ params, searchParams }: Props) {
               <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
                 {topPicks.map(item => (
                   <Link key={item.id} href={`/${activeTab}/${item.id}`} className="group">
-                    <div className="aspect-[2/3] rounded-xl overflow-hidden bg-[--bg-card] border border-[--border] group-hover:border-[--accent]/50 transition-colors relative">
+                    <div className="aspect-[2/3] rounded-xl overflow-hidden rounded-xl group-hover:border-[--accent]/50 transition-colors relative" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                       {getPosterUrl(item.poster_path, 'w342') ? (
                         <img src={getPosterUrl(item.poster_path, 'w342')!} alt={getMediaTitle(item)}
                              className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" />

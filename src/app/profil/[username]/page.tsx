@@ -565,7 +565,7 @@ export default async function ProfilPage({ params }: Props) {
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
             {diaryWithMedia.map(entry => (
               <Link key={entry.id} href={`/${entry.media_type}/${entry.media_id}`} className="group">
-                <div className="aspect-[2/3] rounded-lg overflow-hidden bg-[--bg-card] border border-[--border] group-hover:border-[--accent]/40 transition-all relative group-hover:shadow-lg group-hover:shadow-black/40 group-hover:scale-[1.04]">
+                <div className="aspect-[2/3] rounded-lg overflow-hidden rounded-xl group-hover:border-[--accent]/40 transition-all relative group-hover:shadow-lg group-hover:shadow-black/40 group-hover:scale-[1.04]" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                   {entry.poster
                     ? <img src={entry.poster} alt={entry.title} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" />
                     : <div className="w-full h-full flex items-center justify-center text-[--text-secondary] text-xs p-1 text-center leading-tight">{entry.title}</div>
@@ -680,7 +680,8 @@ function WatchlistSection({ title, icon, items, hoverColor }: {
           const title = item.media ? getMediaTitle(item.media) : `#${item.media_id}`
           return (
             <Link key={item.id} href={`/${item.media_type}/${item.media_id}`} className="group">
-              <div className={`aspect-[2/3] rounded-lg overflow-hidden bg-[--bg-card] border border-[--border] group-hover:${hoverColor} transition-colors`}>
+              <div className="aspect-[2/3] rounded-lg overflow-hidden transition-all"
+                style={{ background: 'rgba(20,28,47,0.9)', border: '1px solid rgba(255,255,255,0.06)' }}>
                 {poster
                   ? <img src={poster} alt={title} className="w-full h-full object-cover" />
                   : <div className="w-full h-full flex items-center justify-center text-[--text-secondary] text-xs p-1 text-center">{title}</div>
@@ -703,8 +704,8 @@ function StatCard({ label, value, gold, icon, accentColor }: {
 }) {
   return (
     <div
-      className="rounded-xl bg-[--bg-card] border border-[--border] p-4 text-center"
-      style={accentColor ? { borderTop: `2px solid ${accentColor}` } : undefined}
+      className="rounded-xl p-4 text-center"
+      style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)', ...(accentColor ? { borderTop: `2px solid ${accentColor}` } : {}) }}
     >
       {icon && (
         <div className="flex justify-center mb-1.5" style={{ color: accentColor ?? 'var(--text-secondary)' }}>

@@ -48,7 +48,7 @@ export default function FilmografiClient({ castCredits, directorCredits, writerC
   return (
     <section>
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-        <div className="flex items-center gap-1 bg-[--bg-card] border border-[--border] rounded-xl p-1">
+        <div className="flex items-center gap-1 rounded-xl rounded-xl p-1" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           {hasCast && (
             <button onClick={() => { setSection('oyuncu'); setShowAll(false) }}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${section === 'oyuncu' ? 'bg-[--accent] text-white' : 'text-[--text-secondary] hover:text-white'}`}>
@@ -71,7 +71,7 @@ export default function FilmografiClient({ castCredits, directorCredits, writerC
 
         <div className="flex items-center gap-2">
           {/* Tür filtresi */}
-          <div className="flex items-center gap-1 bg-[--bg-card] border border-[--border] rounded-xl p-1">
+          <div className="flex items-center gap-1 rounded-xl rounded-xl p-1" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             {(['hepsi', 'film', 'dizi'] as TypeFilter[]).map(t => (
               <button key={t} onClick={() => { setTypeFilter(t); setShowAll(false) }}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors capitalize ${typeFilter === t ? 'bg-[--bg-secondary] text-white' : 'text-[--text-secondary] hover:text-white'}`}>
@@ -80,7 +80,7 @@ export default function FilmografiClient({ castCredits, directorCredits, writerC
             ))}
           </div>
           {/* Sıralama */}
-          <div className="flex items-center gap-1 bg-[--bg-card] border border-[--border] rounded-xl p-1">
+          <div className="flex items-center gap-1 rounded-xl rounded-xl p-1" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <button onClick={() => setSort('puan')}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${sort === 'puan' ? 'bg-[--bg-secondary] text-white' : 'text-[--text-secondary] hover:text-white'}`}>
               En İyi
@@ -123,7 +123,7 @@ function CreditCard({ credit }: { credit: CreditWithRole }) {
 
   return (
     <Link href={href} className="group">
-      <div className="aspect-[2/3] rounded-lg overflow-hidden bg-[--bg-card] border border-[--border] group-hover:border-[--accent]/50 transition-colors relative">
+      <div className="aspect-[2/3] rounded-lg overflow-hidden rounded-xl group-hover:border-[--accent]/50 transition-colors relative" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
         {credit.poster_path ? (
           <img src={`https://image.tmdb.org/t/p/w342${credit.poster_path}`} alt={title} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" />
         ) : (

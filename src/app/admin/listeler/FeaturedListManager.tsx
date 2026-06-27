@@ -60,7 +60,7 @@ export default function FeaturedListManager({ lists: initial }: { lists: Feature
           Şu An Öne Çıkan ({featured.length})
         </h3>
         {featured.length === 0 ? (
-          <div className="rounded-xl bg-[--bg-card] border border-[--border] py-8 text-center text-sm text-[--text-secondary]">
+          <div className="rounded-xl rounded-xl py-8 text-center text-sm text-[--text-secondary]" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             Henüz öne çıkarılmış liste yok.
           </div>
         ) : (
@@ -78,7 +78,7 @@ export default function FeaturedListManager({ lists: initial }: { lists: Feature
           Öne Çıkarılabilir ({notFeatured.length})
         </h3>
         {notFeatured.length === 0 ? (
-          <div className="rounded-xl bg-[--bg-card] border border-[--border] py-8 text-center text-sm text-[--text-secondary]">
+          <div className="rounded-xl rounded-xl py-8 text-center text-sm text-[--text-secondary]" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             Tüm listeler zaten öne çıkarılmış.
           </div>
         ) : (

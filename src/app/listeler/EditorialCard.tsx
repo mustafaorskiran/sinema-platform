@@ -34,7 +34,7 @@ export default function EditorialCard({ list, posters }: Props) {
   const slots = Array.from({ length: 4 }, (_, i) => posters[i] ?? null)
 
   return (
-    <a href={href} className="group flex flex-col rounded-2xl bg-[--bg-card] border border-[--border] overflow-hidden hover:border-[--accent]/60 transition-all hover:shadow-2xl hover:shadow-black/40 hover:-translate-y-1">
+    <a href={href} className="group flex flex-col rounded-2xl rounded-xl overflow-hidden hover:border-[--accent]/60 transition-all hover:shadow-2xl hover:shadow-black/40 hover:-translate-y-1" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
 
       {/* 2×2 poster kolajı */}
       <div className="relative h-40 overflow-hidden">

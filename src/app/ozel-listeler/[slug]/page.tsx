@@ -110,7 +110,7 @@ export default async function OzelListeDetayPage({ params, searchParams }: Props
               href={`/${list.mediaType}/${item.id}`}
               className="group relative"
             >
-              <div className="aspect-[2/3] rounded-xl overflow-hidden bg-[--bg-card] border border-[--border] group-hover:border-[--accent]/50 transition-colors relative">
+              <div className="aspect-[2/3] rounded-xl overflow-hidden rounded-xl group-hover:border-[--accent]/50 transition-colors relative" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                 {poster
                   ? <img src={poster} alt={title} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" />
                   : <div className="w-full h-full flex items-center justify-center text-[--text-secondary] text-xs p-2 text-center leading-tight">{title}</div>
@@ -143,7 +143,7 @@ export default async function OzelListeDetayPage({ params, searchParams }: Props
           {page > 1 && (
             <Link
               href={`/ozel-listeler/${slug}?sayfa=${page - 1}`}
-              className="px-4 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white transition-colors"
+              className="px-4 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
             >
               ← Önceki
             </Link>
@@ -168,7 +168,7 @@ export default async function OzelListeDetayPage({ params, searchParams }: Props
           {page < totalPages && (
             <Link
               href={`/ozel-listeler/${slug}?sayfa=${page + 1}`}
-              className="px-4 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white transition-colors"
+              className="px-4 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
             >
               Sonraki →
             </Link>

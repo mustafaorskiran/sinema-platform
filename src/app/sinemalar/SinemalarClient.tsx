@@ -44,7 +44,7 @@ export default function SinemalarClient({ nowPlaying, upcoming, zincirleri }: Pr
   return (
     <div>
       {/* Tab bar */}
-      <div className="flex gap-1 mb-8 bg-[--bg-card] border border-[--border] rounded-xl p-1 w-fit">
+      <div className="flex gap-1 mb-8 rounded-xl rounded-xl p-1 w-fit" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
         {tabs.map(t => (
           <button
             key={t.key}
@@ -77,7 +77,7 @@ export default function SinemalarClient({ nowPlaying, upcoming, zincirleri }: Pr
             {nowPlaying.map(movie => (
               <div key={movie.id} className="group">
                 <Link href={`/film/${movie.id}`}>
-                  <div className="aspect-[2/3] rounded-xl overflow-hidden bg-[--bg-card] border border-[--border] group-hover:border-[--accent]/50 transition-colors relative">
+                  <div className="aspect-[2/3] rounded-xl overflow-hidden rounded-xl group-hover:border-[--accent]/50 transition-colors relative" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                     {movie.poster
                       ? <img src={movie.poster} alt={movie.title} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" />
                       : <div className="w-full h-full flex items-center justify-center text-[--text-secondary] text-xs p-2 text-center">{movie.title}</div>
@@ -119,7 +119,7 @@ export default function SinemalarClient({ nowPlaying, upcoming, zincirleri }: Pr
             {upcoming.map((movie) => (
               <div key={movie.id} className="group">
                 <Link href={`/film/${movie.id}`}>
-                  <div className="aspect-[2/3] rounded-xl overflow-hidden bg-[--bg-card] border border-[--border] group-hover:border-[--accent]/50 transition-colors relative">
+                  <div className="aspect-[2/3] rounded-xl overflow-hidden rounded-xl group-hover:border-[--accent]/50 transition-colors relative" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                     {movie.poster
                       ? <img src={movie.poster} alt={movie.title} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" />
                       : <div className="w-full h-full flex items-center justify-center text-[--text-secondary] text-xs p-2 text-center">{movie.title}</div>
@@ -157,7 +157,7 @@ export default function SinemalarClient({ nowPlaying, upcoming, zincirleri }: Pr
                 href={z.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-4 p-5 rounded-xl bg-[--bg-card] border border-[--border] hover:border-[--accent]/40 transition-colors group"
+                className="flex items-center gap-4 p-5 rounded-xl rounded-xl hover:border-[--accent]/40 transition-colors group" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
               >
                 <span className="text-3xl shrink-0">{z.logo}</span>
                 <div className="flex-1">
@@ -169,7 +169,7 @@ export default function SinemalarClient({ nowPlaying, upcoming, zincirleri }: Pr
             ))}
           </div>
 
-          <div className="mt-8 rounded-xl bg-[--bg-card] border border-[--border] p-5">
+          <div className="mt-8 rounded-xl rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <p className="text-sm font-semibold text-white mb-2">📍 Şehrine göre sinema bul</p>
             <p className="text-xs text-[--text-secondary] mb-3">
               Bulunduğun şehirdeki sinemaları ve seans saatlerini görmek için aşağıdaki siteleri kullanabilirsin:

@@ -66,7 +66,7 @@ export default function FavoritesEditor({ favorites, isOwnProfile }: Props) {
         return (
           <div key={pos} className="relative">
             {fav ? (
-              <div className="group relative aspect-[2/3] rounded-xl overflow-hidden bg-[--bg-card] border border-[--border]">
+              <div className="group relative aspect-[2/3] rounded-xl overflow-hidden rounded-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <Link href={`/${fav.media_type}/${fav.media_id}`}>
                   {fav.poster
                     ? <img src={fav.poster} alt={fav.title} className="w-full h-full object-cover" />
@@ -112,7 +112,7 @@ export default function FavoritesEditor({ favorites, isOwnProfile }: Props) {
                   value={query}
                   onChange={e => search(e.target.value)}
                   placeholder="Ara..."
-                  className="w-full text-sm bg-[--bg-card] border border-[--border] rounded-lg px-3 py-2 text-white placeholder-[--text-secondary] outline-none focus:border-[--accent]"
+                  className="w-full text-sm rounded-xl rounded-lg px-3 py-2 text-white placeholder-[--text-secondary] outline-none focus:border-[--accent]" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
                 />
                 {searching && <p className="text-xs text-[--text-secondary] mt-2">Aranıyor...</p>}
                 <div className="mt-2 space-y-1 max-h-48 overflow-y-auto">

@@ -63,7 +63,7 @@ export default function FeaturedPickForm() {
   }
 
   return (
-    <div className="bg-[--bg-card] border border-[--border] rounded-2xl p-6 max-w-xl">
+    <div className="rounded-xl rounded-2xl p-6 max-w-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
       <h2 className="text-base font-bold text-white mb-4">Yeni Seçim Ekle</h2>
 
       {/* Arama */}

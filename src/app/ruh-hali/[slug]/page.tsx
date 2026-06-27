@@ -70,11 +70,11 @@ export default async function RuhHaliDetayPage({ params, searchParams }: Props) 
           <Link
             key={t}
             href={`/ruh-hali/${slug}?tab=${t}&sayfa=1`}
-            className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
-              tab === t
-                ? 'bg-[--accent] text-white'
-                : 'bg-[--bg-card] border border-[--border] text-[--text-secondary] hover:text-white'
-            }`}
+            className="px-5 py-2 rounded-full text-sm font-medium transition-all hover:scale-105"
+            style={tab === t
+              ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff', boxShadow: '0 2px 8px rgba(225,29,72,0.3)' }
+              : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }
+            }
           >
             {t === 'filmler' ? '🎬 Filmler' : '📺 Diziler'}
           </Link>
@@ -97,7 +97,7 @@ export default async function RuhHaliDetayPage({ params, searchParams }: Props) 
             const year = getMediaYear(item)
             return (
               <Link key={item.id} href={`/${mediaType}/${item.id}`} className="group">
-                <div className="aspect-[2/3] rounded-xl overflow-hidden bg-[--bg-card] border border-[--border] group-hover:border-[--accent]/50 transition-colors relative">
+                <div className="aspect-[2/3] rounded-xl overflow-hidden rounded-xl group-hover:border-[--accent]/50 transition-colors relative" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                   {poster
                     ? <img src={poster} alt={title} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" />
                     : <div className="w-full h-full flex items-center justify-center text-[--text-secondary] text-xs p-2 text-center leading-tight">{title}</div>
@@ -120,7 +120,7 @@ export default async function RuhHaliDetayPage({ params, searchParams }: Props) 
       {totalPages > 1 && (
         <div className="flex justify-center gap-2 flex-wrap mb-10">
           {page > 1 && (
-            <Link href={`/ruh-hali/${slug}?tab=${tab}&sayfa=${page - 1}`} className="px-4 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white transition-colors">← Önceki</Link>
+            <Link href={`/ruh-hali/${slug}?tab=${tab}&sayfa=${page - 1}`} className="px-4 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>← Önceki</Link>
           )}
           {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
             const p = page <= 3 ? i + 1 : page - 2 + i
@@ -136,7 +136,7 @@ export default async function RuhHaliDetayPage({ params, searchParams }: Props) 
             )
           })}
           {page < totalPages && (
-            <Link href={`/ruh-hali/${slug}?tab=${tab}&sayfa=${page + 1}`} className="px-4 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white transition-colors">Sonraki →</Link>
+            <Link href={`/ruh-hali/${slug}?tab=${tab}&sayfa=${page + 1}`} className="px-4 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>Sonraki →</Link>
           )}
         </div>
       )}

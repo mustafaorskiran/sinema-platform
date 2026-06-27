@@ -188,7 +188,7 @@ export default async function OnerilerPage() {
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
             {friendItems.map(item => (
               <Link key={`${item.mediaType}-${item.mediaId}`} href={`/${item.mediaType}/${item.mediaId}`} className="group">
-                <div className="aspect-[2/3] rounded-lg overflow-hidden bg-[--bg-card] border border-[--border] group-hover:border-[--accent]/50 transition-colors relative">
+                <div className="aspect-[2/3] rounded-lg overflow-hidden rounded-xl group-hover:border-[--accent]/50 transition-colors relative" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                   {item.poster ? (
                     <img src={getPosterUrl(item.poster, 'w342')!} alt={item.title} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" />
                   ) : (
@@ -231,7 +231,7 @@ export default async function OnerilerPage() {
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
             {similarPicks.map(pick => (
               <Link key={`${pick.mediaType}-${pick.mediaId}`} href={`/${pick.mediaType}/${pick.mediaId}`} className="group">
-                <div className="aspect-[2/3] rounded-lg overflow-hidden bg-[--bg-card] border border-[--border] group-hover:border-[--accent]/50 transition-colors relative">
+                <div className="aspect-[2/3] rounded-lg overflow-hidden rounded-xl group-hover:border-[--accent]/50 transition-colors relative" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                   {pick.poster ? (
                     <img src={getPosterUrl(pick.poster, 'w342')!} alt={pick.title} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" />
                   ) : (
@@ -367,7 +367,7 @@ function ItemGrid({ items }: { items: CardItem[] }) {
     <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
       {items.map(item => (
         <Link key={`${item.mediaType}-${item.id}`} href={`/${item.mediaType}/${item.id}`} className="group">
-          <div className="aspect-[2/3] rounded-lg overflow-hidden bg-[--bg-card] border border-[--border] group-hover:border-[--accent]/50 transition-colors relative">
+          <div className="aspect-[2/3] rounded-lg overflow-hidden rounded-xl group-hover:border-[--accent]/50 transition-colors relative" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             {getPosterUrl(item.poster_path, 'w342') ? (
               <img src={getPosterUrl(item.poster_path, 'w342')!} alt={item.title ?? item.name ?? ''} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" />
             ) : (

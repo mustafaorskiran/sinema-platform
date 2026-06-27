@@ -297,7 +297,7 @@ export default function Navbar({ user }: NavbarProps) {
                       else handleSearchFocus()
                     }}
                     placeholder={SEARCH_PLACEHOLDER}
-                    className="w-full rounded-full bg-[--bg-card] border border-[--border] py-2 pl-9 pr-4 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
+                    className="w-full rounded-full rounded-xl py-2 pl-9 pr-4 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
                   />
                   {searching && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 border-2 border-[--accent] border-t-transparent rounded-full animate-spin" />
@@ -375,7 +375,7 @@ export default function Navbar({ user }: NavbarProps) {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder={SEARCH_PLACEHOLDER}
-                  className="w-full rounded-full bg-[--bg-card] border border-[--border] py-2.5 pl-9 pr-4 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent]"
+                  className="w-full rounded-full rounded-xl py-2.5 pl-9 pr-4 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent]" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
                 />
                 {searching && (
                   <div className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 border-2 border-[--accent] border-t-transparent rounded-full animate-spin" />

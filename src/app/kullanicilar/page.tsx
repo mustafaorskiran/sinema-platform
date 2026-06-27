@@ -58,7 +58,7 @@ export default async function KullanicilarPage({ searchParams }: Props) {
             type="text"
             defaultValue={q ?? ''}
             placeholder="Kullanıcı adı ara..."
-            className="w-full rounded-xl bg-[--bg-card] border border-[--border] py-3 pl-10 pr-4 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
+            className="w-full rounded-xl rounded-xl py-3 pl-10 pr-4 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
           />
         </div>
       </form>
@@ -98,9 +98,9 @@ export default async function KullanicilarPage({ searchParams }: Props) {
 
       {totalPages > 1 && (
         <div className="flex justify-center gap-3 mt-10">
-          {page > 1 && <Link href={`/kullanicilar?${q ? `q=${encodeURIComponent(q)}&` : ''}sayfa=${page - 1}`} className="px-5 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white transition-colors">← Önceki</Link>}
+          {page > 1 && <Link href={`/kullanicilar?${q ? `q=${encodeURIComponent(q)}&` : ''}sayfa=${page - 1}`} className="px-5 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>← Önceki</Link>}
           <span className="px-4 py-2 text-sm text-[--text-secondary] flex items-center">{page} / {totalPages}</span>
-          {page < totalPages && <Link href={`/kullanicilar?${q ? `q=${encodeURIComponent(q)}&` : ''}sayfa=${page + 1}`} className="px-5 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white transition-colors">Sonraki →</Link>}
+          {page < totalPages && <Link href={`/kullanicilar?${q ? `q=${encodeURIComponent(q)}&` : ''}sayfa=${page + 1}`} className="px-5 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>Sonraki →</Link>}
         </div>
       )}
     </div>

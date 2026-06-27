@@ -78,7 +78,7 @@ export default async function KisiPage({ params }: Props) {
       <div className="flex flex-col sm:flex-row gap-8 mb-10">
         {/* Fotoğraf */}
         <div className="shrink-0">
-          <div className="w-40 h-56 sm:w-48 sm:h-72 rounded-2xl overflow-hidden bg-[--bg-card] border border-[--border] shadow-xl mx-auto sm:mx-0">
+          <div className="w-40 h-56 sm:w-48 sm:h-72 rounded-2xl overflow-hidden rounded-xl shadow-xl mx-auto sm:mx-0" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             {person.profile_path ? (
               <img
                 src={`https://image.tmdb.org/t/p/w342${person.profile_path}`}
@@ -151,7 +151,7 @@ export default async function KisiPage({ params }: Props) {
 
               return (
                 <Link key={`cast-${credit.id}`} href={href} className="group">
-                  <div className="aspect-[2/3] rounded-xl overflow-hidden bg-[--bg-card] border border-[--border] group-hover:border-[--accent]/40 transition-colors mb-1.5 relative">
+                  <div className="aspect-[2/3] rounded-xl overflow-hidden rounded-xl group-hover:border-[--accent]/40 transition-colors mb-1.5 relative" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                     {credit.poster_path ? (
                       <img src={`https://image.tmdb.org/t/p/w342${credit.poster_path}`} alt={title} className="w-full h-full object-cover" />
                     ) : (
@@ -189,7 +189,7 @@ export default async function KisiPage({ params }: Props) {
 
               return (
                 <Link key={`crew-${credit.id}`} href={href} className="group">
-                  <div className="aspect-[2/3] rounded-xl overflow-hidden bg-[--bg-card] border border-[--border] group-hover:border-[--accent]/40 transition-colors mb-1.5 relative">
+                  <div className="aspect-[2/3] rounded-xl overflow-hidden rounded-xl group-hover:border-[--accent]/40 transition-colors mb-1.5 relative" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                     {credit.poster_path ? (
                       <img src={`https://image.tmdb.org/t/p/w342${credit.poster_path}`} alt={title} className="w-full h-full object-cover" />
                     ) : (

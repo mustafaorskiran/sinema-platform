@@ -42,7 +42,7 @@ export default function YeniListePage() {
           <h1 className="text-2xl font-bold text-white">Yeni Liste Oluştur</h1>
         </div>
 
-        <div className="bg-[--bg-card] border border-[--border] rounded-2xl p-8">
+        <div className="rounded-xl rounded-2xl p-8" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-sm font-medium text-[--text-secondary] mb-2">Liste Başlığı *</label>

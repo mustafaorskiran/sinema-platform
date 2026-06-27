@@ -71,7 +71,7 @@ export default function DiaryButton({ mediaId, mediaType, mediaTitle, isLoggedIn
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 mt-2 z-20 w-72 rounded-xl bg-[--bg-card] border border-[--border] shadow-2xl shadow-black/40 p-4">
+        <div className="absolute top-full left-0 mt-2 z-20 w-72 rounded-xl rounded-xl shadow-2xl shadow-black/40 p-4" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <p className="text-sm font-semibold text-white mb-3 line-clamp-1">{mediaTitle}</p>
           <form onSubmit={handleSubmit} className="space-y-3">
             <div>
@@ -132,7 +132,7 @@ export default function DiaryButton({ mediaId, mediaType, mediaTitle, isLoggedIn
               <label className="block text-xs text-[--text-secondary] mb-1">Etiketler (Enter ile ekle)</label>
               <div className="flex flex-wrap gap-1 mb-1">
                 {tags.map(t => (
-                  <span key={t} className="text-[10px] bg-[--bg-card] border border-[--border] rounded-full px-2 py-0.5 text-white flex items-center gap-1">
+                  <span key={t} className="text-[10px] rounded-xl rounded-full px-2 py-0.5 text-white flex items-center gap-1" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                     #{t}<button type="button" onClick={() => setTags(tags.filter(x => x !== t))} className="text-[--text-secondary]">×</button>
                   </span>
                 ))}

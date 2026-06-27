@@ -46,11 +46,11 @@ export default function TvFilmleriClient({ activeTab, activeSiralama, items, cur
             <button
               key={t.key}
               onClick={() => navigate(t.key, activeSiralama, 1)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                activeTab === t.key
-                  ? 'bg-[--accent] text-white'
-                  : 'bg-[--bg-card] border border-[--border] text-[--text-secondary] hover:text-white'
-              }`}
+              className="px-4 py-2 rounded-full text-sm font-medium transition-all hover:scale-105"
+              style={activeTab === t.key
+                ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff', boxShadow: '0 2px 8px rgba(225,29,72,0.3)' }
+                : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }
+              }
             >
               {t.label}
             </button>
@@ -60,7 +60,7 @@ export default function TvFilmleriClient({ activeTab, activeSiralama, items, cur
         <select
           value={activeSiralama}
           onChange={e => navigate(activeTab, e.target.value, 1)}
-          className="text-sm bg-[--bg-card] border border-[--border] text-[--text-secondary] rounded-lg px-3 py-2 focus:outline-none focus:border-[--accent]"
+          className="text-sm rounded-xl text-[--text-secondary] rounded-lg px-3 py-2 focus:outline-none focus:border-[--accent]" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
         >
           {SORT_OPTIONS.map(opt => (
             <option key={opt} value={opt}>{sortLabels[opt]}</option>
@@ -80,7 +80,7 @@ export default function TvFilmleriClient({ activeTab, activeSiralama, items, cur
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mb-8">
           {items.map(item => (
             <Link key={item.id} href={`/film/${item.id}`} className="group relative">
-              <div className="aspect-[2/3] rounded-xl overflow-hidden bg-[--bg-card] border border-[--border] group-hover:border-[--accent]/50 transition-colors relative">
+              <div className="aspect-[2/3] rounded-xl overflow-hidden rounded-xl group-hover:border-[--accent]/50 transition-colors relative" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                 {item.poster
                   ? <img src={item.poster} alt={item.title} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" />
                   : <div className="w-full h-full flex items-center justify-center text-[--text-secondary] text-xs p-2 text-center leading-tight">{item.title}</div>
@@ -110,7 +110,7 @@ export default function TvFilmleriClient({ activeTab, activeSiralama, items, cur
           {currentPage > 1 && (
             <button
               onClick={() => navigate(activeTab, activeSiralama, currentPage - 1)}
-              className="px-4 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white transition-colors"
+              className="px-4 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
             >
               ← Önceki
             </button>
@@ -135,7 +135,7 @@ export default function TvFilmleriClient({ activeTab, activeSiralama, items, cur
           {currentPage < totalPages && (
             <button
               onClick={() => navigate(activeTab, activeSiralama, currentPage + 1)}
-              className="px-4 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white transition-colors"
+              className="px-4 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
             >
               Sonraki →
             </button>

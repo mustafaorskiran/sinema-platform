@@ -11,7 +11,7 @@ export default function EnCokYorumlananLoading() {
       <Sk className="h-11 w-60 rounded-xl mb-8" />
       <div className="space-y-3">
         {Array.from({ length: 10 }).map((_, i) => (
-          <div key={i} className="flex items-center gap-4 rounded-xl bg-[--bg-card] border border-[--border] p-3">
+          <div key={i} className="rounded-xl animate-pulse" style={{ background: 'rgba(20,28,47,0.9)', border: '1px solid rgba(255,255,255,0.06)' }}>
             <Sk className="h-7 w-6 rounded shrink-0" />
             <Sk className="w-12 aspect-[2/3] rounded-lg shrink-0" />
             <div className="flex-1 space-y-2">

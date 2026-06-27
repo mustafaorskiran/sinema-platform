@@ -281,7 +281,7 @@ export default async function ListerPage({ searchParams }: Props) {
             ))}
           </div>
         ) : (
-          <div className="py-12 text-center text-[--text-secondary] rounded-2xl bg-[--bg-card] border border-[--border]">
+          <div className="py-12 text-center text-[--text-secondary] rounded-2xl rounded-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             Bu kategoride editöryal liste bulunamadı.
           </div>
         )}
@@ -332,14 +332,14 @@ export default async function ListerPage({ searchParams }: Props) {
             <IconSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[--text-secondary]" />
             <input name="q" type="search" defaultValue={q ?? ''}
               placeholder="Liste ara..."
-              className="w-full rounded-xl bg-[--bg-card] border border-[--border] py-2.5 pl-10 pr-4 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
+              className="w-full rounded-xl rounded-xl py-2.5 pl-10 pr-4 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
             />
             {kategori && <input type="hidden" name="kategori" value={kategori} />}
             <input type="hidden" name="sirala" value={sirala} />
           </div>
         </form>
 
-        <div className="flex items-center gap-1 bg-[--bg-card] border border-[--border] rounded-xl p-1">
+        <div className="flex items-center gap-1 rounded-xl rounded-xl p-1" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           {[
             { key: 'yeni',    icon: IconClock,       label: 'En Yeni' },
             { key: 'populer', icon: IconFire,         label: 'Popüler' },
@@ -362,7 +362,7 @@ export default async function ListerPage({ searchParams }: Props) {
 
       {/* ── Kullanıcı Liste Grid ── */}
       {sortedLists.length === 0 ? (
-        <div className="text-center py-24 text-[--text-secondary] rounded-2xl bg-[--bg-card] border border-[--border]">
+        <div className="text-center py-24 text-[--text-secondary] rounded-2xl rounded-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <IconList className="h-12 w-12 mx-auto mb-4 opacity-30" />
           {sirala === 'trend'
             ? <p className="text-lg font-medium text-white mb-2">Bu hafta henüz trend liste yok</p>
@@ -395,7 +395,7 @@ export default async function ListerPage({ searchParams }: Props) {
         <div className="flex justify-center gap-2 mt-12">
           {page > 1 && (
             <Link href={`${baseUrl}&sayfa=${page - 1}`}
-              className="px-4 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white hover:border-[--accent]/50 transition-colors">
+              className="px-4 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white hover:border-[--accent]/50 transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               ← Önceki
             </Link>
           )}
@@ -404,7 +404,7 @@ export default async function ListerPage({ searchParams }: Props) {
           </span>
           {page < totalPages && (
             <Link href={`${baseUrl}&sayfa=${page + 1}`}
-              className="px-4 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white hover:border-[--accent]/50 transition-colors">
+              className="px-4 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white hover:border-[--accent]/50 transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               Sonraki →
             </Link>
           )}

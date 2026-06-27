@@ -32,7 +32,7 @@ export default function MobileFilterDrawer({ genres, countries, years, activeLab
       {/* Trigger button — only on smaller screens */}
       <button
         onClick={() => setOpen(true)}
-        className="lg:hidden flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white hover:border-[--accent]/40 transition-colors"
+        className="lg:hidden flex items-center gap-2 px-3 py-1.5 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white hover:border-[--accent]/40 transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
       >
         <IconFilter className="h-4 w-4" />
         Filtrele

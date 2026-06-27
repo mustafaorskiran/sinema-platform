@@ -53,7 +53,7 @@ export default function SimilarWatchers({ mediaId, mediaType }: Props) {
             href={`/${item.type}/${item.id}`}
             className="group"
           >
-            <div className="aspect-[2/3] rounded-lg overflow-hidden bg-[--bg-card] border border-[--border] group-hover:border-[--accent]/50 transition-colors relative">
+            <div className="aspect-[2/3] rounded-lg overflow-hidden rounded-xl group-hover:border-[--accent]/50 transition-colors relative" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               {item.poster ? (
                 <img
                   src={item.poster}

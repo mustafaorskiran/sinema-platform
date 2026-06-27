@@ -32,7 +32,7 @@ export default function AffiliateLinks({ title, year }: Props) {
           target="_blank"
           rel="noopener noreferrer"
           title={link.title}
-          className="text-xs px-3 py-1.5 rounded-full bg-[--bg-card] border border-[--border] text-[--text-secondary] hover:text-white hover:border-[--accent]/40 transition-colors"
+          className="text-xs px-3 py-1.5 rounded-full rounded-xl text-[--text-secondary] hover:text-white hover:border-[--accent]/40 transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
         >
           {link.label}
         </a>

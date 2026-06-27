@@ -54,7 +54,7 @@ export default function ReportButton({ targetType, targetId, isLoggedIn, classNa
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setOpen(false)}>
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-          <div className="relative z-10 w-full max-w-sm rounded-2xl bg-[--bg-card] border border-[--border] p-6 shadow-2xl" onClick={e => e.stopPropagation()}>
+          <div className="relative z-10 w-full max-w-sm rounded-2xl rounded-xl p-6 shadow-2xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }} onClick={e => e.stopPropagation()}>
             <h2 className="text-base font-bold text-white mb-4">Şikayet Et</h2>
 
             {sent ? (

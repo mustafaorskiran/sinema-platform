@@ -30,7 +30,7 @@ export default function RandomPickButton({ items }: { items: Item[] }) {
       {pick && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setPick(null)}>
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-          <div className="relative z-10 rounded-2xl bg-[--bg-card] border border-[--border] p-8 max-w-xs w-full text-center shadow-2xl" onClick={e => e.stopPropagation()}>
+          <div className="relative z-10 rounded-2xl rounded-xl p-8 max-w-xs w-full text-center shadow-2xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }} onClick={e => e.stopPropagation()}>
             <p className="text-xs font-semibold text-[--accent] uppercase tracking-widest mb-4">Bugünkü Seçim</p>
             {pick.poster && (
               <img src={pick.poster} alt={pick.title}

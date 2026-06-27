@@ -105,7 +105,7 @@ export default async function EditorialListPage({ params }: Props) {
         {/* Poster mosaic + info satırı */}
         <div className="flex gap-5 items-start mb-6 flex-wrap sm:flex-nowrap">
           {/* Mini kolaj */}
-          <div className="shrink-0 w-32 h-32 rounded-2xl overflow-hidden grid grid-cols-2 grid-rows-2 bg-[--bg-card] border border-[--border]">
+          <div className="shrink-0 w-32 h-32 rounded-2xl overflow-hidden grid grid-cols-2 grid-rows-2 rounded-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             {Array.from({ length: 4 }).map((_, i) => {
               const hp = heroPosters[i]
               return (
@@ -160,7 +160,7 @@ export default async function EditorialListPage({ params }: Props) {
 
       {/* ── Film Listesi ── */}
       {items.length === 0 ? (
-        <div className="py-20 text-center text-[--text-secondary] bg-[--bg-card] border border-[--border] rounded-2xl">
+        <div className="py-20 text-center text-[--text-secondary] rounded-xl rounded-2xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <p className="text-lg font-medium text-white mb-2">Bu liste henüz içerik içermiyor</p>
           <p className="text-sm">Yakında eklenecek</p>
         </div>
@@ -170,7 +170,7 @@ export default async function EditorialListPage({ params }: Props) {
             <a
               key={`${item.media_type}-${item.media_id}`}
               href={`/${item.media_type}/${item.media_id}`}
-              className="group flex items-center gap-4 rounded-xl bg-[--bg-card] border border-[--border] hover:border-[--accent]/40 transition-all p-3 hover:bg-[--bg-card]/80"
+              className="group flex items-center gap-4 rounded-xl rounded-xl hover:border-[--accent]/40 transition-all p-3 hover:bg-[--bg-card]/80" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
             >
               {/* Sıra numarası */}
               <div className={`shrink-0 w-8 text-center font-bold text-sm ${

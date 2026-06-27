@@ -89,7 +89,7 @@ export default async function KoleksiyonPage({ params, searchParams }: Props) {
           </div>
 
           {/* Görünüm toggle */}
-          <div className="flex items-center bg-[--bg-card] border border-[--border] rounded-lg overflow-hidden">
+          <div className="flex items-center rounded-xl rounded-lg overflow-hidden" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <Link href={`/profil/${username}/koleksiyon?gorunum=raf${filterFormat ? `&format=${filterFormat}` : ''}`}
               className={`px-3 py-2 text-xs font-medium transition-colors ${gorunum === 'raf' ? 'bg-[--accent] text-white' : 'text-[--text-secondary] hover:text-white'}`}>
               🗄️ Raf
@@ -114,7 +114,7 @@ export default async function KoleksiyonPage({ params, searchParams }: Props) {
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
           {withMedia.map(item => (
             <Link key={item.id} href={`/${item.media_type}/${item.media_id}`} className="group">
-              <div className="aspect-[2/3] rounded-lg overflow-hidden bg-[--bg-card] border border-[--border] group-hover:border-[--accent]/50 transition-colors">
+              <div className="aspect-[2/3] rounded-lg overflow-hidden rounded-xl group-hover:border-[--accent]/50 transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                 {item.poster
                   ? <img src={item.poster} alt={item.title} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" />
                   : <div className="w-full h-full flex items-center justify-center text-[--text-secondary] text-[10px] p-1 text-center">{item.title}</div>

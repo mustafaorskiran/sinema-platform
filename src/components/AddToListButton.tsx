@@ -72,7 +72,7 @@ export default function AddToListButton({ mediaId, mediaType, userId }: Props) {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-64 bg-[--bg-card] border border-[--border] rounded-xl shadow-xl z-50 overflow-hidden">
+        <div className="absolute right-0 top-full mt-2 w-64 rounded-xl rounded-xl shadow-xl z-50 overflow-hidden" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           {loading ? (
             <div className="flex items-center justify-center py-8">
               <IconLoader className="h-5 w-5 animate-spin text-[--text-secondary]" />

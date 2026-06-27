@@ -331,7 +331,7 @@ export default async function HomePage() {
         ))}
 
         {userOnboarded && (
-          <div className="flex items-center justify-between px-5 py-3.5 rounded-xl bg-[--bg-card] border border-[--border]">
+          <div className="flex items-center justify-between px-5 py-3.5 rounded-xl rounded-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <div>
               <p className="text-sm font-medium text-white">Kişisel Öneri Sayfan</p>
               <p className="text-xs text-[--text-secondary] mt-0.5">Zevklerine göre seçilmiş filmler ve diziler</p>
@@ -592,7 +592,7 @@ function TrailerSkeleton() {
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="rounded-xl overflow-hidden bg-[--bg-card] border border-[--border]">
+          <div key={i} className="rounded-xl overflow-hidden rounded-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <div className="aspect-video bg-[--skeleton] animate-pulse" />
             <div className="p-3 space-y-1.5">
               <div className="h-3 rounded bg-[--skeleton] animate-pulse w-3/4" />

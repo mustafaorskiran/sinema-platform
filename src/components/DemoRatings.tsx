@@ -79,7 +79,7 @@ export default async function DemoRatings({ mediaId, mediaType }: Props) {
   if (!hasAnyData) return null
 
   return (
-    <div className="mt-10 bg-[--bg-card] border border-[--border] rounded-2xl p-4">
+    <div className="mt-10 rounded-xl rounded-2xl p-4" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
       <h2
         className="text-lg font-bold text-white mb-4"
         style={{ borderLeft: '3px solid var(--accent)', paddingLeft: '10px' }}
