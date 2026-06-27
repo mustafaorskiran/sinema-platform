@@ -98,7 +98,7 @@ export default async function FilmGecesiDetailPage({ params }: Props) {
                   className="flex items-center gap-3 p-3 rounded-xl transition-all hover:-translate-y-0.5 group"
                   style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
                   <span className="text-sm font-bold text-[--text-secondary] w-6 text-center shrink-0">{idx + 1}</span>
-                  <div className="w-10 aspect-[2/3] rounded-lg overflow-hidden bg-[--bg-secondary] shrink-0">
+                  <div className="w-10 aspect-[2/3] rounded-lg overflow-hidden shrink-0" style={{ background: 'rgba(255,255,255,0.06)' }}>
                     {item.poster && <img src={item.poster} alt={item.title} className="w-full h-full object-cover" />}
                   </div>
                   <p className="text-sm font-medium text-white group-hover:text-[--accent] transition-colors flex-1 truncate">{item.title}</p>

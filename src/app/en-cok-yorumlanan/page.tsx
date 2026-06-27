@@ -143,7 +143,7 @@ export default async function EnCokYorumlananPage({ searchParams }: Props) {
                 </div>
 
                 {/* Poster */}
-                <div className="w-12 aspect-[2/3] rounded-lg overflow-hidden bg-[--bg-secondary] shrink-0">
+                <div className="w-12 aspect-[2/3] rounded-lg overflow-hidden shrink-0" style={{ background: 'rgba(255,255,255,0.06)' }}>
                   {poster
                     ? <img src={poster} alt={title} className="w-full h-full object-cover" />
                     : <div className="w-full h-full flex items-center justify-center text-[--text-secondary] text-xs">?</div>

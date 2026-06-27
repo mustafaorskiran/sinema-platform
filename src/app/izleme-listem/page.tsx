@@ -112,7 +112,7 @@ export default async function IzlemeLisTemPage({ searchParams }: Props) {
 
               {/* Poster */}
               <Link href={`/${item.media_type}/${item.media_id}`} className="shrink-0">
-                <div className="w-10 aspect-[2/3] rounded-lg overflow-hidden bg-[--bg-secondary]">
+                <div className="w-10 aspect-[2/3] rounded-lg overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
                   {item.poster
                     ? <img src={item.poster} alt={item.title} className="w-full h-full object-cover" />
                     : <div className="w-full h-full" />
