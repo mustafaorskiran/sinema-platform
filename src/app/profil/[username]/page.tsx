@@ -294,8 +294,8 @@ export default async function ProfilPage({ params }: Props) {
             <span>{joinDate} tarihinde katıldı</span>
           </div>
 
-          {/* Takipçi / Takip sayıları */}
-          <div className="flex gap-5 mt-3">
+          {/* Takipçi / Takip sayıları + ortalama puan */}
+          <div className="flex flex-wrap gap-4 mt-3 items-center">
             <Link href={`/profil/${profile.username}/takipciler`} className="text-sm hover:underline">
               <span className="font-bold text-white">{followerCount ?? 0}</span>
               <span className="text-[--text-secondary] ml-1">Takipçi</span>
@@ -304,6 +304,16 @@ export default async function ProfilPage({ params }: Props) {
               <span className="font-bold text-white">{followingCount ?? 0}</span>
               <span className="text-[--text-secondary] ml-1">Takip</span>
             </Link>
+            {(reviews?.length ?? 0) > 0 && (() => {
+              const avg = reviews!.reduce((s, r) => s + r.rating, 0) / reviews!.length
+              return (
+                <span className="flex items-center gap-1 px-2 py-0.5 rounded-lg text-sm font-semibold"
+                  style={{ background: 'rgba(212,168,67,0.1)', border: '1px solid rgba(212,168,67,0.2)', color: '#D4A843' }}>
+                  ★ {avg.toFixed(1)}
+                  <span className="font-normal text-xs" style={{ color: 'rgba(212,168,67,0.5)' }}>ort.</span>
+                </span>
+              )
+            })()}
           </div>
 
           {/* Bio & konum & website */}
