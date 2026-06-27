@@ -51,18 +51,18 @@ export default async function KoleksiyonPage({ params }: Props) {
 
       {/* İstatistikler */}
       <div className="flex flex-wrap gap-4 mb-6">
-        <div className="rounded-xl bg-[--bg-card] border border-[--border] px-5 py-3 text-center">
+        <div className="rounded-xl px-5 py-3 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(212,168,67,0.1)' }}>
           <p className="text-xl font-bold text-white">{sorted.length}</p>
           <p className="text-xs text-[--text-secondary]">Film</p>
         </div>
         {avgVote > 0 && (
-          <div className="rounded-xl bg-[--bg-card] border border-[--border] px-5 py-3 text-center">
+          <div className="rounded-xl px-5 py-3 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(212,168,67,0.1)' }}>
             <p className="text-xl font-bold text-[--gold]">★ {avgVote.toFixed(1)}</p>
             <p className="text-xs text-[--text-secondary]">Ortalama Puan</p>
           </div>
         )}
         {sorted[0]?.release_date && (
-          <div className="rounded-xl bg-[--bg-card] border border-[--border] px-5 py-3 text-center">
+          <div className="rounded-xl px-5 py-3 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(212,168,67,0.1)' }}>
             <p className="text-xl font-bold text-white">{sorted[0].release_date.slice(0, 4)}</p>
             <p className="text-xs text-[--text-secondary]">İlk Film</p>
           </div>
@@ -78,7 +78,8 @@ export default async function KoleksiyonPage({ params }: Props) {
       <div className="space-y-3">
         {sorted.map((part, idx) => (
           <Link key={part.id} href={`/film/${part.id}`}
-            className="flex items-center gap-4 p-3 rounded-xl bg-[--bg-card] border border-[--border] hover:border-[--accent]/40 transition-colors group">
+            className="flex items-center gap-4 p-3 rounded-xl transition-all duration-200 hover:-translate-y-0.5 group"
+              style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <span className="text-sm font-bold text-[--text-secondary] w-8 text-center shrink-0">{idx + 1}</span>
             <div className="w-12 aspect-[2/3] rounded-lg overflow-hidden shrink-0 bg-[--bg-secondary]">
               {part.poster_path && (
