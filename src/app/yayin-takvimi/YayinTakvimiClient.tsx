@@ -151,9 +151,13 @@ type TabKey = typeof TABS[number]['key']
 export default function YayinTakvimiClient({ filmItems, tvItems, tvBolumItems }: Props) {
   const [activeTab, setActiveTab] = useState<TabKey>('film')
 
-  const filmGroups   = groupItems(filmItems)
-  const tvGroups     = groupItems(tvItems)
-  const tvBolumGroups = groupItems(tvBolumItems)
+  const filmGroups    = groupItems(filmItems)
+  const tvGroups      = groupItems(tvItems)
+
+  // TV BÖLÜMÜ: tüm item'lar bugünün tarihini taşıyor, tek grup "Bugün Yayında"
+  const tvBolumGroups: Group[] = tvBolumItems.length > 0
+    ? [{ label: 'Bugün Yayında', key: 'bugun', items: tvBolumItems, isBuHafta: true }]
+    : []
 
   const groups     = activeTab === 'film' ? filmGroups : activeTab === 'tv' ? tvGroups : tvBolumGroups
   const itemLabel  = activeTab === 'film' ? 'film' : 'dizi'

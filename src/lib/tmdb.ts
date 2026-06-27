@@ -273,6 +273,19 @@ export async function getUpcomingMovies(page = 1): Promise<TMDbSearchResult> {
   return tmdbFetch('/movie/upcoming', { page: String(page) })
 }
 
+export async function getUpcomingMoviesYear(page = 1): Promise<TMDbSearchResult> {
+  const today = new Date().toISOString().split('T')[0]
+  const oneYear = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+  return tmdbFetch('/discover/movie', {
+    page: String(page),
+    'primary_release_date.gte': today,
+    'primary_release_date.lte': oneYear,
+    sort_by: 'primary_release_date.asc',
+    'vote_count.gte': '0',
+    language: 'tr-TR',
+  })
+}
+
 export async function getUpcomingTV(page = 1): Promise<TMDbSearchResult> {
   const today = new Date().toISOString().split('T')[0]
   const future = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
@@ -283,6 +296,19 @@ export async function getUpcomingTV(page = 1): Promise<TMDbSearchResult> {
     sort_by: 'first_air_date.asc',
     'vote_count.gte': '3',
     'with_original_language': 'en|tr|ko|ja|fr|de|es',
+  })
+}
+
+export async function getUpcomingTVYear(page = 1): Promise<TMDbSearchResult> {
+  const today = new Date().toISOString().split('T')[0]
+  const oneYear = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+  return tmdbFetch('/discover/tv', {
+    page: String(page),
+    'first_air_date.gte': today,
+    'first_air_date.lte': oneYear,
+    sort_by: 'first_air_date.asc',
+    'vote_count.gte': '0',
+    language: 'tr-TR',
   })
 }
 
