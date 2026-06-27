@@ -110,12 +110,15 @@ export default async function AkisPage({ searchParams }: Props) {
       </div>
 
       {/* Sekmeler */}
-      <div className="flex items-center gap-1 border-b border-[--border] mb-6">
+      <div className="flex items-center gap-1 mb-6 p-1 rounded-xl w-fit"
+        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
         {tabs.map(t => (
           <Link key={t.key} href={`/akis?tip=${t.key}`}
-            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${
-              tip === t.key ? 'border-[--accent] text-white' : 'border-transparent text-[--text-secondary] hover:text-white'
-            }`}>
+            className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
+            style={tip === t.key
+              ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff', boxShadow: '0 2px 8px rgba(225,29,72,0.3)' }
+              : { color: 'rgba(255,255,255,0.45)' }
+            }>
             {t.label}
           </Link>
         ))}
