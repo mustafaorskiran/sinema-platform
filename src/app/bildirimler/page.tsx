@@ -27,20 +27,51 @@ function getDetails(n: any) {
   return                                { label: n.content ?? '',               href: n.link ?? '#',                                                   badgeColor: 'rgba(212,168,67,0.7)', Icon: IconBell }
 }
 
-export default async function BildirimlerPage() {
+interface BildirimProps {
+  searchParams: Promise<{ tip?: string }>
+}
+
+export default async function BildirimlerPage({ searchParams }: BildirimProps) {
+  const { tip = 'hepsi' } = await searchParams
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/giris')
 
-  const { data: notifications } = await supabase
+  let query = supabase
     .from('notifications')
     .select('id, type, read, created_at, review_id, content, link, actor:profiles!actor_id(username, avatar_url), review:reviews(media_id, media_type)')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(100)
 
+  if (tip !== 'hepsi') {
+    query = query.eq('type', tip)
+  }
+
+  const { data: notifications } = await query
+
+  const { data: allNotifs } = await supabase
+    .from('notifications')
+    .select('type')
+    .eq('user_id', user.id)
+
   const items = (notifications ?? []) as any[]
   const unreadCount = items.filter(n => !n.read).length
+
+  const typeCounts = {
+    like: (allNotifs ?? []).filter(n => n.type === 'like').length,
+    follow: (allNotifs ?? []).filter(n => n.type === 'follow').length,
+    reply: (allNotifs ?? []).filter(n => n.type === 'reply' || n.type === 'forum_reply').length,
+    message: (allNotifs ?? []).filter(n => n.type === 'message').length,
+  }
+
+  const FILTER_TABS = [
+    { id: 'hepsi', label: 'Tümü', count: (allNotifs ?? []).length },
+    { id: 'like', label: '❤️ Beğeni', count: typeCounts.like },
+    { id: 'follow', label: '👤 Takip', count: typeCounts.follow },
+    { id: 'reply', label: '💬 Yanıt', count: typeCounts.reply },
+    { id: 'message', label: '✉️ Mesaj', count: typeCounts.message },
+  ]
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
@@ -65,6 +96,19 @@ export default async function BildirimlerPage() {
           {unreadCount > 0 && <BildirimlerClient />}
           <PushSubscribeButton />
         </div>
+      </div>
+
+      {/* Filtre Tabları */}
+      <div className="flex flex-wrap gap-2 mb-6">
+        {FILTER_TABS.map(tab => (
+          <Link key={tab.id} href={`/bildirimler?tip=${tab.id}`}
+            className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
+            style={tab.id === tip
+              ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: 'white' }
+              : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
+            {tab.label} {tab.count > 0 && <span className="opacity-60">({tab.count})</span>}
+          </Link>
+        ))}
       </div>
 
       {/* Liste */}
