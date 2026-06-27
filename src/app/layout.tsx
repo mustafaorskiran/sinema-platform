@@ -6,6 +6,7 @@ import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration'
 import { createClient } from '@/lib/supabase/server'
 import { LocaleProvider } from '@/context/LocaleContext'
 import { getLocale, getMessages } from '@/lib/i18n'
+import { cookies } from 'next/headers'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sinezon.com'
 const SITE_NAME = 'Sinezon'
@@ -48,6 +49,9 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocale()
   const messages = await getMessages(locale)
+  const cookieStore = await cookies()
+  const themeCookie = cookieStore.get('theme')?.value
+  const theme = themeCookie === 'light' ? 'light' : 'dark'
 
   let user = null
   try {
@@ -66,7 +70,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const footerText = (messages.footer?.rights as string) ?? '© 2025 SineMa'
 
   return (
-    <html lang={locale} className="h-full dark">
+    <html lang={locale} className={`h-full ${theme}`}>
       <head>
         <meta name="theme-color" content="#080A0F" />
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
