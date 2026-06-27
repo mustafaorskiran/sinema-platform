@@ -133,7 +133,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
   const rSort = reviewSortMap[siralama] ?? reviewSortMap.yeni
   const { data: reviews } = await supabase
     .from('reviews')
-    .select('*, profiles(username, avatar_url)')
+    .select('*, profiles(username, avatar_url, is_admin)')
     .eq('media_id', movieId)
     .eq('media_type', 'film')
     .order(rSort.col, { ascending: rSort.asc })

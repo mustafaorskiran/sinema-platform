@@ -131,6 +131,7 @@ export default function ReviewList({ reviews, currentUserId, likeData = {}, repl
           const replies = replyCount[review.id]  ?? 0
           const username  = review.profiles?.username || 'Anonim'
           const avatarUrl = review.profiles?.avatar_url ?? null
+          const isAdmin   = (review.profiles as any)?.is_admin ?? false
           const initial   = username[0].toUpperCase()
 
           return (
@@ -155,9 +156,17 @@ export default function ReviewList({ reviews, currentUserId, likeData = {}, repl
                     </div>
                   </Link>
                   <div>
-                    <Link href={`/profil/${username}`} className="font-semibold text-white text-sm hover:text-[--accent] transition-colors">
-                      {username}
-                    </Link>
+                    <div className="flex items-center gap-1.5">
+                      <Link href={`/profil/${username}`} className="font-semibold text-white text-sm hover:text-[--accent] transition-colors">
+                        {username}
+                      </Link>
+                      {isAdmin && (
+                        <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded"
+                          style={{ background: 'rgba(225,29,72,0.12)', color: 'var(--accent)', border: '1px solid rgba(225,29,72,0.25)' }}>
+                          STAFF
+                        </span>
+                      )}
+                    </div>
                     <p className="text-xs text-[--text-secondary]">{formatDate(review.created_at)}</p>
                   </div>
                 </div>

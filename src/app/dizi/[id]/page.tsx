@@ -134,7 +134,7 @@ export default async function DiziPage({ params, searchParams }: Props) {
   const tvSort = tvReviewSortMap[siralama] ?? tvReviewSortMap.yeni
   const { data: reviews } = await supabase
     .from('reviews')
-    .select('*, profiles(username, avatar_url)')
+    .select('*, profiles(username, avatar_url, is_admin)')
     .eq('media_id', seriesId)
     .eq('media_type', 'dizi')
     .order(tvSort.col, { ascending: tvSort.asc })
