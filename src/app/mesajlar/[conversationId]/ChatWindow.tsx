@@ -69,7 +69,12 @@ export default function ChatWindow({ conversationId, currentUserId, initialMessa
                   ? <img src={m.profiles.avatar_url} alt="" className="h-7 w-7 rounded-full object-cover shrink-0 mt-1" />
                   : <div className="h-7 w-7 rounded-full bg-[--bg-secondary] flex items-center justify-center text-xs text-white shrink-0 mt-1">{m.profiles.username[0]?.toUpperCase()}</div>
               )}
-              <div className={`max-w-[75%] rounded-2xl px-3.5 py-2.5 text-sm ${isMe ? 'bg-[--accent] text-white rounded-tr-sm' : 'bg-[--bg-card] border border-[--border] text-white rounded-tl-sm'}`}>
+              <div
+                className={`max-w-[75%] rounded-2xl px-3.5 py-2.5 text-sm ${isMe ? 'rounded-tr-sm' : 'rounded-tl-sm'}`}
+                style={isMe
+                  ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff' }
+                  : { background: 'rgba(20,28,47,0.95)', border: '1px solid rgba(255,255,255,0.08)', color: '#fff' }
+                }>
                 <p className="whitespace-pre-wrap break-words">{m.content}</p>
                 <p className={`text-[10px] mt-1 ${isMe ? 'text-white/60 text-right' : 'text-[--text-secondary]'}`}>
                   {new Date(m.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
@@ -91,7 +96,8 @@ export default function ChatWindow({ conversationId, currentUserId, initialMessa
           placeholder="Mesaj yaz... (Enter gönder, Shift+Enter yeni satır)"
           rows={1}
           maxLength={2000}
-          className="flex-1 rounded-xl bg-[--bg-card] border border-[--border] px-4 py-2.5 text-sm text-white placeholder:text-[--text-secondary] outline-none focus:border-[--accent] resize-none"
+          className="flex-1 rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-[--text-secondary] outline-none resize-none transition-colors"
+          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.09)' }}
         />
         <button onClick={send} disabled={!text.trim() || sending}
           className="px-4 py-2.5 rounded-xl bg-[--accent] hover:bg-[--accent-hover] text-white text-sm font-semibold transition-colors disabled:opacity-40 shrink-0">
