@@ -38,6 +38,7 @@ export default async function HomePage() {
     { count: reviewCount },
     { count: userCount },
     { data: topReviewsRaw },
+    { data: activeReviewersRaw },
   ] = await Promise.all([
     getTrendingAll().catch(() => ({ results: [] as TMDbMovie[] })),
     discoverMovies({ sortBy: 'popularity.desc' }).catch(() => ({ results: [] })),
@@ -64,7 +65,23 @@ export default async function HomePage() {
       .gte('rating', 7)
       .order('created_at', { ascending: false })
       .limit(3),
+    supabase.from('reviews')
+      .select('profiles(username, avatar_url)')
+      .gte('created_at', sevenDaysAgoISO)
+      .order('created_at', { ascending: false })
+      .limit(50),
   ])
+
+  // Aktif kullanıcılar (son 7 gün, tekrarsız)
+  const seenUsernames = new Set<string>()
+  const activeReviewers: { username: string; avatar_url: string | null }[] = []
+  for (const row of (activeReviewersRaw ?? []) as any[]) {
+    const p = row.profiles as { username: string; avatar_url: string | null } | null
+    if (p?.username && !seenUsernames.has(p.username)) {
+      seenUsernames.add(p.username)
+      activeReviewers.push(p)
+    }
+  }
 
   // Hero
   const hero         = trendingRes.results[0]
@@ -249,16 +266,32 @@ export default async function HomePage() {
               )}
             </div>
             <div className="flex items-center gap-3">
-              <Link href="/filmler?dil=tr" className="text-xs text-[--accent] hover:underline font-medium">
+              {activeReviewers.length > 0 && (
+                <div className="flex items-center gap-2">
+                  <div className="flex -space-x-1.5">
+                    {activeReviewers.slice(0, 5).map(u => (
+                      <Link key={u.username} href={`/profil/${u.username}`} title={u.username}
+                        className="h-6 w-6 rounded-full ring-2 overflow-hidden flex items-center justify-center text-[9px] font-bold text-white"
+                        style={{ background: 'var(--accent)' }}>
+                        {u.avatar_url
+                          ? <img src={u.avatar_url} alt={u.username} className="w-full h-full object-cover" />
+                          : u.username[0]?.toUpperCase()
+                        }
+                      </Link>
+                    ))}
+                  </div>
+                  <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                    Bu hafta {activeReviewers.length} aktif
+                  </span>
+                </div>
+              )}
+              <span className="text-[--border] hidden sm:inline">·</span>
+              <Link href="/filmler?dil=tr" className="text-xs text-[--accent] hover:underline font-medium hidden sm:inline">
                 🇹🇷 Türk Filmleri
               </Link>
-              <span className="text-[--border]">·</span>
-              <Link href="/filmler?sirala=vote_average.desc" className="text-xs text-[--text-secondary] hover:text-white transition-colors">
+              <span className="text-[--border] hidden sm:inline">·</span>
+              <Link href="/filmler?sirala=vote_average.desc" className="text-xs text-[--text-secondary] hover:text-white transition-colors hidden sm:inline">
                 En İyi Puanlı
-              </Link>
-              <span className="text-[--border]">·</span>
-              <Link href="/filmler?sirala=release_date.desc" className="text-xs text-[--text-secondary] hover:text-white transition-colors">
-                Yeni Çıkanlar
               </Link>
             </div>
           </div>
