@@ -51,11 +51,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const description = movie.overview
       ? movie.overview.slice(0, 155)
       : `${title}${year ? ` (${year})` : ''}${genreNames ? ' — ' + genreNames : ''} · Sinezon'da puan ver ve yorum yap.`
-    const ogImage = movie.backdrop_path
-      ? `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`
-      : movie.poster_path
-        ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-        : undefined
+    const posterUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w300${movie.poster_path}` : ''
+    const ogParams = new URLSearchParams({ title, type: 'film', ...(year && { year }), ...(posterUrl && { poster: posterUrl }) })
+    const ogImage = `/api/og?${ogParams.toString()}`
     return {
       title,
       description,
@@ -63,7 +61,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       openGraph: {
         title: `${title}${year ? ` (${year})` : ''} | Sinezon`,
         description,
-        images: ogImage ? [{ url: ogImage, width: 1280, height: 720, alt: title }] : [],
+        images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
         type: 'video.movie',
         url: `/film/${id}`,
       },
@@ -71,7 +69,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         card: 'summary_large_image',
         title: `${title}${year ? ` (${year})` : ''} | Sinezon`,
         description,
-        images: ogImage ? [ogImage] : [],
+        images: [ogImage],
       },
     }
   } catch {
