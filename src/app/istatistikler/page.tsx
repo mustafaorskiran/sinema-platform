@@ -66,6 +66,27 @@ export default async function IstatistiklerPage() {
     }))
   )
 
+  // Son 12 ay aylık yorum dağılımı
+  const { data: monthlyRaw } = await supabase
+    .from('reviews')
+    .select('created_at')
+    .gte('created_at', new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString())
+
+  const monthlyMap: Record<string, number> = {}
+  for (const r of monthlyRaw ?? []) {
+    const d = new Date(r.created_at)
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+    monthlyMap[key] = (monthlyMap[key] ?? 0) + 1
+  }
+  const now = new Date()
+  const monthlyData = Array.from({ length: 12 }, (_, i) => {
+    const d = new Date(now.getFullYear(), now.getMonth() - 11 + i, 1)
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+    const MONTHS = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara']
+    return { key, label: MONTHS[d.getMonth()], count: monthlyMap[key] ?? 0 }
+  })
+  const maxMonthly = Math.max(...monthlyData.map(m => m.count), 1)
+
   const stats = [
     { label: 'Kullanıcı', value: userCount ?? 0, icon: '👤', color: '#60a5fa' },
     { label: 'Yorum', value: reviewCount ?? 0, icon: '💬', color: 'var(--accent)' },
@@ -152,28 +173,56 @@ export default async function IstatistiklerPage() {
         )}
       </div>
 
+      {/* Aylık Aktivite Grafiği */}
+      <div className="rounded-2xl p-6 mb-8"
+        style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(212,168,67,0.1)' }}>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-1 h-5 rounded-full" style={{ background: 'linear-gradient(180deg, #D4A843, #E11D48)' }} />
+          <h2 className="text-base font-bold" style={{ color: 'var(--text-primary)' }}>Son 12 Ay Yorum Aktivitesi</h2>
+        </div>
+        <div className="flex items-end gap-1.5 h-32">
+          {monthlyData.map((m) => {
+            const pct = Math.round((m.count / maxMonthly) * 100)
+            const isLast = m.key === monthlyData[11].key
+            return (
+              <div key={m.key} className="flex-1 flex flex-col items-center gap-1 group relative">
+                {m.count > 0 && (
+                  <div className="absolute -top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-[9px] font-bold whitespace-nowrap px-1.5 py-0.5 rounded"
+                    style={{ background: 'rgba(14,20,32,0.95)', color: '#D4A843', border: '1px solid rgba(212,168,67,0.2)' }}>
+                    {m.count}
+                  </div>
+                )}
+                <div className="w-full rounded-t-sm transition-all duration-500"
+                  style={{
+                    height: `${Math.max(pct, m.count > 0 ? 4 : 1)}%`,
+                    background: isLast
+                      ? 'linear-gradient(180deg, #D4A843, rgba(212,168,67,0.4))'
+                      : 'linear-gradient(180deg, rgba(225,29,72,0.7), rgba(225,29,72,0.2))',
+                    minHeight: m.count > 0 ? '4px' : '2px',
+                  }} />
+                <span className="text-[9px] font-medium" style={{ color: isLast ? '#D4A843' : 'rgba(255,255,255,0.3)' }}>
+                  {m.label}
+                </span>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
       {/* Bu Hafta Aktivite */}
-      <div
-        className="rounded-2xl p-6"
-        style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
-      >
+      <div className="rounded-2xl p-6"
+        style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
         <h2 className="text-lg font-bold mb-3" style={{ color: 'var(--text-primary)', borderLeft: '3px solid #34d399', paddingLeft: '10px' }}>
           Bu Hafta
         </h2>
         <div className="flex items-center gap-4">
-          <div
-            className="h-16 w-16 rounded-2xl flex items-center justify-center text-2xl font-extrabold"
-            style={{ background: 'rgba(52,211,153,0.15)', color: '#34d399' }}
-          >
+          <div className="h-16 w-16 rounded-2xl flex items-center justify-center text-2xl font-extrabold"
+            style={{ background: 'rgba(52,211,153,0.15)', color: '#34d399' }}>
             {weeklyCount ?? 0}
           </div>
           <div>
-            <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
-              yorum eklendi
-            </p>
-            <p className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-              Son 7 gün içinde
-            </p>
+            <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>yorum eklendi</p>
+            <p className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>Son 7 gün içinde</p>
           </div>
         </div>
       </div>
