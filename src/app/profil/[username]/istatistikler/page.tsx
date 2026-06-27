@@ -362,7 +362,7 @@ export default async function IstatistiklerPage({ params }: Props) {
                 {years.map(([year, count]) => (
                   <div key={year} className="flex items-center gap-3">
                     <span className="text-xs text-[--text-secondary] w-10 shrink-0">{year}</span>
-                    <div className="flex-1 h-4 bg-[--bg-secondary] rounded-full overflow-hidden">
+                    <div className="flex-1 h-4 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
                       <div
                         className="h-full bg-[--accent]/60 rounded-full transition-all"
                         style={{ width: `${(count / maxYearCount) * 100}%` }}
@@ -384,7 +384,7 @@ export default async function IstatistiklerPage({ params }: Props) {
                 {topGenres.map(g => (
                   <div key={g.id} className="flex items-center gap-3">
                     <span className="text-xs text-white w-28 shrink-0">{g.name}</span>
-                    <div className="flex-1 h-3 bg-[--bg-secondary] rounded-full overflow-hidden">
+                    <div className="flex-1 h-3 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
                       <div
                         className="h-full bg-[--accent] rounded-full transition-all"
                         style={{ width: `${(g.count / maxGenreCount) * 100}%` }}
@@ -412,7 +412,8 @@ export default async function IstatistiklerPage({ params }: Props) {
                     <div
                       key={badge.id}
                       title={badge.desc}
-                      className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[--bg-secondary] border border-green-500/30 cursor-default"
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-default"
+                      style={{ background: 'rgba(74,222,128,0.06)', border: '1px solid rgba(74,222,128,0.2)' }}
                     >
                       <span className="text-lg">{badge.emoji}</span>
                       <div>
@@ -433,7 +434,8 @@ export default async function IstatistiklerPage({ params }: Props) {
                     <div
                       key={badge.id}
                       title={badge.desc}
-                      className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[--bg-secondary] border border-[--border] opacity-40 cursor-default"
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg opacity-35 cursor-default"
+                      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
                     >
                       <span className="text-lg grayscale">{badge.emoji}</span>
                       <div>
