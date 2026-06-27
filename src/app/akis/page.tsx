@@ -131,7 +131,8 @@ export default async function AkisPage({ searchParams }: Props) {
             const mediaKey = `${r.media_type}-${r.media_id}`
             const media = mediaCache.get(mediaKey)
             return (
-              <article key={`review-${r.id}`} className="rounded-2xl bg-[--bg-card] border border-[--border] p-4 hover:border-[--accent]/20 transition-colors">
+              <article key={`review-${r.id}`} className="rounded-2xl p-4 transition-all duration-200 hover:-translate-y-0.5"
+                style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="flex items-center gap-2.5 mb-3">
                   <Link href={profileHref}>
                     <div className="h-8 w-8 rounded-full bg-[--accent] flex items-center justify-center text-xs font-bold text-white overflow-hidden shrink-0">
@@ -167,7 +168,8 @@ export default async function AkisPage({ searchParams }: Props) {
             const mediaKey = `${w.media_type}-${w.media_id}`
             const media = mediaCache.get(mediaKey)
             return (
-              <article key={`watch-${w.id}`} className="rounded-2xl bg-[--bg-card] border border-[--border] p-4 hover:border-green-500/20 transition-colors">
+              <article key={`watch-${w.id}`} className="rounded-2xl p-4 transition-all duration-200 hover:-translate-y-0.5"
+                style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="flex items-center gap-2.5">
                   <Link href={profileHref}>
                     <div className="h-8 w-8 rounded-full bg-[--accent] flex items-center justify-center text-xs font-bold text-white overflow-hidden shrink-0">
@@ -193,7 +195,8 @@ export default async function AkisPage({ searchParams }: Props) {
             const mediaKey = `${d.media_type}-${d.media_id}`
             const media = mediaCache.get(mediaKey)
             return (
-              <article key={`diary-${d.id}`} className="rounded-2xl bg-[--bg-card] border border-[--border] p-4 hover:border-blue-500/20 transition-colors">
+              <article key={`diary-${d.id}`} className="rounded-2xl p-4 transition-all duration-200 hover:-translate-y-0.5"
+                style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="flex items-center gap-2.5">
                   <Link href={profileHref}>
                     <div className="h-8 w-8 rounded-full bg-[--accent] flex items-center justify-center text-xs font-bold text-white overflow-hidden shrink-0">
@@ -219,7 +222,8 @@ export default async function AkisPage({ searchParams }: Props) {
           if (activity._type === 'list') {
             const l = activity as { id: string; title: string; created_at: string }
             return (
-              <article key={`list-${l.id}`} className="rounded-2xl bg-[--bg-card] border border-[--border] p-4 hover:border-purple-500/20 transition-colors">
+              <article key={`list-${l.id}`} className="rounded-2xl p-4 transition-all duration-200 hover:-translate-y-0.5"
+                style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="flex items-center gap-2.5">
                   <Link href={profileHref}>
                     <div className="h-8 w-8 rounded-full bg-[--accent] flex items-center justify-center text-xs font-bold text-white overflow-hidden shrink-0">
