@@ -87,8 +87,48 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <ServiceWorkerRegistration />
           <Navbar user={user} />
           <main className="flex-1 pb-bottom-nav md:pb-0">{children}</main>
-          <footer className="hidden md:block mt-16 py-8 text-center text-sm text-[--text-secondary]" style={{ borderTop: '1px solid var(--border)' }}>
-            <p>{footerText}</p>
+          <footer className="hidden md:block mt-16 py-10 text-sm text-[--text-secondary]" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+            <div className="max-w-6xl mx-auto px-6 grid grid-cols-2 sm:grid-cols-4 gap-8 mb-8">
+              <div>
+                <p className="font-semibold text-white mb-3">Keşfet</p>
+                <ul className="space-y-2">
+                  <li><a href="/filmler" className="hover:text-white transition-colors">Filmler</a></li>
+                  <li><a href="/diziler" className="hover:text-white transition-colors">Diziler</a></li>
+                  <li><a href="/top10" className="hover:text-white transition-colors">🔥 Top 10</a></li>
+                  <li><a href="/yakinda" className="hover:text-white transition-colors">Yakında Çıkacaklar</a></li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-semibold text-white mb-3">Topluluk</p>
+                <ul className="space-y-2">
+                  <li><a href="/liderlik" className="hover:text-white transition-colors">Liderlik Tablosu</a></li>
+                  <li><a href="/forum" className="hover:text-white transition-colors">Forum</a></li>
+                  <li><a href="/alintilar" className="hover:text-white transition-colors">Alıntılar</a></li>
+                  <li><a href="/haberler" className="hover:text-white transition-colors">Sinema Haberleri</a></li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-semibold text-white mb-3">Kullanıcı</p>
+                <ul className="space-y-2">
+                  <li><a href="/akis" className="hover:text-white transition-colors">Akışım</a></li>
+                  <li><a href="/izleme-listem" className="hover:text-white transition-colors">İzleme Listem</a></li>
+                  <li><a href="/gunluk" className="hover:text-white transition-colors">Günlüğüm</a></li>
+                  <li><a href={`/ozet/${new Date().getFullYear()}`} className="hover:text-white transition-colors">Yıl Özetim</a></li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-semibold text-white mb-3">Hakkında</p>
+                <ul className="space-y-2">
+                  <li><a href="/premium" className="hover:text-white transition-colors">⭐ Premium</a></li>
+                  <li><a href="/gizlilik" className="hover:text-white transition-colors">Gizlilik</a></li>
+                  <li><a href="/kullanim-sartlari" className="hover:text-white transition-colors">Kullanım Şartları</a></li>
+                </ul>
+              </div>
+            </div>
+            <div className="max-w-6xl mx-auto px-6 pt-6 flex items-center justify-between" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
+              <p className="font-bold text-white">Sinezon</p>
+              <p>{footerText}</p>
+            </div>
           </footer>
           <BottomNav user={user} />
         </LocaleProvider>
