@@ -210,7 +210,7 @@ export default async function IstatistiklerPage({ params }: Props) {
       </div>
 
       {allReviews.length === 0 && allDiary.length === 0 ? (
-        <div className="rounded-2xl bg-[--bg-card] border border-[--border] py-16 text-center px-6">
+        <div className="rounded-2xl py-16 text-center px-6" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <p className="text-4xl mb-3">📊</p>
           <p className="text-[--text-secondary] text-sm">Henüz yorum ya da günlük kaydı yok.</p>
         </div>
@@ -234,7 +234,7 @@ export default async function IstatistiklerPage({ params }: Props) {
 
           {/* İzleme hızı */}
           {monthlyAvg > 0 && (
-            <div className="rounded-xl bg-[--bg-card] border border-[--border] p-5">
+            <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               <div className="flex items-center justify-between mb-4">
                 <p className="text-sm font-semibold text-white">İzleme Hızı</p>
                 <span className="text-xs text-[--text-secondary]">Son 12 ay</span>
@@ -276,7 +276,7 @@ export default async function IstatistiklerPage({ params }: Props) {
 
           {/* Film / Dizi oranı */}
           {allReviews.length > 0 && (
-            <div className="rounded-xl bg-[--bg-card] border border-[--border] p-5">
+            <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               <p className="text-sm font-semibold text-white mb-3">Film / Dizi Oranı</p>
               <div className="flex h-4 rounded-full overflow-hidden gap-0.5">
                 <div
@@ -296,7 +296,7 @@ export default async function IstatistiklerPage({ params }: Props) {
 
           {/* Puan dağılımı */}
           {allReviews.length > 0 && (
-            <div className="rounded-xl bg-[--bg-card] border border-[--border] p-5">
+            <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               <p className="text-sm font-semibold text-white mb-4">Puan Dağılımı</p>
               <div className="flex items-end gap-1.5 h-28">
                 {[1,2,3,4,5,6,7,8,9,10].map(n => {
@@ -323,7 +323,7 @@ export default async function IstatistiklerPage({ params }: Props) {
           )}
 
           {/* Aylık aktivite */}
-          <div className="rounded-xl bg-[--bg-card] border border-[--border] p-5">
+          <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <p className="text-sm font-semibold text-white mb-4">Aylık Aktivite (Son 12 Ay)</p>
             <div className="flex items-end gap-1 h-24">
               {months.map(m => {
@@ -343,7 +343,7 @@ export default async function IstatistiklerPage({ params }: Props) {
 
           {/* Yıla göre */}
           {years.length > 1 && (
-            <div className="rounded-xl bg-[--bg-card] border border-[--border] p-5">
+            <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               <p className="text-sm font-semibold text-white mb-4">Yıllara Göre</p>
               <div className="space-y-2">
                 {years.map(([year, count]) => (
@@ -364,7 +364,7 @@ export default async function IstatistiklerPage({ params }: Props) {
 
           {/* Tür dağılımı */}
           {topGenres.length > 0 && (
-            <div className="rounded-xl bg-[--bg-card] border border-[--border] p-5">
+            <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               <p className="text-sm font-semibold text-white mb-1">En Çok İzlenen Türler</p>
               <p className="text-xs text-[--text-secondary] mb-4">Son {uniqueFilmIds.length + uniqueDiziIds.length} içeriğe göre</p>
               <div className="space-y-2.5">
@@ -385,7 +385,7 @@ export default async function IstatistiklerPage({ params }: Props) {
           )}
 
           {/* Rozetler */}
-          <div className="rounded-xl bg-[--bg-card] border border-[--border] p-5">
+          <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <p className="text-sm font-semibold text-white mb-1">
               Rozetler
               <span className="ml-2 text-xs font-normal text-[--text-secondary]">{earnedBadges.length}/{ALL_BADGE_COUNT} kazanıldı</span>
@@ -442,7 +442,7 @@ export default async function IstatistiklerPage({ params }: Props) {
 
 function StatCard({ value, label, gold }: { value: string | number; label: string; gold?: boolean }) {
   return (
-    <div className="rounded-xl bg-[--bg-card] border border-[--border] p-4 text-center">
+    <div className="rounded-xl p-4 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
       <p className={`text-2xl font-bold ${gold ? 'text-[--gold]' : 'text-white'}`}>{value}</p>
       <p className="text-xs text-[--text-secondary] mt-0.5">{label}</p>
     </div>
