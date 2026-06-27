@@ -485,12 +485,18 @@ export default async function ProfilPage({ params }: Props) {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {userLists.filter(l => l.public || isOwnProfile).map((list: any) => (
               <Link key={list.id} href={`/liste/${list.id}`}
-                className="group rounded-xl bg-[--bg-card] border border-[--border] p-4 hover:border-[--accent]/40 transition-all">
+                className="group rounded-xl p-4 transition-all duration-200 hover:-translate-y-0.5"
+                style={{
+                  background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))',
+                  border: '1px solid rgba(255,255,255,0.06)',
+                }}>
                 <div className="flex items-start justify-between gap-2">
                   <p className="text-sm font-semibold text-white group-hover:text-[--accent] transition-colors line-clamp-2 flex-1">{list.title}</p>
-                  {list.public ? <IconGlobe className="h-3.5 w-3.5 text-[--text-secondary] shrink-0 mt-0.5" /> : <IconLock className="h-3.5 w-3.5 text-[--text-secondary] shrink-0 mt-0.5" />}
+                  {list.public
+                    ? <IconGlobe className="h-3.5 w-3.5 shrink-0 mt-0.5" style={{ color: 'rgba(255,255,255,0.3)' }} />
+                    : <IconLock className="h-3.5 w-3.5 shrink-0 mt-0.5" style={{ color: 'rgba(255,255,255,0.3)' }} />}
                 </div>
-                <p className="text-xs text-[--text-secondary] mt-1">{list.list_items?.[0]?.count ?? 0} içerik</p>
+                <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.35)' }}>{list.list_items?.[0]?.count ?? 0} içerik</p>
               </Link>
             ))}
           </div>
