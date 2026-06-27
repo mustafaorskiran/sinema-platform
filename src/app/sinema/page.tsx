@@ -33,7 +33,8 @@ export default function DunyaSinemasPage() {
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {ULKELER.map(u => (
           <Link key={u.slug} href={`/sinema/${u.slug}`}
-            className="group flex flex-col items-center gap-2 p-5 rounded-2xl bg-[--bg-card] border border-[--border] hover:border-[--accent]/50 transition-all hover:-translate-y-0.5 hover:shadow-lg text-center">
+            className="group flex flex-col items-center gap-2 p-5 rounded-2xl transition-all hover:-translate-y-1 text-center"
+            style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <span className="text-4xl">{u.bayrak}</span>
             <div>
               <p className="font-bold text-white text-sm">{u.ad}</p>

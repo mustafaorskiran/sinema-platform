@@ -19,7 +19,8 @@ export default function UlkelerPage() {
           <Link
             key={country.slug}
             href={`/ulke/${country.slug}`}
-            className="flex items-center gap-3 p-4 rounded-xl bg-[--bg-card] border border-[--border] hover:border-[--accent]/50 transition-colors group"
+            className="flex items-center gap-3 p-4 rounded-xl transition-all hover:-translate-y-0.5 group"
+            style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
           >
             <span className="text-3xl shrink-0">{country.flag}</span>
             <div className="min-w-0">
