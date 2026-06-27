@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useState, useEffect, useRef, useId } from 'react'
 import Link from 'next/link'
 import { IconBell } from '@/components/icons'
@@ -144,7 +145,7 @@ export default function NotificationBell({ userId }: Props) {
                   {/* Avatar */}
                   <div className="h-8 w-8 rounded-full bg-[--accent] flex items-center justify-center text-xs font-bold text-white shrink-0 overflow-hidden">
                     {n.actor?.avatar_url
-                      ? <img src={n.actor.avatar_url} alt="" className="w-full h-full object-cover" />
+                      ? <Image src={n.actor.avatar_url} alt="" width={32} height={32} className="w-full h-full object-cover" />
                       : (n.actor?.username?.[0] ?? '?').toUpperCase()
                     }
                   </div>

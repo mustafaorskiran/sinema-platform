@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState } from 'react'
 import { IconStar, IconStarFilled, IconChevronDown, IconChevronUp } from '@/components/icons'
 import type { Review } from '@/lib/types'
@@ -148,7 +149,7 @@ export default function ReviewList({ reviews, currentUserId, likeData = {}, repl
                   <Link href={`/profil/${username}`} className="shrink-0">
                     <div className="h-9 w-9 rounded-full bg-[--accent] flex items-center justify-center text-sm font-bold text-white overflow-hidden ring-2 ring-[--border]">
                       {avatarUrl
-                        ? <img src={avatarUrl} alt={username} className="w-full h-full object-cover" />
+                        ? <Image src={avatarUrl} alt={username} width={36} height={36} className="w-full h-full object-cover" />
                         : initial
                       }
                     </div>

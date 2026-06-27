@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useState } from 'react'
 import { IconMessageSquare, IconSend, IconTrash, IconChevronDown, IconChevronUp } from '@/components/icons'
 import { createClient } from '@/lib/supabase/client'
@@ -140,7 +141,7 @@ export default function ReviewReplySection({ reviewId, initialCount, currentUser
                 <a href={`/profil/${reply.profiles?.username}`} className="shrink-0">
                   <div className="h-6 w-6 rounded-full bg-[--accent] flex items-center justify-center text-[10px] font-bold text-white overflow-hidden">
                     {reply.profiles?.avatar_url
-                      ? <img src={reply.profiles.avatar_url} alt="" className="w-full h-full object-cover" />
+                      ? <Image src={reply.profiles.avatar_url} alt="" width={24} height={24} className="w-full h-full object-cover" />
                       : (reply.profiles?.username?.[0] ?? '?').toUpperCase()
                     }
                   </div>
