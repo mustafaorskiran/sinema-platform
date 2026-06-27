@@ -296,14 +296,14 @@ export default async function ProfilPage({ params }: Props) {
 
           {/* Takipçi / Takip sayıları */}
           <div className="flex gap-5 mt-3">
-            <span className="text-sm">
+            <Link href={`/profil/${profile.username}/takipciler`} className="text-sm hover:underline">
               <span className="font-bold text-white">{followerCount ?? 0}</span>
               <span className="text-[--text-secondary] ml-1">Takipçi</span>
-            </span>
-            <span className="text-sm">
+            </Link>
+            <Link href={`/profil/${profile.username}/takip-edilenler`} className="text-sm hover:underline">
               <span className="font-bold text-white">{followingCount ?? 0}</span>
               <span className="text-[--text-secondary] ml-1">Takip</span>
-            </span>
+            </Link>
           </div>
 
           {/* Bio & konum & website */}
