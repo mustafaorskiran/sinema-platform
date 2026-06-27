@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb'
 import PriorityButton from './PriorityButton'
 import RandomPickButton from './RandomPickButton'
+import WatchlistNoteButton from './WatchlistNoteButton'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'İzleme Listem | SineMa' }
@@ -136,10 +137,18 @@ export default async function IzlemeLisTemPage({ searchParams }: Props) {
                     </span>
                   )}
                 </div>
+                {(item as any).note && (
+                  <p className="text-[11px] mt-1 italic line-clamp-1" style={{ color: 'rgba(212,168,67,0.6)' }}>
+                    "{(item as any).note}"
+                  </p>
+                )}
               </div>
 
-              {/* Öncelik */}
-              <PriorityButton itemId={item.id} priority={item.priority ?? 0} />
+              {/* Aksiyonlar */}
+              <div className="flex items-center gap-1 shrink-0">
+                <WatchlistNoteButton watchlistId={item.id} initialNote={(item as any).note} />
+                <PriorityButton itemId={item.id} priority={item.priority ?? 0} />
+              </div>
             </div>
           ))}
         </div>
