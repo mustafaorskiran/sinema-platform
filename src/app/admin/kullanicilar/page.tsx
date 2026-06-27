@@ -43,11 +43,12 @@ export default async function AdminKullanicilarPage({ searchParams }: Props) {
           name="q"
           defaultValue={q ?? ''}
           placeholder="Kullanıcı adı ara..."
-          className="w-full max-w-sm rounded-lg bg-[--bg-card] border border-[--border] px-4 py-2.5 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
+          className="w-full max-w-sm rounded-lg px-4 py-2.5 text-sm text-white placeholder-[--text-secondary] outline-none transition-colors"
+          style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
         />
       </form>
 
-      <div className="rounded-xl bg-[--bg-card] border border-[--border] overflow-hidden">
+      <div className="rounded-xl overflow-hidden" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-[--border] text-[--text-secondary]">
@@ -107,14 +108,16 @@ export default async function AdminKullanicilarPage({ searchParams }: Props) {
         <div className="flex justify-center gap-2 mt-6">
           {page > 1 && (
             <a href={`/admin/kullanicilar?sayfa=${page - 1}${q ? `&q=${q}` : ''}`}
-              className="px-4 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white transition-colors">
+              className="px-4 py-2 rounded-lg text-sm transition-all hover:text-white"
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
               ← Önceki
             </a>
           )}
           <span className="px-4 py-2 text-sm text-[--text-secondary] flex items-center">{page} / {totalPages}</span>
           {page < totalPages && (
             <a href={`/admin/kullanicilar?sayfa=${page + 1}${q ? `&q=${q}` : ''}`}
-              className="px-4 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white transition-colors">
+              className="px-4 py-2 rounded-lg text-sm transition-all hover:text-white"
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
               Sonraki →
             </a>
           )}

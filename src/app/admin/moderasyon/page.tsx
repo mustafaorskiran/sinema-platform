@@ -45,7 +45,8 @@ export default async function AdminModerasyonPage() {
           </div>
 
           {!flagged || flagged.length === 0 ? (
-            <p className="text-[--text-secondary] bg-[--bg-card] border border-[--border] rounded-xl p-6 text-center text-sm">
+            <p className="text-[--text-secondary] rounded-xl p-6 text-center text-sm"
+              style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               İnceleme bekleyen yorum yok.
             </p>
           ) : (
@@ -69,7 +70,8 @@ export default async function AdminModerasyonPage() {
           </div>
 
           {!hidden || hidden.length === 0 ? (
-            <p className="text-[--text-secondary] bg-[--bg-card] border border-[--border] rounded-xl p-6 text-center text-sm">
+            <p className="text-[--text-secondary] rounded-xl p-6 text-center text-sm"
+              style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               Gizlenmiş yorum yok.
             </p>
           ) : (

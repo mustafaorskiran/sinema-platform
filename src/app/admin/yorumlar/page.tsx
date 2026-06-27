@@ -37,7 +37,8 @@ export default async function AdminYorumlarPage({ searchParams }: Props) {
 
       <div className="space-y-3">
         {(reviews ?? []).map(review => (
-          <div key={review.id} className="rounded-xl bg-[--bg-card] border border-[--border] p-4 flex gap-4 items-start">
+          <div key={review.id} className="rounded-xl p-4 flex gap-4 items-start transition-all hover:-translate-y-0.5"
+            style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-3 flex-wrap mb-2">
                 <a href={`/profil/${review.profiles?.username}`} className="text-sm font-semibold text-white hover:text-[--accent] transition-colors">
@@ -67,14 +68,16 @@ export default async function AdminYorumlarPage({ searchParams }: Props) {
         <div className="flex justify-center gap-2 mt-6">
           {page > 1 && (
             <a href={`/admin/yorumlar?sayfa=${page - 1}`}
-              className="px-4 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white transition-colors">
+              className="px-4 py-2 rounded-lg text-sm transition-all hover:text-white"
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
               ← Önceki
             </a>
           )}
           <span className="px-4 py-2 text-sm text-[--text-secondary] flex items-center">{page} / {totalPages}</span>
           {page < totalPages && (
             <a href={`/admin/yorumlar?sayfa=${page + 1}`}
-              className="px-4 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white transition-colors">
+              className="px-4 py-2 rounded-lg text-sm transition-all hover:text-white"
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
               Sonraki →
             </a>
           )}
