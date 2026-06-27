@@ -255,7 +255,8 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
         <button
           type="button"
           onClick={() => bannerFileRef.current?.click()}
-          className="relative w-full h-32 rounded-xl overflow-hidden border border-[--border] hover:border-[--accent]/50 transition-colors group bg-[--bg-secondary] flex items-center justify-center"
+          className="relative w-full h-32 rounded-xl overflow-hidden transition-colors group flex items-center justify-center"
+          style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
         >
           {displayBanner ? (
             <img src={displayBanner} alt="Banner" className="w-full h-full object-cover" />
@@ -296,7 +297,7 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
       <div>
         <label className="block text-sm font-medium text-[--text-secondary] mb-2">Kullanıcı Adı</label>
         <input type="text" value={username} onChange={e => setUsername(e.target.value)} required maxLength={30} placeholder="kullanici_adi"
-          className="w-full rounded-lg bg-[--bg-secondary] border border-[--border] px-4 py-3 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
+          className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/25 outline-none transition-colors" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
         />
         <p className="mt-1 text-xs text-[--text-secondary]">Harf, rakam ve alt çizgi (_) kullanabilirsin.</p>
       </div>
@@ -305,7 +306,8 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
       <div>
         <label className="block text-sm font-medium text-[--text-secondary] mb-2">Hakkımda</label>
         <textarea value={bio} onChange={e => setBio(e.target.value)} rows={3} maxLength={300} placeholder="Kendini kısaca tanıt..."
-          className="w-full rounded-lg bg-[--bg-secondary] border border-[--border] px-4 py-3 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors resize-none"
+          className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/25 outline-none transition-colors resize-none"
+          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
         />
         <p className="mt-1 text-xs text-[--text-secondary]">{bio.length}/300</p>
       </div>
@@ -314,7 +316,7 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
       <div>
         <label className="block text-sm font-medium text-[--text-secondary] mb-2">Konum</label>
         <input type="text" value={location} onChange={e => setLocation(e.target.value)} maxLength={60} placeholder="İstanbul, Türkiye"
-          className="w-full rounded-lg bg-[--bg-secondary] border border-[--border] px-4 py-3 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
+          className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/25 outline-none transition-colors" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
         />
       </div>
 
@@ -322,7 +324,7 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
       <div>
         <label className="block text-sm font-medium text-[--text-secondary] mb-2">Web Sitesi</label>
         <input type="url" value={website} onChange={e => setWebsite(e.target.value)} maxLength={200} placeholder="https://..."
-          className="w-full rounded-lg bg-[--bg-secondary] border border-[--border] px-4 py-3 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
+          className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/25 outline-none transition-colors" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
         />
       </div>
 
@@ -333,19 +335,22 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
           <div className="flex items-center gap-2">
             <span className="text-lg w-6 text-center">𝕏</span>
             <input type="url" value={twitterUrl} onChange={e => setTwitterUrl(e.target.value)} maxLength={200} placeholder="https://x.com/kullaniciadi"
-              className="flex-1 rounded-lg bg-[--bg-secondary] border border-[--border] px-3 py-2.5 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
+              className="flex-1 rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-white/25 outline-none transition-colors"
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
             />
           </div>
           <div className="flex items-center gap-2">
             <span className="text-lg w-6 text-center">🎬</span>
             <input type="url" value={letterboxdUrl} onChange={e => setLetterboxdUrl(e.target.value)} maxLength={200} placeholder="https://letterboxd.com/kullaniciadi"
-              className="flex-1 rounded-lg bg-[--bg-secondary] border border-[--border] px-3 py-2.5 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
+              className="flex-1 rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-white/25 outline-none transition-colors"
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
             />
           </div>
           <div className="flex items-center gap-2">
             <span className="text-lg w-6 text-center">⭐</span>
             <input type="url" value={imdbUrl} onChange={e => setImdbUrl(e.target.value)} maxLength={200} placeholder="https://imdb.com/user/..."
-              className="flex-1 rounded-lg bg-[--bg-secondary] border border-[--border] px-3 py-2.5 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
+              className="flex-1 rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-white/25 outline-none transition-colors"
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
             />
           </div>
         </div>
