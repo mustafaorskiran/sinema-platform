@@ -124,7 +124,8 @@ export default function DiaryPageClient({ grouped, totalPages, currentPage }: Pr
         <div className="flex justify-center gap-3 mt-8">
           {currentPage > 1 && (
             <Link href={`/gunluk?sayfa=${currentPage - 1}`}
-              className="px-5 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white transition-colors">
+              className="px-5 py-2 rounded-lg text-sm transition-all hover:text-white hover:scale-105"
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
               ← Önceki
             </Link>
           )}
@@ -133,7 +134,8 @@ export default function DiaryPageClient({ grouped, totalPages, currentPage }: Pr
           </span>
           {currentPage < totalPages && (
             <Link href={`/gunluk?sayfa=${currentPage + 1}`}
-              className="px-5 py-2 rounded-lg bg-[--bg-card] border border-[--border] text-sm text-[--text-secondary] hover:text-white transition-colors">
+              className="px-5 py-2 rounded-lg text-sm transition-all hover:text-white hover:scale-105"
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
               Sonraki →
             </Link>
           )}

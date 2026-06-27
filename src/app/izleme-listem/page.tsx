@@ -81,7 +81,8 @@ export default async function IzlemeLisTemPage({ searchParams }: Props) {
             </Link>
           ))}
         </div>
-        <div className="ml-auto flex items-center gap-1 bg-[--bg-card] border border-[--border] rounded-lg overflow-hidden">
+        <div className="ml-auto flex items-center gap-1 rounded-lg overflow-hidden"
+          style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
           {[{ key: 'eklenme', label: 'En Yeni' }, { key: 'oncelik', label: '⭐ Öncelik' }].map(s => (
             <Link key={s.key} href={`/izleme-listem?tip=${tip}&sirala=${s.key}`}
               className={`px-3 py-1.5 text-xs font-medium transition-colors ${sirala === s.key ? 'bg-[--accent] text-white' : 'text-[--text-secondary] hover:text-white'}`}>
@@ -92,7 +93,8 @@ export default async function IzlemeLisTemPage({ searchParams }: Props) {
       </div>
 
       {withMedia.length === 0 ? (
-        <div className="text-center py-20 rounded-2xl bg-[--bg-card] border border-[--border]">
+        <div className="text-center py-20 rounded-2xl"
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <IconBookmark className="h-12 w-12 mx-auto mb-4 text-[--text-secondary] opacity-30" />
           <p className="font-medium text-white mb-2">Listeniz boş</p>
           <p className="text-sm text-[--text-secondary] mb-5">Film ve dizi sayfalarından "İzlemek İstiyorum" ekleyebilirsin.</p>
@@ -103,7 +105,8 @@ export default async function IzlemeLisTemPage({ searchParams }: Props) {
       ) : (
         <div className="space-y-2">
           {withMedia.map((item, idx) => (
-            <div key={item.id} className="flex items-center gap-4 p-3 rounded-xl bg-[--bg-card] border border-[--border] hover:border-[--accent]/30 transition-colors group">
+            <div key={item.id} className="flex items-center gap-4 p-3 rounded-xl transition-all hover:-translate-y-0.5 group"
+              style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               {/* Sıra */}
               <span className="text-sm font-bold text-[--text-secondary] w-6 text-center shrink-0">{idx + 1}</span>
 
