@@ -226,6 +226,14 @@ export default async function FilmPage({ params, searchParams }: Props) {
     .eq('media_id', movieId).eq('media_type', 'film').eq('approved', true)
     .order('created_at', { ascending: true })
 
+  // Film Alıntıları
+  const { data: movieQuotes } = await supabase
+    .from('quotes')
+    .select('id, content, character_name, likes_count')
+    .eq('media_id', movieId).eq('media_type', 'film').eq('approved', true)
+    .order('likes_count', { ascending: false })
+    .limit(5)
+
   // Bu filmin yer aldığı editöryal listeler (ödüller için)
   const { data: editorialMemberships } = await supabase
     .from('list_items')
@@ -859,6 +867,36 @@ export default async function FilmPage({ params, searchParams }: Props) {
 
         {/* Soundtrack */}
         <SoundtrackSection mediaId={movieId} mediaType="film" isLoggedIn={!!user} />
+
+        {/* Film Alıntıları */}
+        {(movieQuotes ?? []).length > 0 && (
+          <div className="mt-10">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
+                <h2 className="text-xl font-bold text-white tracking-tight">Unutulmaz Replikler</h2>
+              </div>
+              <a href="/alintilar" className="text-xs hover:underline" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                Tümü →
+              </a>
+            </div>
+            <div className="space-y-3">
+              {(movieQuotes ?? []).map((q: any) => (
+                <div key={q.id} className="p-4 rounded-xl"
+                  style={{ background: 'rgba(212,168,67,0.05)', border: '1px solid rgba(212,168,67,0.12)' }}>
+                  <p className="text-sm italic leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>
+                    &ldquo;{q.content}&rdquo;
+                  </p>
+                  {q.character_name && (
+                    <p className="text-xs mt-1.5 font-semibold" style={{ color: 'rgba(212,168,67,0.6)' }}>
+                      — {q.character_name}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Trivia & Goofs */}
         <div id="trivia">
