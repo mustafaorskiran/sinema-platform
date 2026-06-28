@@ -79,13 +79,16 @@ export default function UserDropdown({ user }: Props) {
             border: '1px solid var(--border-strong)',
             boxShadow: '0 8px 16px rgba(0,0,0,0.4), 0 24px 64px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.05)',
             borderRadius: '14px',
-            overflow: 'hidden',
             backdropFilter: 'blur(20px) saturate(180%)',
             WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+            display: 'flex',
+            flexDirection: 'column',
+            maxHeight: 'min(520px, calc(100vh - 90px))',
+            overflow: 'hidden',
           }}
         >
-          {/* Kullanıcı başlık */}
-          <div className="px-4 py-3" style={{ borderBottom: '1px solid var(--border)' }}>
+          {/* Kullanıcı başlık — sabit */}
+          <div className="px-4 py-3 shrink-0" style={{ borderBottom: '1px solid var(--border)' }}>
             <p className="text-[13px] font-semibold text-white truncate">{displayName}</p>
             {user.email && (
               <p className="text-[11px] truncate mt-0.5" style={{ color: 'var(--text-secondary)' }}>
@@ -94,8 +97,8 @@ export default function UserDropdown({ user }: Props) {
             )}
           </div>
 
-          {/* Linkler */}
-          <div className="py-1.5">
+          {/* Linkler — kaydırılabilir alan */}
+          <div className="py-1.5 overflow-y-auto flex-1" style={{ scrollbarWidth: 'none' }}>
             <DropLink href={`/profil/${user.username ?? ''}`} label="Profilim" />
             <DropLink href="/izleme-listem" label="Listem" />
             <DropLink href="/mesajlar" label="Mesajlar" />
@@ -118,20 +121,23 @@ export default function UserDropdown({ user }: Props) {
                 accent
               />
             )}
-
-            <div className="my-1.5 mx-3" style={{ borderTop: '1px solid var(--border)' }} />
           </div>
 
-          {/* Çıkış */}
-          <form action="/auth/signout" method="post" className="px-2 pb-2">
-            <button
-              type="submit"
-              className="w-full flex items-center px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-150 hover:bg-white/[.06] text-left"
-              style={{ color: 'var(--accent)' }}
-            >
-              Çıkış Yap
-            </button>
-          </form>
+          {/* Çıkış — her zaman altta sabit */}
+          <div className="shrink-0 px-2 pb-2 pt-1" style={{ borderTop: '1px solid var(--border)' }}>
+            <form action="/auth/signout" method="post">
+              <button
+                type="submit"
+                className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-[13px] font-semibold transition-all duration-150 hover:bg-red-500/10 text-left"
+                style={{ color: 'var(--accent)' }}
+              >
+                <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Çıkış Yap
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
