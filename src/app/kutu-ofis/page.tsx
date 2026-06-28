@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import { getPosterUrl } from '@/lib/tmdb'
 
@@ -114,7 +115,7 @@ export default async function KutuOfisPage() {
 
                 {/* Poster */}
                 {poster ? (
-                  <img
+                  <Image
                     src={poster}
                     alt={movie.title}
                     width={44}
