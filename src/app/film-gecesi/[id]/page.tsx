@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle } from '@/lib/tmdb'
 import { IconCalendarDays, IconUsers } from '@/components/icons'
 import JoinButton from './JoinButton'
+import WatchPartyChat from '@/components/WatchPartyChat'
 import type { Metadata } from 'next'
 
 interface Props {
@@ -136,6 +137,11 @@ export default async function FilmGecesiDetailPage({ params }: Props) {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Canlı Sohbet */}
+      <div className="mt-8">
+        <WatchPartyChat partyId={id} currentUserId={user?.id ?? null} isMember={isJoined} />
       </div>
     </div>
   )
