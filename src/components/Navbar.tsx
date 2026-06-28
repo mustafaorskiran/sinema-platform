@@ -240,7 +240,7 @@ export default function Navbar({ user }: NavbarProps) {
                   { label: 'Yerli Filmler',           href: '/filmler?ozel=yerli-yapimlar',          description: 'Türk yapımı filmler' },
                   { label: 'Oscar Kazananlar',        href: '/filmler?ozel=oscar-kazananlar',        description: 'Ödüllü yapımlar' },
                   { label: 'Kült Filmler',            href: '/filmler?ozel=kult-filmler',            description: 'Efsaneleşmiş filmler' },
-                  { label: 'Gişe Sıralaması',         href: '/gise',                                 description: 'Türkiye ve dünya' },
+                  { label: '🎟️ Türkiye Gişe',          href: '/kutu-ofis',                            description: 'Şu an vizyondaki filmler' },
                   { label: 'Platforma Yeni Gelenler', href: '/yeni-gelenler',                        description: 'Netflix, Disney+ ve diğerleri' },
                   { label: 'Sinema Haberleri',        href: '/haberler',                             description: 'Beyazperde, HR, Variety' },
                   { label: '🔥 Top 10',              href: '/top10',                                description: 'Haftanın en çok izlenenleri' },
@@ -275,7 +275,7 @@ export default function Navbar({ user }: NavbarProps) {
                   { label: '🌌 Sinema Evrenler',   href: '/evren',                description: 'MCU, DC, Star Wars ve daha fazlası' },
                   { label: 'Yayın Takvimi',        href: '/yayin-takvimi',        description: 'Çıkış tarihleri' },
                   { label: '📅 Yakında Çıkacaklar', href: '/yakinda',             description: 'Gelecek 6 ay içinde' },
-                  { label: 'Gişe Sıralaması',      href: '/gise',                 description: 'Box office verileri' },
+                  { label: '🎟️ Türkiye Gişe',    href: '/kutu-ofis',            description: 'Şu an vizyondaki filmler' },
                   { label: 'Alıntılar',            href: '/alintilar',            description: 'Unutulmaz replikler' },
                   { label: '🏆 Liderlik Tablosu', href: '/liderlik',             description: 'En aktif yorumcular' },
                   { label: '🤖 AI Film Önerisi',  href: '/oneri',                description: 'Yapay zeka destekli öneri' },
@@ -461,7 +461,7 @@ export default function Navbar({ user }: NavbarProps) {
             <div className="grid grid-cols-2 gap-x-4">
               <Link href="/fragmanlar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Fragmanlar</Link>
               <Link href="/yayin-takvimi" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Yayın Takvimi</Link>
-              <Link href="/gise" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Gişe</Link>
+              <Link href="/kutu-ofis" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🎟️ Türkiye Gişe</Link>
               <Link href="/haberler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Haberler</Link>
               <Link href="/evren" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🌌 Sinema Evrenler</Link>
               <Link href="/versus" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>⚔️ Film vs Film</Link>
