@@ -47,8 +47,9 @@ export default function WatchlistNoteButton({ watchlistId, initialNote }: Props)
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-8 z-50 w-64 rounded-xl p-3 shadow-xl"
+          <div className="absolute right-0 top-8 z-50 w-56 sm:w-64 rounded-xl p-3 shadow-xl"
             style={{
+              maxWidth: 'calc(100vw - 32px)',
               background: 'linear-gradient(160deg, rgba(20,28,47,0.98), rgba(14,20,32,0.99))',
               border: '1px solid rgba(255,255,255,0.12)',
             }}>

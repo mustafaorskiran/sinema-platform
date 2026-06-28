@@ -440,40 +440,51 @@ export default function Navbar({ user }: NavbarProps) {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden border-t border-[--border] px-4 py-4" style={{ background: 'var(--bg-secondary)' }}>
-          <div className="flex flex-col gap-0.5 text-sm">
-            <Link href="/" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.home')}</Link>
-            <Link href="/filmler" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.films')}</Link>
-            <Link href="/diziler" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.series')}</Link>
-            <Link href="/en-cok-yorumlanan" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.popular')}</Link>
-            <Link href="/ne-izlesem" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.whatToWatch')}</Link>
-            <Link href="/listeler" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.lists')}</Link>
-            <Link href="/fragmanlar" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.trailers')}</Link>
-            <Link href="/yayin-takvimi" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Yayın Takvimi</Link>
-            <Link href="/gise" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Gişe Sıralaması</Link>
-            <Link href="/yeni-gelenler" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Platforma Yeni Gelenler</Link>
-            <Link href="/haberler" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Sinema Haberleri</Link>
-            <Link href="/karsilastir" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Karşılaştır</Link>
-            <Link href="/forum" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Forum</Link>
-            <Link href="/sinema" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🌍 Dünya Sineması</Link>
-            <Link href="/donem" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>📅 Dönemlere Göre</Link>
-            <Link href="/ruh-hali" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>✨ Ruh Haline Göre</Link>
-            <Link href="/kisiler" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Kişiler</Link>
-            <Link href="/kullanicilar" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Kullanıcılar</Link>
+        <div className="md:hidden border-t border-[--border] overflow-y-auto" style={{ background: 'var(--bg-secondary)', maxHeight: 'calc(100vh - 64px)' }}>
+          <div className="px-4 py-3 flex flex-col gap-0.5 text-sm">
+            {/* Ana Menü */}
+            <div className="grid grid-cols-2 gap-x-4">
+              <Link href="/" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.home')}</Link>
+              <Link href="/filmler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.films')}</Link>
+              <Link href="/diziler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.series')}</Link>
+              <Link href="/top10" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Top 10</Link>
+              <Link href="/en-cok-yorumlanan" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.popular')}</Link>
+              <Link href="/ne-izlesem" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Ne İzlesem?</Link>
+              <Link href="/listeler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.lists')}</Link>
+              <Link href="/forum" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Forum</Link>
+            </div>
+
+            {/* Keşif */}
+            <div className="pt-3 pb-1 mt-1 border-t border-[--border]">
+              <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)' }}>Keşfet</p>
+            </div>
+            <div className="grid grid-cols-2 gap-x-4">
+              <Link href="/fragmanlar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Fragmanlar</Link>
+              <Link href="/yayin-takvimi" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Yayın Takvimi</Link>
+              <Link href="/gise" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Gişe</Link>
+              <Link href="/haberler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Haberler</Link>
+              <Link href="/evren" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🌌 Sinema Evrenler</Link>
+              <Link href="/versus" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>⚔️ Film vs Film</Link>
+              <Link href="/sinema" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🌍 Dünya Sineması</Link>
+              <Link href="/ruh-hali" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>✨ Ruh Haline Göre</Link>
+            </div>
 
             {/* Authenticated section */}
             {user && (
               <>
                 <div className="pt-3 pb-1 mt-1 border-t border-[--border]">
-                  <p className="text-[11px] font-semibold uppercase tracking-widest text-[--text-secondary]">Hesabım</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)' }}>Hesabım</p>
                 </div>
-                <Link href={`/profil/${user.username ?? ''}`} className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Profilim</Link>
-                <Link href="/akis" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Akış</Link>
-                <Link href="/oneriler" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Öneriler</Link>
-                <Link href="/film-gecesi" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Film Gecesi</Link>
-                <Link href="/mesajlar" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Mesajlar</Link>
-                <Link href="/izleme-listem" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Listem</Link>
-                <Link href="/dizi-takip" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>📺 Dizi Takip</Link>
+                <div className="grid grid-cols-2 gap-x-4">
+                  <Link href={`/profil/${user.username ?? ''}`} className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Profilim</Link>
+                  <Link href="/akis" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Akış</Link>
+                  <Link href="/izleme-listem" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>İzleme Listem</Link>
+                  <Link href="/dizi-takip" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>📺 Dizi Takip</Link>
+                  <Link href="/oneriler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Öneriler</Link>
+                  <Link href="/film-gecesi" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Film Gecesi</Link>
+                  <Link href="/mesajlar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Mesajlar</Link>
+                  <Link href="/bildirimler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Bildirimler</Link>
+                </div>
               </>
             )}
 
