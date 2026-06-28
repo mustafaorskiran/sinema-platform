@@ -1,10 +1,11 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { IconGlobe, IconLock, IconPencil, IconFilm, IconTv } from '@/components/icons'
+import { IconGlobe, IconLock, IconPencil } from '@/components/icons'
 import { createClient } from '@/lib/supabase/server'
-import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb'
+import { getMovieDetail, getSeriesDetail, getMediaTitle } from '@/lib/tmdb'
 import ListeYorumlar from './ListeYorumlar'
 import ListeActions from './ListeActions'
+import ListeItemsView from './ListeItemsView'
 import type { Metadata } from 'next'
 
 interface Props { params: Promise<{ id: string }> }
@@ -228,75 +229,8 @@ export default async function ListePage({ params }: Props) {
           </div>
         </div>
 
-        {/* ── İçerik Izgarası ── */}
-        {itemsWithMedia.length === 0 ? (
-          <div
-            className="rounded-2xl py-16 text-center"
-            style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
-          >
-            <p style={{ color: 'var(--text-secondary)' }}>Bu liste henüz boş.</p>
-            {isOwner && (
-              <p className="mt-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
-                Film veya dizi sayfalarından içerik ekleyebilirsin.
-              </p>
-            )}
-          </div>
-        ) : (
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 md:gap-4">
-            {itemsWithMedia.map((item) => {
-              const poster = item.media ? getPosterUrl(item.media.poster_path, 'w342') : null
-              const title  = item.media ? getMediaTitle(item.media) : `#${item.media_id}`
-              const year   = item.media ? getMediaYear(item.media) : null
-              const href   = `/${item.media_type}/${item.media_id}`
-
-              return (
-                <div key={item.id} className="group relative">
-                  <Link href={href}>
-                    <div
-                      className="aspect-[2/3] rounded-xl overflow-hidden relative transition-all duration-200 group-hover:-translate-y-1.5 movie-card-grid"
-                      style={{ background: 'var(--bg-card)' }}
-                    >
-                      {poster ? (
-                        <img
-                          src={poster}
-                          alt={title}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center" style={{ color: 'var(--text-secondary)' }}>
-                          {item.media_type === 'film'
-                            ? <IconFilm className="h-8 w-8 opacity-25" />
-                            : <IconTv className="h-8 w-8 opacity-25" />}
-                        </div>
-                      )}
-                      <div
-                        className="absolute top-1.5 left-1.5 h-5 min-w-[20px] px-1.5 rounded-md text-[10px] font-bold flex items-center justify-center"
-                        style={{ background: 'rgba(11,15,25,0.9)', color: 'var(--text-primary)', border: '1px solid var(--border-strong)' }}
-                      >
-                        {item.rank}
-                      </div>
-                      <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                    </div>
-                    <p
-                      className="mt-1.5 text-[12px] font-medium leading-tight line-clamp-2 transition-colors duration-150 group-hover:text-white"
-                      style={{ color: 'var(--text-primary)' }}
-                    >
-                      {title}
-                    </p>
-                    {year && (
-                      <p className="text-[11px] mt-0.5" style={{ color: 'var(--text-secondary)', opacity: 0.6 }}>{year}</p>
-                    )}
-                  </Link>
-                  {item.note && (
-                    <p className="mt-1 text-[11px] italic line-clamp-1" style={{ color: 'var(--accent)', opacity: 0.8 }}>
-                      "{item.note}"
-                    </p>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        )}
+        {/* ── İçerik (IMDb-style liste/grid) ── */}
+        <ListeItemsView items={itemsWithMedia as any} />
 
         {/* ── Yorumlar ── */}
         <ListeYorumlar

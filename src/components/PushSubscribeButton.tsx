@@ -1,59 +1,59 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { IconBell } from './icons'
+
+const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? ''
 
 function urlBase64ToUint8Array(base64String: string) {
-  const padding = '='.repeat((4 - base64String.length % 4) % 4)
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
   const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
   const rawData = window.atob(base64)
-  return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)))
+  const outputArray = new Uint8Array(rawData.length)
+  for (let i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i)
+  return outputArray
 }
 
 export default function PushSubscribeButton() {
-  const [status, setStatus] = useState<'idle' | 'subscribed' | 'denied' | 'unsupported'>('idle')
-  const [loading, setLoading] = useState(false)
+  const [status, setStatus] = useState<'loading' | 'unsupported' | 'denied' | 'subscribed' | 'unsubscribed'>('loading')
+  const [busy, setBusy] = useState(false)
 
   useEffect(() => {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-      setStatus('unsupported')
-      return
+      setStatus('unsupported'); return
+    }
+    if (Notification.permission === 'denied') {
+      setStatus('denied'); return
     }
     navigator.serviceWorker.ready.then(reg => {
       reg.pushManager.getSubscription().then(sub => {
-        if (sub) setStatus('subscribed')
+        setStatus(sub ? 'subscribed' : 'unsubscribed')
       })
     })
-    if (Notification.permission === 'denied') setStatus('denied')
   }, [])
 
   async function subscribe() {
-    setLoading(true)
+    if (!VAPID_PUBLIC_KEY) return
+    setBusy(true)
     try {
-      const perm = await Notification.requestPermission()
-      if (perm !== 'granted') { setStatus('denied'); return }
-
+      const permission = await Notification.requestPermission()
+      if (permission !== 'granted') { setStatus('denied'); setBusy(false); return }
       const reg = await navigator.serviceWorker.ready
       const sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!),
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
       })
-
       await fetch('/api/push/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(sub),
       })
       setStatus('subscribed')
-    } catch {
-      setStatus('denied')
-    } finally {
-      setLoading(false)
-    }
+    } catch { setStatus('unsubscribed') }
+    setBusy(false)
   }
 
   async function unsubscribe() {
-    setLoading(true)
+    setBusy(true)
     try {
       const reg = await navigator.serviceWorker.ready
       const sub = await reg.pushManager.getSubscription()
@@ -65,33 +65,37 @@ export default function PushSubscribeButton() {
         })
         await sub.unsubscribe()
       }
-      setStatus('idle')
-    } finally {
-      setLoading(false)
-    }
+      setStatus('unsubscribed')
+    } catch {}
+    setBusy(false)
   }
 
+  if (status === 'loading') return null
   if (status === 'unsupported') return null
 
+  if (status === 'denied') {
+    return (
+      <div className="text-xs px-3 py-2 rounded-lg" style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', color: '#f87171' }}>
+        🔕 Bildirimler tarayıcı tarafından engellenmiş. Adres çubuğundan izin ver.
+      </div>
+    )
+  }
+
+  if (status === 'subscribed') {
+    return (
+      <button onClick={unsubscribe} disabled={busy}
+        className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all disabled:opacity-50 hover:brightness-110"
+        style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.25)', color: '#4ade80' }}>
+        🔔 Bildirimler Aktif — Kapat
+      </button>
+    )
+  }
+
   return (
-    <button
-      onClick={status === 'subscribed' ? unsubscribe : subscribe}
-      disabled={loading || status === 'denied'}
-      className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-      style={status === 'subscribed'
-        ? { background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.3)', color: '#4ade80' }
-        : status === 'denied'
-        ? { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.3)' }
-        : { background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.7)' }
-      }
-      title={status === 'denied' ? 'Tarayıcıda bildirim izni reddedildi' : undefined}
-    >
-      <IconBell className="h-4 w-4" />
-      {loading ? 'Bekleniyor...' :
-        status === 'subscribed' ? 'Bildirimler Açık' :
-        status === 'denied' ? 'İzin Reddedildi' :
-        'Bildirimleri Aç'
-      }
+    <button onClick={subscribe} disabled={busy}
+      className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all disabled:opacity-50 hover:scale-[1.02] active:scale-[0.98]"
+      style={{ background: 'linear-gradient(135deg, rgba(212,168,67,0.15), rgba(212,168,67,0.08))', border: '1px solid rgba(212,168,67,0.3)', color: '#D4A843' }}>
+      🔔 {busy ? 'Etkinleştiriliyor...' : 'Anlık Bildirimleri Aç'}
     </button>
   )
 }
