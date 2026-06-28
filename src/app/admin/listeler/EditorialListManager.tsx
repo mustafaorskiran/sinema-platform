@@ -156,7 +156,8 @@ export default function EditorialListManager({ lists }: Props) {
 
       {/* Liste tablosu */}
       <div className="rounded-xl rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-        <table className="w-full text-sm">
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[640px] text-sm">
           <thead className="border-b border-[--border] bg-[--bg-secondary]">
             <tr>
               <th className="text-left px-4 py-3 text-xs font-semibold text-[--text-secondary] uppercase tracking-wider">Liste</th>
@@ -228,6 +229,7 @@ export default function EditorialListManager({ lists }: Props) {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   )

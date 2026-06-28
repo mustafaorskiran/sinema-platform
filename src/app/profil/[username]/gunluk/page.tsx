@@ -111,10 +111,30 @@ export default async function ProfilGunlukPage({ params, searchParams }: Props) 
 
       {/* Günlük */}
       {enriched.length === 0 ? (
-        <div className="text-center py-20 rounded-2xl"
-          style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <p className="text-4xl mb-3">📖</p>
-          <p style={{ color: 'rgba(255,255,255,0.4)' }}>Henüz günlük kaydı yok.</p>
+        <div className="flex flex-col items-center justify-center py-20 rounded-2xl text-center"
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.7), rgba(14,20,32,0.8))', border: '1px solid rgba(255,255,255,0.06)' }}>
+          {/* SVG illüstrasyon */}
+          <svg width="120" height="100" viewBox="0 0 120 100" fill="none" className="mb-6 opacity-40">
+            <rect x="20" y="10" width="60" height="80" rx="6" fill="rgba(212,168,67,0.15)" stroke="rgba(212,168,67,0.3)" strokeWidth="1.5"/>
+            <rect x="28" y="22" width="44" height="4" rx="2" fill="rgba(255,255,255,0.2)"/>
+            <rect x="28" y="32" width="36" height="3" rx="1.5" fill="rgba(255,255,255,0.12)"/>
+            <rect x="28" y="41" width="40" height="3" rx="1.5" fill="rgba(255,255,255,0.12)"/>
+            <rect x="28" y="50" width="28" height="3" rx="1.5" fill="rgba(255,255,255,0.08)"/>
+            <rect x="28" y="62" width="44" height="14" rx="4" fill="rgba(225,29,72,0.1)" stroke="rgba(225,29,72,0.2)" strokeWidth="1"/>
+            <circle cx="90" cy="30" r="18" fill="rgba(20,28,47,0.9)" stroke="rgba(212,168,67,0.2)" strokeWidth="1.5"/>
+            <path d="M83 30l4 4 8-8" stroke="rgba(212,168,67,0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <p className="text-base font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.7)' }}>
+            Günlük henüz boş
+          </p>
+          <p className="text-sm mb-6 max-w-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>
+            Film veya dizi izledikçe günlük kaydı ekleyerek takip edebilirsin
+          </p>
+          <Link href="/filmler"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:scale-105"
+            style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', boxShadow: '0 4px 14px rgba(225,29,72,0.25)' }}>
+            🎬 Film Keşfet
+          </Link>
         </div>
       ) : (
         <>

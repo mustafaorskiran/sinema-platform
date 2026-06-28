@@ -49,7 +49,8 @@ export default async function AdminKullanicilarPage({ searchParams }: Props) {
       </form>
 
       <div className="rounded-xl overflow-hidden" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-        <table className="w-full text-sm">
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[560px] text-sm">
           <thead>
             <tr className="border-b border-[--border] text-[--text-secondary]">
               <th className="px-4 py-3 text-left font-medium">Kullanıcı</th>
@@ -101,6 +102,7 @@ export default async function AdminKullanicilarPage({ searchParams }: Props) {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* Sayfalama */}

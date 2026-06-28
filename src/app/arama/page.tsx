@@ -256,10 +256,57 @@ export default async function AramaPage({ searchParams }: Props) {
 
       {/* Boş sonuç */}
       {films.length === 0 && diziler.length === 0 && kisiler.length === 0 && kullanicilar.length === 0 && (
-        <div className="text-center py-20">
-          <IconSearch className="h-16 w-16 mx-auto mb-4 text-[--text-secondary] opacity-20" />
-          <p className="text-white font-semibold mb-1">Sonuç bulunamadı</p>
-          <p className="text-[--text-secondary] text-sm">"{q}" ile eşleşen içerik yok</p>
+        <div className="py-16">
+          {/* Başlık */}
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center justify-center h-20 w-20 rounded-full mb-5" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <IconSearch className="h-8 w-8 opacity-25" style={{ color: 'rgba(255,255,255,0.6)' }} />
+            </div>
+            <h2 className="text-lg font-bold text-white mb-2">
+              "<span className="text-[--accent]">{q}</span>" için sonuç bulunamadı
+            </h2>
+            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>
+              Yazım hatası olabilir veya farklı bir terim deneyin
+            </p>
+          </div>
+
+          {/* Popüler arama önerileri */}
+          <div className="max-w-xl mx-auto mb-10">
+            <p className="text-xs font-semibold uppercase tracking-widest mb-3 text-center" style={{ color: 'rgba(255,255,255,0.3)' }}>
+              Bunları denediniz mi?
+            </p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {['Inception', 'Breaking Bad', 'Interstellar', 'The Bear', 'Parasite', 'The Office', 'Dune', 'Severance', 'Christopher Nolan', 'Pedro Pascal'].map(s => (
+                <Link key={s} href={`/arama?q=${encodeURIComponent(s)}`}
+                  className="px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:scale-105 hover:text-white"
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.45)' }}>
+                  {s}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Keşfet linkleri */}
+          <div className="max-w-xl mx-auto">
+            <p className="text-xs font-semibold uppercase tracking-widest mb-3 text-center" style={{ color: 'rgba(255,255,255,0.3)' }}>
+              Keşfetmeye devam et
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                { href: '/filmler', icon: '🎬', label: 'Filmler' },
+                { href: '/diziler', icon: '📺', label: 'Diziler' },
+                { href: '/top10', icon: '🏆', label: 'Top 10' },
+                { href: '/haberler', icon: '📰', label: 'Haberler' },
+              ].map(item => (
+                <Link key={item.href} href={item.href}
+                  className="flex flex-col items-center gap-2 p-4 rounded-xl text-sm font-medium text-white transition-all hover:scale-105"
+                  style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.85), rgba(14,20,32,0.9))', border: '1px solid rgba(255,255,255,0.06)' }}>
+                  <span className="text-2xl">{item.icon}</span>
+                  <span className="text-xs text-[--text-secondary]">{item.label}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
       )}
 

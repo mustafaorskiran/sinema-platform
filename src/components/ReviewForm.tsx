@@ -6,6 +6,26 @@ import StarRating from './StarRating'
 import type { MediaType } from '@/lib/types'
 import { containsProfanity } from '@/lib/profanityFilter'
 
+function renderMarkdownPreview(text: string) {
+  const lines = text.split('\n')
+  return lines.map((line, li) => {
+    const inlineRegex = /\*\*(.+?)\*\*|\*(.+?)\*|\[([^\]]+)\]\((https?:\/\/[^\)]+)\)|\[spoiler\]([\s\S]*?)\[\/spoiler\]/gi
+    const parts: React.ReactNode[] = []
+    let last = 0
+    let m: RegExpExecArray | null
+    while ((m = inlineRegex.exec(line)) !== null) {
+      if (m.index > last) parts.push(line.slice(last, m.index))
+      if (m[1] !== undefined) parts.push(<strong key={m.index}>{m[1]}</strong>)
+      else if (m[2] !== undefined) parts.push(<em key={m.index}>{m[2]}</em>)
+      else if (m[3] !== undefined) parts.push(<a key={m.index} href={m[4]} target="_blank" rel="noopener noreferrer" className="underline" style={{ color: '#E11D48' }}>{m[3]}</a>)
+      else if (m[5] !== undefined) parts.push(<span key={m.index} style={{ filter: 'blur(4px)', background: 'rgba(248,113,113,0.12)', borderRadius: 3, padding: '0 2px' }}>{m[5]}</span>)
+      last = m.index + m[0].length
+    }
+    if (last < line.length) parts.push(line.slice(last))
+    return <span key={li}>{parts.length ? parts : ' '}{li < lines.length - 1 && <br />}</span>
+  })
+}
+
 interface ReviewFormProps {
   mediaId: number
   mediaType: MediaType
@@ -22,6 +42,7 @@ export default function ReviewForm({ mediaId, mediaType, existingReview }: Revie
   const [hasSpoiler, setHasSpoiler] = useState(existingReview?.has_spoiler ?? false)
   const [tagInput, setTagInput] = useState('')
   const [tags, setTags] = useState<string[]>(existingReview?.tags ?? [])
+  const [preview, setPreview] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -40,6 +61,24 @@ export default function ReviewForm({ mediaId, mediaType, existingReview }: Revie
   }
 
   function removeTag(t: string) { setTags(tags.filter(x => x !== t)) }
+
+  function insertFormat(type: 'bold' | 'italic' | 'link') {
+    const el = textareaRef.current
+    if (!el) return
+    const start = el.selectionStart
+    const end = el.selectionEnd
+    const selected = content.slice(start, end)
+    let tag = ''
+    if (type === 'bold') tag = selected ? `**${selected}**` : '**kalın metin**'
+    else if (type === 'italic') tag = selected ? `*${selected}*` : '*italik metin*'
+    else if (type === 'link') tag = selected ? `[${selected}](https://...)` : '[link metni](https://...)'
+    const newContent = content.slice(0, start) + tag + content.slice(end)
+    setContent(newContent)
+    setTimeout(() => {
+      el.focus()
+      el.setSelectionRange(start + tag.length, start + tag.length)
+    }, 0)
+  }
 
   function insertSpoilerTag() {
     const el = textareaRef.current
@@ -98,31 +137,67 @@ export default function ReviewForm({ mediaId, mediaType, existingReview }: Revie
 
       {/* Yorum */}
       <div>
+        {/* Başlık + sekmeler */}
         <div className="flex items-center justify-between mb-2">
-          <label className="text-xs font-semibold uppercase tracking-widest"
-            style={{ color: 'rgba(255,255,255,0.4)' }}>Yorumun</label>
-          <div className="flex items-center gap-3">
-            <button type="button" onClick={insertSpoilerTag}
-              className="text-[10px] px-2 py-1 rounded transition-colors hover:text-white"
-              style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)', color: 'rgba(248,113,113,0.7)' }}
-              title="Seçili metni [spoiler] etiketi ile sar">
-              ⚠️ [spoiler]
-            </button>
-            <span className="text-[10px] tabular-nums" style={{ color: charColor }}>{content.length} / 2000</span>
+          <div className="flex items-center gap-1">
+            <label className="text-xs font-semibold uppercase tracking-widest"
+              style={{ color: 'rgba(255,255,255,0.4)' }}>Yorumun</label>
+            <div className="flex items-center gap-1 ml-3">
+              <button type="button" onClick={() => setPreview(false)}
+                className="text-[10px] px-2.5 py-1 rounded-lg font-medium transition-colors"
+                style={!preview ? { background: 'rgba(225,29,72,0.15)', color: '#E11D48', border: '1px solid rgba(225,29,72,0.3)' } : { background: 'transparent', color: 'rgba(255,255,255,0.3)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                Yaz
+              </button>
+              <button type="button" onClick={() => setPreview(true)}
+                className="text-[10px] px-2.5 py-1 rounded-lg font-medium transition-colors"
+                style={preview ? { background: 'rgba(225,29,72,0.15)', color: '#E11D48', border: '1px solid rgba(225,29,72,0.3)' } : { background: 'transparent', color: 'rgba(255,255,255,0.3)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                Önizle
+              </button>
+            </div>
           </div>
+          <span className="text-[10px] tabular-nums" style={{ color: charColor }}>{content.length} / 2000</span>
         </div>
-        <textarea
-          ref={textareaRef}
-          value={content}
-          onChange={e => setContent(e.target.value)}
-          placeholder="Bu yapım hakkında ne düşünüyorsun?"
-          rows={5}
-          maxLength={2000}
-          className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-[--text-secondary] outline-none resize-none transition-all"
-          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
-          onFocus={e => (e.target.style.borderColor = 'rgba(225,29,72,0.4)')}
-          onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.08)')}
-        />
+
+        {/* Markdown araç çubuğu */}
+        {!preview && (
+          <div className="flex items-center gap-1.5 mb-2">
+            {[
+              { label: 'B', title: 'Kalın (**metin**)', action: () => insertFormat('bold'), style: { fontWeight: 700 } },
+              { label: 'I', title: 'İtalik (*metin*)', action: () => insertFormat('italic'), style: { fontStyle: 'italic' } },
+              { label: '🔗', title: 'Link [metin](url)', action: () => insertFormat('link'), style: {} },
+              { label: '⚠️ [spoiler]', title: 'Spoiler etiketi', action: insertSpoilerTag, style: { color: 'rgba(248,113,113,0.8)' } },
+            ].map(btn => (
+              <button key={btn.label} type="button" onClick={btn.action} title={btn.title}
+                className="text-[10px] px-2 py-1 rounded transition-colors hover:text-white"
+                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.4)', ...btn.style }}>
+                {btn.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Textarea / Önizleme */}
+        {preview ? (
+          <div className="w-full rounded-xl px-4 py-3 text-sm text-white min-h-[120px] leading-relaxed"
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+            {content.trim() ? renderMarkdownPreview(content) : (
+              <span style={{ color: 'rgba(255,255,255,0.25)' }}>Önizlenecek içerik yok...</span>
+            )}
+          </div>
+        ) : (
+          <textarea
+            ref={textareaRef}
+            value={content}
+            onChange={e => setContent(e.target.value)}
+            placeholder="Bu yapım hakkında ne düşünüyorsun? **kalın**, *italik*, [link](url) destekler"
+            rows={5}
+            maxLength={2000}
+            className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-[--text-secondary] outline-none resize-none transition-all"
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+            onFocus={e => (e.target.style.borderColor = 'rgba(225,29,72,0.4)')}
+            onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.08)')}
+          />
+        )}
         <div className="mt-1.5 h-0.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
           <div className="h-full rounded-full transition-all duration-300" style={{ width: `${charPct}%`, background: charColor }} />
         </div>
