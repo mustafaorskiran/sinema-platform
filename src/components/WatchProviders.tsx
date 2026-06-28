@@ -130,16 +130,27 @@ export default function WatchProviders({ allProviders }: Props) {
         <div className="space-y-3">
           {sections.map(section => (
             <div key={section}>
-              <p className="text-[10px] text-[--text-secondary] uppercase font-semibold mb-1.5">
-                {SECTION_LABELS[section]}
-              </p>
+              <div className="flex items-center gap-2 mb-1.5">
+                <p className="text-[10px] text-[--text-secondary] uppercase font-semibold">
+                  {SECTION_LABELS[section]}
+                </p>
+                {(section === 'rent' || section === 'buy') && providers?.link && (
+                  <span className="text-[9px] opacity-40">· JustWatch üzerinden</span>
+                )}
+              </div>
               <div className="flex flex-wrap gap-2">
                 {providers![section]!
                   .sort((a, b) => a.display_priority - b.display_priority)
                   .map(p => {
-                    const providerUrl = PROVIDER_URLS[p.provider_id]
-                    // Bilinen platform → doğrudan platforma git, bilinmiyor → JustWatch'a
-                    const href = providerUrl ?? providers?.link ?? '#'
+                    // Abonelik → platformun anasayfasına git
+                    // Kiralama / Satın Al → JustWatch'ın o içeriğe ait sayfasına git
+                    //   (JustWatch orada doğrudan Amazon/Google Play/Apple TV kiralama linklerini gösteriyor)
+                    const isSubscription = section === 'flatrate' || section === 'free'
+                    const href = isSubscription
+                      ? (PROVIDER_URLS[p.provider_id] ?? providers?.link ?? '#')
+                      : (providers?.link ?? PROVIDER_URLS[p.provider_id] ?? '#')
+
+                    const actionLabel = section === 'rent' ? 'Kirala' : section === 'buy' ? 'Satın Al' : 'İzle'
 
                     return (
                       <a
@@ -147,7 +158,7 @@ export default function WatchProviders({ allProviders }: Props) {
                         href={href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        title={`${p.provider_name}'de izle`}
+                        title={`${p.provider_name}'de ${actionLabel} →`}
                         className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 transition-all hover:scale-[1.04] hover:brightness-125 cursor-pointer"
                         style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
                       >
