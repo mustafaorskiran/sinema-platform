@@ -51,8 +51,28 @@ export default function Navbar({ user }: NavbarProps) {
   const [searching, setSearching] = useState(false)
   const [searchHistory, setSearchHistory] = useState<string[]>([])
   const [showHistory, setShowHistory] = useState(false)
+  const [popularItems, setPopularItems] = useState<SearchResult[]>([])
+  const [popularFetched, setPopularFetched] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const fetchPopular = useCallback(async () => {
+    if (popularFetched) return
+    try {
+      const res = await fetch('/api/popular')
+      if (!res.ok) return
+      const data = await res.json()
+      setPopularItems((data.results ?? []).map((r: { id: number; title: string; original_title?: string | null; type: string; poster: string | null; year?: string | null }) => ({
+        id: r.id,
+        type: r.type === 'tv' ? 'dizi' as const : 'film' as const,
+        title: r.title,
+        original_title: r.original_title ?? null,
+        year: r.year ?? null,
+        poster: r.poster,
+      })))
+      setPopularFetched(true)
+    } catch { /* ignore */ }
+  }, [popularFetched])
 
   const fetchSuggestions = useCallback(async (q: string) => {
     if (q.length < 2) { setSuggestions([]); setShowDropdown(false); return }
@@ -118,7 +138,10 @@ export default function Navbar({ user }: NavbarProps) {
   function handleSearchFocus() {
     const history = getHistory()
     setSearchHistory(history)
-    if (history.length > 0 && suggestions.length === 0) setShowHistory(true)
+    if (suggestions.length === 0 && query.length < 2) {
+      setShowHistory(true)
+      fetchPopular()
+    }
   }
 
   function handleHistoryClick(term: string) {
@@ -186,24 +209,67 @@ export default function Navbar({ user }: NavbarProps) {
     </div>
   )
 
-  const historyDropdown = showHistory && searchHistory.length > 0 && (
+  const historyDropdown = showHistory && (searchHistory.length > 0 || popularItems.length > 0) && (
     <div className="absolute top-full left-0 right-0 mt-2 rounded-2xl border border-[--border] shadow-2xl z-[9999] overflow-hidden backdrop-blur-xl"
       style={{ background: 'rgba(11,15,25,0.97)' }}>
-      <div className="px-4 pt-3 pb-1 flex items-center justify-between">
-        <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: 'var(--text-secondary)' }}>Son Aramalar</p>
-        <button onClick={() => { localStorage.removeItem(SEARCH_HISTORY_KEY); setSearchHistory([]); setShowHistory(false) }}
-          className="text-[10px] hover:underline" style={{ color: 'rgba(255,255,255,0.2)' }}>Temizle</button>
-      </div>
-      {searchHistory.map(term => (
-        <div key={term} className="flex items-center gap-2 px-4 py-2 hover:bg-white/5 cursor-pointer group"
-          onClick={() => handleHistoryClick(term)}>
-          <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.3)' }}>🕐</span>
-          <span className="flex-1 text-sm" style={{ color: 'var(--text-primary)' }}>{term}</span>
-          <button onClick={e => handleRemoveHistory(term, e)}
-            className="opacity-0 group-hover:opacity-100 text-[11px] transition-opacity hover:text-white"
-            style={{ color: 'rgba(255,255,255,0.3)' }}>✕</button>
-        </div>
-      ))}
+
+      {searchHistory.length > 0 && (
+        <>
+          <div className="px-4 pt-3 pb-1 flex items-center justify-between">
+            <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: 'var(--text-secondary)' }}>Son Aramalar</p>
+            <button onClick={() => { localStorage.removeItem(SEARCH_HISTORY_KEY); setSearchHistory([]); setShowHistory(popularItems.length > 0) }}
+              className="text-[10px] hover:underline" style={{ color: 'rgba(255,255,255,0.2)' }}>Temizle</button>
+          </div>
+          {searchHistory.map(term => (
+            <div key={term} className="flex items-center gap-2 px-4 py-2 hover:bg-white/5 cursor-pointer group"
+              onClick={() => handleHistoryClick(term)}>
+              <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.3)' }}>🕐</span>
+              <span className="flex-1 text-sm" style={{ color: 'var(--text-primary)' }}>{term}</span>
+              <button onClick={e => handleRemoveHistory(term, e)}
+                className="opacity-0 group-hover:opacity-100 text-[11px] transition-opacity hover:text-white"
+                style={{ color: 'rgba(255,255,255,0.3)' }}>✕</button>
+            </div>
+          ))}
+        </>
+      )}
+
+      {popularItems.length > 0 && (
+        <>
+          {searchHistory.length > 0 && <div className="border-t border-[--border]/50 mx-4 mt-1" />}
+          <div className="px-4 pt-3 pb-1">
+            <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: 'var(--text-secondary)' }}>Popüler</p>
+          </div>
+          {popularItems.map(item => (
+            <a
+              key={`popular-${item.type}-${item.id}`}
+              href={`/${item.type}/${item.id}`}
+              onClick={handleSuggestionClick}
+              className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 transition-colors group"
+            >
+              <div className="relative w-8 h-11 rounded-md overflow-hidden bg-[--bg-card] shrink-0 shadow-md">
+                {item.poster
+                  ? <Image src={item.poster} alt={item.title} fill sizes="32px" className="object-cover" />
+                  : <div className="w-full h-full flex items-center justify-center text-[--text-secondary]">
+                      {item.type === 'film' ? <IconFilm className="h-3 w-3 opacity-30" /> : <IconTv className="h-3 w-3 opacity-30" />}
+                    </div>
+                }
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-white truncate group-hover:text-[--accent] transition-colors">{item.title}</p>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
+                    item.type === 'film' ? 'bg-[--accent]/15 text-[--accent]' : 'bg-blue-500/15 text-blue-400'
+                  }`}>
+                    {item.type === 'film' ? 'Film' : 'Dizi'}
+                  </span>
+                  {item.year && <span className="text-[10px] text-[--text-secondary]">{item.year}</span>}
+                </div>
+              </div>
+              <IconChevronRight className="h-3.5 w-3.5 text-[--text-secondary] opacity-0 group-hover:opacity-60 transition-opacity shrink-0" />
+            </a>
+          ))}
+        </>
+      )}
     </div>
   )
 
