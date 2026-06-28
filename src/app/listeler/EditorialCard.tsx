@@ -91,7 +91,7 @@ export default function EditorialCard({ list, posters }: Props) {
             )}
           </div>
           <span className="text-[11px] text-[--text-secondary]">
-            {isDynamic ? '250' : itemCount} film
+            {itemCount} film
           </span>
         </div>
       </div>
