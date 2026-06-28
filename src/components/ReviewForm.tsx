@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import StarRating from './StarRating'
 import type { MediaType } from '@/lib/types'
@@ -16,6 +16,7 @@ const QUICK_TAGS = ['harika', 'sıkıcı', 'duygusal', 'gerilim', 'komedi', 'kla
 
 export default function ReviewForm({ mediaId, mediaType, existingReview }: ReviewFormProps) {
   const router = useRouter()
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
   const [rating, setRating] = useState(existingReview?.rating ?? 0)
   const [content, setContent] = useState(existingReview?.content ?? '')
   const [hasSpoiler, setHasSpoiler] = useState(existingReview?.has_spoiler ?? false)
@@ -39,6 +40,22 @@ export default function ReviewForm({ mediaId, mediaType, existingReview }: Revie
   }
 
   function removeTag(t: string) { setTags(tags.filter(x => x !== t)) }
+
+  function insertSpoilerTag() {
+    const el = textareaRef.current
+    if (!el) return
+    const start = el.selectionStart
+    const end = el.selectionEnd
+    const selected = content.slice(start, end)
+    const tag = selected ? `[spoiler]${selected}[/spoiler]` : '[spoiler]metin buraya[/spoiler]'
+    const newContent = content.slice(0, start) + tag + content.slice(end)
+    setContent(newContent)
+    setTimeout(() => {
+      el.focus()
+      const cursorPos = start + tag.length
+      el.setSelectionRange(cursorPos, cursorPos)
+    }, 0)
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -84,9 +101,18 @@ export default function ReviewForm({ mediaId, mediaType, existingReview }: Revie
         <div className="flex items-center justify-between mb-2">
           <label className="text-xs font-semibold uppercase tracking-widest"
             style={{ color: 'rgba(255,255,255,0.4)' }}>Yorumun</label>
-          <span className="text-[10px] tabular-nums" style={{ color: charColor }}>{content.length} / 2000</span>
+          <div className="flex items-center gap-3">
+            <button type="button" onClick={insertSpoilerTag}
+              className="text-[10px] px-2 py-1 rounded transition-colors hover:text-white"
+              style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)', color: 'rgba(248,113,113,0.7)' }}
+              title="Seçili metni [spoiler] etiketi ile sar">
+              ⚠️ [spoiler]
+            </button>
+            <span className="text-[10px] tabular-nums" style={{ color: charColor }}>{content.length} / 2000</span>
+          </div>
         </div>
         <textarea
+          ref={textareaRef}
           value={content}
           onChange={e => setContent(e.target.value)}
           placeholder="Bu yapım hakkında ne düşünüyorsun?"

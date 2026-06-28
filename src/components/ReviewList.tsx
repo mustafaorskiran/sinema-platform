@@ -56,15 +56,46 @@ function SpoilerContent({ content }: { content: string }) {
   )
 }
 
+function InlineSpoiler({ text }: { text: string }) {
+  const [revealed, setRevealed] = useState(false)
+  return (
+    <span
+      onClick={() => setRevealed(r => !r)}
+      title={revealed ? 'Gizle' : 'Spoiler — görmek için tıkla'}
+      className="cursor-pointer rounded px-0.5 transition-all select-none"
+      style={revealed
+        ? { background: 'rgba(248,113,113,0.08)', color: 'inherit' }
+        : { background: 'rgba(248,113,113,0.15)', color: 'transparent', textShadow: '0 0 8px rgba(248,113,113,0.6)', border: '1px solid rgba(248,113,113,0.2)' }
+      }>
+      {text}
+    </span>
+  )
+}
+
+function renderWithSpoilers(content: string) {
+  const parts = content.split(/\[spoiler\]([\s\S]*?)\[\/spoiler\]/gi)
+  if (parts.length === 1) return <>{content}</>
+  return (
+    <>
+      {parts.map((part, i) =>
+        i % 2 === 1
+          ? <InlineSpoiler key={i} text={part} />
+          : <span key={i}>{part}</span>
+      )}
+    </>
+  )
+}
+
 function ReviewContent({ content }: { content: string }) {
   const [expanded, setExpanded] = useState(false)
+  const hasSpoilerTag = /\[spoiler\]/i.test(content)
   const isLong = content.length > 400
   return (
     <div className="mt-3">
-      <p className={`text-[15px] leading-[1.75] whitespace-pre-wrap ${isLong && !expanded ? 'line-clamp-5' : ''}`} style={{ color: 'var(--text-secondary)' }}>
-        {content}
+      <p className={`text-[15px] leading-[1.75] whitespace-pre-wrap ${isLong && !expanded && !hasSpoilerTag ? 'line-clamp-5' : ''}`} style={{ color: 'var(--text-secondary)' }}>
+        {renderWithSpoilers(content)}
       </p>
-      {isLong && (
+      {isLong && !hasSpoilerTag && (
         <button
           onClick={() => setExpanded(e => !e)}
           className="mt-2 flex items-center gap-1 text-xs font-semibold hover:underline transition-colors"

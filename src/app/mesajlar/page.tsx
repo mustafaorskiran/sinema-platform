@@ -20,12 +20,23 @@ export default async function MesajlarPage() {
     .limit(30)
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-10">
-      <h1 className="text-2xl font-bold text-white mb-6">Mesajlar</h1>
-      <ConversationList
-        conversations={(conversations ?? []) as any[]}
-        currentUserId={user.id}
-      />
-    </div>
+    <>
+      {/* Mobil: tam liste göster */}
+      <div className="md:hidden">
+        <h1 className="text-xl font-bold text-white mb-4">Mesajlar</h1>
+        <ConversationList
+          conversations={(conversations ?? []) as any[]}
+          currentUserId={user.id}
+        />
+      </div>
+
+      {/* Masaüstü: sağ panel placeholder (sidebar zaten layout'ta var) */}
+      <div className="hidden md:flex flex-col items-center justify-center h-[60vh] rounded-2xl"
+        style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
+        <p className="text-4xl mb-3">💬</p>
+        <p className="text-sm font-medium text-white mb-1">Bir konuşma seç</p>
+        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>Soldan bir konuşmaya tıkla</p>
+      </div>
+    </>
   )
 }

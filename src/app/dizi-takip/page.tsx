@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getSeriesDetail, getPosterUrl, getMediaTitle } from '@/lib/tmdb'
+import EpisodeUpdater from './EpisodeUpdater'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -159,15 +160,16 @@ export default async function DiziTakipPage() {
                 </div>
               )}
 
-              {show.nextSeason && (
-                <Link href={`/dizi/${show.id}/sezon/${show.nextSeason}`}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all active:scale-95 hover:scale-105"
-                  style={{ background: 'linear-gradient(135deg, rgba(225,29,72,0.15), rgba(190,18,60,0.1))', border: '1px solid rgba(225,29,72,0.25)', color: '#E11D48', minHeight: '32px' }}>
-                  ▶ S{String(show.nextSeason).padStart(2,'0')}B{String(show.nextEpisode).padStart(2,'0')} izle
-                </Link>
-              )}
+              <EpisodeUpdater
+                seriesId={show.id}
+                currentSeason={show.lastSeason}
+                currentEpisode={show.lastEpisode}
+                totalSeasons={show.totalSeasons}
+                nextSeason={show.nextSeason}
+                nextEpisode={show.nextEpisode}
+              />
 
-              {!show.lastSeason && (
+              {!show.lastSeason && !show.nextSeason && (
                 <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>Henüz bölüm işaretlenmedi</p>
               )}
             </div>
