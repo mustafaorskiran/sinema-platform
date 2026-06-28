@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import OpenAI from 'openai'
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient()
@@ -11,30 +12,21 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Eksik parametre' }, { status: 400 })
   }
 
-  const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY
-  if (!ANTHROPIC_API_KEY) return NextResponse.json({ error: 'AI şu an aktif değil' }, { status: 503 })
+  if (!process.env.OPENAI_API_KEY) return NextResponse.json({ error: 'AI şu an aktif değil' }, { status: 503 })
 
   const systemPrompt = `Sen Sinezon platformunun film ve dizi uzmanı AI asistanısın. "${title}" (${year}) ${mediaType === 'dizi' ? 'dizisi' : 'filmi'} hakkında kullanıcıların sorularını yanıtlıyorsun. Türler: ${genres}. ${director ? `Yönetmen/Yaratıcı: ${director}.` : ''} Kısa, bilgilendirici ve spoiler içermeden yanıtla. Türkçe yaz.`
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'x-api-key': ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 400,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: question.trim().slice(0, 500) }],
-      }),
+    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+    const completion = await client.chat.completions.create({
+      model: 'gpt-4o-mini',
+      max_tokens: 400,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: question.trim().slice(0, 500) },
+      ],
     })
-
-    if (!response.ok) throw new Error('Anthropic error')
-    const data = await response.json()
-    const answer = data.content?.[0]?.text ?? ''
+    const answer = completion.choices[0]?.message?.content ?? ''
     return NextResponse.json({ answer })
   } catch {
     return NextResponse.json({ error: 'Yanıt alınamadı' }, { status: 500 })
