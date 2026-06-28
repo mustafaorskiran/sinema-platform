@@ -39,7 +39,7 @@ export default async function ForumPage({ searchParams }: Props) {
     .order('last_reply_at', { ascending: false })
 
   if (query) {
-    threadQuery = threadQuery.ilike('title', `%${query}%`)
+    threadQuery = threadQuery.or(`title.ilike.%${query}%,content.ilike.%${query}%`)
   } else {
     threadQuery = threadQuery.limit(10)
   }
