@@ -40,9 +40,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       type: 'profile',
       url: `/profil/${username}`,
-      ...(profile?.avatar_url && {
-        images: [{ url: profile.avatar_url, width: 400, height: 400, alt: username }],
-      }),
+      images: [{ url: `/api/og/profil/${username}`, width: 1200, height: 630, alt: `${username} profil kartı` }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${username} | Sinezon`,
+      description,
+      images: [`/api/og/profil/${username}`],
     },
   }
 }
