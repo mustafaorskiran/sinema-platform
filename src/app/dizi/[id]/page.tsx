@@ -243,7 +243,7 @@ export default async function DiziPage({ params, searchParams }: Props) {
     .limit(20)
   const containingListIds = [...new Set((containingListsRaw ?? []).map((r: any) => r.list_id))]
   const { data: containingLists } = containingListIds.length > 0
-    ? await supabase.from('lists').select('id, title, profiles(username)').in('id', containingListIds).eq('public', true).limit(6)
+    ? await supabase.from('lists').select('id, title, profiles(username)').in('id', containingListIds).eq('public', true).not('user_id', 'is', null).limit(6)
     : { data: [] }
 
   // Editöryal liste üyeliği (ödüller)

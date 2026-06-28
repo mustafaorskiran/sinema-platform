@@ -242,7 +242,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
     .eq('media_type', 'film')
   const editorialListIds = (editorialMemberships ?? []).map((m: any) => m.list_id)
 
-  // Bu filmi içeren public kullanıcı listeleri
+  // Bu filmi içeren public kullanıcı listeleri (editöryal listeler hariç)
   const { data: containingListsRaw } = await supabase
     .from('list_items')
     .select('list_id')
@@ -251,7 +251,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
     .limit(20)
   const containingListIds = [...new Set((containingListsRaw ?? []).map((r: any) => r.list_id))]
   const { data: containingLists } = containingListIds.length > 0
-    ? await supabase.from('lists').select('id, title, profiles(username)').in('id', containingListIds).eq('public', true).limit(6)
+    ? await supabase.from('lists').select('id, title, profiles(username)').in('id', containingListIds).eq('public', true).not('user_id', 'is', null).limit(6)
     : { data: [] }
 
   // Konular
