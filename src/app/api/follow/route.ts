@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { sendPushToUser } from '@/lib/pushNotify'
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient()
@@ -16,12 +17,11 @@ export async function POST(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
   // Takip edilen kişiye bildirim gönder
-  await supabase.from('notifications').insert({
-    user_id: following_id,
-    actor_id: user.id,
-    type: 'follow',
-    review_id: null,
-  })
+  const { data: followerProfile } = await supabase.from('profiles').select('username').eq('id', user.id).single()
+  await Promise.all([
+    supabase.from('notifications').insert({ user_id: following_id, actor_id: user.id, type: 'follow', review_id: null }),
+    sendPushToUser(following_id, '👤 Yeni takipçi', `@${followerProfile?.username ?? 'Biri'} seni takip etmeye başladı`, `/profil/${followerProfile?.username}`),
+  ])
 
   // E-posta bildirimi (RESEND_API_KEY varsa)
   if (process.env.RESEND_API_KEY && process.env.INTERNAL_API_KEY) {

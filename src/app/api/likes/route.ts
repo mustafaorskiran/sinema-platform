@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { sendPushToUser } from '@/lib/pushNotify'
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient()
@@ -22,12 +23,11 @@ export async function POST(req: NextRequest) {
     .single()
 
   if (review && review.user_id !== user.id) {
-    await supabase.from('notifications').insert({
-      user_id: review.user_id,
-      actor_id: user.id,
-      type: 'like',
-      review_id,
-    })
+    const { data: actor } = await supabase.from('profiles').select('username').eq('id', user.id).single()
+    await Promise.all([
+      supabase.from('notifications').insert({ user_id: review.user_id, actor_id: user.id, type: 'like', review_id }),
+      sendPushToUser(review.user_id, '❤️ Yorumun beğenildi', `@${actor?.username ?? 'Biri'} yorumunu beğendi`, '/bildirimler'),
+    ])
   }
 
   return NextResponse.json({ success: true })
