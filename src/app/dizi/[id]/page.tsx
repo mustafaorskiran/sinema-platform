@@ -624,8 +624,8 @@ export default async function DiziPage({ params, searchParams }: Props) {
                     .filter((s: any) => s.season_number > 0)
                     .map((s: any) => (
                     <a key={s.season_number} href={`/dizi/${seriesId}/sezon/${s.season_number}`}
-                      className="flex items-center gap-2.5 p-2.5 rounded-xl transition-all hover:-translate-y-0.5"
-                      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                      className="flex items-center gap-2.5 p-3 rounded-xl transition-all active:scale-95 hover:-translate-y-0.5"
+                      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', minHeight: '56px' }}>
                       {s.poster_path
                         ? <img src={`https://image.tmdb.org/t/p/w92${s.poster_path}`} alt={`Sezon ${s.season_number}`}
                             className="w-8 h-12 rounded-md object-cover shrink-0" />

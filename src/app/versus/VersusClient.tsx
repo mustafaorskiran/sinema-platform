@@ -70,9 +70,9 @@ export default function VersusClient({ items: initialItems, userId }: Props) {
               <button
                 onClick={() => !isVoting && userId && vote(item.id, item.filmAId, item.myVote, item.filmAId, item.filmBId)}
                 disabled={!userId || isVoting}
-                className={`flex flex-col items-center gap-3 p-5 transition-all group ${item.myVote === item.filmAId ? 'ring-2 ring-[#E11D48]/50' : 'hover:bg-white/3'}`}
+                className={`flex flex-col items-center gap-2 p-3 sm:p-5 transition-all active:scale-95 group ${item.myVote === item.filmAId ? 'ring-2 ring-[#E11D48]/50' : 'hover:bg-white/3'}`}
                 style={{ borderRadius: '16px 0 0 16px' }}>
-                <div className="relative w-24 aspect-[2/3] rounded-xl overflow-hidden"
+                <div className="relative w-20 sm:w-24 aspect-[2/3] rounded-xl overflow-hidden"
                   style={{ background: 'rgba(255,255,255,0.06)', border: item.myVote === item.filmAId ? '2px solid #E11D48' : '2px solid transparent' }}>
                   {item.filmAPoster
                     ? <img src={item.filmAPoster} alt={item.filmATitle} className="w-full h-full object-cover" />
@@ -111,9 +111,9 @@ export default function VersusClient({ items: initialItems, userId }: Props) {
               <button
                 onClick={() => !isVoting && userId && vote(item.id, item.filmBId, item.myVote, item.filmAId, item.filmBId)}
                 disabled={!userId || isVoting}
-                className={`flex flex-col items-center gap-3 p-5 transition-all group ${item.myVote === item.filmBId ? 'ring-2 ring-[#E11D48]/50' : 'hover:bg-white/3'}`}
+                className={`flex flex-col items-center gap-2 p-3 sm:p-5 transition-all active:scale-95 group ${item.myVote === item.filmBId ? 'ring-2 ring-[#E11D48]/50' : 'hover:bg-white/3'}`}
                 style={{ borderRadius: '0 16px 16px 0' }}>
-                <div className="relative w-24 aspect-[2/3] rounded-xl overflow-hidden"
+                <div className="relative w-20 sm:w-24 aspect-[2/3] rounded-xl overflow-hidden"
                   style={{ background: 'rgba(255,255,255,0.06)', border: item.myVote === item.filmBId ? '2px solid #E11D48' : '2px solid transparent' }}>
                   {item.filmBPoster
                     ? <img src={item.filmBPoster} alt={item.filmBTitle} className="w-full h-full object-cover" />

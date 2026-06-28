@@ -82,8 +82,8 @@ export default async function SezonPage({ params }: Props) {
           />
         )}
         <div>
-          <h1 className="text-2xl font-black text-white mb-1">{title}</h1>
-          <p className="text-base font-bold mb-2" style={{ color: 'rgba(255,255,255,0.5)' }}>
+          <h1 className="text-xl sm:text-2xl font-black text-white mb-1 leading-tight">{title}</h1>
+          <p className="text-sm sm:text-base font-bold mb-2" style={{ color: 'rgba(255,255,255,0.5)' }}>
             Sezon {seasonNumber} — {episodes.length} Bölüm
           </p>
           {user && (

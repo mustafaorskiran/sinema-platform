@@ -161,8 +161,8 @@ export default async function DiziTakipPage() {
 
               {show.nextSeason && (
                 <Link href={`/dizi/${show.id}/sezon/${show.nextSeason}`}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all hover:scale-105"
-                  style={{ background: 'linear-gradient(135deg, rgba(225,29,72,0.15), rgba(190,18,60,0.1))', border: '1px solid rgba(225,29,72,0.25)', color: '#E11D48' }}>
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all active:scale-95 hover:scale-105"
+                  style={{ background: 'linear-gradient(135deg, rgba(225,29,72,0.15), rgba(190,18,60,0.1))', border: '1px solid rgba(225,29,72,0.25)', color: '#E11D48', minHeight: '32px' }}>
                   ▶ S{String(show.nextSeason).padStart(2,'0')}B{String(show.nextEpisode).padStart(2,'0')} izle
                 </Link>
               )}

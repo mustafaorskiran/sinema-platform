@@ -103,7 +103,7 @@ export default function EpisodeRow({ episode, seriesId, seasonNumber, isWatched:
           <button
             onClick={toggle}
             disabled={loading}
-            className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-all hover:scale-110"
+            className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all active:scale-95 hover:scale-105"
             style={watched
               ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: 'white' }
               : { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.4)' }
