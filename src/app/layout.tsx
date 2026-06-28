@@ -112,6 +112,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   <li><a href="/evren" className="hover:text-white transition-colors">🌌 Sinema Evrenler</a></li>
                   <li><a href="/versus" className="hover:text-white transition-colors">⚔️ Film vs Film</a></li>
                   <li><a href="/yakinda" className="hover:text-white transition-colors">Yakında Çıkacaklar</a></li>
+                  <li><a href="/kutu-ofis" className="hover:text-white transition-colors">🎟️ Türkiye Gişe</a></li>
                 </ul>
               </div>
               <div>

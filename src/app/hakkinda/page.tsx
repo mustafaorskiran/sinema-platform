@@ -128,6 +128,25 @@ export default function HakkindaPage() {
         </div>
       </section>
 
+      {/* Destek */}
+      <section className="text-center">
+        <div className="rounded-2xl p-6 mb-4" style={{ background: 'linear-gradient(160deg, rgba(212,168,67,0.08), rgba(14,20,32,0.95))', border: '1px solid rgba(212,168,67,0.2)' }}>
+          <p className="text-lg font-bold text-white mb-1">☕ Bizi Destekle</p>
+          <p className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.45)' }}>
+            Sinezon bağımsız bir proje. Sunucu ve API maliyetlerini karşılamak için destek olabilirsin.
+          </p>
+          <a
+            href="https://ko-fi.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-105 active:scale-95"
+            style={{ background: 'rgba(212,168,67,0.15)', border: '1px solid rgba(212,168,67,0.3)', color: '#D4A843' }}
+          >
+            ☕ Ko-fi ile Destek Ol
+          </a>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="text-center">
         <div className="rounded-2xl p-8" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.95), rgba(14,20,32,0.98))', border: '1px solid rgba(212,168,67,0.12)' }}>
