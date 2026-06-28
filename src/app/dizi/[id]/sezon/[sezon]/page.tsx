@@ -141,6 +141,29 @@ export default async function SezonPage({ params }: Props) {
           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>Bu sezon için bölüm bilgisi henüz eklenmemiş.</p>
         </div>
       )}
+
+      {/* Sezon navigasyon okları */}
+      <div className="flex items-center justify-between mt-6 pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        {seasonNumber > 1 ? (
+          <Link href={`/dizi/${seriesId}/sezon/${seasonNumber - 1}`}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all active:scale-95 hover:-translate-x-1"
+            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.6)' }}>
+            ← Sezon {seasonNumber - 1}
+          </Link>
+        ) : (
+          <div />
+        )}
+
+        {seasonNumber < totalSeasons ? (
+          <Link href={`/dizi/${seriesId}/sezon/${seasonNumber + 1}`}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all active:scale-95 hover:translate-x-1"
+            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.6)' }}>
+            Sezon {seasonNumber + 1} →
+          </Link>
+        ) : (
+          <div />
+        )}
+      </div>
     </div>
   )
 }
