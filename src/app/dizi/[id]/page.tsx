@@ -629,7 +629,7 @@ export default async function DiziPage({ params, searchParams }: Props) {
               </div>
             </div>
 
-            <WatchProviders allProviders={watchProviders} mediaType="dizi" />
+            <WatchProviders allProviders={watchProviders} mediaType="dizi" title={title} />
             <AffiliateLinks title={title} year={getMediaYear(series)} />
 
             {/* Sezon Listesi */}

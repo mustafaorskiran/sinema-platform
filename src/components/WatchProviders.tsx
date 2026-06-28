@@ -6,6 +6,7 @@ import type { WatchProviderResult } from '@/lib/tmdb'
 interface Props {
   allProviders: Record<string, WatchProviderResult> | null
   mediaType?: 'film' | 'dizi'
+  title?: string
 }
 
 const COUNTRIES: { code: string; flag: string; name: string }[] = [
@@ -38,8 +39,8 @@ const SECTION_LABELS: Record<string, string> = {
   buy: '🛒 Satın Al',
 }
 
-// Bilinen streaming platformlarının URL'leri (provider_id → anasayfa)
-const PROVIDER_URLS: Record<number, string> = {
+// Abonelik platformları → anasayfa
+const PROVIDER_HOME: Record<number, string> = {
   8:    'https://www.netflix.com',
   9:    'https://www.primevideo.com',
   10:   'https://www.amazon.com/Prime-Video',
@@ -71,7 +72,25 @@ const PROVIDER_URLS: Record<number, string> = {
   73:   'https://www.tubitv.com',
 }
 
-export default function WatchProviders({ allProviders }: Props) {
+// Kiralama / Satın Al → başlık ile arama URL'i oluştur
+// TMDb API doğrudan platform kiralama linki vermiyor; en yakın yol platform araması
+function buildSearchUrl(providerId: number, title: string): string | null {
+  const q = encodeURIComponent(title)
+  switch (providerId) {
+    case 9:
+    case 10:  return `https://www.amazon.com/s?k=${q}&i=instant-video`
+    case 2:   return `https://tv.apple.com/search?term=${q}`
+    case 350: return `https://tv.apple.com/search?term=${q}`
+    case 3:   return `https://play.google.com/store/search?q=${q}&c=movies`
+    case 192: return `https://www.youtube.com/results?search_query=${q}&sp=EgIQAQ%3D%3D`
+    case 7:   return `https://www.vudu.com/content/movies/search?searchString=${q}`
+    case 68:  return `https://www.microsoft.com/en-us/search/shop/movies?q=${q}`
+    case 100: return `https://mubi.com/en/films?q=${q}`
+    default:  return null
+  }
+}
+
+export default function WatchProviders({ allProviders, title = '' }: Props) {
   const [selectedCountry, setSelectedCountry] = useState('TR')
 
   if (!allProviders) return null
@@ -142,13 +161,20 @@ export default function WatchProviders({ allProviders }: Props) {
                 {providers![section]!
                   .sort((a, b) => a.display_priority - b.display_priority)
                   .map(p => {
-                    // Abonelik → platformun anasayfasına git
-                    // Kiralama / Satın Al → JustWatch'ın o içeriğe ait sayfasına git
-                    //   (JustWatch orada doğrudan Amazon/Google Play/Apple TV kiralama linklerini gösteriyor)
                     const isSubscription = section === 'flatrate' || section === 'free'
-                    const href = isSubscription
-                      ? (PROVIDER_URLS[p.provider_id] ?? providers?.link ?? '#')
-                      : (providers?.link ?? PROVIDER_URLS[p.provider_id] ?? '#')
+                    let href: string
+                    if (isSubscription) {
+                      // Abonelik → platformun anasayfası (zaten abone, içerik dahil)
+                      href = PROVIDER_HOME[p.provider_id] ?? providers?.link ?? '#'
+                    } else {
+                      // Kira / Satın Al:
+                      // 1. Desteklenen platform → arama URL'i (başlık ile platform araması)
+                      // 2. Desteklenmeyen → JustWatch içerik sayfası (tek tıkla platforma gider)
+                      href = buildSearchUrl(p.provider_id, title)
+                        ?? providers?.link
+                        ?? PROVIDER_HOME[p.provider_id]
+                        ?? '#'
+                    }
 
                     const actionLabel = section === 'rent' ? 'Kirala' : section === 'buy' ? 'Satın Al' : 'İzle'
 

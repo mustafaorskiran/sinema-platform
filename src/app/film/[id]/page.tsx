@@ -617,7 +617,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
               </div>
             </div>
 
-            <WatchProviders allProviders={watchProviders} mediaType="film" />
+            <WatchProviders allProviders={watchProviders} mediaType="film" title={title} />
             <AffiliateLinks title={title} year={getMediaYear(movie)} />
 
             {/* Konular */}
