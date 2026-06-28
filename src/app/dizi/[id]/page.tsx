@@ -612,6 +612,36 @@ export default async function DiziPage({ params, searchParams }: Props) {
             <WatchProviders allProviders={watchProviders} mediaType="dizi" />
             <AffiliateLinks title={title} year={getMediaYear(series)} />
 
+            {/* Sezon Listesi */}
+            {((series as any).seasons ?? []).filter((s: any) => s.season_number > 0).length > 0 && (
+              <div className="mt-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-1 h-5 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
+                  <h2 className="text-base font-bold text-white">Sezonlar</h2>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {((series as any).seasons as any[])
+                    .filter((s: any) => s.season_number > 0)
+                    .map((s: any) => (
+                    <a key={s.season_number} href={`/dizi/${seriesId}/sezon/${s.season_number}`}
+                      className="flex items-center gap-2.5 p-2.5 rounded-xl transition-all hover:-translate-y-0.5"
+                      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                      {s.poster_path
+                        ? <img src={`https://image.tmdb.org/t/p/w92${s.poster_path}`} alt={`Sezon ${s.season_number}`}
+                            className="w-8 h-12 rounded-md object-cover shrink-0" />
+                        : <div className="w-8 h-12 rounded-md shrink-0 flex items-center justify-center text-lg"
+                            style={{ background: 'rgba(255,255,255,0.05)' }}>📺</div>
+                      }
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold text-white">Sezon {s.season_number}</p>
+                        <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>{s.episode_count} bölüm</p>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Konular */}
             <TopicTagger
               topics={topics ?? []}
