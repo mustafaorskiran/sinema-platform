@@ -9,23 +9,22 @@ export const metadata: Metadata = {
   description: 'İki film arasında tercihini belirt — hangisi daha iyi?',
 }
 
-// Sabit karşılaştırmalar — popüler film çiftleri
 const VERSUS_PAIRS = [
-  { filmAId: 550, filmBId: 27205 },   // Fight Club vs Inception
-  { filmAId: 238, filmBId: 240 },     // Godfather vs Godfather II
-  { filmAId: 155, filmBId: 157336 },  // Dark Knight vs Interstellar
-  { filmAId: 13, filmBId: 11 },       // Forrest Gump vs Star Wars
-  { filmAId: 497, filmBId: 77338 },   // The Green Mile vs The Intouchables
-  { filmAId: 278, filmBId: 372058 },  // Shawshank vs Your Name
-  { filmAId: 424, filmBId: 98 },      // Schindler's List vs Gladiator
-  { filmAId: 680, filmBId: 769 },     // Pulp Fiction vs GoodFellas
+  { filmAId: 550, filmBId: 27205 },
+  { filmAId: 238, filmBId: 240 },
+  { filmAId: 155, filmBId: 157336 },
+  { filmAId: 13, filmBId: 11 },
+  { filmAId: 497, filmBId: 77338 },
+  { filmAId: 278, filmBId: 372058 },
+  { filmAId: 424, filmBId: 98 },
+  { filmAId: 680, filmBId: 769 },
 ]
 
 export default async function VersusPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Veritabanında versus kayıtları oluştur / al
+  // Sabit çiftleri seed et
   for (const pair of VERSUS_PAIRS) {
     await supabase.from('film_versus').upsert(
       { film_a_id: pair.filmAId, film_b_id: pair.filmBId },
@@ -33,11 +32,12 @@ export default async function VersusPage() {
     )
   }
 
+  // Sabit + kullanıcı oluşturulan tüm çiftler
   const { data: versusRows } = await supabase
     .from('film_versus')
-    .select('id, film_a_id, film_b_id')
-    .in('film_a_id', VERSUS_PAIRS.map(p => p.filmAId))
-    .limit(VERSUS_PAIRS.length)
+    .select('id, film_a_id, film_b_id, created_by')
+    .order('created_at', { ascending: false })
+    .limit(50)
 
   if (!versusRows || versusRows.length === 0) {
     return (
@@ -47,24 +47,19 @@ export default async function VersusPage() {
     )
   }
 
-  // Oy sayıları
   const versusIds = versusRows.map(r => r.id)
-  const { data: votes } = await supabase
-    .from('film_versus_votes')
-    .select('versus_id, voted_for')
-    .in('versus_id', versusIds)
 
-  // Kendi oylarım
-  const { data: myVotes } = user
-    ? await supabase.from('film_versus_votes').select('versus_id, voted_for').in('versus_id', versusIds).eq('user_id', user.id)
-    : { data: [] }
+  const [{ data: votes }, myVotesRes] = await Promise.all([
+    supabase.from('film_versus_votes').select('versus_id, voted_for').in('versus_id', versusIds),
+    user
+      ? supabase.from('film_versus_votes').select('versus_id, voted_for').in('versus_id', versusIds).eq('user_id', user.id)
+      : Promise.resolve({ data: [] as { versus_id: string; voted_for: number }[] }),
+  ])
 
-  const myVoteMap = new Map((myVotes ?? []).map(v => [v.versus_id, v.voted_for]))
-
+  const myVoteMap = new Map((myVotesRes.data ?? []).map(v => [v.versus_id, v.voted_for]))
   const voteCount = (versusId: string, filmId: number) =>
     (votes ?? []).filter(v => v.versus_id === versusId && v.voted_for === filmId).length
 
-  // TMDB verileri
   const items = await Promise.all(
     versusRows.map(async row => {
       const [movieA, movieB] = await Promise.all([
@@ -82,9 +77,13 @@ export default async function VersusPage() {
         votesA: voteCount(row.id, row.film_a_id),
         votesB: voteCount(row.id, row.film_b_id),
         myVote: myVoteMap.get(row.id) ?? null,
+        isUserCreated: !!row.created_by,
       }
     })
   )
+
+  const presetItems = items.filter(i => !i.isUserCreated)
+  const userItems = items.filter(i => i.isUserCreated)
 
   return (
     <div className="max-w-xl mx-auto px-4 sm:px-6 py-10">
@@ -100,7 +99,20 @@ export default async function VersusPage() {
         )}
       </div>
 
-      <VersusClient items={items} userId={user?.id ?? null} />
+      <VersusClient items={presetItems} userId={user?.id ?? null} />
+
+      {userItems.length > 0 && (
+        <div className="mt-10">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.06)' }} />
+            <p className="text-xs font-semibold px-3" style={{ color: 'rgba(255,255,255,0.3)' }}>
+              Topluluk Karşılaştırmaları
+            </p>
+            <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.06)' }} />
+          </div>
+          <VersusClient items={userItems} userId={user?.id ?? null} />
+        </div>
+      )}
 
       {user && (
         <div className="mt-8 text-center">

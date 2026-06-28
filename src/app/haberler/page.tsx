@@ -1,6 +1,8 @@
+﻿import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { IconRss, IconClock, IconGlobe } from '@/components/icons'
 import Link from 'next/link'
+import HaberlerSearch from './HaberlerSearch'
 
 export const revalidate = 3600
 
@@ -84,12 +86,13 @@ function isYerliHaber(item: NewsItem): boolean {
 }
 
 interface PageProps {
-  searchParams: Promise<{ kategori?: string }>
+  searchParams: Promise<{ kategori?: string; q?: string }>
 }
 
 export default async function HaberlerPage({ searchParams }: PageProps) {
   const params = await searchParams
   const kategori = params.kategori ?? 'tumu'
+  const searchQ = (params.q ?? '').toLowerCase().trim()
 
   const [beyazperde, hollywoodReporter, variety] = await Promise.all([
     fetchRSS('https://www.beyazperde.com/rss/haberler.rss', 'Beyazperde'),
@@ -105,12 +108,18 @@ export default async function HaberlerPage({ searchParams }: PageProps) {
     })
     .slice(0, 30)
 
-  const filteredNews =
-    kategori === 'yerli'
-      ? allNews.filter(isYerliHaber)
-      : kategori === 'yabanci'
-        ? allNews.filter(item => !isYerliHaber(item))
-        : allNews
+  const byKategori = kategori === 'yerli'
+    ? allNews.filter(isYerliHaber)
+    : kategori === 'yabanci'
+      ? allNews.filter(item => !isYerliHaber(item))
+      : allNews
+
+  const filteredNews = searchQ
+    ? byKategori.filter(item =>
+        item.title.toLowerCase().includes(searchQ) ||
+        (item.description ?? '').toLowerCase().includes(searchQ)
+      )
+    : byKategori
 
   const sourceColors: Record<string, string> = {
     Beyazperde: 'var(--accent)',
@@ -167,6 +176,11 @@ export default async function HaberlerPage({ searchParams }: PageProps) {
           {filteredNews.length} haber
         </span>
       </div>
+
+      {/* Arama */}
+      <Suspense fallback={null}>
+        <HaberlerSearch />
+      </Suspense>
 
       {/* Haber Listesi */}
       {filteredNews.length > 0 ? (
@@ -246,3 +260,5 @@ export default async function HaberlerPage({ searchParams }: PageProps) {
     </div>
   )
 }
+
+
