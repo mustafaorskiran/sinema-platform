@@ -38,17 +38,47 @@ const SECTION_LABELS: Record<string, string> = {
   buy: '🛒 Satın Al',
 }
 
-export default function WatchProviders({ allProviders, mediaType }: Props) {
-  const basePage = mediaType === 'dizi' ? '/diziler' : '/filmler'
+// Bilinen streaming platformlarının URL'leri (provider_id → anasayfa)
+const PROVIDER_URLS: Record<number, string> = {
+  8:    'https://www.netflix.com',
+  9:    'https://www.primevideo.com',
+  10:   'https://www.amazon.com/Prime-Video',
+  337:  'https://www.disneyplus.com',
+  350:  'https://tv.apple.com',
+  2:    'https://tv.apple.com',
+  1899: 'https://www.max.com',
+  384:  'https://www.max.com',
+  531:  'https://www.paramountplus.com',
+  15:   'https://www.hulu.com',
+  3:    'https://play.google.com/store/movies',
+  192:  'https://www.youtube.com',
+  188:  'https://www.youtube.com/premium',
+  11:   'https://mubi.com',
+  283:  'https://www.crunchyroll.com',
+  35:   'https://www.viki.com',
+  341:  'https://www.blutv.com',
+  582:  'https://www.gain.tv',
+  1870: 'https://www.exxen.com',
+  619:  'https://www.stan.com.au',
+  167:  'https://www.sky.com',
+  103:  'https://www.channel4.com',
+  43:   'https://www.starz.com',
+  87:   'https://www.epix.com',
+  300:  'https://www.peacocktv.com',
+  386:  'https://www.peacocktv.com',
+  257:  'https://fubo.tv',
+  237:  'https://www.tubitv.com',
+  73:   'https://www.tubitv.com',
+}
+
+export default function WatchProviders({ allProviders }: Props) {
   const [selectedCountry, setSelectedCountry] = useState('TR')
 
   if (!allProviders) return null
 
-  // Sadece veri olan ülkeleri göster, öncelik sırasına göre yeniden sırala
   const availableCountryCodes = new Set(Object.keys(allProviders))
   const availableCountries = COUNTRIES.filter(c => availableCountryCodes.has(c.code))
 
-  // Eğer TR yoksa ilk mevcut ülkeyi seç
   const activeCode = availableCountryCodes.has(selectedCountry)
     ? selectedCountry
     : availableCountries[0]?.code ?? ''
@@ -107,8 +137,20 @@ export default function WatchProviders({ allProviders, mediaType }: Props) {
                 {providers![section]!
                   .sort((a, b) => a.display_priority - b.display_priority)
                   .map(p => {
-                    const inner = (
-                      <>
+                    const providerUrl = PROVIDER_URLS[p.provider_id]
+                    // Bilinen platform → doğrudan platforma git, bilinmiyor → JustWatch'a
+                    const href = providerUrl ?? providers?.link ?? '#'
+
+                    return (
+                      <a
+                        key={p.provider_id}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={`${p.provider_name}'de izle`}
+                        className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 transition-all hover:scale-[1.04] hover:brightness-125 cursor-pointer"
+                        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+                      >
                         {p.logo_path && (
                           <img
                             src={`https://image.tmdb.org/t/p/w45${p.logo_path}`}
@@ -117,24 +159,8 @@ export default function WatchProviders({ allProviders, mediaType }: Props) {
                           />
                         )}
                         <span className="text-xs text-white">{p.provider_name}</span>
-                      </>
-                    )
-                    const cls = "flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 hover:border-[--accent]/40 transition-colors"
-                    const clsStyle = { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }
-                    return mediaType ? (
-                      <a
-                        key={p.provider_id}
-                        href={`${basePage}?platform=${p.provider_id}`}
-                        title={`${p.provider_name}'deki tüm ${mediaType === 'dizi' ? 'diziler' : 'filmler'}`}
-                        className={cls + " cursor-pointer"}
-                        style={clsStyle}
-                      >
-                        {inner}
+                        <span className="text-[10px] opacity-40">↗</span>
                       </a>
-                    ) : (
-                      <div key={p.provider_id} title={p.provider_name} className={cls} style={clsStyle}>
-                        {inner}
-                      </div>
                     )
                   })}
               </div>
