@@ -473,6 +473,7 @@ export default function Navbar({ user }: NavbarProps) {
                 <Link href="/film-gecesi" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Film Gecesi</Link>
                 <Link href="/mesajlar" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Mesajlar</Link>
                 <Link href="/izleme-listem" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Listem</Link>
+                <Link href="/dizi-takip" className="py-2 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>📺 Dizi Takip</Link>
               </>
             )}
 
