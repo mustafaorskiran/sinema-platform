@@ -109,6 +109,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   <li><a href="/filmler" className="hover:text-white transition-colors">Filmler</a></li>
                   <li><a href="/diziler" className="hover:text-white transition-colors">Diziler</a></li>
                   <li><a href="/top10" className="hover:text-white transition-colors">🔥 Top 10</a></li>
+                  <li><a href="/evren" className="hover:text-white transition-colors">🌌 Sinema Evrenler</a></li>
+                  <li><a href="/versus" className="hover:text-white transition-colors">⚔️ Film vs Film</a></li>
                   <li><a href="/yakinda" className="hover:text-white transition-colors">Yakında Çıkacaklar</a></li>
                 </ul>
               </div>
@@ -127,6 +129,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <ul className="space-y-2">
                   <li><a href="/akis" className="hover:text-white transition-colors">Akışım</a></li>
                   <li><a href="/izleme-listem" className="hover:text-white transition-colors">İzleme Listem</a></li>
+                  <li><a href="/dizi-takip" className="hover:text-white transition-colors">📺 Dizi Takip</a></li>
                   <li><a href="/gunluk" className="hover:text-white transition-colors">Günlüğüm</a></li>
                   <li><a href={`/ozet/${new Date().getFullYear()}`} className="hover:text-white transition-colors">Yıl Özetim</a></li>
                 </ul>
