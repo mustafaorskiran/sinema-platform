@@ -234,6 +234,18 @@ export default async function DiziPage({ params, searchParams }: Props) {
     .order('likes_count', { ascending: false })
     .limit(5)
 
+  // Bu Diziyi İçeren Listeler
+  const { data: containingListsRaw } = await supabase
+    .from('list_items')
+    .select('list_id')
+    .eq('media_id', seriesId)
+    .eq('media_type', 'dizi')
+    .limit(20)
+  const containingListIds = [...new Set((containingListsRaw ?? []).map((r: any) => r.list_id))]
+  const { data: containingLists } = containingListIds.length > 0
+    ? await supabase.from('lists').select('id, title, profiles(username)').in('id', containingListIds).eq('public', true).limit(6)
+    : { data: [] }
+
   // Editöryal liste üyeliği (ödüller)
   const { data: editorialMemberships } = await supabase
     .from('list_items').select('list_id')
@@ -848,6 +860,28 @@ export default async function DiziPage({ params, searchParams }: Props) {
             isLoggedIn={!!user}
           />
         </div>
+
+        {/* Bu Diziyi İçeren Listeler */}
+        {(containingLists ?? []).length > 0 && (
+          <div className="mt-10">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
+              <h2 className="text-xl font-bold text-white tracking-tight">Bu Diziyi İçeren Listeler</h2>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {(containingLists ?? []).map((list: any) => (
+                <a key={list.id} href={`/liste/${list.id}`}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition-all hover:-translate-y-0.5"
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)', color: 'rgba(255,255,255,0.7)' }}>
+                  📋 {list.title}
+                  {list.profiles?.username && (
+                    <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>@{list.profiles.username}</span>
+                  )}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="mt-12 grid lg:grid-cols-3 gap-8" id="yorumlar">
           <div className="lg:col-span-1">
