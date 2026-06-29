@@ -112,6 +112,7 @@ export default function UserDropdown({ user }: Props) {
             <DropLink href="/meydan-okumalar" label="⚔️ Meydan Okumalar" />
             <DropLink href="/sinezon-turum" label="🎭 Sinezon Türüm" />
             <DropLink href="/import" label="📥 İçe Aktar (LB/IMDb)" />
+            <DropLink href="/katki" label="➕ Film/Dizi Ekle" />
 
             <div className="my-1.5 mx-3" style={{ borderTop: '1px solid var(--border)' }} />
 

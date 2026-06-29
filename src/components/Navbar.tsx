@@ -314,6 +314,7 @@ export default function Navbar({ user }: NavbarProps) {
                   { label: '🎭 Sinezon Türüm',     href: '/sinezon-turum',        description: 'Sinema kişiliğini keşfet' },
                   { label: 'Özel Listeler',        href: '/ozel-listeler',        description: 'Editöryal seçkiler' },
                   { label: '🌌 Sinema Evrenler',   href: '/evren',                description: 'MCU, DC, Star Wars ve daha fazlası' },
+                  { label: '➕ Film/Dizi Ekle',    href: '/katki',                description: 'Eksik içerikleri siteye ekle' },
                   { label: 'Yayın Takvimi',        href: '/yayin-takvimi',        description: 'Çıkış tarihleri' },
                   { label: '📅 Yakında Çıkacaklar', href: '/yakinda',             description: 'Gelecek 6 ay içinde' },
                   { label: '🎟️ Türkiye Gişe',    href: '/kutu-ofis',            description: 'Şu an vizyondaki filmler' },
