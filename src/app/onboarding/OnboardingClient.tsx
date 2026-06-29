@@ -40,7 +40,7 @@ const PLATFORMS = [
   { id: 188,  name: 'YouTube Premium',   bg: 'bg-rose-900/60',   border: 'border-rose-500/60',  text: 'text-rose-300' },
 ]
 
-const STEP_LABELS = ['Türler', 'Platformlar', 'Puanlar', 'Oyuncular']
+const STEP_LABELS = ['Türler', 'Platformlar', 'Puanlar', 'Oyuncular', 'Hakkında']
 const MIN_GENRES = 5
 const MIN_RATINGS = 10
 
@@ -72,6 +72,10 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
   const [actors, setActors] = useState<Actor[]>([])
   const [actorsLoading, setActorsLoading] = useState(false)
   const [selectedActors, setSelectedActors] = useState<number[]>([])
+
+  // Step 5
+  const [birthYear, setBirthYear] = useState('')
+  const [country, setCountry] = useState('')
 
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -140,6 +144,8 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
           platform_preferences: selectedPlatforms,
           favorite_actors: selectedActors,
           ratings,
+          birth_year: birthYear ? Number(birthYear) : null,
+          country: country.trim() || null,
         }),
       })
 
@@ -399,6 +405,57 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
           </div>
         )}
 
+        {/* ── STEP 5: DEMOGRAFİK ── */}
+        {step === 5 && (
+          <div className="max-w-sm mx-auto">
+            <div className="mb-8 text-center">
+              <div className="text-5xl mb-4">🎂</div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Seni biraz tanıyalım</h1>
+              <p className="text-[--text-secondary] text-sm">
+                Bu bilgiler film puanlarında yaş grubu istatistiklerini göstermek için kullanılır. Kimseyle paylaşılmaz.
+                <br /><span className="text-[--text-secondary]/60 text-xs mt-1 block">İsteğe bağlı — atlayabilirsin.</span>
+              </p>
+            </div>
+
+            <div className="space-y-5">
+              <div>
+                <label className="block text-sm font-medium text-[--text-secondary] mb-2">Doğum Yılın</label>
+                <input
+                  type="number"
+                  value={birthYear}
+                  onChange={e => setBirthYear(e.target.value)}
+                  min={1920}
+                  max={new Date().getFullYear() - 13}
+                  placeholder="örn. 1995"
+                  className="w-full rounded-xl px-4 py-3.5 text-white text-sm placeholder:text-white/25 outline-none transition-colors"
+                  style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[--text-secondary] mb-2">Ülken</label>
+                <select
+                  value={country}
+                  onChange={e => setCountry(e.target.value)}
+                  className="w-full rounded-xl px-4 py-3.5 text-white text-sm outline-none transition-colors"
+                  style={{ background: 'rgba(20,28,47,0.95)', border: '1px solid rgba(255,255,255,0.1)' }}
+                >
+                  <option value="">Seç (isteğe bağlı)</option>
+                  <option value="TR">🇹🇷 Türkiye</option>
+                  <option value="DE">🇩🇪 Almanya</option>
+                  <option value="US">🇺🇸 Amerika</option>
+                  <option value="GB">🇬🇧 İngiltere</option>
+                  <option value="FR">🇫🇷 Fransa</option>
+                  <option value="NL">🇳🇱 Hollanda</option>
+                  <option value="BE">🇧🇪 Belçika</option>
+                  <option value="AT">🇦🇹 Avusturya</option>
+                  <option value="CH">🇨🇭 İsviçre</option>
+                  <option value="OTHER">Diğer</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
 
       {/* ── Sabit alt navigasyon ── */}
@@ -428,21 +485,21 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
               </span>
             )}
 
-            {/* Atla (step 2 ve 4 için) */}
-            {(step === 2 || step === 4) && (
+            {/* Atla (step 2, 4, 5 için) */}
+            {(step === 2 || step === 4 || step === 5) && (
               <button
                 onClick={() => {
-                  if (step === 4) handleComplete()
+                  if (step === 5) handleComplete()
                   else setStep(s => (s + 1) as typeof step)
                 }}
                 className="text-sm text-[--text-secondary] hover:text-white transition-colors"
               >
-                {step === 4 ? 'Atla ve Tamamla' : 'Atla'}
+                {step === 5 ? 'Atla ve Tamamla' : 'Atla'}
               </button>
             )}
 
             {/* İleri / Tamamla */}
-            {step < 4 ? (
+            {step < 5 ? (
               <button
                 onClick={() => setStep(s => (s + 1) as typeof step)}
                 disabled={

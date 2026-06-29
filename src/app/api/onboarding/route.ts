@@ -11,6 +11,8 @@ export async function POST(req: NextRequest) {
     platform_preferences = [],
     favorite_actors = [],
     ratings = [],
+    birth_year = null,
+    country = null,
   } = await req.json()
 
   // Profil güncelle
@@ -21,6 +23,8 @@ export async function POST(req: NextRequest) {
       genre_preferences,
       platform_preferences,
       favorite_actors,
+      ...(birth_year !== null && { birth_year }),
+      ...(country !== null && { country }),
     })
     .eq('id', user.id)
 

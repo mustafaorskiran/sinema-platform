@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { rateLimit } from '@/lib/rateLimit'
-import OpenAI from 'openai'
+import Anthropic from '@anthropic-ai/sdk'
 
 export async function GET() {
   const supabase = await createClient()
@@ -11,7 +11,7 @@ export async function GET() {
   const allowed = await rateLimit(`ai-oneri:${user.id}`, 10 * 60 * 1000, 3)
   if (!allowed) return NextResponse.json({ error: 'Çok fazla istek. 10 dakika bekle.' }, { status: 429 })
 
-  if (!process.env.OPENAI_API_KEY) return NextResponse.json({ error: 'AI kullanılamıyor' }, { status: 503 })
+  if (!process.env.ANTHROPIC_API_KEY) return NextResponse.json({ error: 'AI kullanılamıyor' }, { status: 503 })
   const tmdbKey = process.env.TMDB_API_KEY
   if (!tmdbKey) return NextResponse.json({ error: 'TMDB kullanılamıyor' }, { status: 503 })
 
@@ -61,13 +61,13 @@ Türkçe yanıt ver. Önerileri JSON formatında döndür:
 Sadece JSON döndür, başka metin ekleme.`
 
   try {
-    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-    const completion = await client.chat.completions.create({
-      model: 'gpt-4o-mini',
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+    const message = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
       max_tokens: 800,
       messages: [{ role: 'user', content: prompt }],
     })
-    const text = completion.choices[0]?.message?.content ?? '[]'
+    const text = message.content[0].type === 'text' ? message.content[0].text : '[]'
     const jsonMatch = text.match(/\[[\s\S]*\]/)
     const suggestions = JSON.parse(jsonMatch ? jsonMatch[0] : text)
     return NextResponse.json({ suggestions, basedOn: tmdbTitles.slice(0, 5) })
