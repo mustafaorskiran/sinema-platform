@@ -15,6 +15,8 @@ import InviteSection from '@/components/InviteSection'
 import EmbedWidgetCopy from '@/components/EmbedWidgetCopy'
 import ProfileViewTracker from '@/components/ProfileViewTracker'
 import BlockButton from '@/components/BlockButton'
+import DiziProgressWidget from './DiziProgressWidget'
+import AffiniteSkoru from '@/components/AffiniteSkoru'
 import type { Metadata } from 'next'
 import type { Review } from '@/lib/types'
 
@@ -295,32 +297,35 @@ export default async function ProfilPage({ params }: Props) {
                 </Link>
               </div>
             ) : (
-              <div className="flex items-center gap-2 flex-wrap">
-                <FollowButton
-                  targetUserId={profile.id}
-                  initialFollowing={isFollowing}
-                  isLoggedIn={!!user}
-                />
-                {user && (
-                  <MessageButton targetUserId={profile.id} />
-                )}
-                {user && (
-                  <BlockButton blockedId={profile.id} initialBlocked={!!blockCheck} />
-                )}
-                <Link
-                  href={`/profil/${username}/istatistikler`}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[--border] text-sm text-[--text-secondary] hover:text-white hover:border-white/30 transition-colors"
-                >
-                  <IconTrendingUp className="h-3.5 w-3.5" />
-                  İstatistikler
-                </Link>
-                <Link
-                  href={`/ozet/${new Date().getFullYear()}`}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[--border] text-sm text-[--text-secondary] hover:text-white hover:border-white/30 transition-colors"
-                >
-                  <IconClapperboard className="h-3.5 w-3.5" />
-                  Yıl Özeti
-                </Link>
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <FollowButton
+                    targetUserId={profile.id}
+                    initialFollowing={isFollowing}
+                    isLoggedIn={!!user}
+                  />
+                  {user && (
+                    <MessageButton targetUserId={profile.id} />
+                  )}
+                  {user && (
+                    <BlockButton blockedId={profile.id} initialBlocked={!!blockCheck} />
+                  )}
+                  <Link
+                    href={`/profil/${username}/istatistikler`}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[--border] text-sm text-[--text-secondary] hover:text-white hover:border-white/30 transition-colors"
+                  >
+                    <IconTrendingUp className="h-3.5 w-3.5" />
+                    İstatistikler
+                  </Link>
+                  <Link
+                    href={`/ozet/${new Date().getFullYear()}`}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[--border] text-sm text-[--text-secondary] hover:text-white hover:border-white/30 transition-colors"
+                  >
+                    <IconClapperboard className="h-3.5 w-3.5" />
+                    Yıl Özeti
+                  </Link>
+                </div>
+                {user && <AffiniteSkoru username={username} />}
               </div>
             )}
           </div>
@@ -546,6 +551,9 @@ export default async function ProfilPage({ params }: Props) {
           )}
         </div>
       )}
+
+      {/* Dizi İlerleme */}
+      <DiziProgressWidget userId={profile.id} username={username} />
 
       {/* Kullanıcı Listeleri */}
       {userLists && userLists.filter(l => l.public || isOwnProfile).length > 0 && (
