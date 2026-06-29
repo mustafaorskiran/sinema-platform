@@ -36,6 +36,7 @@ import ReviewSortButton from '@/components/ReviewSortButton'
 import FilmOnerButton from '@/components/FilmOnerButton'
 import AlsoWatched from '@/components/AlsoWatched'
 import ReleaseReminderButton from '@/components/ReleaseReminderButton'
+import AdBanner from '@/components/AdBanner'
 import type { Review } from '@/lib/types'
 import type { Metadata } from 'next'
 
@@ -841,6 +842,9 @@ export default async function FilmPage({ params, searchParams }: Props) {
           <DemoRatings mediaId={movieId} mediaType="film" />
         </div>
 
+        {/* Reklam */}
+        <AdBanner slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_1 ?? ''} format="horizontal" className="my-4 rounded-xl overflow-hidden" />
+
         {/* Video Galerisi */}
         <div id="videolar">
           <VideoGallery videos={videos} title={title} />
@@ -973,6 +977,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
 
           {/* Review list */}
           <div className="lg:col-span-2">
+            <AdBanner slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_2 ?? ''} format="rectangle" className="mb-5 rounded-xl overflow-hidden" />
             <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
               <div className="flex items-center gap-3">
                 <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #E11D48 0%, #E11D4880 100%)' }} />

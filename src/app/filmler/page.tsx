@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import InfiniteGrid from '@/components/InfiniteGrid'
 import FilmlerSidebar from '@/components/FilmlerSidebar'
+import AdBanner from '@/components/AdBanner'
 import { FILM_GENRES } from '@/lib/film-genres'
 import { OZEL_KATEGORILER } from '@/lib/ozel-kategoriler'
 import { createClient } from '@/lib/supabase/server'
@@ -332,6 +333,8 @@ export default async function FilmlerPage({ searchParams }: Props) {
               ))}
             </div>
           )}
+
+          <AdBanner slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_1 ?? ''} format="horizontal" className="mb-5 rounded-xl overflow-hidden" />
 
           {results.length === 0 ? (
             <div className="text-center py-24 text-[--text-secondary]">

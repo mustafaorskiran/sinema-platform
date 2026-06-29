@@ -10,7 +10,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = { title: 'Akış | SineMa' }
 
 interface Props {
-  searchParams: Promise<{ tip?: string }>
+  searchParams: Promise<{ tip?: string; sayfa?: string }>
 }
 
 function timeAgo(date: string) {
@@ -38,6 +38,11 @@ export default async function AkisPage({ searchParams }: Props) {
 
   if (followingIds.length === 0) return <EmptyFeed />
 
+  const showReview   = tip === 'hepsi' || tip === 'yorum'
+  const showWatch    = tip === 'hepsi' || tip === 'izleme'
+  const showDiary    = tip === 'hepsi' || tip === 'gunluk'
+  const showList     = tip === 'hepsi' || tip === 'liste'
+
   // Paralel: yorumlar, watchlist, günlük, listeler
   const [
     { data: reviews },
@@ -45,16 +50,16 @@ export default async function AkisPage({ searchParams }: Props) {
     { data: diaryEntries },
     { data: newLists },
   ] = await Promise.all([
-    tip === 'hepsi' || tip === 'yorum'
-      ? supabase.from('reviews').select('*, profiles(username, avatar_url)').in('user_id', followingIds).order('created_at', { ascending: false }).limit(30)
+    showReview
+      ? supabase.from('reviews').select('*, profiles(username, avatar_url)').in('user_id', followingIds).order('created_at', { ascending: false }).limit(40)
       : Promise.resolve({ data: [] }),
-    tip === 'hepsi' || tip === 'liste'
-      ? supabase.from('watchlist').select('*, profiles(username, avatar_url)').in('user_id', followingIds).eq('status', 'izledim').order('created_at', { ascending: false }).limit(30)
+    showWatch
+      ? supabase.from('watchlist').select('*, profiles(username, avatar_url)').in('user_id', followingIds).eq('status', 'izledim').order('created_at', { ascending: false }).limit(40)
       : Promise.resolve({ data: [] }),
-    tip === 'hepsi' || tip === 'gunluk'
-      ? supabase.from('diary_entries').select('*, profiles(username, avatar_url)').in('user_id', followingIds).order('watched_at', { ascending: false }).limit(30)
+    showDiary
+      ? supabase.from('diary_entries').select('*, profiles(username, avatar_url)').in('user_id', followingIds).order('watched_at', { ascending: false }).limit(40)
       : Promise.resolve({ data: [] }),
-    tip === 'hepsi' || tip === 'liste'
+    showList
       ? supabase.from('lists').select('*, profiles(username, avatar_url)').in('user_id', followingIds).eq('public', true).order('created_at', { ascending: false }).limit(20)
       : Promise.resolve({ data: [] }),
   ])
@@ -65,7 +70,7 @@ export default async function AkisPage({ searchParams }: Props) {
     ...(watchlistItems ?? []).map(w => ({ ...w, _type: 'watch' as const, _sortDate: w.created_at })),
     ...(diaryEntries ?? []).map(d => ({ ...d, _type: 'diary' as const, _sortDate: d.watched_at })),
     ...(newLists ?? []).map(l => ({ ...l, _type: 'list' as const, _sortDate: l.created_at })),
-  ].sort((a, b) => new Date(b._sortDate).getTime() - new Date(a._sortDate).getTime()).slice(0, 40)
+  ].sort((a, b) => new Date(b._sortDate).getTime() - new Date(a._sortDate).getTime()).slice(0, 60)
 
   if (allActivities.length === 0) return <EmptyFeed />
 
@@ -95,11 +100,17 @@ export default async function AkisPage({ searchParams }: Props) {
     } catch { mediaCache.set(key, null) }
   }))
 
+  const reviewCount   = (reviews ?? []).length
+  const watchCount    = (watchlistItems ?? []).length
+  const diaryCount    = (diaryEntries ?? []).length
+  const listCount     = (newLists ?? []).length
+
   const tabs = [
-    { key: 'hepsi', label: 'Tümü' },
-    { key: 'yorum', label: 'Yorumlar' },
-    { key: 'gunluk', label: 'Günlük' },
-    { key: 'liste', label: 'Listeler' },
+    { key: 'hepsi',   label: 'Tümü',      count: reviewCount + watchCount + diaryCount + listCount },
+    { key: 'yorum',   label: 'Yorumlar',   count: reviewCount },
+    { key: 'izleme',  label: 'İzleme',     count: watchCount },
+    { key: 'gunluk',  label: 'Günlük',     count: diaryCount },
+    { key: 'liste',   label: 'Listeler',   count: listCount },
   ]
 
   return (
@@ -111,16 +122,24 @@ export default async function AkisPage({ searchParams }: Props) {
       </div>
 
       {/* Sekmeler */}
-      <div className="flex items-center gap-1 mb-6 p-1 rounded-xl w-fit"
-        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+      <div className="flex items-center gap-1 mb-6 p-1 rounded-xl flex-wrap"
+        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', width: 'fit-content' }}>
         {tabs.map(t => (
           <Link key={t.key} href={`/akis?tip=${t.key}`}
-            className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
             style={tip === t.key
               ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff', boxShadow: '0 2px 8px rgba(225,29,72,0.3)' }
               : { color: 'rgba(255,255,255,0.45)' }
             }>
             {t.label}
+            {t.count > 0 && (
+              <span className="text-[10px] px-1.5 py-0.5 rounded-full font-bold tabular-nums"
+                style={tip === t.key
+                  ? { background: 'rgba(255,255,255,0.2)', color: '#fff' }
+                  : { background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.4)' }}>
+                {t.count > 99 ? '99+' : t.count}
+              </span>
+            )}
           </Link>
         ))}
       </div>

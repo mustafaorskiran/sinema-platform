@@ -14,34 +14,40 @@ function timeAgo(date: string) {
 }
 
 interface Props {
-  searchParams: Promise<{ q?: string }>
+  searchParams: Promise<{ q?: string; kategori?: string }>
 }
 
 export default async function ForumPage({ searchParams }: Props) {
-  const { q } = await searchParams
+  const { q, kategori } = await searchParams
   const query = q?.trim() ?? ''
+  const kategoriFilter = kategori?.trim() ?? ''
 
   const supabase = await createClient()
 
-  // Kategoriler sadece arama yoksa göster
-  const categoriesPromise = !query
-    ? supabase
-        .from('forum_categories')
-        .select('*, forum_threads(count)')
-        .order('order')
-    : Promise.resolve({ data: [] })
+  // Kategoriler her zaman göster
+  const categoriesPromise = supabase
+    .from('forum_categories')
+    .select('id, name, slug, icon, description, order, forum_threads(count)')
+    .order('order')
 
-  // Thread query — arama varsa filtrele
+  // Thread query
   let threadQuery = supabase
     .from('forum_threads')
-    .select('id, title, reply_count, last_reply_at, pinned, profiles(username), forum_categories(name, slug)')
+    .select('id, title, reply_count, last_reply_at, pinned, profiles(username), forum_categories(id, name, slug)')
     .order('pinned', { ascending: false })
     .order('last_reply_at', { ascending: false })
 
   if (query) {
+    // pg_trgm ile title + content araması
     threadQuery = threadQuery.or(`title.ilike.%${query}%,content.ilike.%${query}%`)
+    threadQuery = threadQuery.limit(30)
+  } else if (kategoriFilter) {
+    // Kategoriye göre filtrele
+    const { data: cat } = await supabase.from('forum_categories').select('id').eq('slug', kategoriFilter).single()
+    if (cat?.id) threadQuery = threadQuery.eq('category_id', cat.id)
+    threadQuery = threadQuery.limit(20)
   } else {
-    threadQuery = threadQuery.limit(10)
+    threadQuery = threadQuery.limit(15)
   }
 
   const [{ data: categories }, { data: recentThreads }] = await Promise.all([
@@ -66,7 +72,7 @@ export default async function ForumPage({ searchParams }: Props) {
       </div>
 
       {/* Arama Kutusu */}
-      <form method="GET" action="/forum" className="mb-8">
+      <form method="GET" action="/forum" className="mb-6">
         <div className="relative">
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[--text-secondary] pointer-events-none select-none">
             🔍
@@ -75,55 +81,99 @@ export default async function ForumPage({ searchParams }: Props) {
             name="q"
             type="search"
             defaultValue={query}
-            placeholder="Konularda ara..."
-            className="w-full pl-9 pr-4 py-2.5 rounded-xl text-white placeholder-[--text-secondary] text-sm focus:outline-none transition-colors"
+            placeholder="Başlık veya içerikte ara..."
+            className="w-full pl-9 pr-16 py-2.5 rounded-xl text-white placeholder-[--text-secondary] text-sm focus:outline-none transition-colors"
             style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.09)' }}
           />
-          {query && (
-            <a
-              href="/forum"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[--text-secondary] hover:text-white transition-colors"
-            >
-              Temizle ✕
-            </a>
-          )}
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+            {query && (
+              <a href="/forum" className="text-xs text-[--text-secondary] hover:text-white transition-colors">✕</a>
+            )}
+            <button type="submit" className="text-xs font-medium px-2.5 py-1 rounded-lg transition-colors"
+              style={{ background: 'var(--accent)', color: '#fff' }}>
+              Ara
+            </button>
+          </div>
         </div>
+        {query && (
+          <p className="text-xs mt-2" style={{ color: 'rgba(255,255,255,0.3)' }}>
+            <span style={{ color: 'var(--gold)' }}>{(recentThreads ?? []).length}</span> sonuç bulundu
+          </p>
+        )}
       </form>
 
-      {/* Kategoriler — sadece arama yoksa */}
+      {/* Kategoriler */}
       {!query && (
-        <div className="mb-10">
-          <h2 className="text-xs font-semibold uppercase tracking-widest text-[--text-secondary] mb-3">Kategoriler</h2>
-          <div className="grid sm:grid-cols-2 gap-3">
-            {(categories ?? []).map((cat) => {
-              const count = (cat.forum_threads as unknown as { count: number }[])?.[0]?.count ?? 0
-              return (
-                <Link
-                  key={cat.id}
-                  href={`/forum/kategori/${cat.slug}`}
-                  className="flex items-start gap-4 p-4 rounded-xl transition-all duration-200 hover:-translate-y-0.5 group"
-                  style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
-                >
-                  <span className="text-2xl shrink-0">{cat.icon}</span>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-white group-hover:text-[--accent] transition-colors">{cat.name}</p>
-                    <p className="text-xs text-[--text-secondary] mt-0.5 line-clamp-1">{cat.description}</p>
-                  </div>
-                  <span className="text-xs text-[--text-secondary] shrink-0">{count} konu</span>
-                </Link>
-              )
-            })}
+        <div className="mb-8">
+          {/* Kategori filtre sekmeleri */}
+          <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-1">
+            <Link
+              href="/forum"
+              className="shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all"
+              style={!kategoriFilter
+                ? { background: 'var(--accent)', color: '#fff' }
+                : { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.08)' }}
+            >
+              Tümü
+            </Link>
+            {(categories ?? []).map((cat) => (
+              <Link
+                key={cat.id}
+                href={`/forum?kategori=${cat.slug}`}
+                className="shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all"
+                style={kategoriFilter === cat.slug
+                  ? { background: 'var(--accent)', color: '#fff' }
+                  : { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.08)' }}
+              >
+                <span>{cat.icon}</span>
+                {cat.name}
+              </Link>
+            ))}
           </div>
+
+          {/* Kategori kartları sadece "Tümü" seçiliyken */}
+          {!kategoriFilter && (
+            <div className="grid sm:grid-cols-2 gap-3">
+              {(categories ?? []).map((cat) => {
+                const count = (cat.forum_threads as unknown as { count: number }[])?.[0]?.count ?? 0
+                return (
+                  <Link
+                    key={cat.id}
+                    href={`/forum?kategori=${cat.slug}`}
+                    className="flex items-start gap-4 p-4 rounded-xl transition-all duration-200 hover:-translate-y-0.5 group"
+                    style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
+                  >
+                    <span className="text-2xl shrink-0">{cat.icon}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-white group-hover:text-[--accent] transition-colors">{cat.name}</p>
+                      <p className="text-xs text-[--text-secondary] mt-0.5 line-clamp-1">{cat.description}</p>
+                    </div>
+                    <span className="text-xs text-[--text-secondary] shrink-0">{count} konu</span>
+                  </Link>
+                )
+              })}
+            </div>
+          )}
         </div>
       )}
 
       {/* Son Konular / Arama Sonuçları */}
       <div>
-        <h2 className="text-xs font-semibold uppercase tracking-widest text-[--text-secondary] mb-3">
-          {query
-            ? `"${query}" için sonuçlar`
-            : 'Son Konular'}
-        </h2>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-[--text-secondary]">
+            {query
+              ? `"${query}" için sonuçlar`
+              : kategoriFilter
+              ? `${(categories ?? []).find(c => c.slug === kategoriFilter)?.name ?? kategoriFilter} Konuları`
+              : 'Son Konular'}
+          </h2>
+          {!query && (
+            <Link href="/forum/yeni" className="text-xs font-medium transition-colors hover:text-white"
+              style={{ color: 'rgba(255,255,255,0.35)' }}>
+              + Konu Aç
+            </Link>
+          )}
+        </div>
         <div className="rounded-xl divide-y overflow-hidden"
           style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.04)' }}>
           {(recentThreads ?? []).length === 0 ? (
