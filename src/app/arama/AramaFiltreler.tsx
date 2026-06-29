@@ -12,6 +12,12 @@ const GENRES = [
 
 const YEARS = Array.from({ length: 35 }, (_, i) => new Date().getFullYear() - i)
 const RATINGS = ['6', '7', '7.5', '8', '8.5', '9']
+const LANGUAGES = [
+  { code: 'tr', name: 'Türkçe' }, { code: 'en', name: 'İngilizce' },
+  { code: 'fr', name: 'Fransızca' }, { code: 'de', name: 'Almanca' },
+  { code: 'ja', name: 'Japonca' }, { code: 'ko', name: 'Korece' },
+  { code: 'es', name: 'İspanyolca' }, { code: 'it', name: 'İtalyanca' },
+]
 
 interface Props {
   tip: string
@@ -25,6 +31,7 @@ export default function AramaFiltreler({ tip, q }: Props) {
   const currentYil    = sp.get('yil') ?? ''
   const currentTur    = sp.get('tur') ?? ''
   const currentPuan   = sp.get('min_puan') ?? ''
+  const currentDil    = sp.get('dil') ?? ''
 
   const update = useCallback((key: string, value: string) => {
     const params = new URLSearchParams(sp.toString())
@@ -36,7 +43,7 @@ export default function AramaFiltreler({ tip, q }: Props) {
 
   if (tip === 'kisi' || tip === 'kullanici') return null
 
-  const hasFilters = currentYil || currentTur || currentPuan
+  const hasFilters = currentYil || currentTur || currentPuan || currentDil
 
   return (
     <div className="flex flex-wrap items-center gap-2 mb-6 pb-4"
@@ -78,6 +85,20 @@ export default function AramaFiltreler({ tip, q }: Props) {
         <option value="">Min Puan</option>
         {RATINGS.map(r => <option key={r} value={r}>⭐ {r}+</option>)}
       </select>
+
+      {/* Dil */}
+      {(tip === 'hepsi' || tip === 'film' || tip === 'dizi') && (
+        <select value={currentDil} onChange={e => update('dil', e.target.value)}
+          className="rounded-lg px-3 py-1.5 text-[12px] font-medium outline-none cursor-pointer"
+          style={{
+            background: currentDil ? 'rgba(212,168,67,0.12)' : 'rgba(255,255,255,0.05)',
+            border: `1px solid ${currentDil ? 'rgba(212,168,67,0.35)' : 'rgba(255,255,255,0.1)'}`,
+            color: currentDil ? '#D4A843' : 'rgba(255,255,255,0.5)',
+          }}>
+          <option value="">Dil</option>
+          {LANGUAGES.map(l => <option key={l.code} value={l.code}>{l.name}</option>)}
+        </select>
+      )}
 
       {/* Filtreleri temizle */}
       {hasFilters && (

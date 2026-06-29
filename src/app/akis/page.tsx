@@ -4,6 +4,7 @@ import { IconFilm, IconStar, IconTv, IconUsers, IconBookmark, IconCheck, IconCal
 import { createClient } from '@/lib/supabase/server'
 import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle } from '@/lib/tmdb'
 import UserHoverCard from '@/components/UserHoverCard'
+import TakipOnerileri from '@/components/TakipOnerileri'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Akış | SineMa' }
@@ -260,6 +261,7 @@ function EmptyFeed() {
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
       <div className="flex items-center gap-3 mb-8">
         <IconUsers className="h-7 w-7 text-[--accent]" />
+
         <h1 className="text-2xl font-bold text-white">Arkadaş Akışı</h1>
       </div>
       <div className="rounded-2xl py-20 text-center px-6"
@@ -281,6 +283,9 @@ function EmptyFeed() {
             Sana Benzer Kullanıcılar →
           </Link>
         </div>
+      </div>
+      <div className="mt-6">
+        <TakipOnerileri />
       </div>
     </div>
   )

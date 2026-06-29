@@ -154,6 +154,29 @@ export default async function AdminDashboard() {
           </div>
         </div>
 
+        {/* Platform Özet İstatistikleri */}
+        <div className="rounded-xl overflow-hidden"
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="px-5 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <h2 className="font-semibold text-white">Tablo Boyutları</h2>
+          </div>
+          <div className="p-5 grid grid-cols-2 gap-3">
+            {[
+              { label: 'Kullanıcılar', value: userCount ?? 0, color: '#60a5fa' },
+              { label: 'Yorumlar', value: reviewCount ?? 0, color: '#D4A843' },
+              { label: 'Beğeniler', value: likeCount ?? 0, color: '#f87171' },
+              { label: 'Takipler', value: followCount ?? 0, color: '#4ade80' },
+              { label: 'Yanıtlar', value: replyCount ?? 0, color: '#a78bfa' },
+              { label: 'Bu Hafta Yorum', value: weekReviews ?? 0, color: '#fb923c' },
+            ].map(s => (
+              <div key={s.label} className="rounded-lg px-3 py-2.5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <p className="text-lg font-black" style={{ color: s.color }}>{s.value.toLocaleString('tr-TR')}</p>
+                <p className="text-[10px] uppercase tracking-wide mt-0.5" style={{ color: 'rgba(255,255,255,0.3)' }}>{s.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Son kullanıcılar */}
         <div className="rounded-xl overflow-hidden"
           style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>

@@ -35,6 +35,7 @@ import AIChatWidget from '@/components/AIChatWidget'
 import ReviewSortButton from '@/components/ReviewSortButton'
 import FilmOnerButton from '@/components/FilmOnerButton'
 import AlsoWatched from '@/components/AlsoWatched'
+import ReleaseReminderButton from '@/components/ReleaseReminderButton'
 import type { Review } from '@/lib/types'
 import type { Metadata } from 'next'
 
@@ -192,18 +193,21 @@ export default async function FilmPage({ params, searchParams }: Props) {
   let privateNote = ''
   let inCollection = false
   let collectionFormat = 'dijital'
+  let hasReminder = false
 
   if (user) {
-    const [{ data: wl }, { data: follows }, { data: noteRow }, { data: colRow }] = await Promise.all([
+    const [{ data: wl }, { data: follows }, { data: noteRow }, { data: colRow }, { data: reminderRow }] = await Promise.all([
       supabase.from('watchlist').select('status').eq('user_id', user.id).eq('media_id', movieId).eq('media_type', 'film').maybeSingle(),
       supabase.from('follows').select('following_id').eq('follower_id', user.id),
       supabase.from('private_notes').select('note').eq('user_id', user.id).eq('media_id', movieId).eq('media_type', 'film').maybeSingle(),
       supabase.from('collection').select('format').eq('user_id', user.id).eq('media_id', movieId).eq('media_type', 'film').maybeSingle(),
+      supabase.from('release_reminders').select('id').eq('user_id', user.id).eq('media_id', movieId).eq('media_type', 'film').maybeSingle(),
     ])
     watchlistStatus = (wl?.status as typeof watchlistStatus) ?? null
     privateNote = noteRow?.note ?? ''
     inCollection = !!colRow
     collectionFormat = colRow?.format ?? 'dijital'
+    hasReminder = !!reminderRow
 
     if (follows && follows.length > 0) {
       const followingIds = follows.map(f => f.following_id)
@@ -530,6 +534,15 @@ export default async function FilmPage({ params, searchParams }: Props) {
                   filmType="film"
                   filmTitle={title}
                   filmPoster={getPosterUrl(movie.poster_path, 'w342') ?? ''}
+                />
+              )}
+              {user && movie.release_date && new Date(movie.release_date) > new Date() && (
+                <ReleaseReminderButton
+                  mediaId={movieId}
+                  mediaType="film"
+                  title={title}
+                  releaseDate={movie.release_date}
+                  initialSet={hasReminder}
                 />
               )}
             </div>

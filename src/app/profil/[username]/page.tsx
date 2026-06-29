@@ -14,6 +14,7 @@ import YearlyChallenge from '@/components/YearlyChallenge'
 import InviteSection from '@/components/InviteSection'
 import EmbedWidgetCopy from '@/components/EmbedWidgetCopy'
 import ProfileViewTracker from '@/components/ProfileViewTracker'
+import BlockButton from '@/components/BlockButton'
 import type { Metadata } from 'next'
 import type { Review } from '@/lib/types'
 
@@ -84,6 +85,7 @@ export default async function ProfilPage({ params }: Props) {
     { data: pinnedReviewRaw },
     { data: allDiaryDates },
     { count: viewCount },
+    { data: blockCheck },
   ] = await Promise.all([
     supabase.from('reviews').select('*').eq('user_id', profile.id).order('created_at', { ascending: false }),
     supabase.from('watchlist').select('*').eq('user_id', profile.id).order('created_at', { ascending: false }),
@@ -112,6 +114,9 @@ export default async function ProfilPage({ params }: Props) {
       .select('*', { count: 'exact', head: true })
       .eq('profile_id', profile.id)
       .gte('viewed_at', new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString()),
+    user && !isOwnProfile
+      ? supabase.from('blocked_users').select('id').eq('blocker_id', user.id).eq('blocked_id', profile.id).maybeSingle()
+      : Promise.resolve({ data: null }),
   ])
 
   const isFollowing = !!followCheck
@@ -298,6 +303,9 @@ export default async function ProfilPage({ params }: Props) {
                 />
                 {user && (
                   <MessageButton targetUserId={profile.id} />
+                )}
+                {user && (
+                  <BlockButton blockedId={profile.id} initialBlocked={!!blockCheck} />
                 )}
                 <Link
                   href={`/profil/${username}/istatistikler`}

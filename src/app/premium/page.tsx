@@ -54,6 +54,28 @@ export default function PremiumPage() {
         ))}
       </div>
 
+      {/* Destek / Ko-fi */}
+      <div className="text-center rounded-3xl p-8"
+        style={{ background: 'linear-gradient(160deg, rgba(255,216,77,0.06), rgba(14,20,32,0.95))', border: '1px solid rgba(255,216,77,0.15)' }}>
+        <div className="text-4xl mb-3">☕</div>
+        <p className="text-xl font-black text-white mb-2">Projeyi Destekle</p>
+        <p className="text-sm mb-6" style={{ color: 'rgba(255,255,255,0.45)' }}>
+          Sinezon tamamen ücretsiz. Sunucu & geliştirme maliyetlerimizi karşılamak için bağış yapabilirsin.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <a href="https://ko-fi.com/sinezon" target="_blank" rel="noopener noreferrer"
+            className="px-8 py-3 rounded-xl text-sm font-bold text-white transition-all hover:scale-105 inline-flex items-center gap-2"
+            style={{ background: 'linear-gradient(135deg, #FF5E5B, #ff4040)', boxShadow: '0 4px 20px rgba(255,94,91,0.3)' }}>
+            ☕ Ko-fi&apos;de Destek Ver
+          </a>
+          <a href="https://www.patreon.com/sinezon" target="_blank" rel="noopener noreferrer"
+            className="px-8 py-3 rounded-xl text-sm font-bold transition-all hover:scale-105 inline-flex items-center gap-2"
+            style={{ background: 'rgba(249,115,22,0.12)', border: '1px solid rgba(249,115,22,0.25)', color: '#fb923c' }}>
+            🎁 Patreon&apos;da Destekle
+          </a>
+        </div>
+      </div>
+
       {/* CTA */}
       <div className="text-center rounded-3xl p-8"
         style={{ background: 'linear-gradient(160deg, rgba(225,29,72,0.08), rgba(14,20,32,0.95))', border: '1px solid rgba(225,29,72,0.15)' }}>

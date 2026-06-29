@@ -8,7 +8,7 @@ import AramaFiltreler from './AramaFiltreler'
 import type { Metadata } from 'next'
 
 interface Props {
-  searchParams: Promise<{ q?: string; sayfa?: string; tip?: string; yil?: string; tur?: string; min_puan?: string }>
+  searchParams: Promise<{ q?: string; sayfa?: string; tip?: string; yil?: string; tur?: string; min_puan?: string; dil?: string }>
 }
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
@@ -33,7 +33,7 @@ const DEPT_TR: Record<string, string> = {
 }
 
 export default async function AramaPage({ searchParams }: Props) {
-  const { q, sayfa, tip = 'hepsi', yil, tur, min_puan } = await searchParams
+  const { q, sayfa, tip = 'hepsi', yil, tur, min_puan, dil } = await searchParams
   const page   = Math.max(1, Number(sayfa) || 1)
   const offset = (page - 1) * PAGE_SIZE
 
@@ -64,6 +64,7 @@ export default async function AramaPage({ searchParams }: Props) {
           if (yil) q2 = q2.eq('release_year', Number(yil))
           if (tur) q2 = (q2 as any).contains('genre_ids', [Number(tur)])
           if (min_puan) q2 = q2.gte('vote_average', Number(min_puan))
+          if (dil) q2 = (q2 as any).eq('original_language', dil)
           return q2.order('popularity', { ascending: false })
             .range(tip === 'film' ? offset : 0, tip === 'film' ? offset + PAGE_SIZE - 1 : 9)
         })()
@@ -76,6 +77,7 @@ export default async function AramaPage({ searchParams }: Props) {
           if (yil) q2 = (q2 as any).eq('first_air_year', Number(yil))
           if (tur) q2 = (q2 as any).contains('genre_ids', [Number(tur)])
           if (min_puan) q2 = (q2 as any).gte('vote_average', Number(min_puan))
+          if (dil) q2 = (q2 as any).eq('original_language', dil)
           return q2.order('popularity', { ascending: false })
             .range(tip === 'dizi' ? offset : 0, tip === 'dizi' ? offset + PAGE_SIZE - 1 : 9)
         })()
@@ -115,7 +117,7 @@ export default async function AramaPage({ searchParams }: Props) {
     { key: 'kullanici', label: 'Kullanıcılar',       count: totalKullanicilar },
   ]
 
-  const baseUrl = `/arama?q=${encodeURIComponent(q)}&tip=${tip}${yil ? `&yil=${yil}` : ''}${tur ? `&tur=${tur}` : ''}${min_puan ? `&min_puan=${min_puan}` : ''}`
+  const baseUrl = `/arama?q=${encodeURIComponent(q)}&tip=${tip}${yil ? `&yil=${yil}` : ''}${tur ? `&tur=${tur}` : ''}${min_puan ? `&min_puan=${min_puan}` : ''}${dil ? `&dil=${dil}` : ''}`
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">

@@ -10,7 +10,10 @@ interface ImportResult {
   errors: string[]
 }
 
+type Mode = 'letterboxd' | 'imdb'
+
 export default function ImportClient() {
+  const [mode, setMode] = useState<Mode>('letterboxd')
   const [file, setFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<ImportResult | null>(null)
@@ -27,6 +30,13 @@ export default function ImportClient() {
     setResult(null)
   }
 
+  function switchMode(m: Mode) {
+    setMode(m)
+    setFile(null)
+    setResult(null)
+    setError('')
+  }
+
   async function handleImport() {
     if (!file) return
     setLoading(true)
@@ -39,44 +49,89 @@ export default function ImportClient() {
       if (lines.length < 2) { setError('CSV dosyası geçerli değil veya boş.'); setLoading(false); return }
 
       const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, '').toLowerCase())
-      const nameIdx  = headers.indexOf('name')
-      const yearIdx  = headers.indexOf('year')
-      const ratingIdx = headers.indexOf('rating')
 
-      if (nameIdx === -1) { setError('CSV formatı tanınamadı. "Name" sütunu bulunamadı.'); setLoading(false); return }
+      if (mode === 'letterboxd') {
+        const nameIdx  = headers.indexOf('name')
+        const yearIdx  = headers.indexOf('year')
+        const ratingIdx = headers.indexOf('rating')
+        if (nameIdx === -1) { setError('CSV formatı tanınamadı. "Name" sütunu bulunamadı.'); setLoading(false); return }
 
-      const entries = lines.slice(1).map(line => {
-        const cols = line.match(/(".*?"|[^,]+|(?<=,)(?=,))/g) ?? line.split(',')
-        return {
-          name:   (cols[nameIdx]   ?? '').replace(/"/g, '').trim(),
-          year:   (cols[yearIdx]   ?? '').replace(/"/g, '').trim(),
-          rating: (cols[ratingIdx] ?? '').replace(/"/g, '').trim(),
+        const entries = lines.slice(1).map(line => {
+          const cols = line.match(/(".*?"|[^,]+|(?<=,)(?=,))/g) ?? line.split(',')
+          return {
+            name:   (cols[nameIdx]   ?? '').replace(/"/g, '').trim(),
+            year:   (cols[yearIdx]   ?? '').replace(/"/g, '').trim(),
+            rating: (cols[ratingIdx] ?? '').replace(/"/g, '').trim(),
+          }
+        }).filter(e => e.name)
+
+        const BATCH = 10
+        let added = 0, skipped = 0, notFound = 0
+        const errors: string[] = []
+
+        for (let i = 0; i < entries.length; i += BATCH) {
+          const batch = entries.slice(i, i + BATCH)
+          const res = await fetch('/api/import/letterboxd', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ entries: batch }),
+          })
+          if (res.ok) {
+            const data = await res.json()
+            added   += data.added   ?? 0
+            skipped += data.skipped ?? 0
+            notFound += data.notFound ?? 0
+            errors.push(...(data.errors ?? []))
+          }
+          setProgress(Math.round(((i + BATCH) / entries.length) * 100))
         }
-      }).filter(e => e.name)
+        setResult({ total: entries.length, added, skipped, notFound, errors: errors.slice(0, 5) })
 
-      const BATCH = 10
-      let added = 0, skipped = 0, notFound = 0
-      const errors: string[] = []
+      } else {
+        // IMDb format: Const,Your Rating,Date Rated,Title,...,Title Type,...
+        const constIdx  = headers.indexOf('const')
+        const ratingIdx = headers.indexOf('your rating')
+        const titleIdx  = headers.indexOf('title')
+        const typeIdx   = headers.indexOf('title type')
+        const dateIdx   = headers.indexOf('date rated')
 
-      for (let i = 0; i < entries.length; i += BATCH) {
-        const batch = entries.slice(i, i + BATCH)
-        const res = await fetch('/api/import/letterboxd', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ entries: batch }),
-        })
-        if (res.ok) {
-          const data = await res.json()
-          added   += data.added   ?? 0
-          skipped += data.skipped ?? 0
-          notFound += data.notFound ?? 0
-          errors.push(...(data.errors ?? []))
+        if (constIdx === -1) { setError('IMDb CSV formatı tanınamadı. "Const" sütunu bulunamadı.'); setLoading(false); return }
+
+        const entries = lines.slice(1).map(line => {
+          const cols = line.match(/(".*?"|[^,]+|(?<=,)(?=,))/g) ?? line.split(',')
+          const clean = (i: number) => (cols[i] ?? '').replace(/"/g, '').trim()
+          return {
+            imdbId:    clean(constIdx),
+            rating:    clean(ratingIdx),
+            dateRated: clean(dateIdx),
+            title:     clean(titleIdx),
+            titleType: clean(typeIdx),
+          }
+        }).filter(e => e.imdbId.startsWith('tt'))
+
+        const BATCH = 5
+        let added = 0, skipped = 0, notFound = 0
+        const errors: string[] = []
+
+        for (let i = 0; i < entries.length; i += BATCH) {
+          const batch = entries.slice(i, i + BATCH)
+          const res = await fetch('/api/import/imdb', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ entries: batch }),
+          })
+          if (res.ok) {
+            const data = await res.json()
+            added    += data.added    ?? 0
+            skipped  += data.skipped  ?? 0
+            notFound += data.notFound ?? 0
+            errors.push(...(data.errors ?? []))
+          }
+          setProgress(Math.round(((i + BATCH) / entries.length) * 100))
         }
-        setProgress(Math.round(((i + BATCH) / entries.length) * 100))
+        setResult({ total: entries.length, added, skipped, notFound, errors: errors.slice(0, 5) })
       }
-
-      setResult({ total: entries.length, added, skipped, notFound, errors: errors.slice(0, 5) })
-    } catch (e) {
+    } catch {
       setError('Dosya işlenemedi. Lütfen tekrar dene.')
     } finally {
       setLoading(false)
@@ -86,6 +141,21 @@ export default function ImportClient() {
 
   return (
     <div className="space-y-4">
+      {/* Kaynak Seçici */}
+      <div className="flex rounded-xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
+        {([['letterboxd', '🎬 Letterboxd'], ['imdb', '⭐ IMDb']] as [Mode, string][]).map(([m, label]) => (
+          <button key={m} onClick={() => switchMode(m)}
+            className="flex-1 py-2.5 text-sm font-semibold transition-all"
+            style={{
+              background: mode === m ? 'rgba(212,168,67,0.12)' : 'transparent',
+              color: mode === m ? '#D4A843' : 'rgba(255,255,255,0.4)',
+              borderRight: m === 'letterboxd' ? '1px solid rgba(255,255,255,0.08)' : 'none',
+            }}>
+            {label}
+          </button>
+        ))}
+      </div>
+
       {/* Yükleme Alanı */}
       <div
         onClick={() => !loading && inputRef.current?.click()}
@@ -113,11 +183,23 @@ export default function ImportClient() {
               CSV dosyasını sürükle & bırak veya tıkla
             </p>
             <p className="text-[11px] mt-1" style={{ color: 'rgba(255,255,255,0.2)' }}>
-              Letterboxd &quot;watched.csv&quot; dosyası — maks 5MB
+              {mode === 'letterboxd' ? 'Letterboxd "watched.csv" dosyası' : 'IMDb "ratings.csv" dosyası'} — maks 5MB
             </p>
           </div>
         )}
       </div>
+
+      {/* IMDb talimatları */}
+      {mode === 'imdb' && (
+        <div className="rounded-xl px-4 py-3" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+          <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(212,168,67,0.5)' }}>IMDb Nasıl İndirilir?</p>
+          <ol className="space-y-1 text-[12px]" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            <li>1. IMDb&apos;ye giriş yap → <strong style={{ color: 'rgba(255,255,255,0.7)' }}>Profil → Your ratings</strong></li>
+            <li>2. Sayfanın altında <strong style={{ color: 'rgba(255,255,255,0.7)' }}>Export → Download CSV</strong> butonuna tıkla</li>
+            <li>3. İndirilen &quot;ratings.csv&quot; dosyasını buraya yükle</li>
+          </ol>
+        </div>
+      )}
 
       {error && (
         <div className="rounded-xl px-4 py-3" style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)' }}>
@@ -155,7 +237,7 @@ export default function ImportClient() {
               { label: 'Zaten Var', value: result.skipped, color: 'rgba(255,255,255,0.4)' },
               { label: 'Bulunamadı', value: result.notFound, color: '#f87171' },
             ].map(s => (
-              <div key={s.label} className="text-center px-4 py-4" style={{ borderRight: '1px solid rgba(212,168,67,0.06)' }}>
+              <div key={s.label} className="text-center px-4 py-4">
                 <p className="text-2xl font-black" style={{ color: s.color }}>{s.value}</p>
                 <p className="text-[10px] font-bold uppercase tracking-wide mt-0.5" style={{ color: 'rgba(255,255,255,0.25)' }}>{s.label}</p>
               </div>

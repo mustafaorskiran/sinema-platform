@@ -4,8 +4,8 @@ import ImportClient from './ImportClient'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Letterboxd İçe Aktar | Sinezon',
-  description: 'Letterboxd izleme listenizi Sinezon\'a aktarın.',
+  title: 'İzleme Listesi İçe Aktar | Sinezon',
+  description: 'Letterboxd veya IMDb izleme listenizi Sinezon\'a aktarın.',
 }
 
 export default async function ImportPage() {
