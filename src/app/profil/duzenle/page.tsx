@@ -14,7 +14,7 @@ export default async function ProfilDuzenle() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('username, avatar_url, banner_url, bio, location, website, theme_color, email_notifications, email_on_follow, email_on_like, email_on_reply, twitter_url, letterboxd_url, imdb_url')
+    .select('username, avatar_url, banner_url, bio, location, website, theme_color, email_notifications, email_on_follow, email_on_like, email_on_reply, twitter_url, letterboxd_url, imdb_url, birth_year, country')
     .eq('id', user.id)
     .single()
 
@@ -45,6 +45,8 @@ export default async function ProfilDuzenle() {
             initialTwitterUrl={(profile as any).twitter_url ?? null}
             initialLetterboxdUrl={(profile as any).letterboxd_url ?? null}
             initialImdbUrl={(profile as any).imdb_url ?? null}
+            initialBirthYear={(profile as any).birth_year ?? null}
+            initialCountry={(profile as any).country ?? null}
           />
         </div>
       </div>

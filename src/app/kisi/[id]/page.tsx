@@ -137,6 +137,51 @@ export default async function KisiPage({ params }: Props) {
         </div>
       </div>
 
+      {/* Son 2 Yıldaki Projeler */}
+      {(() => {
+        const twoYearsAgo = String(new Date().getFullYear() - 2)
+        const recentAll = [...(credits?.cast ?? []), ...(credits?.crew ?? [])]
+          .filter(c => {
+            const d = c.release_date ?? c.first_air_date ?? ''
+            return d >= twoYearsAgo && c.poster_path
+          })
+          .sort((a, b) => {
+            const da = a.release_date ?? a.first_air_date ?? ''
+            const db = b.release_date ?? b.first_air_date ?? ''
+            return db.localeCompare(da)
+          })
+        const uniqueRecent = recentAll.filter((c, i, arr) => arr.findIndex(x => x.id === c.id) === i).slice(0, 8)
+        if (uniqueRecent.length === 0) return null
+        return (
+          <section className="mb-10 rounded-2xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <div className="flex items-center gap-2 mb-5">
+              <div className="w-1 h-5 rounded-full" style={{ background: 'linear-gradient(180deg, var(--accent), #be123c)' }} />
+              <h2 className="text-lg font-bold text-white">Son 2 Yıldaki Projeleri</h2>
+              <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: 'rgba(225,29,72,0.1)', color: 'var(--accent)', border: '1px solid rgba(225,29,72,0.2)' }}>Güncel</span>
+            </div>
+            <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-8 gap-3">
+              {uniqueRecent.map(credit => {
+                const href = `/${credit.media_type === 'movie' ? 'film' : 'dizi'}/${credit.id}`
+                const title = credit.title ?? credit.name ?? `#${credit.id}`
+                const year = (credit.release_date ?? credit.first_air_date ?? '').slice(0, 4)
+                return (
+                  <Link key={`recent-${credit.id}`} href={href} className="group">
+                    <div className="aspect-[2/3] rounded-lg overflow-hidden mb-1.5 relative" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
+                      <img src={`https://image.tmdb.org/t/p/w185${credit.poster_path}`} alt={title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                      {credit.vote_average > 0 && (
+                        <div className="absolute bottom-1 right-1 bg-black/75 rounded px-1 py-0.5 text-[9px] font-bold text-[--gold]">★ {credit.vote_average.toFixed(1)}</div>
+                      )}
+                    </div>
+                    <p className="text-[11px] font-medium text-white group-hover:text-[--accent] transition-colors line-clamp-2 leading-tight">{title}</p>
+                    {year && <p className="text-[10px] mt-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>{year}</p>}
+                  </Link>
+                )
+              })}
+            </div>
+          </section>
+        )
+      })()}
+
       {/* Ana Filmografi */}
       {mainCredits.length > 0 && (
         <section className="mb-10">

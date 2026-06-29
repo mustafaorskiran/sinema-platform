@@ -47,9 +47,11 @@ interface Props {
   initialTwitterUrl?: string | null
   initialLetterboxdUrl?: string | null
   initialImdbUrl?: string | null
+  initialBirthYear?: number | null
+  initialCountry?: string | null
 }
 
-export default function ProfilDuzenleForm({ userId, initialUsername, initialAvatarUrl, initialBannerUrl, initialBio, initialLocation, initialWebsite, initialThemeColor, initialEmailNotifications = true, initialEmailOnFollow = true, initialEmailOnLike = false, initialEmailOnReply = true, initialTwitterUrl, initialLetterboxdUrl, initialImdbUrl }: Props) {
+export default function ProfilDuzenleForm({ userId, initialUsername, initialAvatarUrl, initialBannerUrl, initialBio, initialLocation, initialWebsite, initialThemeColor, initialEmailNotifications = true, initialEmailOnFollow = true, initialEmailOnLike = false, initialEmailOnReply = true, initialTwitterUrl, initialLetterboxdUrl, initialImdbUrl, initialBirthYear, initialCountry }: Props) {
   const router = useRouter()
   const fileRef = useRef<HTMLInputElement>(null)
   const bannerFileRef = useRef<HTMLInputElement>(null)
@@ -128,6 +130,8 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
   const [twitterUrl, setTwitterUrl] = useState(initialTwitterUrl ?? '')
   const [letterboxdUrl, setLetterboxdUrl] = useState(initialLetterboxdUrl ?? '')
   const [imdbUrl, setImdbUrl] = useState(initialImdbUrl ?? '')
+  const [birthYear, setBirthYear] = useState<string>(initialBirthYear ? String(initialBirthYear) : '')
+  const [country, setCountry] = useState(initialCountry ?? '')
 
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -222,6 +226,8 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
         twitter_url: twitterUrl.trim() || null,
         letterboxd_url: letterboxdUrl.trim() || null,
         imdb_url: imdbUrl.trim() || null,
+        birth_year: birthYear ? Number(birthYear) : null,
+        country: country.trim() || null,
         theme_color: themeColor,
         email_notifications: emailNotifications,
         email_on_follow: emailOnFollow,
@@ -318,6 +324,38 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
         <input type="text" value={location} onChange={e => setLocation(e.target.value)} maxLength={60} placeholder="İstanbul, Türkiye"
           className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/25 outline-none transition-colors" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
         />
+      </div>
+
+      {/* Demografik Bilgiler */}
+      <div>
+        <label className="block text-sm font-medium text-[--text-secondary] mb-3">Demografik Bilgiler</label>
+        <p className="text-xs text-[--text-secondary]/60 mb-3">Film puanlarında yaş grubu istatistikleri için kullanılır, paylaşılmaz.</p>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs text-[--text-secondary] mb-1.5">Doğum Yılı</label>
+            <input
+              type="number"
+              value={birthYear}
+              onChange={e => setBirthYear(e.target.value)}
+              min={1920} max={new Date().getFullYear() - 13}
+              placeholder="1990"
+              className="w-full rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-white/25 outline-none transition-colors"
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-[--text-secondary] mb-1.5">Ülke Kodu</label>
+            <input
+              type="text"
+              value={country}
+              onChange={e => setCountry(e.target.value.toUpperCase().slice(0, 2))}
+              placeholder="TR"
+              maxLength={2}
+              className="w-full rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-white/25 outline-none transition-colors uppercase"
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
+            />
+          </div>
+        </div>
       </div>
 
       {/* Web sitesi */}

@@ -1,6 +1,7 @@
 import InfiniteGrid from '@/components/InfiniteGrid'
 import Pagination from '@/components/Pagination'
 import DizilerSidebar from '@/components/DizilerSidebar'
+import AdBanner from '@/components/AdBanner'
 import { DIZI_GENRES } from '@/lib/dizi-genres'
 import { OZEL_KATEGORILER } from '@/lib/ozel-kategoriler'
 import { createClient } from '@/lib/supabase/server'
@@ -183,6 +184,8 @@ export default async function DizilerPage({ searchParams }: Props) {
               </span>
             )}
           </h1>
+
+          <AdBanner slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_1 ?? ''} format="horizontal" className="mb-5 rounded-xl overflow-hidden" />
 
           {results.length === 0 ? (
             <div className="text-center py-24 text-[--text-secondary]">
