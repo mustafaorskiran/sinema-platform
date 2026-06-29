@@ -1,0 +1,138 @@
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = { title: 'Meydan Okumalar | Sinezon' }
+
+const MONTHLY_CHALLENGES = [
+  { key: 'write_5_reviews', label: '5 Yorum Yaz', desc: 'Bu ay en az 5 detaylı yorum ekle', goal: 5, icon: '✍️' },
+  { key: 'rate_20_films', label: '20 Film/Dizi Puanla', desc: 'Bu ay 20 farklı içeriği puanla', goal: 20, icon: '⭐' },
+  { key: 'add_10_diary', label: '10 Günlük Kaydı', desc: 'Film günlüğüne 10 izleme ekle', goal: 10, icon: '📖' },
+  { key: 'follow_5_users', label: '5 Kullanıcı Takip Et', desc: 'Yeni kullanıcılar keşfet ve takip et', goal: 5, icon: '👥' },
+  { key: 'create_list', label: 'Liste Oluştur', desc: 'En az 1 yeni izleme listesi oluştur', goal: 1, icon: '📋' },
+  { key: 'use_quiz', label: 'Quiz Oyna', desc: 'Bu ay quiz sayfasını ziyaret et', goal: 1, icon: '🎮' },
+]
+
+export default async function MeydanOkumalarPage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/auth/giris')
+
+  const monthYear = new Date().toISOString().slice(0, 7)
+  const startOfMonth = `${monthYear}-01`
+
+  const [
+    { count: reviewCount },
+    { count: diaryCount },
+    { data: progressData },
+    { count: followCount },
+    { count: listCount },
+  ] = await Promise.all([
+    supabase.from('reviews').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', startOfMonth),
+    supabase.from('diary_entries').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('watched_at', startOfMonth),
+    supabase.from('challenge_progress').select('*').eq('user_id', user.id).eq('month_year', monthYear),
+    supabase.from('follows').select('*', { count: 'exact', head: true }).eq('follower_id', user.id).gte('created_at', startOfMonth),
+    supabase.from('lists').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', startOfMonth),
+  ])
+
+  const progressMap = new Map((progressData ?? []).map((p: any) => [p.challenge_key, p]))
+
+  const realProgress: Record<string, number> = {
+    write_5_reviews: reviewCount ?? 0,
+    rate_20_films: (reviewCount ?? 0) + (diaryCount ?? 0),
+    add_10_diary: diaryCount ?? 0,
+    follow_5_users: followCount ?? 0,
+    create_list: listCount ?? 0,
+    use_quiz: progressMap.get('use_quiz')?.progress ?? 0,
+  }
+
+  // Upsert progress
+  for (const ch of MONTHLY_CHALLENGES) {
+    const prog = Math.min(realProgress[ch.key] ?? 0, ch.goal)
+    const done = prog >= ch.goal
+    await supabase.from('challenge_progress').upsert({
+      user_id: user.id,
+      challenge_key: ch.key,
+      month_year: monthYear,
+      progress: prog,
+      goal: ch.goal,
+      completed: done,
+      completed_at: done && !progressMap.get(ch.key)?.completed ? new Date().toISOString() : (progressMap.get(ch.key)?.completed_at ?? null),
+    }, { onConflict: 'user_id,challenge_key,month_year' })
+  }
+
+  const completedCount = MONTHLY_CHALLENGES.filter(ch => (realProgress[ch.key] ?? 0) >= ch.goal).length
+  const monthLabel = new Date().toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' })
+  const totalXP = MONTHLY_CHALLENGES.reduce((s, ch) => s + ch.goal * 5, 0)
+  const earnedXP = MONTHLY_CHALLENGES.reduce((s, ch) => {
+    const prog = Math.min(realProgress[ch.key] ?? 0, ch.goal)
+    return s + prog * 5
+  }, 0)
+
+  return (
+    <div className="max-w-2xl mx-auto px-4 py-10">
+      <div className="flex items-center gap-3 mb-2">
+        <h1 className="text-2xl font-bold text-white">⚔️ Meydan Okumalar</h1>
+      </div>
+      <p className="text-sm mb-8" style={{ color: 'rgba(255,255,255,0.4)' }}>
+        {monthLabel} · {completedCount}/{MONTHLY_CHALLENGES.length} tamamlandı
+      </p>
+
+      {/* Genel progress */}
+      <div className="rounded-xl p-4 mb-6" style={{ background: 'linear-gradient(160deg,rgba(20,28,47,0.9),rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-sm font-semibold text-white">Aylık İlerleme</span>
+          <span className="text-sm font-bold" style={{ color: '#D4A843' }}>{earnedXP} / {totalXP} XP</span>
+        </div>
+        <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+          <div className="h-full rounded-full transition-all duration-500"
+            style={{ width: `${Math.round((earnedXP / totalXP) * 100)}%`, background: 'linear-gradient(90deg,#E11D48,#be123c)' }} />
+        </div>
+        <p className="text-[10px] mt-1.5 text-right" style={{ color: 'rgba(255,255,255,0.3)' }}>
+          {completedCount} / {MONTHLY_CHALLENGES.length} görev tamamlandı
+        </p>
+      </div>
+
+      <div className="space-y-3">
+        {MONTHLY_CHALLENGES.map(ch => {
+          const prog = Math.min(realProgress[ch.key] ?? 0, ch.goal)
+          const done = prog >= ch.goal
+          const pct = Math.round((prog / ch.goal) * 100)
+
+          return (
+            <div key={ch.key} className="rounded-xl p-4" style={{
+              background: done ? 'rgba(52,211,153,0.06)' : 'linear-gradient(160deg,rgba(20,28,47,0.9),rgba(14,20,32,0.95))',
+              border: done ? '1px solid rgba(52,211,153,0.2)' : '1px solid rgba(255,255,255,0.06)',
+            }}>
+              <div className="flex items-start gap-3">
+                <span className="text-2xl shrink-0 mt-0.5">{ch.icon}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2 mb-0.5">
+                    <p className={`font-semibold text-sm ${done ? 'text-green-400' : 'text-white'}`}>{ch.label}</p>
+                    <span className="text-xs font-bold tabular-nums shrink-0" style={{ color: done ? '#34d399' : 'rgba(255,255,255,0.4)' }}>
+                      {prog}/{ch.goal}
+                    </span>
+                  </div>
+                  <p className="text-xs mb-2" style={{ color: 'rgba(255,255,255,0.35)' }}>{ch.desc}</p>
+                  <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                    <div className="h-full rounded-full transition-all duration-500"
+                      style={{ width: `${pct}%`, background: done ? 'linear-gradient(90deg,#34d399,#10b981)' : 'linear-gradient(90deg,#E11D48,#be123c)' }} />
+                  </div>
+                  {done && <p className="text-[10px] mt-1 text-green-400 font-semibold">✓ Tamamlandı!</p>}
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {completedCount === MONTHLY_CHALLENGES.length && (
+        <div className="text-center mt-8 p-8 rounded-2xl" style={{ background: 'linear-gradient(160deg,rgba(212,168,67,0.1),rgba(212,168,67,0.05))', border: '1px solid rgba(212,168,67,0.3)' }}>
+          <p className="text-4xl mb-3">🏆</p>
+          <p className="text-lg font-bold" style={{ color: '#D4A843' }}>Tüm meydan okumaları tamamladın!</p>
+          <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>Bu ay muhteşemdin. Yeni ay yeni meydan okumalar!</p>
+        </div>
+      )}
+    </div>
+  )
+}

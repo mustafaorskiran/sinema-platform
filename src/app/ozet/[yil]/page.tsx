@@ -1,6 +1,7 @@
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import KarnePaylas from './KarnePaylas'
 import type { Metadata } from 'next'
 
 interface Props {
@@ -159,9 +160,10 @@ export default async function YilOzetiPage({ params }: Props) {
           Yıl Özeti
         </div>
         <h1 className="text-4xl sm:text-5xl font-black text-white mb-2">{year}</h1>
-        <p className="text-white/50 text-sm">
+        <p className="text-white/50 text-sm mb-4">
           {profile?.full_name || profile?.username || 'Senin'} izleme yılı
         </p>
+        <KarnePaylas year={year} totalFilm={totalFilm} totalDizi={totalDizi} totalReviews={totalReviews} username={profile?.username ?? ''} />
       </div>
 
       {/* Yıl Seçici */}

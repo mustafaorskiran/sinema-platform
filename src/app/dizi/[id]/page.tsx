@@ -35,6 +35,8 @@ import CriticScores from '@/components/CriticScores'
 import ReviewSortButton from '@/components/ReviewSortButton'
 import AISummary from '@/components/AISummary'
 import AIChatWidget from '@/components/AIChatWidget'
+import AlsoWatched from '@/components/AlsoWatched'
+import FilmOnerButton from '@/components/FilmOnerButton'
 import type { Review } from '@/lib/types'
 import type { Metadata } from 'next'
 
@@ -558,6 +560,14 @@ export default async function DiziPage({ params, searchParams }: Props) {
               >
                 ⚖️ Karşılaştır
               </a>
+              {user && (
+                <FilmOnerButton
+                  filmId={seriesId}
+                  filmType="dizi"
+                  filmTitle={title}
+                  filmPoster={getPosterUrl(series.poster_path, 'w342') ?? ''}
+                />
+              )}
             </div>
 
             {series.overview && (
@@ -882,6 +892,9 @@ export default async function DiziPage({ params, searchParams }: Props) {
             </div>
           </div>
         )}
+
+        {/* Bu izleyenler şunu da izledi */}
+        <AlsoWatched mediaId={seriesId} mediaType="dizi" />
 
         <div className="mt-12 grid lg:grid-cols-3 gap-8" id="yorumlar">
           <div className="lg:col-span-1">

@@ -33,6 +33,8 @@ import CriticScores from '@/components/CriticScores'
 import AISummary from '@/components/AISummary'
 import AIChatWidget from '@/components/AIChatWidget'
 import ReviewSortButton from '@/components/ReviewSortButton'
+import FilmOnerButton from '@/components/FilmOnerButton'
+import AlsoWatched from '@/components/AlsoWatched'
 import type { Review } from '@/lib/types'
 import type { Metadata } from 'next'
 
@@ -522,6 +524,14 @@ export default async function FilmPage({ params, searchParams }: Props) {
               >
                 ⚖️ Karşılaştır
               </a>
+              {user && (
+                <FilmOnerButton
+                  filmId={movieId}
+                  filmType="film"
+                  filmTitle={title}
+                  filmPoster={getPosterUrl(movie.poster_path, 'w342') ?? ''}
+                />
+              )}
             </div>
 
             {/* Overview */}
@@ -907,6 +917,9 @@ export default async function FilmPage({ params, searchParams }: Props) {
             isLoggedIn={!!user}
           />
         </div>
+
+        {/* Bu izleyenler şunu da izledi */}
+        <AlsoWatched mediaId={movieId} mediaType="film" />
 
         {/* Reviews */}
         <div className="mt-12 grid lg:grid-cols-3 gap-8" id="yorumlar">

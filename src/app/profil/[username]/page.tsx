@@ -13,6 +13,7 @@ import WatchGoalWidget from '@/components/WatchGoalWidget'
 import YearlyChallenge from '@/components/YearlyChallenge'
 import InviteSection from '@/components/InviteSection'
 import EmbedWidgetCopy from '@/components/EmbedWidgetCopy'
+import ProfileViewTracker from '@/components/ProfileViewTracker'
 import type { Metadata } from 'next'
 import type { Review } from '@/lib/types'
 
@@ -82,6 +83,7 @@ export default async function ProfilPage({ params }: Props) {
     { count: episodeCount },
     { data: pinnedReviewRaw },
     { data: allDiaryDates },
+    { count: viewCount },
   ] = await Promise.all([
     supabase.from('reviews').select('*').eq('user_id', profile.id).order('created_at', { ascending: false }),
     supabase.from('watchlist').select('*').eq('user_id', profile.id).order('created_at', { ascending: false }),
@@ -106,6 +108,10 @@ export default async function ProfilPage({ params }: Props) {
     supabase.from('episode_watches').select('*', { count: 'exact', head: true }).eq('user_id', profile.id),
     supabase.from('reviews').select('id, media_id, media_type, rating, content, created_at').eq('user_id', profile.id).eq('is_pinned', true).maybeSingle(),
     supabase.from('diary_entries').select('watched_at').eq('user_id', profile.id),
+    supabase.from('profile_views')
+      .select('*', { count: 'exact', head: true })
+      .eq('profile_id', profile.id)
+      .gte('viewed_at', new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString()),
   ])
 
   const isFollowing = !!followCheck
@@ -146,6 +152,22 @@ export default async function ProfilPage({ params }: Props) {
     joinedAt: profile.created_at,
   })
   const earnedBadges = badges.filter(b => b.earned)
+
+  // Streak hesapla
+  const allDates = new Set([
+    ...(allDiaryDates ?? []).map((e: any) => e.watched_at?.split('T')[0]).filter(Boolean),
+    ...(reviews ?? []).map((r: any) => r.created_at?.split('T')[0]).filter(Boolean),
+  ])
+  const sortedDates = [...allDates].sort((a, b) => b.localeCompare(a))
+  let streak = 0
+  let checkDate = new Date()
+  for (const dateStr of sortedDates) {
+    const d = new Date(dateStr as string)
+    const diffDays = Math.floor((checkDate.getTime() - d.getTime()) / 86400000)
+    if (diffDays <= 1) { streak++; checkDate = d } else break
+  }
+  const xp = (reviews?.length ?? 0) * 10 + (diaryCount ?? 0) * 5 + (userLists?.length ?? 0) * 15 + (threadCount ?? 0) * 20
+  const level = Math.floor(Math.sqrt(xp / 50)) + 1
 
   // Pinlenmiş yorum medya bilgisi
   let pinnedReviewWithMedia: { id: string; media_id: number; media_type: string; rating: number; content: string | null; created_at: string; title: string; poster: string | null } | null = null
@@ -222,6 +244,7 @@ export default async function ProfilPage({ params }: Props) {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12" style={themeStyle}>
+      {!isOwnProfile && <ProfileViewTracker profileId={profile.id} />}
 
       {/* Banner */}
       {profile.banner_url && (
@@ -318,6 +341,26 @@ export default async function ProfilPage({ params }: Props) {
                 </span>
               )
             })()}
+          </div>
+
+          {/* XP, Level, Streak */}
+          <div className="flex flex-wrap items-center gap-2 mt-2">
+            <span className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold"
+              style={{ background: 'linear-gradient(135deg,rgba(212,168,67,0.15),rgba(212,168,67,0.05))', border: '1px solid rgba(212,168,67,0.25)', color: '#D4A843' }}>
+              Lv.{level}
+            </span>
+            <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>{xp.toLocaleString('tr-TR')} XP</span>
+            {streak > 0 && (
+              <span className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg"
+                style={{ background: 'rgba(251,146,60,0.1)', border: '1px solid rgba(251,146,60,0.2)', color: '#fb923c' }}>
+                🔥 {streak} gün
+              </span>
+            )}
+            {isOwnProfile && viewCount != null && viewCount > 0 && (
+              <span className="text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>
+                👁 Bu ay {viewCount} görüntülenme
+              </span>
+            )}
           </div>
 
           {/* Bio & konum & website */}

@@ -4,6 +4,7 @@ import { getMovieMini, getSeriesMini } from '@/lib/tmdb'
 import { computeBadges, ALL_BADGE_COUNT } from '@/lib/badges'
 import ActivityHeatmap from '@/components/ActivityHeatmap'
 import WatchCalendar from '@/components/WatchCalendar'
+import ZevkDNA from '@/components/ZevkDNA'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 
@@ -122,20 +123,42 @@ export default async function IstatistiklerPage({ params }: Props) {
   const lockedBadges = badges.filter(b => !b.earned)
 
   const genreCount: Record<number, number> = {}
+  const genreRatingAccum: Record<number, { total: number; count: number }> = {}
   let totalRuntime = 0
+
+  const filmRatingByMediaId: Record<number, number> = {}
+  for (const r of filmReviews) if (r.rating > 0) filmRatingByMediaId[r.media_id] = r.rating
+  const diziRatingByMediaId: Record<number, number> = {}
+  for (const r of diziReviews) if (r.rating > 0) diziRatingByMediaId[r.media_id] = r.rating
 
   await Promise.all([
     ...uniqueFilmIds.map(async (id) => {
       try {
         const m = await getMovieMini(id)
-        for (const g of m.genres ?? []) genreCount[g.id] = (genreCount[g.id] ?? 0) + 1
+        const rating = filmRatingByMediaId[id]
+        for (const g of m.genres ?? []) {
+          genreCount[g.id] = (genreCount[g.id] ?? 0) + 1
+          if (rating) {
+            if (!genreRatingAccum[g.id]) genreRatingAccum[g.id] = { total: 0, count: 0 }
+            genreRatingAccum[g.id].total += rating
+            genreRatingAccum[g.id].count += 1
+          }
+        }
         if (m.runtime) totalRuntime += m.runtime
       } catch {}
     }),
     ...uniqueDiziIds.map(async (id) => {
       try {
         const s = await getSeriesMini(id)
-        for (const g of s.genres ?? []) genreCount[g.id] = (genreCount[g.id] ?? 0) + 1
+        const rating = diziRatingByMediaId[id]
+        for (const g of s.genres ?? []) {
+          genreCount[g.id] = (genreCount[g.id] ?? 0) + 1
+          if (rating) {
+            if (!genreRatingAccum[g.id]) genreRatingAccum[g.id] = { total: 0, count: 0 }
+            genreRatingAccum[g.id].total += rating
+            genreRatingAccum[g.id].count += 1
+          }
+        }
       } catch {}
     }),
   ])
@@ -146,6 +169,14 @@ export default async function IstatistiklerPage({ params }: Props) {
     .map(([id, count]) => ({ id: Number(id), name: GENRE_NAMES[Number(id)] ?? `Tür #${id}`, count }))
 
   const maxGenreCount = Math.max(...topGenres.map(g => g.count), 1)
+
+  const genreData = topGenres.map(g => ({
+    genre: g.name,
+    count: g.count,
+    avgRating: genreRatingAccum[g.id]
+      ? genreRatingAccum[g.id].total / genreRatingAccum[g.id].count
+      : 0,
+  }))
   const totalHours = Math.round(totalRuntime / 60)
   const totalDays = Math.round(totalHours / 24)
 
@@ -448,6 +479,11 @@ export default async function IstatistiklerPage({ params }: Props) {
               </div>
             )}
           </div>
+
+          {/* Zevk DNA'sı */}
+          {genreData.length > 0 && (
+            <ZevkDNA genreData={genreData} />
+          )}
 
         </div>
       )}
