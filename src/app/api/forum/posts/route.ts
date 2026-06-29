@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
   if (thread && thread.user_id !== user.id) {
     await supabase.from('notifications').insert({
       user_id: thread.user_id,
+      actor_id: user.id,
       type: 'forum_reply',
       content: `Konuna yeni bir yanıt geldi: "${thread.title?.slice(0, 60)}"`,
       link: `/forum/${thread_id}`,
