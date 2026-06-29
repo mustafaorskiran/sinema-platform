@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { IconRss, IconClock, IconGlobe } from '@/components/icons'
 import Link from 'next/link'
 import HaberlerSearch from './HaberlerSearch'
+import AdBanner from '@/components/AdBanner'
 
 export const revalidate = 3600
 
@@ -185,7 +186,8 @@ export default async function HaberlerPage({ searchParams }: PageProps) {
       {/* Haber Listesi */}
       {filteredNews.length > 0 ? (
         <div className="flex flex-col gap-3">
-          {filteredNews.map((item, i) => {
+          {/* İlk 5 haber */}
+          {filteredNews.slice(0, 5).map((item, i) => {
             const sourceColor = sourceColors[item.source] ?? 'rgba(255,255,255,0.3)'
             const isFeatured = i === 0
             return (
@@ -223,6 +225,54 @@ export default async function HaberlerPage({ searchParams }: PageProps) {
                     )}
                     {item.description && isFeatured && (
                       <p className="text-[13px] leading-relaxed line-clamp-2 mb-2" style={{ color: 'var(--text-secondary)' }}>
+                        {item.description}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-2 text-[11px]">
+                      <span className="px-2 py-0.5 rounded font-semibold"
+                        style={{ background: `${sourceColor}15`, color: sourceColor, border: `1px solid ${sourceColor}30` }}>
+                        {item.source}
+                      </span>
+                      {item.pubDate && (
+                        <span className="flex items-center gap-1" style={{ color: 'rgba(255,255,255,0.25)' }}>
+                          <IconClock className="h-3 w-3" />
+                          {formatRelativeTime(item.pubDate)}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <IconGlobe className="h-4 w-4 shrink-0 mt-1 opacity-0 group-hover:opacity-40 transition-opacity"
+                    style={{ color: 'var(--text-secondary)' }} />
+                </div>
+              </a>
+            )
+          })}
+
+          {/* Reklam Alanı */}
+          {filteredNews.length > 5 && (
+            <AdBanner slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_1 ?? ''} format="horizontal" className="my-1 rounded-xl overflow-hidden" />
+          )}
+
+          {/* Kalan haberler */}
+          {filteredNews.slice(5).map((item, i) => {
+            const sourceColor = sourceColors[item.source] ?? 'rgba(255,255,255,0.3)'
+            return (
+              <a
+                key={`${item.link}-rest-${i}`}
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block rounded-2xl p-4 transition-all duration-200 group hover:-translate-y-0.5"
+                style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)' }}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <h2 className="text-[14px] font-semibold leading-snug mb-1.5 line-clamp-2 transition-colors group-hover:opacity-80"
+                      style={{ color: 'var(--text-primary)' }}>
+                      {item.title}
+                    </h2>
+                    {item.description && (
+                      <p className="text-[12px] leading-relaxed line-clamp-1 mb-2" style={{ color: 'var(--text-secondary)' }}>
                         {item.description}
                       </p>
                     )}

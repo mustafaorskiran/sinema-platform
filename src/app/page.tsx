@@ -11,6 +11,7 @@ import {
 import { GENRE_MAP } from '@/lib/genres'
 import HomeCarousel from '@/components/HomeCarousel'
 import HomeTrailerSection from '@/components/HomeTrailerSection'
+import AdBanner from '@/components/AdBanner'
 import { createClient } from '@/lib/supabase/server'
 import type { TMDbMovie } from '@/lib/types'
 
@@ -418,6 +419,11 @@ export default async function HomePage() {
           defaultType="film"
         />
 
+        {/* ── Reklam Alanı 1 ───────────────────────────────────── */}
+        <div className="px-4 sm:px-6 lg:px-16 py-2">
+          <AdBanner slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_1 ?? ''} format="horizontal" />
+        </div>
+
         {/* ── 4. En Yüksek Puanlı Diziler ──────────────────────── */}
         <HomeCarousel
           title="En Yüksek Puanlı Diziler"
@@ -448,6 +454,11 @@ export default async function HomePage() {
           items={(editorPicksRes.results ?? []).slice(0, 20)}
           defaultType="film"
         />
+
+        {/* ── Reklam Alanı 2 ───────────────────────────────────── */}
+        <div className="px-4 sm:px-6 lg:px-16 py-2">
+          <AdBanner slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_2 ?? ''} format="horizontal" />
+        </div>
 
         {/* ── 7. Bu Hafta Trend (Watchlist) ────────────────────── */}
         {weeklyTrendItems.length > 0 && (
