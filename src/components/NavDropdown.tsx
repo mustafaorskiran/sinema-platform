@@ -84,10 +84,13 @@ export function NavDropdown({ label, href, icon, items, columns = 1 }: Props) {
               border: '1px solid var(--border-strong)',
               boxShadow: '0 8px 16px rgba(0,0,0,0.4), 0 24px 64px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.05)',
               borderRadius: '14px',
-              overflow: 'hidden',
+              overflowY: 'auto',
+              overflowX: 'hidden',
+              maxHeight: 'calc(100vh - 80px)',
               minWidth: columns === 2 ? '380px' : '220px',
               backdropFilter: 'blur(20px) saturate(180%)',
               WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              scrollbarWidth: 'none',
             }}
           >
             {columns === 2 ? (
