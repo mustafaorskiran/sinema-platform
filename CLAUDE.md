@@ -103,6 +103,41 @@ Prefix'ler: `feat:` `fix:` `refactor:` `perf:` `security:` `style:`
 - layout.tsx: profiles tablosundan `username, is_admin` çekiliyor. User tipine `is_admin` eklendi.
 - BottomNav.tsx: user tipine `is_admin` eklendi (layout uyumu için).
 
+## Son Değişiklikler (2026-06-27 — Büyüme Sprinti 2)
+
+### Yeni DB Tabloları
+- `blocked_users (blocker_id, blocked_id)` — kullanıcı engelleme, RLS
+- `release_reminders (user_id, media_id, media_type, title, release_date, notified)` — yayın hatırlatıcısı
+- `contributions (user_id, media_type, tmdb_id, title)` — katkı takibi
+
+### Yeni API Rotaları
+- `/api/block` — POST/DELETE; `blocked_users` tablosu; engelleme+takip kaldırma
+- `/api/release-reminder` — POST/DELETE/GET; `release_reminders` tablosu
+- `/api/katki/arama` — GET `?q=&tip=`; TMDb search + local DB kontrol; `exists` flag döner
+- `/api/katki/ekle` — POST `{ tmdbId, mediaType }`; TMDb'den çekip `movies`/`series`'e upsert; katkıyı loglar
+- `/api/import/imdb` — POST `{ entries }`; IMDb `ratings.csv` import; TMDb `/find/tt{id}` ile eşleştirme
+- `/api/takip-onerileri` — GET; beni takip edip benim takip etmediklerimi önerir; fallback: son kayıtlar
+
+### Yeni Sayfalar
+- `/katki` — "Katkıda Bulun" ana sayfası; film/dizi sekme, TMDb arama, "Ekle"/"Zaten Var" butonları, katkı liderbordı
+- `/katki/KatkilClient.tsx` — client search+add component; 400ms debounce, poster grid
+
+### Güncellenen Bileşenler
+- `BlockButton.tsx` — onaylı engelle/engeli kaldır; profil sayfasında MessageButton yanında
+- `ReleaseReminderButton.tsx` — film sayfasında; sadece `release_date > now()` olan filmlerde görünür
+- `TakipOnerileri.tsx` — akış boş sayfasında; karşılıklı olmayan takipler + anlık takip et
+- `ImportClient.tsx` — Letterboxd/IMDb sekme switcher eklendi; talimatlar IMDb için ayrı gösterilir
+- `AramaFiltreler.tsx` — Dil (TR/EN/FR/DE/JA/KO/ES/IT) filtresi eklendi; `original_language` sorgusu
+- `NavDropdown.tsx` — `maxHeight: calc(100vh - 80px)` + `overflowY: auto` + `scrollbarWidth: none`; Keşfet taşma sorunu düzeltildi
+- `UserDropdown.tsx` — "➕ Film/Dizi Ekle" `/katki` linki eklendi
+- `Navbar.tsx` — Keşfet menüsüne "➕ Film/Dizi Ekle" eklendi
+- `profil/[username]/page.tsx` — `blocked_users` sorgusu eklendi; `BlockButton` render edilir
+- `film/[id]/page.tsx` — `release_reminders` sorgusu; `ReleaseReminderButton` yakında çıkacak filmlerde
+- `akis/page.tsx` — EmptyFeed'e `TakipOnerileri` eklendi
+- `premium/page.tsx` — Ko-fi + Patreon destek butonları bölümü eklendi
+- `admin/page.tsx` — Tablo boyutları mini grid (6 metrik: kullanıcı, yorum, beğeni, takip, yanıt, haftalık yorum)
+- `import/page.tsx` — metadata "İzleme Listesi İçe Aktar" olarak güncellendi
+
 ## Kritik Bilgiler
 
 - Supabase Proje ID: `wbomlhiagwjkncauslgr`
