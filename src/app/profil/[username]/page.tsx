@@ -17,6 +17,7 @@ import ProfileViewTracker from '@/components/ProfileViewTracker'
 import BlockButton from '@/components/BlockButton'
 import DiziProgressWidget from './DiziProgressWidget'
 import AffiniteSkoru from '@/components/AffiniteSkoru'
+import XPLevelUp from '@/components/XPLevelUp'
 import type { Metadata } from 'next'
 import type { Review } from '@/lib/types'
 
@@ -357,23 +358,21 @@ export default async function ProfilPage({ params }: Props) {
           </div>
 
           {/* XP, Level, Streak */}
-          <div className="flex flex-wrap items-center gap-2 mt-2">
-            <span className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold"
-              style={{ background: 'linear-gradient(135deg,rgba(212,168,67,0.15),rgba(212,168,67,0.05))', border: '1px solid rgba(212,168,67,0.25)', color: '#D4A843' }}>
-              Lv.{level}
-            </span>
-            <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>{xp.toLocaleString('tr-TR')} XP</span>
-            {streak > 0 && (
-              <span className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg"
-                style={{ background: 'rgba(251,146,60,0.1)', border: '1px solid rgba(251,146,60,0.2)', color: '#fb923c' }}>
-                🔥 {streak} gün
-              </span>
-            )}
-            {isOwnProfile && viewCount != null && viewCount > 0 && (
-              <span className="text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>
-                👁 Bu ay {viewCount} görüntülenme
-              </span>
-            )}
+          <div className="mt-3 max-w-xs">
+            <XPLevelUp level={level} xp={xp} />
+            <div className="flex flex-wrap items-center gap-2 mt-2">
+              {streak > 0 && (
+                <span className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg"
+                  style={{ background: 'rgba(251,146,60,0.1)', border: '1px solid rgba(251,146,60,0.2)', color: '#fb923c' }}>
+                  🔥 {streak} gün seri
+                </span>
+              )}
+              {isOwnProfile && viewCount != null && viewCount > 0 && (
+                <span className="text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>
+                  👁 Bu ay {viewCount} görüntülenme
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Bio & konum & website */}

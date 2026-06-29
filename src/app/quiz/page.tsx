@@ -64,14 +64,22 @@ export default async function QuizPage({ searchParams }: PageProps) {
   const params = await searchParams
   const zorluk = DIFFICULTY_LEVELS.find(d => d.id === params.zorluk)?.id ?? "orta"
 
-  const [films, { data: leaderboard }] = await Promise.all([
+  const [films, { data: leaderboard }, { data: streakData }] = await Promise.all([
     fetchQuizFilms(zorluk),
     supabase
       .from("quiz_scores")
       .select("score, correct, total, profiles(username, avatar_url)")
       .order("score", { ascending: false })
       .limit(10),
+    supabase
+      .from("daily_quiz_streaks")
+      .select("streak, best_streak, last_played, total_played")
+      .eq("user_id", user.id)
+      .maybeSingle(),
   ])
+
+  const today = new Date().toISOString().slice(0, 10)
+  const playedToday = streakData?.last_played === today
 
   if (films.length < 10) {
     return (
@@ -93,9 +101,32 @@ export default async function QuizPage({ searchParams }: PageProps) {
       <h1 className="text-2xl font-extrabold text-center mb-1" style={{ color: "var(--text-primary)" }}>
         🎬 Film Quiz
       </h1>
-      <p className="text-sm text-center mb-5" style={{ color: "var(--text-secondary)" }}>
+      <p className="text-sm text-center mb-3" style={{ color: "var(--text-secondary)" }}>
         Posteri gör, filmi bul — 10 soruluk tur
       </p>
+
+      {/* Streak göstergesi */}
+      <div className="flex items-center justify-center gap-4 mb-5">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full"
+          style={{ background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.2)' }}>
+          <span className="text-base">🔥</span>
+          <span className="text-sm font-black" style={{ color: '#fbbf24' }}>{streakData?.streak ?? 0}</span>
+          <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>günlük seri</span>
+        </div>
+        {(streakData?.best_streak ?? 0) > 0 && (
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <span className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>En iyi:</span>
+            <span className="text-xs font-bold" style={{ color: 'rgba(255,255,255,0.6)' }}>{streakData?.best_streak} gün</span>
+          </div>
+        )}
+        {playedToday && (
+          <span className="text-xs px-2.5 py-1 rounded-full font-semibold"
+            style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.25)', color: '#4ade80' }}>
+            ✓ Bugün oynadın
+          </span>
+        )}
+      </div>
 
       {/* Zorluk seçici */}
       <div className="flex justify-center gap-2 mb-6">

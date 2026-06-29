@@ -11,6 +11,7 @@ import ReviewReplySection from './ReviewReplySection'
 import ReportButton from './ReportButton'
 import HelpfulButton from './HelpfulButton'
 import UserHoverCard from './UserHoverCard'
+import ReviewReactions from './ReviewReactions'
 
 interface ReviewListProps {
   reviews: Review[]
@@ -18,6 +19,7 @@ interface ReviewListProps {
   likeData?: Record<string, { count: number; liked: boolean }>
   replyCount?: Record<string, number>
   helpfulData?: Record<string, { count: number; marked: boolean }>
+  reactionsData?: Record<string, { reaction: string; count: number; userReacted: boolean }[]>
 }
 
 type SortKey = 'yeni' | 'begenilen' | 'faydali'
@@ -118,7 +120,7 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: 'faydali',   label: 'En Faydalı'       },
 ]
 
-export default function ReviewList({ reviews, currentUserId, likeData = {}, replyCount = {}, helpfulData = {} }: ReviewListProps) {
+export default function ReviewList({ reviews, currentUserId, likeData = {}, replyCount = {}, helpfulData = {}, reactionsData = {} }: ReviewListProps) {
   const [sort, setSort] = useState<SortKey>('yeni')
 
   if (reviews.length === 0) {
@@ -242,24 +244,32 @@ export default function ReviewList({ reviews, currentUserId, likeData = {}, repl
               )}
 
               {/* Aksiyon bar */}
-              <div className="mt-4 pt-3 flex items-center gap-4" style={{ borderTop: '1px solid var(--border)' }}>
-                <LikeButton
+              <div className="mt-4 pt-3 space-y-3" style={{ borderTop: '1px solid var(--border)' }}>
+                {/* Tepkiler */}
+                <ReviewReactions
                   reviewId={review.id}
-                  initialCount={likes.count}
-                  initialLiked={likes.liked}
+                  initialReactions={(reactionsData[review.id] ?? []) as any}
                   isLoggedIn={!!currentUserId}
                 />
-                {currentUserId !== review.user_id && (
-                  <HelpfulButton
+                <div className="flex items-center gap-4">
+                  <LikeButton
                     reviewId={review.id}
-                    initialCount={helpful.count}
-                    initialMarked={helpful.marked}
+                    initialCount={likes.count}
+                    initialLiked={likes.liked}
                     isLoggedIn={!!currentUserId}
                   />
-                )}
-                {currentUserId && currentUserId !== review.user_id && (
-                  <ReportButton targetType="review" targetId={review.id} isLoggedIn={true} />
-                )}
+                  {currentUserId !== review.user_id && (
+                    <HelpfulButton
+                      reviewId={review.id}
+                      initialCount={helpful.count}
+                      initialMarked={helpful.marked}
+                      isLoggedIn={!!currentUserId}
+                    />
+                  )}
+                  {currentUserId && currentUserId !== review.user_id && (
+                    <ReportButton targetType="review" targetId={review.id} isLoggedIn={true} />
+                  )}
+                </div>
               </div>
 
               <ReviewReplySection

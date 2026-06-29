@@ -317,6 +317,7 @@ export default function Navbar({ user }: NavbarProps) {
                   { label: '➕ Film/Dizi Ekle',    href: '/katki',                description: 'Eksik içerikleri siteye ekle' },
                   { label: 'Yayın Takvimi',        href: '/yayin-takvimi',        description: 'Çıkış tarihleri' },
                   { label: '🔥 En Beklenen',         href: '/en-beklenen',          description: 'Çıkmadan önce hype\'ı yüksek' },
+                  { label: '🎯 Koleksiyon Tamamla',  href: '/koleksiyonlar',        description: 'Nolan, Ghibli, Oscar ve daha fazlası' },
                   { label: '📅 Yakında Çıkacaklar', href: '/yakinda',             description: 'Gelecek 6 ay içinde' },
                   { label: '💎 Gizli Mücevherler',  href: '/kesfet',               description: 'Niche, hate watch, sürpriz yapımlar' },
                   { label: '🎟️ Türkiye Gişe',    href: '/kutu-ofis',            description: 'Şu an vizyondaki filmler' },

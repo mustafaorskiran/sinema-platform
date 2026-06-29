@@ -3,6 +3,7 @@ import './globals.css'
 import Navbar from '@/components/Navbar'
 import BottomNav from '@/components/BottomNav'
 import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration'
+import KeyboardShortcuts from '@/components/KeyboardShortcuts'
 import { createClient } from '@/lib/supabase/server'
 import { LocaleProvider } from '@/context/LocaleContext'
 import { getLocale, getMessages } from '@/lib/i18n'
@@ -95,6 +96,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="min-h-full flex flex-col">
         <LocaleProvider locale={locale} messages={messages}>
           <ServiceWorkerRegistration />
+          <KeyboardShortcuts username={user?.username} />
           <Navbar user={user} />
           <main className="flex-1 pb-bottom-nav md:pb-0">{children}</main>
           <footer className="hidden md:block mt-16 py-10 text-sm text-[--text-secondary]" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>

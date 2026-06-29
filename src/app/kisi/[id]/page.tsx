@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getPersonDetail, getPersonCredits, getPosterUrl, getPersonExternalIds, getMediaTitle, getMediaYear } from '@/lib/tmdb'
+import DirectorTimeline from '@/components/DirectorTimeline'
 import type { Metadata } from 'next'
 
 interface Props {
@@ -218,6 +219,14 @@ export default async function KisiPage({ params }: Props) {
             })}
           </div>
         </section>
+      )}
+
+      {/* Kariyer Zaman Çizelgesi — sadece yönetmenler için */}
+      {!isActor && (
+        <DirectorTimeline
+          credits={[...(credits?.crew ?? [])].map(c => ({ ...c, media_type: c.media_type ?? 'movie' }))}
+          personName={person.name}
+        />
       )}
 
       {/* İkincil Filmografi */}

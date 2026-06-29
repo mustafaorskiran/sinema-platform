@@ -12,6 +12,7 @@ import DiaryButton from '@/components/DiaryButton'
 import PrivateNoteWidget from '@/components/PrivateNoteWidget'
 import CollectionButton from '@/components/CollectionButton'
 import WatchProviders from '@/components/WatchProviders'
+import WhoWatchedThis from '@/components/WhoWatchedThis'
 import CastRow from '@/components/CastRow'
 import RatingSlider from '@/components/RatingSlider'
 import BackdropGallery from '@/components/BackdropGallery'
@@ -643,6 +644,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
 
             <WatchProviders allProviders={watchProviders} mediaType="film" title={title} />
             <AffiliateLinks title={title} year={getMediaYear(movie)} />
+            <WhoWatchedThis mediaId={movieId} mediaType="film" />
 
             {/* Konular */}
             <TopicTagger

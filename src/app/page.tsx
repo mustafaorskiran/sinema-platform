@@ -10,6 +10,7 @@ import {
 } from '@/lib/tmdb'
 import { GENRE_MAP } from '@/lib/genres'
 import HomeCarousel from '@/components/HomeCarousel'
+import OnThisDayWidget from '@/components/OnThisDayWidget'
 import HomeTrailerSection from '@/components/HomeTrailerSection'
 import AdBanner from '@/components/AdBanner'
 import { createClient } from '@/lib/supabase/server'
@@ -342,6 +343,9 @@ export default async function HomePage() {
             </Link>
           </div>
         )}
+
+        {/* ── Bu Gün Geçmişte ──────────────────────────────────── */}
+        <OnThisDayWidget />
 
         {/* ── 1. Bugün Trend ────────────────────────────────────── */}
         <HomeCarousel
