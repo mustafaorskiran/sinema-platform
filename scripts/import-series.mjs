@@ -27,9 +27,9 @@ loadEnv()
 const SUPABASE_URL     = process.env.NEXT_PUBLIC_SUPABASE_URL
 const SUPABASE_SVC_KEY = process.env.SUPABASE_SERVICE_KEY
 const TMDB_TOKEN       = process.env.TMDB_API_KEY ?? process.env.TMDB_API_TOKEN
-const MIN_POPULARITY   = 0.5
-const CONCURRENCY      = 25
-const INSERT_BATCH     = 250
+const MIN_POPULARITY   = 0.1      // 0.5→0.1: daha fazla dizi
+const CONCURRENCY      = 35
+const INSERT_BATCH     = 500
 const CACHE_DIR        = resolve(__dirname, '.cache')
 const PROGRESS_FILE    = resolve(CACHE_DIR, 'progress-series.json')
 

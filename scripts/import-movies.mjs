@@ -34,9 +34,9 @@ loadEnv()
 const SUPABASE_URL      = process.env.NEXT_PUBLIC_SUPABASE_URL
 const SUPABASE_SVC_KEY  = process.env.SUPABASE_SERVICE_KEY
 const TMDB_TOKEN        = process.env.TMDB_API_KEY ?? process.env.TMDB_API_TOKEN
-const MIN_POPULARITY    = 0.5      // filtre eşiği
-const CONCURRENCY       = 25       // eş zamanlı TMDb isteği
-const INSERT_BATCH      = 250      // Supabase'e tek seferde yazılacak kayıt
+const MIN_POPULARITY    = 0.1      // filtre eşiği (0.5→0.1: daha fazla film)
+const CONCURRENCY       = 35       // eş zamanlı TMDb isteği
+const INSERT_BATCH      = 500      // Supabase'e tek seferde yazılacak kayıt
 const CACHE_DIR         = resolve(__dirname, '.cache')
 const PROGRESS_FILE     = resolve(CACHE_DIR, 'progress.json')
 

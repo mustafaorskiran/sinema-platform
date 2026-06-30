@@ -153,13 +153,9 @@ export default async function FilmlerPage({ searchParams }: Props) {
     const data = await getTopRatedMovies(page).catch(() => ({ results: [], total_pages: 1 }))
     results     = data.results ?? []
     total_pages = (data as any).total_pages ?? 1
-  } else if (hasCustomFilters || platform) {
-    // Any filter applied → use discover
-    const effectiveSirala = sirala || (
-      kategori === 'en-iyi'   ? 'vote_average.desc' :
-      kategori === 'yakinda'  ? 'primary_release_date.asc' :
-      kategori === 'vizyonda' ? 'primary_release_date.desc' : 'popularity.desc'
-    )
+  } else if (platform) {
+    // Platform filtresi → TMDb (streaming verisi bizde yok)
+    const effectiveSirala = sirala || 'popularity.desc'
     const data = await discoverMovies({
       page, genre,
       year: yil, minYear: tarihten, maxYear: tarihe,
@@ -173,21 +169,43 @@ export default async function FilmlerPage({ searchParams }: Props) {
     }).catch(() => ({ results: [], total_pages: 1 }))
     results     = data.results
     total_pages = data.total_pages
-  } else if ((catalogCount ?? 0) > 5000) {
-    // Supabase catalog
+  } else if ((catalogCount ?? 0) > 10000) {
+    // Büyük Supabase kataloğu — tüm filtreler desteklenir
     let query = supabase.from('movies').select('*', { count: 'exact' })
-    if (genre) {
-      const genreId = parseInt(genre)
-      if (!isNaN(genreId)) query = query.contains('genre_ids', [genreId])
-    }
-    if (yil)  query = query.eq('release_year', parseInt(yil))
-    if (minRating) query = query.gte('vote_average', parseFloat(minRating))
 
-    let orderCol = 'popularity', ascending = false
-    if (sirala === 'vote_average.desc')              { orderCol = 'vote_average'; ascending = false }
-    else if (sirala === 'vote_average.asc')          { orderCol = 'vote_average'; ascending = true  }
-    else if (sirala === 'primary_release_date.desc') { orderCol = 'release_year'; ascending = false }
-    else if (sirala === 'primary_release_date.asc')  { orderCol = 'release_year'; ascending = true  }
+    // Tür filtresi
+    if (genre) {
+      const genreIds = genre.split(',').map(Number).filter(Boolean)
+      if (genreIds.length === 1) query = query.contains('genre_ids', genreIds)
+      else if (genreIds.length > 1) query = query.overlaps('genre_ids', genreIds)
+    }
+
+    // Yıl filtresi
+    if (yil)      query = query.eq('release_year', parseInt(yil))
+    if (tarihten) query = query.gte('release_year', parseInt(tarihten))
+    if (tarihe)   query = query.lte('release_year', parseInt(tarihe))
+
+    // Puan filtreleri
+    if (minRating) query = query.gte('vote_average', parseFloat(minRating))
+    if (min_oy)    query = query.gte('vote_count', parseInt(min_oy))
+
+    // Dil filtresi
+    if (dil) query = query.eq('original_language', dil)
+
+    // Başlık arama (trigram index)
+    if (keyword?.trim()) {
+      query = query.or(`title.ilike.%${keyword.trim()}%,original_title.ilike.%${keyword.trim()}%`)
+    }
+
+    // Sıralama
+    let orderCol = 'popularity'
+    let ascending = false
+    if (kategori === 'en-iyi' && !sirala)              { orderCol = 'vote_average'; ascending = false }
+    if (sirala === 'vote_average.desc')                 { orderCol = 'vote_average'; ascending = false }
+    else if (sirala === 'vote_average.asc')             { orderCol = 'vote_average'; ascending = true  }
+    else if (sirala === 'primary_release_date.desc')    { orderCol = 'release_year'; ascending = false }
+    else if (sirala === 'primary_release_date.asc')     { orderCol = 'release_year'; ascending = true  }
+    else if (sirala === 'title.asc')                    { orderCol = 'title';        ascending = true  }
 
     const from = (page - 1) * PAGE_SIZE
     const { data, count, error } = await query
@@ -203,7 +221,7 @@ export default async function FilmlerPage({ searchParams }: Props) {
         vote_count: m.vote_count, popularity: m.popularity, genre_ids: m.genre_ids,
       }))
       totalCount  = count ?? 0
-      total_pages = Math.min(500, Math.ceil(totalCount / PAGE_SIZE))
+      total_pages = Math.ceil(totalCount / PAGE_SIZE)
     }
   } else {
     const data = await discoverMovies({
