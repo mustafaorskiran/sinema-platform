@@ -484,7 +484,7 @@ export default function Navbar({ user }: NavbarProps) {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden border-t border-[--border] overflow-y-auto" style={{ background: 'var(--bg-secondary)', maxHeight: 'calc(100vh - 64px)' }}>
+        <div className="md:hidden border-t border-[--border] overflow-y-auto" style={{ background: 'var(--bg-secondary)', maxHeight: 'calc(100dvh - 128px)' }}>
           <div className="px-4 py-3 flex flex-col gap-0.5 text-sm">
             {/* Ana Menü */}
             <div className="grid grid-cols-2 gap-x-4">
@@ -495,10 +495,36 @@ export default function Navbar({ user }: NavbarProps) {
               <Link href="/en-cok-yorumlanan" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.popular')}</Link>
               <Link href="/ne-izlesem" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Ne İzlesem?</Link>
               <Link href="/listeler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.lists')}</Link>
+              <Link href="/kisiler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Kişiler</Link>
               <Link href="/forum" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Forum</Link>
             </div>
 
-            {/* Keşif */}
+            {/* Filmler */}
+            <div className="pt-3 pb-1 mt-1 border-t border-[--border]">
+              <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)' }}>Filmler</p>
+            </div>
+            <div className="grid grid-cols-2 gap-x-4">
+              <Link href="/filmler?sirala=vote_average.desc" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>En İyi Puanlı</Link>
+              <Link href="/filmler?sirala=release_date.desc" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Yeni Çıkanlar</Link>
+              <Link href="/filmler?ozel=yerli-yapimlar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Yerli Filmler</Link>
+              <Link href="/filmler?ozel=oscar-kazananlar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Oscar Kazananlar</Link>
+              <Link href="/filmler?ozel=kult-filmler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Kült Filmler</Link>
+              <Link href="/yeni-gelenler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Yeni Gelenler</Link>
+            </div>
+
+            {/* Diziler */}
+            <div className="pt-3 pb-1 mt-1 border-t border-[--border]">
+              <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)' }}>Diziler</p>
+            </div>
+            <div className="grid grid-cols-2 gap-x-4">
+              <Link href="/diziler?sirala=vote_average.desc" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>En İyi Diziler</Link>
+              <Link href="/diziler?sirala=first_air_date.desc" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Yeni Diziler</Link>
+              <Link href="/diziler?ozel=yerli-diziler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Yerli Diziler</Link>
+              <Link href="/diziler?ozel=anime" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Anime</Link>
+              <Link href="/diziler?ozel=polisiye" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Polisiye</Link>
+            </div>
+
+            {/* Keşfet */}
             <div className="pt-3 pb-1 mt-1 border-t border-[--border]">
               <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)' }}>Keşfet</p>
             </div>
@@ -511,6 +537,21 @@ export default function Navbar({ user }: NavbarProps) {
               <Link href="/versus" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>⚔️ Film vs Film</Link>
               <Link href="/sinema" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🌍 Dünya Sineması</Link>
               <Link href="/ruh-hali" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>✨ Ruh Haline Göre</Link>
+              <Link href="/benzer-kullanicilar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Benzer Kullanıcılar</Link>
+              <Link href="/sosyal-oneri" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>👥 Arkadaş Önerileri</Link>
+              <Link href="/versus/turnuva" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🏆 Film Turnuvası</Link>
+              <Link href="/quiz" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Quiz</Link>
+              <Link href="/sinezon-turum" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🎭 Sinezon Türüm</Link>
+              <Link href="/ozel-listeler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Özel Listeler</Link>
+              <Link href="/katki" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>➕ Film/Dizi Ekle</Link>
+              <Link href="/en-beklenen" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🔥 En Beklenen</Link>
+              <Link href="/koleksiyonlar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🎯 Koleksiyonlar</Link>
+              <Link href="/yakinda" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>📅 Yakında</Link>
+              <Link href="/kesfet" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>💎 Gizli Mücevherler</Link>
+              <Link href="/alintilar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Alıntılar</Link>
+              <Link href="/liderlik" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🏆 Liderlik Tablosu</Link>
+              <Link href="/oneri" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🤖 AI Film Önerisi</Link>
+              <Link href="/haftalik" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>📰 Haftanın Özeti</Link>
             </div>
 
             {/* Authenticated section */}
