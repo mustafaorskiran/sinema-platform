@@ -99,7 +99,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <KeyboardShortcuts username={user?.username} />
           <Navbar user={user} />
           <main className="flex-1 pb-bottom-nav md:pb-0">{children}</main>
-          <footer className="hidden md:block mt-16 py-10 text-sm text-[--text-secondary]" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          <footer className="mt-16 pt-10 pb-24 md:pb-10 text-sm text-[--text-secondary]" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
             <div className="max-w-6xl mx-auto px-6 grid grid-cols-2 sm:grid-cols-4 gap-8 mb-8">
               <div>
                 <p className="font-semibold text-white mb-3">Keşfet</p>
