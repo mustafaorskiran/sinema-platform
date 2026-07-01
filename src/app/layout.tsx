@@ -100,7 +100,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <Navbar user={user} />
           <main className="flex-1 pb-bottom-nav md:pb-0">{children}</main>
           <footer className="mt-16 pt-10 pb-24 md:pb-10 text-sm text-[--text-secondary]" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-            <div className="max-w-6xl mx-auto px-6 grid grid-cols-2 sm:grid-cols-4 gap-8 mb-8">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 mb-8">
               <div>
                 <p className="font-semibold text-white mb-3">Keşfet</p>
                 <ul className="space-y-2">

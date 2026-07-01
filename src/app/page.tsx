@@ -192,7 +192,7 @@ export default async function HomePage() {
     <div>
       {/* ── Hero ─────────────────────────────────────────────────── */}
       {hero && (
-        <div className="relative h-[75vh] min-h-[450px] overflow-hidden">
+        <div className="relative h-[60vh] sm:h-[75vh] min-h-[380px] overflow-hidden">
           {heroBackdrop && (
             <img src={heroBackdrop} alt={getMediaTitle(hero)}
               className="absolute inset-0 w-full h-full object-cover"
@@ -208,7 +208,7 @@ export default async function HomePage() {
                   Bu Haftanın Trendi
                 </span>
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-3 drop-shadow-lg">
+              <h1 className="text-2xl sm:text-4xl md:text-6xl font-bold text-white leading-tight mb-3 drop-shadow-lg">
                 {getMediaTitle(hero)}
               </h1>
               <div className="flex items-center gap-3 mb-4">
@@ -224,7 +224,7 @@ export default async function HomePage() {
               </p>
               <Link
                 href={`/${heroType}/${hero.id}`}
-                className="inline-flex items-center gap-2 bg-[--accent] hover:bg-[--accent-hover] text-white font-semibold px-8 py-3.5 rounded-full transition-colors shadow-lg shadow-[--accent]/30"
+                className="inline-flex items-center gap-2 bg-[--accent] hover:bg-[--accent-hover] text-white font-semibold px-5 py-2.5 sm:px-8 sm:py-3.5 text-sm sm:text-base rounded-full transition-colors shadow-lg shadow-[--accent]/30"
               >
                 İncele <IconChevronRight className="h-4 w-4" />
               </Link>
@@ -236,8 +236,8 @@ export default async function HomePage() {
       {/* ── İstatistik bandı ──────────────────────────────────────── */}
       {hasLocalCatalog && (
         <div className="bg-[--bg-card] border-y border-[--border]">
-          <div className="max-w-7xl mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-6 text-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-sm">
               <div className="flex items-center gap-2">
                 <IconFilm className="h-4 w-4 text-[--accent]" />
                 <span className="text-white font-bold">{(filmCount ?? 0).toLocaleString('tr-TR')}</span>
@@ -302,7 +302,7 @@ export default async function HomePage() {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-14">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-10 sm:space-y-14">
 
         {/* ── Onboarding CTA ──────────────────────────────────────── */}
         {user && !userOnboarded && (
