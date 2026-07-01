@@ -258,7 +258,7 @@ export default function TurSidebar({
 
       {/* Mobil floating button */}
       <button
-        className="lg:hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-5 py-2.5 rounded-full text-[13px] font-semibold text-white active:scale-95 transition-transform"
+        className="lg:hidden fixed bottom-20 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-5 py-2.5 rounded-full text-[13px] font-semibold text-white active:scale-95 transition-transform"
         style={{
           background: `linear-gradient(135deg, ${RED} 0%, #be123c 100%)`,
           boxShadow: '0 4px 24px rgba(225,29,72,0.45)',

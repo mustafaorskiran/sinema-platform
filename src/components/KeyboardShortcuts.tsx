@@ -67,7 +67,7 @@ export default function KeyboardShortcuts({ username }: { username?: string }) {
 
   if (!showHelp) return (
     pendingG ? (
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl text-sm font-mono text-white"
+      <div className="hidden md:block fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl text-sm font-mono text-white"
         style={{ background: 'rgba(14,20,32,0.95)', border: '1px solid rgba(255,255,255,0.15)' }}>
         g + <span style={{ color: 'var(--accent)' }}>h</span> ana · <span style={{ color: 'var(--accent)' }}>f</span> filmler · <span style={{ color: 'var(--accent)' }}>d</span> diziler · <span style={{ color: 'var(--accent)' }}>p</span> profil
       </div>

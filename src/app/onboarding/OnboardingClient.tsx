@@ -460,7 +460,7 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
 
       {/* ── Sabit alt navigasyon ── */}
       <div className="fixed bottom-0 inset-x-0 z-20 bg-[--bg-primary]/95 backdrop-blur border-t border-[--border]">
-        <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
+        <div className="max-w-3xl mx-auto px-4 py-4 pb-20 md:pb-4 flex items-center justify-between gap-4">
           {step > 1 ? (
             <button
               onClick={() => setStep(s => (s - 1) as typeof step)}

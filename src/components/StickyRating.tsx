@@ -40,7 +40,7 @@ export default function StickyRating({ mediaId, mediaType, title, posterPath, is
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pointer-events-none">
-      <div className="pointer-events-auto mb-4 mx-4 max-w-lg w-full">
+      <div className="pointer-events-auto mb-20 md:mb-4 mx-4 max-w-lg w-full">
         <div className="bg-[--bg-card]/95 backdrop-blur-md border border-[--border] rounded-2xl shadow-2xl shadow-black/50 px-4 py-3 flex items-center gap-3">
           {posterPath && (
             <img
@@ -60,7 +60,7 @@ export default function StickyRating({ mediaId, mediaType, title, posterPath, is
                 onMouseEnter={() => setHovered(n)}
                 onMouseLeave={() => setHovered(0)}
                 onClick={() => saveRating(n)}
-                className={`w-6 h-6 text-sm transition-transform hover:scale-110 ${
+                className={`w-5 h-5 sm:w-6 sm:h-6 text-[10px] sm:text-sm transition-transform hover:scale-110 ${
                   (hovered || rating) >= n ? 'text-[--gold]' : 'text-[--border]'
                 }`}
               >
