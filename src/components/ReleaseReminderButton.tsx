@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useLocale } from '@/context/LocaleContext'
+import { IconBell } from '@/components/icons'
 
 interface Props {
   mediaId: number
@@ -38,7 +39,12 @@ export default function ReleaseReminderButton({ mediaId, mediaType, title, relea
         border: `1px solid ${active ? 'rgba(212,168,67,0.35)' : 'rgba(255,255,255,0.12)'}`,
         color: active ? '#D4A843' : 'rgba(255,255,255,0.55)',
       }}>
-      {loading ? '...' : active ? `🔔 ${t('film.reminderActive')}` : `🔔 ${t('film.notifyOnReleaseCta')}`}
+      {loading ? '...' : (
+        <span className="inline-flex items-center gap-1.5">
+          <IconBell size={14} />
+          {active ? t('film.reminderActive') : t('film.notifyOnReleaseCta')}
+        </span>
+      )}
     </button>
   )
 }

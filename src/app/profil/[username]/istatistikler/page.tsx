@@ -8,6 +8,7 @@ import ZevkDNA from '@/components/ZevkDNA'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconCheck, IconLock, IconArrowLeft, IconBarChart, IconTrendingUp, IconFilm, IconTv } from '@/components/icons'
 
 interface Props {
   params: Promise<{ username: string }>
@@ -232,7 +233,7 @@ export default async function IstatistiklerPage({ params }: Props) {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-[--text-secondary] mb-6">
-        <Link href={`/profil/${username}`} className="hover:text-white transition-colors">← {username}</Link>
+        <Link href={`/profil/${username}`} className="hover:text-white transition-colors inline-flex items-center gap-1"><IconArrowLeft size={14} /> {username}</Link>
         <span>/</span>
         <span className="text-white">{t('profile.statsTab.title')}</span>
       </div>
@@ -252,7 +253,7 @@ export default async function IstatistiklerPage({ params }: Props) {
 
       {allReviews.length === 0 && allDiary.length === 0 ? (
         <div className="rounded-2xl py-16 text-center px-6" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <p className="text-4xl mb-3">📊</p>
+          <p className="flex justify-center mb-3"><IconBarChart size={40} /></p>
           <p className="text-[--text-secondary] text-sm">{t('profile.statsTab.empty')}</p>
         </div>
       ) : (
@@ -302,7 +303,7 @@ export default async function IstatistiklerPage({ params }: Props) {
                 </div>
                 {speedChange !== 0 && (
                   <div className={`ml-auto text-sm font-semibold ${speedChange > 0 ? 'text-green-400' : 'text-red-400'}`}>
-                    {speedChange > 0 ? '↑' : '↓'} %{Math.abs(speedChange)}
+                    <span className="inline-flex items-center gap-1"><IconTrendingUp size={14} className={speedChange > 0 ? '' : 'rotate-180'} /> %{Math.abs(speedChange)}</span>
                     <p className="text-xs font-normal text-[--text-secondary]">{t('profile.statsTab.vsPrev3Months')}</p>
                   </div>
                 )}
@@ -334,8 +335,8 @@ export default async function IstatistiklerPage({ params }: Props) {
                 />
               </div>
               <div className="flex justify-between mt-2 text-xs text-[--text-secondary]">
-                <span className="text-blue-400">🎬 {t('film.badge')} %{Math.round((filmReviews.length / allReviews.length) * 100)}</span>
-                <span className="text-purple-400">📺 {t('series.badge')} %{Math.round((diziReviews.length / allReviews.length) * 100)}</span>
+                <span className="text-blue-400 inline-flex items-center gap-1"><IconFilm size={12} /> {t('film.badge')} %{Math.round((filmReviews.length / allReviews.length) * 100)}</span>
+                <span className="text-purple-400 inline-flex items-center gap-1"><IconTv size={12} /> {t('series.badge')} %{Math.round((diziReviews.length / allReviews.length) * 100)}</span>
               </div>
             </div>
           )}
@@ -439,7 +440,7 @@ export default async function IstatistiklerPage({ params }: Props) {
 
             {earnedBadges.length > 0 && (
               <div className="mb-4">
-                <p className="text-xs text-green-400 mb-2">✓ {t('profile.statsTab.earned')}</p>
+                <p className="text-xs text-green-400 mb-2 inline-flex items-center gap-1"><IconCheck size={12} /> {t('profile.statsTab.earned')}</p>
                 <div className="flex flex-wrap gap-2">
                   {earnedBadges.map(badge => (
                     <div
@@ -448,7 +449,7 @@ export default async function IstatistiklerPage({ params }: Props) {
                       className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-default"
                       style={{ background: 'rgba(74,222,128,0.06)', border: '1px solid rgba(74,222,128,0.2)' }}
                     >
-                      <span className="text-lg">{badge.emoji}</span>
+                      <badge.icon size={20} strokeWidth={1.5} className="text-green-400 shrink-0" />
                       <div>
                         <p className="text-xs font-semibold text-white leading-none">{badge.name}</p>
                         <p className="text-[10px] text-[--text-secondary] mt-0.5">{badge.desc}</p>
@@ -461,7 +462,7 @@ export default async function IstatistiklerPage({ params }: Props) {
 
             {lockedBadges.length > 0 && (
               <div>
-                <p className="text-xs text-[--text-secondary] mb-2">🔒 {t('profile.statsTab.notEarnedYet')}</p>
+                <p className="text-xs text-[--text-secondary] mb-2 inline-flex items-center gap-1"><IconLock size={12} /> {t('profile.statsTab.notEarnedYet')}</p>
                 <div className="flex flex-wrap gap-2">
                   {lockedBadges.map(badge => (
                     <div
@@ -470,7 +471,7 @@ export default async function IstatistiklerPage({ params }: Props) {
                       className="flex items-center gap-2 px-3 py-2 rounded-lg opacity-35 cursor-default"
                       style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
                     >
-                      <span className="text-lg grayscale">{badge.emoji}</span>
+                      <badge.icon size={20} strokeWidth={1.5} className="shrink-0 opacity-60" />
                       <div>
                         <p className="text-xs font-semibold text-white leading-none">{badge.name}</p>
                         <p className="text-[10px] text-[--text-secondary] mt-0.5">{badge.desc}</p>

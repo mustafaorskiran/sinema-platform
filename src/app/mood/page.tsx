@@ -1,6 +1,10 @@
 import Link from 'next/link'
 import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
+import {
+  IconSmile, IconZap, IconThinking, IconHeartFilled, IconGhost, IconMap, IconMic, IconFamily, IconMoon, IconRocket,
+  IconMasks, IconFilm, IconTv, IconDice, IconRobot,
+} from '@/components/icons'
 
 export const metadata: Metadata = {
   title: 'Ruh Haline Göre Film | Sinezon',
@@ -10,7 +14,7 @@ export const metadata: Metadata = {
 const MOODS = [
   {
     id: 'mutlu',
-    emoji: '😄',
+    Icon: IconSmile,
     labelKey: 'mood.items.mutlu.label',
     descKey: 'mood.items.mutlu.desc',
     color: '#facc15',
@@ -21,7 +25,7 @@ const MOODS = [
   },
   {
     id: 'heyecan',
-    emoji: '⚡',
+    Icon: IconZap,
     labelKey: 'mood.items.heyecan.label',
     descKey: 'mood.items.heyecan.desc',
     color: '#f87171',
@@ -32,7 +36,7 @@ const MOODS = [
   },
   {
     id: 'dusunceli',
-    emoji: '🤔',
+    Icon: IconThinking,
     labelKey: 'mood.items.dusunceli.label',
     descKey: 'mood.items.dusunceli.desc',
     color: '#a78bfa',
@@ -43,7 +47,7 @@ const MOODS = [
   },
   {
     id: 'romantik',
-    emoji: '💕',
+    Icon: IconHeartFilled,
     labelKey: 'mood.items.romantik.label',
     descKey: 'mood.items.romantik.desc',
     color: '#fb7185',
@@ -54,7 +58,7 @@ const MOODS = [
   },
   {
     id: 'korku',
-    emoji: '👻',
+    Icon: IconGhost,
     labelKey: 'mood.items.korku.label',
     descKey: 'mood.items.korku.desc',
     color: '#4ade80',
@@ -65,7 +69,7 @@ const MOODS = [
   },
   {
     id: 'macera',
-    emoji: '🗺️',
+    Icon: IconMap,
     labelKey: 'mood.items.macera.label',
     descKey: 'mood.items.macera.desc',
     color: '#60a5fa',
@@ -76,7 +80,7 @@ const MOODS = [
   },
   {
     id: 'belgesel',
-    emoji: '🎙️',
+    Icon: IconMic,
     labelKey: 'mood.items.belgesel.label',
     descKey: 'mood.items.belgesel.desc',
     color: '#fb923c',
@@ -87,7 +91,7 @@ const MOODS = [
   },
   {
     id: 'aile',
-    emoji: '👨‍👩‍👧',
+    Icon: IconFamily,
     labelKey: 'mood.items.aile.label',
     descKey: 'mood.items.aile.desc',
     color: '#34d399',
@@ -98,7 +102,7 @@ const MOODS = [
   },
   {
     id: 'gece',
-    emoji: '🌙',
+    Icon: IconMoon,
     labelKey: 'mood.items.gece.label',
     descKey: 'mood.items.gece.desc',
     color: '#c4b5fd',
@@ -109,7 +113,7 @@ const MOODS = [
   },
   {
     id: 'scifi',
-    emoji: '🚀',
+    Icon: IconRocket,
     labelKey: 'mood.items.scifi.label',
     descKey: 'mood.items.scifi.desc',
     color: '#38bdf8',
@@ -126,9 +130,9 @@ export default async function MoodPage() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Başlık */}
       <div className="text-center mb-10">
-        <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl mb-5 text-3xl"
+        <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl mb-5"
           style={{ background: 'rgba(225,29,72,0.1)', border: '1px solid rgba(225,29,72,0.2)' }}>
-          🎭
+          <IconMasks size={32} />
         </div>
         <h1 className="text-3xl font-black text-white mb-2">{t('mood.pageTitle')}</h1>
         <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
@@ -142,7 +146,7 @@ export default async function MoodPage() {
           <div key={mood.id} className="rounded-2xl p-5 transition-all duration-200 hover:-translate-y-0.5"
             style={{ background: mood.bg, border: `1px solid ${mood.border}` }}>
             <div className="flex items-center gap-3 mb-3">
-              <span className="text-3xl">{mood.emoji}</span>
+              <mood.Icon size={28} style={{ color: mood.color }} />
               <div>
                 <p className="font-bold text-white text-sm">{t(mood.labelKey)}</p>
                 <p className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>{t(mood.descKey)}</p>
@@ -150,14 +154,14 @@ export default async function MoodPage() {
             </div>
             <div className="flex gap-2">
               <Link href={`/filmler?${mood.filmParams}`}
-                className="flex-1 py-2 rounded-xl text-xs font-semibold text-center transition-all hover:opacity-80"
+                className="flex-1 py-2 rounded-xl text-xs font-semibold text-center transition-all hover:opacity-80 inline-flex items-center justify-center gap-1.5"
                 style={{ background: mood.color, color: '#000' }}>
-                🎬 {t('genre.film')}
+                <IconFilm size={14} />{t('genre.film')}
               </Link>
               <Link href={`/diziler?${mood.diziParams}`}
-                className="flex-1 py-2 rounded-xl text-xs font-semibold text-center transition-all hover:opacity-80"
+                className="flex-1 py-2 rounded-xl text-xs font-semibold text-center transition-all hover:opacity-80 inline-flex items-center justify-center gap-1.5"
                 style={{ background: 'rgba(255,255,255,0.08)', color: mood.color, border: `1px solid ${mood.border}` }}>
-                📺 {t('genre.dizi')}
+                <IconTv size={14} />{t('genre.dizi')}
               </Link>
             </div>
           </div>
@@ -171,14 +175,14 @@ export default async function MoodPage() {
         </p>
         <div className="flex flex-wrap justify-center gap-3">
           <Link href="/ne-izlesem"
-            className="px-4 py-2 rounded-full text-sm font-medium transition-all hover:bg-white/10"
+            className="px-4 py-2 rounded-full text-sm font-medium transition-all hover:bg-white/10 inline-flex items-center gap-1.5"
             style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
-            🎲 {t('mood.leaveToLuck')}
+            <IconDice size={16} />{t('mood.leaveToLuck')}
           </Link>
           <Link href="/oneri"
-            className="px-4 py-2 rounded-full text-sm font-medium transition-all hover:bg-white/10"
+            className="px-4 py-2 rounded-full text-sm font-medium transition-all hover:bg-white/10 inline-flex items-center gap-1.5"
             style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
-            🤖 {t('mood.getAiSuggestion')}
+            <IconRobot size={16} />{t('mood.getAiSuggestion')}
           </Link>
         </div>
       </div>

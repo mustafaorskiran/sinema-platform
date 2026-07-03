@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useLocale } from '@/context/LocaleContext'
+import { IconPaperclip, IconCheck } from '@/components/icons'
 
 export default function EmbedWidgetCopy({ username }: { username: string }) {
   const { t } = useLocale()
@@ -19,7 +20,7 @@ export default function EmbedWidgetCopy({ username }: { username: string }) {
   return (
     <div className="rounded-xl p-4" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
       <div className="flex items-center justify-between gap-3 mb-3">
-        <p className="text-xs font-semibold text-white">📎 {t('profile.widgetTitle')}</p>
+        <p className="text-xs font-semibold text-white inline-flex items-center gap-1.5"><IconPaperclip size={14} /> {t('profile.widgetTitle')}</p>
         <button
           onClick={copy}
           className="px-3 py-1 rounded-lg text-xs font-semibold transition-all hover:scale-105"
@@ -28,7 +29,9 @@ export default function EmbedWidgetCopy({ username }: { username: string }) {
             : { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff', boxShadow: '0 2px 8px rgba(225,29,72,0.3)' }
           }
         >
-          {copied ? `✓ ${t('profile.copied')}` : t('profile.copyCode')}
+          {copied
+            ? <span className="inline-flex items-center gap-1"><IconCheck size={12} />{t('profile.copied')}</span>
+            : t('profile.copyCode')}
         </button>
       </div>
       <code className="block text-[10px] rounded-lg p-2.5 break-all"

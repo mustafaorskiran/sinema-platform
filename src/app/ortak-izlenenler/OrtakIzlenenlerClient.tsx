@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { IconFilm, IconChevronUp } from '@/components/icons'
 
 interface Profile {
   id: string
@@ -77,7 +78,7 @@ export default function OrtakIzlenenlerClient({ myProfile, following, defaultUse
             </div>
           ) : items.length === 0 ? (
             <div className="py-16 text-center rounded-2xl rounded-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <p className="text-4xl mb-3">🎬</p>
+              <IconFilm size={40} strokeWidth={1.5} className="mb-3 mx-auto text-white/30" />
               <p className="text-sm text-[--text-secondary]">Henüz ortak izlenen içerik yok.</p>
             </div>
           ) : (
@@ -103,7 +104,7 @@ export default function OrtakIzlenenlerClient({ myProfile, following, defaultUse
 
       {!selectedUser && following.length > 0 && (
         <div className="py-16 text-center rounded-2xl rounded-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <p className="text-4xl mb-3">👆</p>
+          <IconChevronUp size={40} strokeWidth={1.5} className="mb-3 mx-auto text-white/30" />
           <p className="text-sm text-[--text-secondary]">Ortak izlenenleri görmek için bir kullanıcı seç.</p>
         </div>
       )}

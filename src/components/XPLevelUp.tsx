@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useLocale } from '@/context/LocaleContext'
+import { IconPartyPopper } from '@/components/icons'
 
 interface Props {
   level: number
@@ -72,7 +73,7 @@ export default function XPLevelUp({ level, xp }: Props) {
           <Confetti />
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] text-center pointer-events-none"
             style={{ animation: 'popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275) forwards' }}>
-            <div className="text-6xl mb-2">🎉</div>
+            <IconPartyPopper size={56} className="mx-auto mb-2 text-[--accent]" />
             <p className="text-2xl font-black text-white">{t('community.levelUp', { level })}</p>
             <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.6)' }}>{t('community.congrats')}</p>
             <style>{`

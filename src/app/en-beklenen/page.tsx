@@ -3,6 +3,7 @@ import Image from 'next/image'
 import type { Metadata } from 'next'
 import AdBanner from '@/components/AdBanner'
 import { getTranslations } from '@/lib/i18n'
+import { IconFire, IconMedal, IconFilm } from '@/components/icons'
 
 export const revalidate = 3600
 
@@ -55,7 +56,7 @@ export default async function EnBeklenenPage({ searchParams }: Props) {
       {/* Başlık */}
       <div className="mb-8">
         <div className="flex items-center gap-2.5 mb-2">
-          <span className="text-2xl">🔥</span>
+          <IconFire size={24} className="text-[--accent]" />
           <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
             {t('upcoming.title')}
           </h1>
@@ -103,7 +104,13 @@ export default async function EnBeklenenPage({ searchParams }: Props) {
               {/* Sıra */}
               <div className="w-8 text-center shrink-0">
                 {i < 3 ? (
-                  <span className="text-xl">{['🥇', '🥈', '🥉'][i]}</span>
+                  <span className="inline-flex">
+                    {[
+                      <IconMedal key="g" size={20} className="text-[#D4A803]" />,
+                      <IconMedal key="s" size={20} className="text-[#C0C0C0]" />,
+                      <IconMedal key="b" size={20} className="text-[#B87333]" />,
+                    ][i]}
+                  </span>
                 ) : (
                   <span className="text-sm font-black" style={{ color: 'rgba(255,255,255,0.2)' }}>#{i + 1}</span>
                 )}
@@ -136,8 +143,8 @@ export default async function EnBeklenenPage({ searchParams }: Props) {
 
               {/* Popülerlik */}
               <div className="text-right shrink-0">
-                <p className="text-xs font-bold" style={{ color: 'var(--gold)' }}>
-                  🔥 {Math.round(item.popularity).toLocaleString('tr-TR')}
+                <p className="text-xs font-bold inline-flex items-center gap-1" style={{ color: 'var(--gold)' }}>
+                  <IconFire size={14} /> {Math.round(item.popularity).toLocaleString('tr-TR')}
                 </p>
                 <p className="text-[10px] mt-0.5" style={{ color: 'rgba(255,255,255,0.25)' }}>{t('upcoming.popularityLabel')}</p>
               </div>
@@ -148,7 +155,7 @@ export default async function EnBeklenenPage({ searchParams }: Props) {
 
       {items.length === 0 && (
         <div className="text-center py-20" style={{ color: 'var(--text-secondary)' }}>
-          <div className="text-4xl mb-3">🎬</div>
+          <div className="mb-3 flex justify-center"><IconFilm size={40} /></div>
           <p>{t('upcoming.fetchError')}</p>
         </div>
       )}

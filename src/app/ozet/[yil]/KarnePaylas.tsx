@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { IconCheck, IconSend } from '@/components/icons'
 
 interface Props {
   year: number
@@ -29,7 +30,7 @@ export default function KarnePaylas({ year, totalFilm, totalDizi, totalReviews, 
       onClick={share}
       className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:scale-105"
       style={{ background: shared ? 'rgba(52,211,153,0.15)' : 'rgba(255,255,255,0.06)', border: shared ? '1px solid rgba(52,211,153,0.3)' : '1px solid rgba(255,255,255,0.1)', color: shared ? '#34d399' : 'rgba(255,255,255,0.7)' }}>
-      {shared ? '✓ Kopyalandı!' : '📤 Karneyi Paylaş'}
+      {shared ? <><IconCheck size={16} /> Kopyalandı!</> : <><IconSend size={16} /> Karneyi Paylaş</>}
     </button>
   )
 }

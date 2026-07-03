@@ -5,18 +5,22 @@ import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle, getMediaY
 import ShelfView from './ShelfView'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconLaptop, IconDisc, IconCassette, IconArrowLeft, IconPackage, IconLayoutDashboard, IconGrid } from '@/components/icons'
+import type { ComponentType, SVGProps } from 'react'
+
+type IconType = ComponentType<SVGProps<SVGSVGElement> & { size?: number; strokeWidth?: number }>
 
 interface Props {
   params: Promise<{ username: string }>
   searchParams: Promise<{ gorunum?: string; format?: string }>
 }
 
-export function getFormatLabels(t: (key: string) => string): Record<string, { label: string; emoji: string; color: string }> {
+export function getFormatLabels(t: (key: string) => string): Record<string, { label: string; icon: IconType; color: string }> {
   return {
-    dijital: { label: t('collection.formatDigital'), emoji: '💻', color: '#3b82f6' },
-    bluray:  { label: t('collection.formatBluray'), emoji: '💿', color: '#0ea5e9' },
-    dvd:     { label: t('collection.formatDvd'), emoji: '📀', color: '#8b5cf6' },
-    vhs:     { label: t('collection.formatVhs'), emoji: '📼', color: '#f59e0b' },
+    dijital: { label: t('collection.formatDigital'), icon: IconLaptop, color: '#3b82f6' },
+    bluray:  { label: t('collection.formatBluray'), icon: IconDisc, color: '#0ea5e9' },
+    dvd:     { label: t('collection.formatDvd'), icon: IconDisc, color: '#8b5cf6' },
+    vhs:     { label: t('collection.formatVhs'), icon: IconCassette, color: '#f59e0b' },
   }
 }
 
@@ -69,7 +73,7 @@ export default async function KoleksiyonPage({ params, searchParams }: Props) {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
       <div className="flex items-center gap-2 text-sm text-[--text-secondary] mb-6">
-        <Link href={`/profil/${username}`} className="hover:text-white transition-colors">← {username}</Link>
+        <Link href={`/profil/${username}`} className="hover:text-white transition-colors inline-flex items-center gap-1"><IconArrowLeft size={14} /> {username}</Link>
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
@@ -87,8 +91,8 @@ export default async function KoleksiyonPage({ params, searchParams }: Props) {
             </Link>
             {Object.entries(FORMAT_LABELS).filter(([f]) => formatCounts[f]).map(([f, info]) => (
               <Link key={f} href={`/profil/${username}/koleksiyon?gorunum=${gorunum}&format=${f}`}
-                className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${filterFormat === f ? 'border-[--accent] text-white bg-[--accent]/10' : 'border-[--border] text-[--text-secondary] hover:text-white'}`}>
-                {info.emoji} {info.label} ({formatCounts[f]})
+                className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors inline-flex items-center gap-1 ${filterFormat === f ? 'border-[--accent] text-white bg-[--accent]/10' : 'border-[--border] text-[--text-secondary] hover:text-white'}`}>
+                <info.icon size={12} /> {info.label} ({formatCounts[f]})
               </Link>
             ))}
           </div>
@@ -96,12 +100,12 @@ export default async function KoleksiyonPage({ params, searchParams }: Props) {
           {/* Görünüm toggle */}
           <div className="flex items-center rounded-xl rounded-lg overflow-hidden" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <Link href={`/profil/${username}/koleksiyon?gorunum=raf${filterFormat ? `&format=${filterFormat}` : ''}`}
-              className={`px-3 py-2 text-xs font-medium transition-colors ${gorunum === 'raf' ? 'bg-[--accent] text-white' : 'text-[--text-secondary] hover:text-white'}`}>
-              🗄️ {t('profile.collectionTab.shelfView')}
+              className={`px-3 py-2 text-xs font-medium transition-colors inline-flex items-center gap-1 ${gorunum === 'raf' ? 'bg-[--accent] text-white' : 'text-[--text-secondary] hover:text-white'}`}>
+              <IconLayoutDashboard size={14} /> {t('profile.collectionTab.shelfView')}
             </Link>
             <Link href={`/profil/${username}/koleksiyon?gorunum=grid${filterFormat ? `&format=${filterFormat}` : ''}`}
-              className={`px-3 py-2 text-xs font-medium transition-colors ${gorunum === 'grid' ? 'bg-[--accent] text-white' : 'text-[--text-secondary] hover:text-white'}`}>
-              ⊞ {t('profile.collectionTab.gridView')}
+              className={`px-3 py-2 text-xs font-medium transition-colors inline-flex items-center gap-1 ${gorunum === 'grid' ? 'bg-[--accent] text-white' : 'text-[--text-secondary] hover:text-white'}`}>
+              <IconGrid size={14} /> {t('profile.collectionTab.gridView')}
             </Link>
           </div>
         </div>
@@ -109,7 +113,7 @@ export default async function KoleksiyonPage({ params, searchParams }: Props) {
 
       {withMedia.length === 0 ? (
         <div className="text-center py-20 text-[--text-secondary]">
-          <p className="text-5xl mb-4">📦</p>
+          <p className="flex justify-center mb-4"><IconPackage size={48} /></p>
           <p className="font-medium text-white mb-1">{t('profile.collectionTab.empty')}</p>
           <p className="text-sm">{t('profile.collectionTab.emptyHint')}</p>
         </div>

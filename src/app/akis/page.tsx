@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { IconFilm, IconStar, IconTv, IconUsers, IconBookmark, IconCheck, IconCalendarDays, IconList } from '@/components/icons'
+import { IconFilm, IconStar, IconStarFilled, IconTv, IconUsers, IconBookmark, IconCheck, IconCalendarDays, IconList } from '@/components/icons'
 import { createClient } from '@/lib/supabase/server'
 import { getTranslations } from '@/lib/i18n'
 import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle } from '@/lib/tmdb'
@@ -170,7 +170,7 @@ export default async function AkisPage({ searchParams }: Props) {
                   <div className="flex-1 min-w-0">
                     <span className="text-xs text-[--text-secondary]">
                       <UserHoverCard username={profile?.username ?? ''}><Link href={profileHref} className="font-semibold text-white hover:text-[--accent] transition-colors">{profile?.username}</Link></UserHoverCard>
-                      {' '}<span className="text-[--gold]">★ {r.rating}/10</span> {t('feed.ratedSuffix')}
+                      {' '}<span className="text-[--gold] inline-flex items-center gap-0.5"><IconStarFilled size={12} />{r.rating}/10</span> {t('feed.ratedSuffix')}
                     </span>
                     <p className="text-[10px] text-[--text-secondary]/60">{timeAgo(r.created_at, t)}</p>
                   </div>
@@ -237,7 +237,7 @@ export default async function AkisPage({ searchParams }: Props) {
                       <UserHoverCard username={profile?.username ?? ''}><Link href={profileHref} className="font-semibold text-white hover:text-[--accent] transition-colors">{profile?.username}</Link></UserHoverCard>
                       {' '}{t('feed.diaryAddedLabel')} {' '}
                       <Link href={`/${d.media_type}/${d.media_id}`} className="text-white hover:text-[--accent] transition-colors">{media?.title ?? `#${d.media_id}`}</Link>
-                      {d.rating && <span className="text-[--gold] ml-1">★ {d.rating}</span>}
+                      {d.rating && <span className="text-[--gold] ml-1 inline-flex items-center gap-0.5"><IconStarFilled size={12} />{d.rating}</span>}
                     </span>
                     <span className="text-[10px] text-[--text-secondary]/60 shrink-0 ml-auto">{timeAgo(d.watched_at, t)}</span>
                   </div>
@@ -289,7 +289,7 @@ function EmptyFeed({ t }: { t: TFunc }) {
       </div>
       <div className="rounded-2xl py-20 text-center px-6"
         style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-        <div className="text-5xl mb-4">👥</div>
+        <div className="mb-4 flex justify-center text-[--text-secondary]"><IconUsers size={56} /></div>
         <p className="text-lg font-bold text-white mb-2">{t('feed.emptyTitle')}</p>
         <p className="text-sm mb-6" style={{ color: 'rgba(255,255,255,0.4)' }}>
           {t('feed.emptyDesc')}

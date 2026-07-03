@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { getPersonDetail, getPersonCredits, getPosterUrl, getPersonExternalIds, getMediaTitle, getMediaYear } from '@/lib/tmdb'
 import { getTranslations } from '@/lib/i18n'
 import DirectorTimeline from '@/components/DirectorTimeline'
+import { IconUser, IconCake, IconCross, IconMapPin, IconStarFilled } from '@/components/icons'
 import type { Metadata } from 'next'
 
 interface Props {
@@ -89,7 +90,7 @@ export default async function KisiPage({ params }: Props) {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-5xl text-[--text-secondary]">👤</div>
+              <div className="w-full h-full flex items-center justify-center text-[--text-secondary]"><IconUser size={48} /></div>
             )}
           </div>
         </div>
@@ -102,15 +103,16 @@ export default async function KisiPage({ params }: Props) {
           {/* Meta */}
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-[--text-secondary] mb-5">
             {person.birthday && (
-              <span>
-                🎂 {new Date(person.birthday).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}
+              <span className="inline-flex items-center gap-1.5">
+                <IconCake size={16} />
+                {new Date(person.birthday).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}
                 {!person.deathday && age && ` ${t('person.ageAt', { age })}`}
               </span>
             )}
             {person.deathday && (
-              <span>✝ {new Date(person.deathday).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+              <span className="inline-flex items-center gap-1.5"><IconCross size={16} />{new Date(person.deathday).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
             )}
-            {person.place_of_birth && <span>📍 {person.place_of_birth}</span>}
+            {person.place_of_birth && <span className="inline-flex items-center gap-1.5"><IconMapPin size={16} />{person.place_of_birth}</span>}
           </div>
 
           {/* Dış linkler */}
@@ -172,7 +174,7 @@ export default async function KisiPage({ params }: Props) {
                     <div className="aspect-[2/3] rounded-lg overflow-hidden mb-1.5 relative" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
                       <img src={`https://image.tmdb.org/t/p/w185${credit.poster_path}`} alt={title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                       {credit.vote_average > 0 && (
-                        <div className="absolute bottom-1 right-1 bg-black/75 rounded px-1 py-0.5 text-[9px] font-bold text-[--gold]">★ {credit.vote_average.toFixed(1)}</div>
+                        <div className="absolute bottom-1 right-1 bg-black/75 rounded px-1 py-0.5 text-[9px] font-bold text-[--gold] inline-flex items-center gap-0.5"><IconStarFilled size={9} />{credit.vote_average.toFixed(1)}</div>
                       )}
                     </div>
                     <p className="text-[11px] font-medium text-white group-hover:text-[--accent] transition-colors line-clamp-2 leading-tight">{title}</p>
@@ -206,8 +208,8 @@ export default async function KisiPage({ params }: Props) {
                       <div className="w-full h-full" style={{ background: 'rgba(255,255,255,0.06)' }} />
                     )}
                     {credit.vote_average > 0 && (
-                      <div className="absolute bottom-1 right-1 bg-black/70 rounded px-1.5 py-0.5 text-[10px] font-bold text-[--gold]">
-                        ★ {credit.vote_average.toFixed(1)}
+                      <div className="absolute bottom-1 right-1 bg-black/70 rounded px-1.5 py-0.5 text-[10px] font-bold text-[--gold] inline-flex items-center gap-0.5">
+                        <IconStarFilled size={10} />{credit.vote_average.toFixed(1)}
                       </div>
                     )}
                   </div>
@@ -252,8 +254,8 @@ export default async function KisiPage({ params }: Props) {
                       <div className="w-full h-full" style={{ background: 'rgba(255,255,255,0.06)' }} />
                     )}
                     {credit.vote_average > 0 && (
-                      <div className="absolute bottom-1 right-1 bg-black/70 rounded px-1.5 py-0.5 text-[10px] font-bold text-[--gold]">
-                        ★ {credit.vote_average.toFixed(1)}
+                      <div className="absolute bottom-1 right-1 bg-black/70 rounded px-1.5 py-0.5 text-[10px] font-bold text-[--gold] inline-flex items-center gap-0.5">
+                        <IconStarFilled size={10} />{credit.vote_average.toFixed(1)}
                       </div>
                     )}
                   </div>

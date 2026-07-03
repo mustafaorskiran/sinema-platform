@@ -4,28 +4,33 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import type { RatingItem } from './page'
 import { useLocale } from '@/context/LocaleContext'
+import {
+  IconZap, IconLaugh, IconMasks, IconGhost, IconRocket, IconHeartFilled, IconAlertTriangle,
+  IconPalette, IconCamera, IconWand, IconFingerprint, IconMap, IconScroll, IconMusic, IconFamily,
+  IconSearch, IconSwords, IconHat, IconCheck, IconStarFilled, IconCake,
+} from '@/components/icons'
 
 // ─── Sabit veriler ───────────────────────────────────────────────────────────
 
 const GENRE_META = [
-  { id: 28,    slug: 'aksiyon',    tKey: 'aksiyon',    emoji: '💥' },
-  { id: 35,    slug: 'komedi',     tKey: 'komedi',     emoji: '😂' },
-  { id: 18,    slug: 'drama',      tKey: 'drama',      emoji: '🎭' },
-  { id: 27,    slug: 'korku',      tKey: 'korku',      emoji: '👻' },
-  { id: 878,   slug: 'bilim-kurgu', tKey: 'bilimKurgu', emoji: '🚀' },
-  { id: 10749, slug: 'romantik',   tKey: 'romantik',   emoji: '❤️' },
-  { id: 53,    slug: 'gerilim',    tKey: 'gerilim',    emoji: '😱' },
-  { id: 16,    slug: 'animasyon',  tKey: 'animasyon',  emoji: '🎨' },
-  { id: 99,    slug: 'belgesel',   tKey: 'belgesel',   emoji: '📷' },
-  { id: 14,    slug: 'fantezi',    tKey: 'fantezi',    emoji: '🧙' },
-  { id: 80,    slug: 'suc',        tKey: 'suc',        emoji: '🔫' },
-  { id: 12,    slug: 'macera',     tKey: 'macera',     emoji: '🗺️' },
-  { id: 36,    slug: 'tarih',      tKey: 'tarih',      emoji: '📜' },
-  { id: 10402, slug: 'muzik',      tKey: 'muzik',      emoji: '🎵' },
-  { id: 10751, slug: 'aile',       tKey: 'aile',       emoji: '👨‍👩‍👧' },
-  { id: 9648,  slug: 'gizem',      tKey: 'gizem',      emoji: '🔍' },
-  { id: 10752, slug: 'savas',      tKey: 'savas',      emoji: '⚔️' },
-  { id: 37,    slug: 'western',    tKey: 'western',    emoji: '🤠' },
+  { id: 28,    slug: 'aksiyon',    tKey: 'aksiyon',    Icon: IconZap },
+  { id: 35,    slug: 'komedi',     tKey: 'komedi',     Icon: IconLaugh },
+  { id: 18,    slug: 'drama',      tKey: 'drama',      Icon: IconMasks },
+  { id: 27,    slug: 'korku',      tKey: 'korku',      Icon: IconGhost },
+  { id: 878,   slug: 'bilim-kurgu', tKey: 'bilimKurgu', Icon: IconRocket },
+  { id: 10749, slug: 'romantik',   tKey: 'romantik',   Icon: IconHeartFilled },
+  { id: 53,    slug: 'gerilim',    tKey: 'gerilim',    Icon: IconAlertTriangle },
+  { id: 16,    slug: 'animasyon',  tKey: 'animasyon',  Icon: IconPalette },
+  { id: 99,    slug: 'belgesel',   tKey: 'belgesel',   Icon: IconCamera },
+  { id: 14,    slug: 'fantezi',    tKey: 'fantezi',    Icon: IconWand },
+  { id: 80,    slug: 'suc',        tKey: 'suc',        Icon: IconFingerprint },
+  { id: 12,    slug: 'macera',     tKey: 'macera',     Icon: IconMap },
+  { id: 36,    slug: 'tarih',      tKey: 'tarih',      Icon: IconScroll },
+  { id: 10402, slug: 'muzik',      tKey: 'muzik',      Icon: IconMusic },
+  { id: 10751, slug: 'aile',       tKey: 'aile',       Icon: IconFamily },
+  { id: 9648,  slug: 'gizem',      tKey: 'gizem',      Icon: IconSearch },
+  { id: 10752, slug: 'savas',      tKey: 'savas',      Icon: IconSwords },
+  { id: 37,    slug: 'western',    tKey: 'western',    Icon: IconHat },
 ]
 
 const PLATFORMS = [
@@ -221,9 +226,9 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
                     }`}
                   >
                     {sel && (
-                      <span className="absolute top-1.5 right-1.5 h-4 w-4 rounded-full bg-[--accent] text-white text-[9px] flex items-center justify-center font-bold">✓</span>
+                      <span className="absolute top-1.5 right-1.5 h-4 w-4 rounded-full bg-[--accent] text-white flex items-center justify-center font-bold"><IconCheck size={10} /></span>
                     )}
-                    <span className="text-2xl leading-none">{g.emoji}</span>
+                    <g.Icon size={24} />
                     <span className={`text-[11px] font-medium leading-tight ${sel ? 'text-white' : 'text-[--text-secondary]'}`}>{g.name}</span>
                   </button>
                 )
@@ -258,7 +263,7 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
                     <span className={`h-5 w-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${
                       sel ? 'bg-[--accent] border-[--accent] text-white' : 'border-[--border]'
                     }`}>
-                      {sel && <span className="text-[10px] leading-none">✓</span>}
+                      {sel && <IconCheck size={10} />}
                     </span>
                     <span className="text-sm font-medium">{p.name}</span>
                   </button>
@@ -334,7 +339,7 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
                           }`}
                           title={`${star * 2}/10`}
                         >
-                          ★
+                          <IconStarFilled size={18} />
                         </button>
                       ))}
                     </div>
@@ -395,7 +400,7 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
                         )}
                         {sel && (
                           <div className="absolute inset-0 bg-[--accent]/20 flex items-center justify-center">
-                            <span className="text-white text-xl font-bold bg-[--accent] rounded-full w-7 h-7 flex items-center justify-center text-sm">✓</span>
+                            <span className="text-white font-bold bg-[--accent] rounded-full w-7 h-7 flex items-center justify-center"><IconCheck size={16} /></span>
                           </div>
                         )}
                       </div>
@@ -420,7 +425,7 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
         {step === 5 && (
           <div className="max-w-sm mx-auto">
             <div className="mb-8 text-center">
-              <div className="text-5xl mb-4">🎂</div>
+              <div className="flex justify-center mb-4"><IconCake size={48} /></div>
               <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">{t('onboarding.aboutTitle')}</h1>
               <p className="text-[--text-secondary] text-sm">
                 {t('onboarding.aboutInfo')}

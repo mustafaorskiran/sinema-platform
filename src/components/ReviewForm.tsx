@@ -6,6 +6,7 @@ import StarRating from './StarRating'
 import type { MediaType } from '@/lib/types'
 import { containsProfanity } from '@/lib/profanityFilter'
 import { useLocale } from '@/context/LocaleContext'
+import { IconLink, IconAlertTriangle } from '@/components/icons'
 
 function renderMarkdownPreview(text: string) {
   const lines = text.split('\n')
@@ -164,12 +165,12 @@ export default function ReviewForm({ mediaId, mediaType, existingReview }: Revie
         {!preview && (
           <div className="flex items-center gap-1.5 mb-2">
             {[
-              { label: 'B', title: t('review.boldTitle'), action: () => insertFormat('bold'), style: { fontWeight: 700 } },
-              { label: 'I', title: t('review.italicTitle'), action: () => insertFormat('italic'), style: { fontStyle: 'italic' } },
-              { label: '🔗', title: t('review.linkTitle'), action: () => insertFormat('link'), style: {} },
-              { label: '⚠️ [spoiler]', title: t('review.spoilerTitle'), action: insertSpoilerTag, style: { color: 'rgba(248,113,113,0.8)' } },
+              { key: 'bold', label: 'B', title: t('review.boldTitle'), action: () => insertFormat('bold'), style: { fontWeight: 700 } },
+              { key: 'italic', label: 'I', title: t('review.italicTitle'), action: () => insertFormat('italic'), style: { fontStyle: 'italic' } },
+              { key: 'link', label: <IconLink size={12} />, title: t('review.linkTitle'), action: () => insertFormat('link'), style: {} },
+              { key: 'spoiler', label: <span className="inline-flex items-center gap-1"><IconAlertTriangle size={12} /> [spoiler]</span>, title: t('review.spoilerTitle'), action: insertSpoilerTag, style: { color: 'rgba(248,113,113,0.8)' } },
             ].map(btn => (
-              <button key={btn.label} type="button" onClick={btn.action} title={btn.title}
+              <button key={btn.key} type="button" onClick={btn.action} title={btn.title}
                 className="text-[10px] px-2 py-1 rounded transition-colors hover:text-white"
                 style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.4)', ...btn.style }}>
                 {btn.label}

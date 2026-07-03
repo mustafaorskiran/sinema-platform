@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconSparkles, IconMedal, IconTv, IconFilm, IconStarFilled } from '@/components/icons'
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -146,8 +147,8 @@ export default async function EditorialListPage({ params }: Props) {
                   {list.category}
                 </span>
               )}
-              <span className="text-xs bg-[--accent]/20 text-[--accent] border border-[--accent]/30 px-2.5 py-1 rounded-full font-semibold">
-                ✦ {t('list.editorial')}
+              <span className="text-xs bg-[--accent]/20 text-[--accent] border border-[--accent]/30 px-2.5 py-1 rounded-full font-semibold inline-flex items-center gap-1">
+                <IconSparkles size={12} />{t('list.editorial')}
               </span>
               {isDynamic && (
                 <span className="text-xs bg-[--bg-card] text-[--text-secondary] border border-[--border] px-2.5 py-1 rounded-full">
@@ -178,7 +179,9 @@ export default async function EditorialListPage({ params }: Props) {
               <div className={`shrink-0 w-8 text-center font-bold text-sm ${
                 item.position <= 3 ? 'text-[--gold]' : 'text-[--text-secondary]'
               }`}>
-                {item.position <= 3 ? ['🥇','🥈','🥉'][item.position - 1] : item.position}
+                {item.position <= 3
+                  ? <IconMedal size={18} className="mx-auto" style={{ color: ['#D4A803', '#C0C0C0', '#B87333'][item.position - 1] }} />
+                  : item.position}
               </div>
 
               {/* Poster */}
@@ -190,8 +193,8 @@ export default async function EditorialListPage({ params }: Props) {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-lg opacity-30">
-                    {item.media_type === 'dizi' ? '📺' : '🎬'}
+                  <div className="w-full h-full flex items-center justify-center opacity-30">
+                    {item.media_type === 'dizi' ? <IconTv size={18} /> : <IconFilm size={18} />}
                   </div>
                 )}
               </div>
@@ -216,7 +219,7 @@ export default async function EditorialListPage({ params }: Props) {
                 )}
                 {item.vote_average != null && (
                   <div className="hidden sm:block text-center">
-                    <div className="text-sm font-bold text-[--gold]">★ {item.vote_average?.toFixed(1)}</div>
+                    <div className="text-sm font-bold text-[--gold] inline-flex items-center gap-1"><IconStarFilled size={12} />{item.vote_average?.toFixed(1)}</div>
                     <div className="text-[10px] text-[--text-secondary]">{t('review.tmdb')}</div>
                   </div>
                 )}

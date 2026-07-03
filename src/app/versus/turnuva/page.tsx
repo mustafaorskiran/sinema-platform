@@ -3,6 +3,7 @@ import { getMovieDetail, getPosterUrl, getMediaTitle } from '@/lib/tmdb'
 import TurnuvaClient from './TurnuvaClient'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconTrophy } from '@/components/icons'
 
 export const metadata: Metadata = { title: 'Film Turnuvası | Sinezon' }
 
@@ -21,7 +22,7 @@ export default async function TurnuvaPage() {
   if (!tournament) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <p className="text-5xl mb-5">🏆</p>
+        <IconTrophy size={48} strokeWidth={1.5} className="mb-5 mx-auto text-[--gold]" />
         <h1 className="text-2xl font-bold text-white mb-3">{t('versus.tournamentTitle')}</h1>
         <p className="text-sm mb-8" style={{ color: 'rgba(255,255,255,0.4)' }}>
           {t('versus.noActiveTournament')}

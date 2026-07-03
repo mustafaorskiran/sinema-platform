@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
+import { IconMessageSquare } from '@/components/icons'
 
 interface Profile { id: string; username: string; avatar_url: string | null }
 interface Message { content: string; created_at: string; sender_id: string }
@@ -44,7 +45,7 @@ export default function ConversationSidebar({ conversations, currentUserId }: Pr
 
       {filtered.length === 0 ? (
         <div className="rounded-xl p-6 text-center" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <p className="text-2xl mb-2">💬</p>
+          <div className="flex justify-center mb-2"><IconMessageSquare size={24} /></div>
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>Henüz mesajın yok.</p>
         </div>
       ) : (

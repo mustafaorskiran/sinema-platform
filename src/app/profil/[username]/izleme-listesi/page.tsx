@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getPosterUrl, getMediaTitle, getMediaYear, getMovieDetail, getSeriesDetail } from '@/lib/tmdb'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconArrowLeft, IconFilm, IconTv, IconInbox, IconStarFilled } from '@/components/icons'
 
 interface Props {
   params: Promise<{ username: string }>
@@ -73,8 +74,8 @@ export default async function ProfilIzmeListesiPage({ params, searchParams }: Pr
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Başlık */}
       <div className="flex items-center gap-3 mb-6">
-        <Link href={`/profil/${username}`} className="text-white/40 hover:text-white transition-colors text-sm">
-          ← @{username}
+        <Link href={`/profil/${username}`} className="text-white/40 hover:text-white transition-colors text-sm inline-flex items-center gap-1">
+          <IconArrowLeft size={14} /> @{username}
         </Link>
       </div>
 
@@ -99,16 +100,16 @@ export default async function ProfilIzmeListesiPage({ params, searchParams }: Pr
       {/* Filtre */}
       <div className="flex gap-2 mb-6">
         {[
-          { id: 'hepsi', label: t('common.all'), count: filmCount + diziCount },
-          { id: 'film', label: `🎬 ${t('profile.watchlistTab.films')}`, count: filmCount },
-          { id: 'dizi', label: `📺 ${t('profile.watchlistTab.series')}`, count: diziCount },
-        ].map(t => (
-          <Link key={t.id} href={`/profil/${username}/izleme-listesi?tip=${t.id}`}
-            className="px-4 py-1.5 rounded-full text-sm font-medium transition-all"
-            style={t.id === tip
+          { id: 'hepsi', label: t('common.all'), icon: null, count: filmCount + diziCount },
+          { id: 'film', label: t('profile.watchlistTab.films'), icon: IconFilm, count: filmCount },
+          { id: 'dizi', label: t('profile.watchlistTab.series'), icon: IconTv, count: diziCount },
+        ].map(tab => (
+          <Link key={tab.id} href={`/profil/${username}/izleme-listesi?tip=${tab.id}`}
+            className="px-4 py-1.5 rounded-full text-sm font-medium transition-all inline-flex items-center gap-1.5"
+            style={tab.id === tip
               ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: 'white' }
               : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
-            {t.label} <span className="ml-1 opacity-60">{t.count}</span>
+            {tab.icon && <tab.icon size={14} />} {tab.label} <span className="ml-1 opacity-60">{tab.count}</span>
           </Link>
         ))}
       </div>
@@ -117,7 +118,7 @@ export default async function ProfilIzmeListesiPage({ params, searchParams }: Pr
       {enriched.length === 0 ? (
         <div className="text-center py-20 rounded-2xl"
           style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <p className="text-4xl mb-3">📭</p>
+          <IconInbox size={40} strokeWidth={1.5} className="mb-3 mx-auto text-white/30" />
           <p style={{ color: 'rgba(255,255,255,0.4)' }}>
             {tip !== 'hepsi' ? t('profile.watchlistTab.noContentInCategory') : t('profile.watchlistTab.empty')}
           </p>
@@ -133,8 +134,8 @@ export default async function ProfilIzmeListesiPage({ params, searchParams }: Pr
                 {item.poster ? (
                   <img src={item.poster} alt={item.title ?? ''} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-white/20 text-2xl">
-                    {item.media_type === 'film' ? '🎬' : '📺'}
+                  <div className="w-full h-full flex items-center justify-center text-white/20">
+                    {item.media_type === 'film' ? <IconFilm size={28} /> : <IconTv size={28} />}
                   </div>
                 )}
                 {item.priority === 'high' && (
@@ -146,7 +147,7 @@ export default async function ProfilIzmeListesiPage({ params, searchParams }: Pr
                 {item.rating && (
                   <div className="absolute bottom-1 right-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-black/70"
                     style={{ color: '#D4A843' }}>
-                    ★ {item.rating.toFixed(1)}
+                    <IconStarFilled size={10} className="inline -mt-0.5" /> {item.rating.toFixed(1)}
                   </div>
                 )}
               </div>

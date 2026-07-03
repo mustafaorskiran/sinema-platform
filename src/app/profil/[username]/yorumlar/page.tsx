@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getPosterUrl, getMediaTitle, getMovieDetail, getSeriesDetail } from '@/lib/tmdb'
 import type { Metadata } from 'next'
 import { getTranslations, createT } from '@/lib/i18n'
+import { IconArrowLeft, IconFilm, IconTv, IconStarFilled, IconHeartFilled, IconPencil, IconAlertTriangle, IconChevronLeft, IconChevronRight } from '@/components/icons'
 
 interface Props {
   params: Promise<{ username: string }>
@@ -82,9 +83,9 @@ export default async function ProfilYorumlarPage({ params, searchParams }: Props
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
       {/* Geri */}
-      <Link href={`/profil/${username}`} className="text-sm hover:text-white transition-colors mb-6 block"
+      <Link href={`/profil/${username}`} className="text-sm hover:text-white transition-colors mb-6 inline-flex items-center gap-1"
         style={{ color: 'rgba(255,255,255,0.4)' }}>
-        ← @{username}
+        <IconArrowLeft size={14} /> @{username}
       </Link>
 
       {/* Başlık */}
@@ -107,33 +108,33 @@ export default async function ProfilYorumlarPage({ params, searchParams }: Props
       {/* Filtreler */}
       <div className="flex flex-wrap gap-2 mb-4">
         {[
-          { id: 'hepsi', label: t('common.all') },
-          { id: 'film', label: `🎬 ${t('film.badge')}` },
-          { id: 'dizi', label: `📺 ${t('series.badge')}` },
-        ].map(t => (
-          <Link key={t.id} href={buildHref({ tip: t.id, sayfa: '1' })}
-            className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
-            style={t.id === tip
+          { id: 'hepsi', label: t('common.all'), icon: null },
+          { id: 'film', label: t('film.badge'), icon: IconFilm },
+          { id: 'dizi', label: t('series.badge'), icon: IconTv },
+        ].map(f => (
+          <Link key={f.id} href={buildHref({ tip: f.id, sayfa: '1' })}
+            className="px-3 py-1.5 rounded-full text-xs font-medium transition-all inline-flex items-center gap-1.5"
+            style={f.id === tip
               ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: 'white' }
               : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
-            {t.label}
+            {f.icon && <f.icon size={12} />} {f.label}
           </Link>
         ))}
       </div>
 
       <div className="flex flex-wrap gap-2 mb-6">
         {[
-          { id: 'yeni', label: t('list.sortNewest') },
-          { id: 'puan-yuksek', label: `★ ${t('profile.reviewsTab.highRating')}` },
-          { id: 'puan-dusuk', label: `★ ${t('profile.reviewsTab.lowRating')}` },
-          { id: 'begeni', label: `❤️ ${t('profile.reviewsTab.mostLiked')}` },
+          { id: 'yeni', label: t('list.sortNewest'), icon: null },
+          { id: 'puan-yuksek', label: t('profile.reviewsTab.highRating'), icon: IconStarFilled },
+          { id: 'puan-dusuk', label: t('profile.reviewsTab.lowRating'), icon: IconStarFilled },
+          { id: 'begeni', label: t('profile.reviewsTab.mostLiked'), icon: IconHeartFilled },
         ].map(s => (
           <Link key={s.id} href={buildHref({ sirala: s.id, sayfa: '1' })}
-            className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
+            className="px-3 py-1.5 rounded-full text-xs font-medium transition-all inline-flex items-center gap-1.5"
             style={s.id === sirala
               ? { background: 'rgba(212,168,67,0.15)', border: '1px solid rgba(212,168,67,0.3)', color: '#D4A843' }
               : { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.35)' }}>
-            {s.label}
+            {s.icon && <s.icon size={12} />} {s.label}
           </Link>
         ))}
       </div>
@@ -142,7 +143,7 @@ export default async function ProfilYorumlarPage({ params, searchParams }: Props
       {enriched.length === 0 ? (
         <div className="text-center py-20 rounded-2xl"
           style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <p className="text-4xl mb-3">✍️</p>
+          <p className="flex justify-center mb-3"><IconPencil size={32} /></p>
           <p style={{ color: 'rgba(255,255,255,0.4)' }}>{t('profile.reviewsTab.empty')}</p>
         </div>
       ) : (
@@ -155,8 +156,8 @@ export default async function ProfilYorumlarPage({ params, searchParams }: Props
                   style={{ background: 'rgba(255,255,255,0.06)' }}>
                   {r.poster
                     ? <img src={r.poster} alt={r.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-                    : <div className="w-full h-full flex items-center justify-center text-xl">
-                        {r.media_type === 'film' ? '🎬' : '📺'}
+                    : <div className="w-full h-full flex items-center justify-center">
+                        {r.media_type === 'film' ? <IconFilm size={20} /> : <IconTv size={20} />}
                       </div>
                   }
                 </Link>
@@ -177,17 +178,17 @@ export default async function ProfilYorumlarPage({ params, searchParams }: Props
                       {r.media_type === 'film' ? t('film.badge') : t('series.badge')}
                     </span>
                     {r.has_spoiler && (
-                      <span className="text-[10px] px-1.5 py-0.5 rounded font-medium"
+                      <span className="text-[10px] px-1.5 py-0.5 rounded font-medium inline-flex items-center gap-1"
                         style={{ background: 'rgba(248,113,113,0.1)', color: '#f87171' }}>
-                        ⚠️ {t('profile.reviewsTab.spoiler')}
+                        <IconAlertTriangle size={10} /> {t('profile.reviewsTab.spoiler')}
                       </span>
                     )}
                     <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.3)' }}>
                       {timeAgo(r.created_at, t)}
                     </span>
                     {(r.likes_count ?? 0) > 0 && (
-                      <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.3)' }}>
-                        ❤️ {r.likes_count}
+                      <span className="text-[11px] inline-flex items-center gap-1" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                        <IconHeartFilled size={11} /> {r.likes_count}
                       </span>
                     )}
                   </div>
@@ -206,17 +207,17 @@ export default async function ProfilYorumlarPage({ params, searchParams }: Props
             <div className="flex items-center justify-center gap-2 mt-8">
               {page > 1 && (
                 <Link href={buildHref({ sayfa: String(page - 1) })}
-                  className="px-4 py-2 rounded-xl text-sm transition-colors hover:bg-white/5"
+                  className="px-4 py-2 rounded-xl text-sm transition-colors hover:bg-white/5 inline-flex items-center gap-1"
                   style={{ color: 'rgba(255,255,255,0.4)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  ← {t('common.prev')}
+                  <IconChevronLeft size={14} /> {t('common.prev')}
                 </Link>
               )}
               <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>{page} / {totalPages}</span>
               {page < totalPages && (
                 <Link href={buildHref({ sayfa: String(page + 1) })}
-                  className="px-4 py-2 rounded-xl text-sm transition-colors hover:bg-white/5"
+                  className="px-4 py-2 rounded-xl text-sm transition-colors hover:bg-white/5 inline-flex items-center gap-1"
                   style={{ color: 'rgba(255,255,255,0.4)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  {t('common.next')} →
+                  {t('common.next')} <IconChevronRight size={14} />
                 </Link>
               )}
             </div>

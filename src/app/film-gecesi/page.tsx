@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getTranslations } from '@/lib/i18n'
-import { IconCalendarDays, IconPlus, IconUsers } from '@/components/icons'
+import { IconCalendarDays, IconPlus, IconUsers, IconFilm } from '@/components/icons'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Film Gecesi | SineMa' }
@@ -50,7 +50,7 @@ export default async function FilmGecesiPage() {
 
       {(!parties || parties.length === 0) ? (
         <div className="text-center py-24 rounded-2xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <p className="text-4xl mb-4">🎬</p>
+          <p className="mb-4 flex justify-center text-[--text-secondary]"><IconFilm size={40} /></p>
           <p className="text-lg font-medium text-white mb-2">{t('filmNight.noEvents')}</p>
           <p className="text-sm text-[--text-secondary] mb-6">{t('filmNight.noEventsDesc')}</p>
           {user && (

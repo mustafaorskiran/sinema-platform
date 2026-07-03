@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import type { WatchProviderResult } from '@/lib/tmdb'
 import { useLocale } from '@/context/LocaleContext'
+import { IconPlay, IconTag, IconCreditCard, IconShoppingCart, IconExternalLink } from '@/components/icons'
 
 interface Props {
   allProviders: Record<string, WatchProviderResult> | null
@@ -33,11 +34,11 @@ const COUNTRIES: { code: string; flag: string; nameKey: string }[] = [
   { code: 'AR', flag: '🇦🇷', nameKey: 'Argentina' },
 ]
 
-const SECTION_ICONS: Record<string, string> = {
-  flatrate: '▶️',
-  free: '🆓',
-  rent: '💳',
-  buy: '🛒',
+const SECTION_ICONS: Record<string, typeof IconPlay> = {
+  flatrate: IconPlay,
+  free: IconTag,
+  rent: IconCreditCard,
+  buy: IconShoppingCart,
 }
 
 // Abonelik platformları → anasayfa
@@ -157,11 +158,13 @@ export default function WatchProviders({ allProviders, title = '' }: Props) {
         <p className="text-xs text-[--text-secondary]">{t('watchProviders.noProviderData')}</p>
       ) : (
         <div className="space-y-3">
-          {sections.map(section => (
+          {sections.map(section => {
+            const SectionIcon = SECTION_ICONS[section]
+            return (
             <div key={section}>
               <div className="flex items-center gap-2 mb-1.5">
-                <p className="text-[10px] text-[--text-secondary] uppercase font-semibold">
-                  {SECTION_ICONS[section]} {sectionLabel(section)}
+                <p className="flex items-center gap-1 text-[10px] text-[--text-secondary] uppercase font-semibold">
+                  <SectionIcon size={12} /> {sectionLabel(section)}
                 </p>
                 {(section === 'rent' || section === 'buy') && providers?.link && (
                   <span className="text-[9px] opacity-40">· {t('watchProviders.viaJustWatch')}</span>
@@ -206,13 +209,14 @@ export default function WatchProviders({ allProviders, title = '' }: Props) {
                           />
                         )}
                         <span className="text-xs text-white">{p.provider_name}</span>
-                        <span className="text-[10px] opacity-40">↗</span>
+                        <IconExternalLink size={11} className="opacity-40" />
                       </a>
                     )
                   })}
               </div>
             </div>
-          ))}
+            )
+          })}
         </div>
       )}
 

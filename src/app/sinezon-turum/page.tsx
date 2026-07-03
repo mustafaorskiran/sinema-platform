@@ -1,7 +1,10 @@
 'use client'
-import { useState } from 'react'
+import { useState, type ComponentType } from 'react'
 import Link from 'next/link'
 import { useLocale } from '@/context/LocaleContext'
+import {
+  IconMasks, IconCry, IconZap, IconSearch, IconLaugh, IconPalette, IconFilm, IconPopcorn,
+} from '@/components/icons'
 
 const QUESTIONS = [
   {
@@ -51,15 +54,15 @@ const QUESTIONS = [
   },
 ]
 
-const TYPE_DESCRIPTIONS: Record<string, { emoji: string; nameKey: string; descKey: string; color: string }> = {
-  'sinefil':  { emoji: '🎭',  nameKey: 'sinezonTurum.typeSinefilName',  descKey: 'sinezonTurum.typeSinefilDesc',  color: '#a78bfa' },
-  'drama':    { emoji: '😢',  nameKey: 'sinezonTurum.typeDramaName',    descKey: 'sinezonTurum.typeDramaDesc',    color: '#60a5fa' },
-  'aksiyon':  { emoji: '💥',  nameKey: 'sinezonTurum.typeAksiyonName',  descKey: 'sinezonTurum.typeAksiyonDesc',  color: '#f87171' },
-  'thriller': { emoji: '🔍',  nameKey: 'sinezonTurum.typeThrillerName', descKey: 'sinezonTurum.typeThrillerDesc', color: '#34d399' },
-  'komedi':   { emoji: '😂',  nameKey: 'sinezonTurum.typeKomediName',   descKey: 'sinezonTurum.typeKomediDesc',   color: '#fbbf24' },
-  'arthouse': { emoji: '🎨',  nameKey: 'sinezonTurum.typeArthouseName', descKey: 'sinezonTurum.typeArthouseDesc', color: '#f472b6' },
-  'nostalji': { emoji: '📽️', nameKey: 'sinezonTurum.typeNostaljiName', descKey: 'sinezonTurum.typeNostaljiDesc', color: '#D4A843' },
-  'genel':    { emoji: '🍿',  nameKey: 'sinezonTurum.typeGenelName',    descKey: 'sinezonTurum.typeGenelDesc',    color: '#94a3b8' },
+const TYPE_DESCRIPTIONS: Record<string, { icon: ComponentType<{ size?: number; className?: string }>; nameKey: string; descKey: string; color: string }> = {
+  'sinefil':  { icon: IconMasks,   nameKey: 'sinezonTurum.typeSinefilName',  descKey: 'sinezonTurum.typeSinefilDesc',  color: '#a78bfa' },
+  'drama':    { icon: IconCry,     nameKey: 'sinezonTurum.typeDramaName',    descKey: 'sinezonTurum.typeDramaDesc',    color: '#60a5fa' },
+  'aksiyon':  { icon: IconZap,     nameKey: 'sinezonTurum.typeAksiyonName',  descKey: 'sinezonTurum.typeAksiyonDesc',  color: '#f87171' },
+  'thriller': { icon: IconSearch,  nameKey: 'sinezonTurum.typeThrillerName', descKey: 'sinezonTurum.typeThrillerDesc', color: '#34d399' },
+  'komedi':   { icon: IconLaugh,   nameKey: 'sinezonTurum.typeKomediName',   descKey: 'sinezonTurum.typeKomediDesc',   color: '#fbbf24' },
+  'arthouse': { icon: IconPalette, nameKey: 'sinezonTurum.typeArthouseName', descKey: 'sinezonTurum.typeArthouseDesc', color: '#f472b6' },
+  'nostalji': { icon: IconFilm,    nameKey: 'sinezonTurum.typeNostaljiName', descKey: 'sinezonTurum.typeNostaljiDesc', color: '#D4A843' },
+  'genel':    { icon: IconPopcorn, nameKey: 'sinezonTurum.typeGenelName',    descKey: 'sinezonTurum.typeGenelDesc',    color: '#94a3b8' },
 }
 
 export default function SinezonTurumPage() {
@@ -96,7 +99,7 @@ export default function SinezonTurumPage() {
 
       {result && info ? (
         <div className="rounded-2xl p-8 text-center" style={{ background: 'linear-gradient(160deg,rgba(20,28,47,0.9),rgba(14,20,32,0.95))', border: `1px solid ${info.color}33` }}>
-          <div className="text-5xl mb-4">{info.emoji}</div>
+          <div className="mb-4 flex justify-center" style={{ color: info.color }}><info.icon size={48} /></div>
           <h2 className="text-2xl font-bold mb-3" style={{ color: info.color }}>{t(info.nameKey)}</h2>
           <p className="text-sm leading-relaxed mb-6" style={{ color: 'rgba(255,255,255,0.6)' }}>{t(info.descKey)}</p>
           <div className="flex gap-3 justify-center flex-wrap">

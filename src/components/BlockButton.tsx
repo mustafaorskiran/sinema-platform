@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useLocale } from '@/context/LocaleContext'
+import { IconBan } from '@/components/icons'
 
 export default function BlockButton({ blockedId, initialBlocked }: { blockedId: string; initialBlocked: boolean }) {
   const { t } = useLocale()
@@ -43,7 +44,9 @@ export default function BlockButton({ blockedId, initialBlocked }: { blockedId: 
         border: `1px solid ${blocked ? 'rgba(239,68,68,0.3)' : 'rgba(255,255,255,0.1)'}`,
         color: blocked ? '#f87171' : 'rgba(255,255,255,0.5)',
       }}>
-      {loading ? '...' : blocked ? `🚫 ${t('social.blocked')}` : `🚫 ${t('social.block')}`}
+      {loading
+        ? '...'
+        : <span className="inline-flex items-center gap-1.5"><IconBan size={14} />{blocked ? t('social.blocked') : t('social.block')}</span>}
     </button>
   )
 }

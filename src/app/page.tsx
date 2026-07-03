@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Suspense } from 'react'
 import {
-  IconChevronRight, IconFilm, IconStar, IconTrendingUp, IconTv, IconFire, IconMessageSquare,
+  IconChevronRight, IconFilm, IconStar, IconStarFilled, IconTrendingUp, IconTv, IconFire, IconMessageSquare, IconMedal,
 } from '@/components/icons'
 import {
   getTrendingAll, getBackdropUrl, getPosterUrl, getMediaTitle, getMediaYear,
@@ -309,7 +309,7 @@ export default async function HomePage() {
         {/* ── Onboarding CTA ──────────────────────────────────────── */}
         {user && !userOnboarded && (
           <div className="rounded-2xl border border-[--accent]/40 bg-gradient-to-br from-[--accent]/15 via-[--bg-card] to-[--bg-card] p-6 sm:p-8 text-center">
-            <p className="text-3xl mb-3">🎬</p>
+            <p className="flex justify-center mb-3"><IconFilm size={32} /></p>
             <h2 className="text-xl font-bold text-white mb-2">{t('home.personalizeTitle')}</h2>
             <p className="text-sm text-[--text-secondary] max-w-md mx-auto mb-5">
               {t('home.personalizeDesc')}
@@ -383,8 +383,8 @@ export default async function HomePage() {
               )}
               <div className="flex-1 flex flex-col justify-center">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs font-bold text-[--accent] uppercase tracking-wider px-2 py-0.5 bg-[--accent]/15 rounded-full">
-                    ★ {featuredMedia.label}
+                  <span className="text-xs font-bold text-[--accent] uppercase tracking-wider px-2 py-0.5 bg-[--accent]/15 rounded-full inline-flex items-center gap-1">
+                    <IconStar size={12} /> {featuredMedia.label}
                   </span>
                 </div>
                 <Link href={`/${featuredMedia.type}/${featuredMedia.id}`}>
@@ -393,7 +393,7 @@ export default async function HomePage() {
                   </h2>
                 </Link>
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-sm text-[--gold] font-semibold">★ {featuredMedia.rating.toFixed(1)}</span>
+                  <span className="text-sm text-[--gold] font-semibold inline-flex items-center gap-1"><IconStarFilled size={14} /> {featuredMedia.rating.toFixed(1)}</span>
                   <span className="text-[--border]">·</span>
                   <span className="text-xs text-[--text-secondary] capitalize">{featuredMedia.type}</span>
                 </div>
@@ -492,9 +492,9 @@ export default async function HomePage() {
                 {quoteMediaTitle && (
                   <a
                     href={`/${featuredQuote.media_type}/${featuredQuote.media_id}`}
-                    className="text-sm text-[--text-secondary] hover:text-white transition-colors"
+                    className="text-sm text-[--text-secondary] hover:text-white transition-colors inline-flex items-center gap-1.5"
                   >
-                    {featuredQuote.media_type === 'film' ? '🎬' : '📺'} {quoteMediaTitle}
+                    {featuredQuote.media_type === 'film' ? <IconFilm size={14} /> : <IconTv size={14} />} {quoteMediaTitle}
                   </a>
                 )}
               </footer>
@@ -525,8 +525,8 @@ export default async function HomePage() {
                       }
                     </div>
                     {i < 3 && (
-                      <div className="absolute -top-1 -right-1 text-xs">
-                        {['🥇','🥈','🥉'][i]}
+                      <div className="absolute -top-1 -right-1">
+                        <IconMedal size={14} className={i === 0 ? 'text-[#D4A803]' : i === 1 ? 'text-[#C0C0C0]' : 'text-[#B87333]'} />
                       </div>
                     )}
                   </div>
@@ -580,9 +580,9 @@ export default async function HomePage() {
                       </Link>
                     )}
                     <Link href={`/${review.media_type}/${review.media_id}`}
-                      className="text-[11px] font-medium mt-auto hover:underline"
+                      className="text-[11px] font-medium mt-auto hover:underline inline-flex items-center gap-0.5"
                       style={{ color: review.media_type === 'film' ? 'rgba(96,165,250,0.7)' : 'rgba(167,139,250,0.7)' }}>
-                      {review.media_type === 'film' ? t('home.filmBadge') : t('home.seriesBadge')} →
+                      {review.media_type === 'film' ? t('home.filmBadge') : t('home.seriesBadge')} <IconChevronRight size={12} />
                     </Link>
                   </div>
                 )

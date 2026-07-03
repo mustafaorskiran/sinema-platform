@@ -4,6 +4,7 @@ import Link from "next/link"
 import type { Metadata } from "next"
 import QuizClient from "./QuizClient"
 import { getTranslations } from "@/lib/i18n"
+import { IconFilm, IconFire, IconCheck, IconTrophy, IconMedal } from "@/components/icons"
 
 export const metadata: Metadata = {
   title: "Film Quiz — Posteri Gör, Filmi Bul | Sinezon",
@@ -20,9 +21,9 @@ interface TMDbFilm {
 }
 
 const DIFFICULTY_LEVELS = [
-  { id: "kolay", icon: "🟢", labelKey: "quiz.difficulty.easy.label", descKey: "quiz.difficulty.easy.desc" },
-  { id: "orta",  icon: "🟡", labelKey: "quiz.difficulty.medium.label", descKey: "quiz.difficulty.medium.desc" },
-  { id: "zor",   icon: "🔴", labelKey: "quiz.difficulty.hard.label", descKey: "quiz.difficulty.hard.desc" },
+  { id: "kolay", color: "#4ade80", labelKey: "quiz.difficulty.easy.label", descKey: "quiz.difficulty.easy.desc" },
+  { id: "orta",  color: "#facc15", labelKey: "quiz.difficulty.medium.label", descKey: "quiz.difficulty.medium.desc" },
+  { id: "zor",   color: "#f87171", labelKey: "quiz.difficulty.hard.label", descKey: "quiz.difficulty.hard.desc" },
 ]
 
 async function fetchQuizFilms(zorluk: string): Promise<TMDbFilm[]> {
@@ -88,7 +89,7 @@ export default async function QuizPage({ searchParams }: PageProps) {
       <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4"
         style={{ background: "var(--bg-primary)" }}>
         <div className="text-center" style={{ color: "var(--text-secondary)" }}>
-          <p className="text-4xl mb-4">🎬</p>
+          <p className="mb-4 flex justify-center"><IconFilm size={40} /></p>
           <p className="text-lg font-semibold" style={{ color: "var(--text-primary)" }}>{t('quiz.loadFailedTitle')}</p>
           <p className="text-sm mt-2">{t('quiz.loadFailedDesc')}</p>
         </div>
@@ -100,8 +101,8 @@ export default async function QuizPage({ searchParams }: PageProps) {
 
   return (
     <div className="max-w-2xl mx-auto px-4 pt-8 pb-16">
-      <h1 className="text-2xl font-extrabold text-center mb-1" style={{ color: "var(--text-primary)" }}>
-        🎬 {t('quiz.title')}
+      <h1 className="text-2xl font-extrabold text-center mb-1 flex items-center justify-center gap-2" style={{ color: "var(--text-primary)" }}>
+        <IconFilm size={24} /> {t('quiz.title')}
       </h1>
       <p className="text-sm text-center mb-3" style={{ color: "var(--text-secondary)" }}>
         {t('quiz.subtitle')}
@@ -111,7 +112,7 @@ export default async function QuizPage({ searchParams }: PageProps) {
       <div className="flex items-center justify-center gap-4 mb-5">
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full"
           style={{ background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.2)' }}>
-          <span className="text-base">🔥</span>
+          <IconFire size={16} style={{ color: '#fbbf24' }} />
           <span className="text-sm font-black" style={{ color: '#fbbf24' }}>{streakData?.streak ?? 0}</span>
           <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>{t('quiz.dailyStreak')}</span>
         </div>
@@ -123,9 +124,9 @@ export default async function QuizPage({ searchParams }: PageProps) {
           </div>
         )}
         {playedToday && (
-          <span className="text-xs px-2.5 py-1 rounded-full font-semibold"
+          <span className="text-xs px-2.5 py-1 rounded-full font-semibold inline-flex items-center gap-1"
             style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.25)', color: '#4ade80' }}>
-            ✓ {t('quiz.playedToday')}
+            <IconCheck size={14} /> {t('quiz.playedToday')}
           </span>
         )}
       </div>
@@ -141,7 +142,7 @@ export default async function QuizPage({ searchParams }: PageProps) {
                 ? { background: "var(--accent)", color: "#fff", boxShadow: "0 4px 14px rgba(225,29,72,0.25)" }
                 : { background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.08)" }
               }>
-              <span className="text-base mb-0.5">{d.icon}</span>
+              <span className="inline-block w-2.5 h-2.5 rounded-full mb-0.5" style={{ background: d.color }} />
               <span className="font-bold">{t(d.labelKey)}</span>
               <span className="text-[10px] opacity-70">{t(d.descKey)}</span>
             </Link>
@@ -150,9 +151,9 @@ export default async function QuizPage({ searchParams }: PageProps) {
       </div>
 
       <div className="mb-4 text-center">
-        <span className="text-xs px-3 py-1 rounded-full font-semibold"
+        <span className="text-xs px-3 py-1 rounded-full font-semibold inline-flex items-center gap-1.5"
           style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.4)" }}>
-          {currentLevel.icon} {t(currentLevel.labelKey)} {t('quiz.modeSuffix')}
+          <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ background: currentLevel.color }} /> {t(currentLevel.labelKey)} {t('quiz.modeSuffix')}
         </span>
       </div>
 
@@ -162,16 +163,18 @@ export default async function QuizPage({ searchParams }: PageProps) {
         <div className="mt-10 rounded-2xl overflow-hidden"
           style={{ background: "linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))", border: "1px solid rgba(212,168,67,0.1)" }}>
           <div className="px-5 py-4 flex items-center gap-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-            <span className="text-lg">🏆</span>
+            <IconTrophy size={18} style={{ color: '#D4A843' }} />
             <h2 className="font-bold" style={{ color: "var(--text-primary)" }}>{t('quiz.leaderboardTitle')}</h2>
           </div>
           <div className="divide-y" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
             {leaderboard.map((entry: any, i: number) => {
               const profile = entry.profiles
-              const medals = ["🥇", "🥈", "🥉"]
+              const medalColors = ['#D4A803', '#C0C0C0', '#B87333']
               return (
                 <div key={i} className="px-5 py-3 flex items-center gap-3">
-                  <span className="text-lg w-6 text-center shrink-0">{medals[i] ?? `${i + 1}`}</span>
+                  <span className="text-lg w-6 text-center shrink-0 flex items-center justify-center">
+                    {i < 3 ? <IconMedal size={18} className="mx-auto" style={{ color: medalColors[i] }} /> : `${i + 1}`}
+                  </span>
                   <div className="h-7 w-7 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0 overflow-hidden"
                     style={{ background: "var(--accent)" }}>
                     {profile?.avatar_url

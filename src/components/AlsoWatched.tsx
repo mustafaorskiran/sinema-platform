@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb'
 import { getTranslations } from '@/lib/i18n'
+import { IconFilm } from '@/components/icons'
 
 interface Props {
   mediaId: number
@@ -77,7 +78,7 @@ export default async function AlsoWatched({ mediaId, mediaType }: Props) {
             style={{ background: 'rgba(255,255,255,0.04)' }}>
             {item.poster
               ? <img src={item.poster} alt={item.title} className="w-full h-full object-cover" />
-              : <div className="w-full h-full flex items-center justify-center text-2xl">🎬</div>}
+              : <div className="w-full h-full flex items-center justify-center"><IconFilm size={24} /></div>}
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
               <div className="absolute bottom-0 left-0 right-0 p-2">
                 <p className="text-[10px] text-white font-semibold line-clamp-2">{item.title}</p>

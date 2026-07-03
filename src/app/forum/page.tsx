@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconSearch, IconClose, IconPin } from '@/components/icons'
 
 export const metadata: Metadata = { title: 'Forum | Sinezon' }
 
@@ -76,8 +77,8 @@ export default async function ForumPage({ searchParams }: Props) {
       {/* Arama Kutusu */}
       <form method="GET" action="/forum" className="mb-6">
         <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[--text-secondary] pointer-events-none select-none">
-            🔍
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[--text-secondary] pointer-events-none select-none flex">
+            <IconSearch size={16} />
           </span>
           <input
             name="q"
@@ -89,7 +90,7 @@ export default async function ForumPage({ searchParams }: Props) {
           />
           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
             {query && (
-              <a href="/forum" className="text-xs text-[--text-secondary] hover:text-white transition-colors">✕</a>
+              <a href="/forum" className="text-xs text-[--text-secondary] hover:text-white transition-colors"><IconClose size={14} /></a>
             )}
             <button type="submit" className="text-xs font-medium px-2.5 py-1 rounded-lg transition-colors"
               style={{ background: 'var(--accent)', color: '#fff' }}>
@@ -195,7 +196,7 @@ export default async function ForumPage({ searchParams }: Props) {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       {thread.pinned && (
-                        <span className="text-[10px] font-bold uppercase text-[--accent] shrink-0">📌</span>
+                        <span className="text-[10px] font-bold uppercase text-[--accent] shrink-0"><IconPin size={12} /></span>
                       )}
                       <p className="font-medium text-white group-hover:text-[--accent] transition-colors line-clamp-1">
                         {thread.title}

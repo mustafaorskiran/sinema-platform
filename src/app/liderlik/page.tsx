@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconPencil, IconHeartFilled, IconUsers, IconFilm, IconTrophy, IconBarChart, IconMedal } from '@/components/icons'
 
 export const revalidate = 3600
 
@@ -129,18 +130,18 @@ export default async function LiderlikPage({ searchParams }: Props) {
   }
 
   const TABS = [
-    { id: 'yorum', label: `✍️ ${t('community.leaderTabReviewsLabel')}`, desc: t('community.leaderTabReviewsDesc') },
-    { id: 'begeni', label: `❤️ ${t('community.leaderTabLikesLabel')}`, desc: t('community.leaderTabLikesDesc') },
-    { id: 'takipci', label: `👥 ${t('community.leaderTabFollowersLabel')}`, desc: t('community.leaderTabFollowersDesc') },
-    { id: 'izleme', label: `🎬 ${t('community.leaderTabWatchedLabel')}`, desc: t('community.leaderTabWatchedDesc', { year: new Date().getFullYear() }) },
+    { id: 'yorum', Icon: IconPencil, label: t('community.leaderTabReviewsLabel'), desc: t('community.leaderTabReviewsDesc') },
+    { id: 'begeni', Icon: IconHeartFilled, label: t('community.leaderTabLikesLabel'), desc: t('community.leaderTabLikesDesc') },
+    { id: 'takipci', Icon: IconUsers, label: t('community.leaderTabFollowersLabel'), desc: t('community.leaderTabFollowersDesc') },
+    { id: 'izleme', Icon: IconFilm, label: t('community.leaderTabWatchedLabel'), desc: t('community.leaderTabWatchedDesc', { year: new Date().getFullYear() }) },
   ]
 
-  const RANK_EMOJIS = ['🥇', '🥈', '🥉']
+  const RANK_COLORS = ['#D4A803', '#C0C0C0', '#B87333']
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
       <div className="mb-8">
-        <h1 className="text-3xl font-black text-white mb-1">🏆 {t('community.leaderboardTitle')}</h1>
+        <h1 className="text-3xl font-black text-white mb-1 inline-flex items-center gap-2"><IconTrophy size={28} />{t('community.leaderboardTitle')}</h1>
         <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>{t('community.leaderboardSubtitle')}</p>
       </div>
 
@@ -150,11 +151,11 @@ export default async function LiderlikPage({ searchParams }: Props) {
           const isActive = tab.id === kategori
           return (
             <Link key={tab.id} href={`/liderlik?kategori=${tab.id}`}
-              className="px-4 py-2 rounded-full text-sm font-medium transition-all"
+              className="px-4 py-2 rounded-full text-sm font-medium transition-all inline-flex items-center gap-1.5"
               style={isActive
                 ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: 'white' }
                 : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
-              {tab.label}
+              <tab.Icon size={14} />{tab.label}
             </Link>
           )
         })}
@@ -168,7 +169,7 @@ export default async function LiderlikPage({ searchParams }: Props) {
       {leaders.length === 0 ? (
         <div className="text-center py-16 rounded-2xl"
           style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <p className="text-4xl mb-3">📊</p>
+          <div className="flex justify-center mb-3"><IconBarChart size={40} /></div>
           <p style={{ color: 'rgba(255,255,255,0.4)' }}>{t('community.notEnoughData')}</p>
         </div>
       ) : (
@@ -188,7 +189,7 @@ export default async function LiderlikPage({ searchParams }: Props) {
               {/* Sıra */}
               <div className="w-8 text-center shrink-0">
                 {i < 3
-                  ? <span className="text-xl">{RANK_EMOJIS[i]}</span>
+                  ? <IconMedal size={20} className="mx-auto" style={{ color: RANK_COLORS[i] }} />
                   : <span className="text-sm font-bold tabular-nums" style={{ color: 'rgba(255,255,255,0.3)' }}>{i + 1}</span>
                 }
               </div>

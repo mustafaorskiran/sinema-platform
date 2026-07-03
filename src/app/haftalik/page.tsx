@@ -2,6 +2,11 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getPosterUrl, getMediaTitle, getMediaYear, getMovieDetail, getSeriesDetail } from '@/lib/tmdb'
 import { getTranslations } from '@/lib/i18n'
+import {
+  IconNewspaper, IconFire, IconFilm, IconTv, IconStarFilled, IconMessageSquare,
+  IconHeartFilled, IconClipboard, IconPencil, IconLink, IconCalendar, IconTrophy,
+  IconDice, IconRobot,
+} from '@/components/icons'
 import type { Metadata } from 'next'
 
 export const revalidate = 3600
@@ -112,7 +117,7 @@ export default async function HaftalikPage() {
         <p className="text-xs font-bold uppercase tracking-[0.18em] mb-2" style={{ color: 'rgba(212,168,67,0.6)' }}>
           Haftalık Özet
         </p>
-        <h1 className="text-3xl font-black text-white mb-1">📰 Bu Haftanın Özeti</h1>
+        <h1 className="text-3xl font-black text-white mb-1 inline-flex items-center gap-2"><IconNewspaper size={28} /> Bu Haftanın Özeti</h1>
         <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>{label}</p>
       </div>
 
@@ -123,8 +128,8 @@ export default async function HaftalikPage() {
           {/* TMDb Trendleri */}
           {trendingAll.length > 0 && (
             <section>
-              <h2 className="text-xs font-bold uppercase tracking-[0.15em] mb-4" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                🔥 Bu Hafta Trend
+              <h2 className="text-xs font-bold uppercase tracking-[0.15em] mb-4 inline-flex items-center gap-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                <IconFire size={14} /> Bu Hafta Trend
               </h2>
               <div className="space-y-2">
                 {trendingAll.map((item: any, i: number) => {
@@ -150,9 +155,11 @@ export default async function HaftalikPage() {
                         <p className="font-semibold text-white text-sm group-hover:text-[--accent] transition-colors line-clamp-1">
                           {title}
                         </p>
-                        <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.3)' }}>
-                          {type === 'film' ? '🎬' : '📺'} {year}
-                          {item.vote_average > 0 && ` · ★ ${item.vote_average.toFixed(1)}`}
+                        <p className="text-xs mt-0.5 inline-flex items-center gap-1" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                          {type === 'film' ? <IconFilm size={12} /> : <IconTv size={12} />} {year}
+                          {item.vote_average > 0 && (
+                            <span className="inline-flex items-center gap-0.5">· <IconStarFilled size={11} /> {item.vote_average.toFixed(1)}</span>
+                          )}
                         </p>
                       </div>
                     </Link>
@@ -169,8 +176,8 @@ export default async function HaftalikPage() {
           {/* En Beğenilen Yorumlar */}
           {topReviews.length > 0 && (
             <section>
-              <h2 className="text-xs font-bold uppercase tracking-[0.15em] mb-4" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                💬 Haftanın En Beğenilen Yorumları
+              <h2 className="text-xs font-bold uppercase tracking-[0.15em] mb-4 inline-flex items-center gap-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                <IconMessageSquare size={14} /> Haftanın En Beğenilen Yorumları
               </h2>
               <div className="space-y-3">
                 {topReviews.map((r: any) => (
@@ -185,12 +192,12 @@ export default async function HaftalikPage() {
                           className="text-xs font-bold text-white hover:text-[--accent] transition-colors">
                           @{(r.profiles as any)?.username}
                         </Link>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: 'rgba(212,168,67,0.15)', color: '#D4A843' }}>
-                          ★ {r.rating}/10
+                        <span className="text-[10px] px-1.5 py-0.5 rounded inline-flex items-center gap-0.5" style={{ background: 'rgba(212,168,67,0.15)', color: '#D4A843' }}>
+                          <IconStarFilled size={10} /> {r.rating}/10
                         </span>
                         {r.likes_count > 0 && (
-                          <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>
-                            ❤️ {r.likes_count}
+                          <span className="text-[10px] inline-flex items-center gap-0.5" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                            <IconHeartFilled size={10} /> {r.likes_count}
                           </span>
                         )}
                       </div>
@@ -212,8 +219,8 @@ export default async function HaftalikPage() {
           {/* Yeni Listeler */}
           {(newListsRaw ?? []).length > 0 && (
             <section>
-              <h2 className="text-xs font-bold uppercase tracking-[0.15em] mb-4" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                📋 Bu Hafta Oluşturulan Listeler
+              <h2 className="text-xs font-bold uppercase tracking-[0.15em] mb-4 inline-flex items-center gap-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                <IconClipboard size={14} /> Bu Hafta Oluşturulan Listeler
               </h2>
               <div className="space-y-2">
                 {(newListsRaw ?? []).map((l: any) => (
@@ -242,8 +249,8 @@ export default async function HaftalikPage() {
           {/* En Aktif Kullanıcılar */}
           {activeUsers.length > 0 && (
             <section className="p-5 rounded-2xl" style={card}>
-              <h2 className="text-xs font-bold uppercase tracking-[0.15em] mb-4" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                ✍️ Bu Haftanın Yorumcuları
+              <h2 className="text-xs font-bold uppercase tracking-[0.15em] mb-4 inline-flex items-center gap-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                <IconPencil size={14} /> Bu Haftanın Yorumcuları
               </h2>
               <div className="space-y-3">
                 {activeUsers.map((u, i) => (
@@ -280,22 +287,22 @@ export default async function HaftalikPage() {
 
           {/* Hızlı Bağlantılar */}
           <section className="p-5 rounded-2xl" style={card}>
-            <h2 className="text-xs font-bold uppercase tracking-[0.15em] mb-4" style={{ color: 'rgba(255,255,255,0.35)' }}>
-              🔗 Keşfet
+            <h2 className="text-xs font-bold uppercase tracking-[0.15em] mb-4 inline-flex items-center gap-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>
+              <IconLink size={14} /> Keşfet
             </h2>
             <div className="space-y-2">
               {[
-                { href: '/yakinda', label: '📅 Yakında Çıkacaklar' },
-                { href: '/top10', label: '🔥 Haftanın Top 10\'u' },
-                { href: '/liderlik', label: '🏆 Liderlik Tablosu' },
-                { href: '/ne-izlesem', label: '🎲 Ne İzlesem?' },
-                { href: '/forum', label: '💬 Tartışma Forumu' },
-                { href: '/oneri', label: '🤖 AI Öneri Al' },
+                { href: '/yakinda', label: 'Yakında Çıkacaklar', icon: IconCalendar },
+                { href: '/top10', label: 'Haftanın Top 10\'u', icon: IconFire },
+                { href: '/liderlik', label: 'Liderlik Tablosu', icon: IconTrophy },
+                { href: '/ne-izlesem', label: 'Ne İzlesem?', icon: IconDice },
+                { href: '/forum', label: 'Tartışma Forumu', icon: IconMessageSquare },
+                { href: '/oneri', label: 'AI Öneri Al', icon: IconRobot },
               ].map(link => (
                 <Link key={link.href} href={link.href}
-                  className="block text-sm py-2 px-3 rounded-lg transition-colors hover:bg-white/5"
+                  className="flex items-center gap-2 text-sm py-2 px-3 rounded-lg transition-colors hover:bg-white/5"
                   style={{ color: 'rgba(255,255,255,0.5)' }}>
-                  {link.label}
+                  <link.icon size={14} /> {link.label}
                 </Link>
               ))}
             </div>

@@ -1,6 +1,19 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import {
+  IconShield,
+  IconBat,
+  IconSwords,
+  IconRing,
+  IconTarget,
+  IconPaw,
+  IconCar,
+  IconBrain,
+  IconPalette,
+  IconPill,
+  IconGamepad,
+} from '@/components/icons'
 
 export const metadata: Metadata = {
   title: 'Sinema Evrenler & Seriler | Sinezon',
@@ -12,7 +25,7 @@ const UNIVERSES = [
     id: 'mcu',
     nameKey: 'evren.mcuName',
     shortName: 'MCU',
-    emoji: '🦸',
+    icon: IconShield,
     descKey: 'evren.mcuDesc',
     filmCount: 33,
     color: '#E11D48',
@@ -25,7 +38,7 @@ const UNIVERSES = [
     id: 'dc',
     nameKey: 'evren.dcName',
     shortName: 'DCEU',
-    emoji: '🦇',
+    icon: IconBat,
     descKey: 'evren.dcDesc',
     filmCount: 15,
     color: '#60a5fa',
@@ -38,7 +51,7 @@ const UNIVERSES = [
     id: 'starwars',
     nameKey: 'evren.starwarsName',
     shortName: 'Star Wars',
-    emoji: '⚔️',
+    icon: IconSwords,
     descKey: 'evren.starwarsDesc',
     filmCount: 12,
     color: '#facc15',
@@ -51,7 +64,7 @@ const UNIVERSES = [
     id: 'lotr',
     nameKey: 'evren.lotrName',
     shortName: 'LOTR',
-    emoji: '💍',
+    icon: IconRing,
     descKey: 'evren.lotrDesc',
     filmCount: 6,
     color: '#D4A843',
@@ -64,7 +77,7 @@ const UNIVERSES = [
     id: 'johnwick',
     nameKey: 'evren.johnwickName',
     shortName: 'John Wick',
-    emoji: '🔫',
+    icon: IconTarget,
     descKey: 'evren.johnwickDesc',
     filmCount: 4,
     color: '#4ade80',
@@ -77,7 +90,7 @@ const UNIVERSES = [
     id: 'jurassicpark',
     nameKey: 'evren.jurassicparkName',
     shortName: 'Jurassic',
-    emoji: '🦕',
+    icon: IconPaw,
     descKey: 'evren.jurassicparkDesc',
     filmCount: 6,
     color: '#fb923c',
@@ -90,7 +103,7 @@ const UNIVERSES = [
     id: 'fastfurious',
     nameKey: 'evren.fastfuriousName',
     shortName: 'Fast & Furious',
-    emoji: '🏎️',
+    icon: IconCar,
     descKey: 'evren.fastfuriousDesc',
     filmCount: 11,
     color: '#a78bfa',
@@ -103,7 +116,7 @@ const UNIVERSES = [
     id: 'nolan',
     nameKey: 'evren.nolanName',
     shortName: 'Nolan',
-    emoji: '🧠',
+    icon: IconBrain,
     descKey: 'evren.nolanDesc',
     filmCount: 12,
     color: '#38bdf8',
@@ -117,7 +130,7 @@ const UNIVERSES = [
     id: 'pixar',
     nameKey: 'evren.pixarName',
     shortName: 'Pixar',
-    emoji: '🎨',
+    icon: IconPalette,
     descKey: 'evren.pixarDesc',
     filmCount: 28,
     color: '#34d399',
@@ -130,7 +143,7 @@ const UNIVERSES = [
     id: 'matrix',
     nameKey: 'evren.matrixName',
     shortName: 'Matrix',
-    emoji: '💊',
+    icon: IconPill,
     descKey: 'evren.matrixDesc',
     filmCount: 4,
     color: '#4ade80',
@@ -143,7 +156,7 @@ const UNIVERSES = [
     id: 'alien',
     nameKey: 'evren.alienName',
     shortName: 'Alien',
-    emoji: '👾',
+    icon: IconGamepad,
     descKey: 'evren.alienDesc',
     filmCount: 7,
     color: '#84cc16',
@@ -156,7 +169,7 @@ const UNIVERSES = [
     id: 'monkeyverse',
     nameKey: 'evren.monkeyverseName',
     shortName: 'Planet of Apes',
-    emoji: '🐒',
+    icon: IconPaw,
     descKey: 'evren.monkeyverseDesc',
     filmCount: 9,
     color: '#d97706',
@@ -183,7 +196,7 @@ export default async function EvrenPage() {
           <div key={u.id} className="rounded-2xl p-5 transition-all duration-200 hover:-translate-y-0.5 flex flex-col"
             style={{ background: u.bg, border: `1px solid ${u.border}` }}>
             <div className="flex items-center gap-3 mb-2">
-              <span className="text-3xl">{u.emoji}</span>
+              <u.icon size={32} style={{ color: u.color }} />
               <div className="min-w-0">
                 <p className="font-bold text-white text-sm leading-tight">{t(u.nameKey)}</p>
                 <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: u.color }}>

@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getSeriesDetail, getSeasonDetail, getMediaTitle, getPosterUrl } from '@/lib/tmdb'
 import { getTranslations } from '@/lib/i18n'
 import EpisodeRow from './EpisodeRow'
+import { IconTv } from '@/components/icons'
 import type { Metadata } from 'next'
 
 interface Props {
@@ -140,7 +141,7 @@ export default async function SezonPage({ params }: Props) {
 
       {episodes.length === 0 && (
         <div className="text-center py-12 rounded-2xl" style={card}>
-          <p className="text-3xl mb-2">📺</p>
+          <p className="mb-2 flex justify-center" style={{ color: 'rgba(255,255,255,0.35)' }}><IconTv size={32} /></p>
           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>{t('series.noEpisodesInfo')}</p>
         </div>
       )}

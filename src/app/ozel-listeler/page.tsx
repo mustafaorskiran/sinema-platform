@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { CURATED_LISTS } from '@/lib/curated-lists'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconFilm, IconTv } from '@/components/icons'
 
 export const metadata: Metadata = {
   title: 'Özel Listeler | Sinezon',
@@ -36,15 +37,14 @@ export default async function OzelListelerPage() {
             }}
           >
             <div className="flex items-center justify-between">
-              <span className="text-3xl transition-transform duration-300 group-hover:scale-110 block">
-                {list.emoji}
-              </span>
-              <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${
+              <list.icon size={32} strokeWidth={1.5} className="text-[--accent] transition-transform duration-300 group-hover:scale-110 block" />
+              <span className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${
                 list.mediaType === 'film'
                   ? 'bg-blue-500/15 text-blue-400 border border-blue-500/20'
                   : 'bg-purple-500/15 text-purple-400 border border-purple-500/20'
               }`}>
-                {list.mediaType === 'film' ? `🎬 ${t('film.badge')}` : `📺 ${t('series.badge')}`}
+                {list.mediaType === 'film' ? <IconFilm size={12} /> : <IconTv size={12} />}
+                {list.mediaType === 'film' ? t('film.badge') : t('series.badge')}
               </span>
             </div>
             <div>

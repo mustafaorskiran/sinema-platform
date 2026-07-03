@@ -1,6 +1,10 @@
 'use client'
 
 import Link from 'next/link'
+import { IconLaptop, IconDisc, IconCassette, IconPackage } from '@/components/icons'
+import type { ComponentType, SVGProps } from 'react'
+
+type IconType = ComponentType<SVGProps<SVGSVGElement> & { size?: number; strokeWidth?: number }>
 
 interface Item {
   id: string
@@ -16,11 +20,11 @@ interface Props {
   items: Item[]
 }
 
-const FORMAT_INFO: Record<string, { label: string; emoji: string; shelfColor: string }> = {
-  dijital: { label: 'Dijital', emoji: '💻', shelfColor: '#1e40af' },
-  bluray:  { label: 'Blu-ray', emoji: '💿', shelfColor: '#0369a1' },
-  dvd:     { label: 'DVD', emoji: '📀', shelfColor: '#5b21b6' },
-  vhs:     { label: 'VHS', emoji: '📼', shelfColor: '#92400e' },
+const FORMAT_INFO: Record<string, { label: string; icon: IconType; shelfColor: string }> = {
+  dijital: { label: 'Dijital', icon: IconLaptop, shelfColor: '#1e40af' },
+  bluray:  { label: 'Blu-ray', icon: IconDisc, shelfColor: '#0369a1' },
+  dvd:     { label: 'DVD', icon: IconDisc, shelfColor: '#5b21b6' },
+  vhs:     { label: 'VHS', icon: IconCassette, shelfColor: '#92400e' },
 }
 
 const SHELF_HEIGHT = 160 // px — poster yüksekliği
@@ -36,7 +40,7 @@ export default function ShelfView({ items }: Props) {
   return (
     <div className="space-y-10">
       {Object.entries(groups).map(([format, groupItems]) => {
-        const info = FORMAT_INFO[format] ?? { label: format, emoji: '📦', shelfColor: '#374151' }
+        const info = FORMAT_INFO[format] ?? { label: format, icon: IconPackage, shelfColor: '#374151' }
         const rows: Item[][] = []
         for (let i = 0; i < groupItems.length; i += ITEMS_PER_SHELF) {
           rows.push(groupItems.slice(i, i + ITEMS_PER_SHELF))
@@ -45,7 +49,7 @@ export default function ShelfView({ items }: Props) {
         return (
           <section key={format}>
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-xl">{info.emoji}</span>
+              <span className="flex items-center"><info.icon size={20} /></span>
               <h2 className="text-base font-bold text-white">{info.label}</h2>
               <span className="text-sm text-[--text-secondary]">({groupItems.length})</span>
             </div>

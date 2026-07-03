@@ -6,6 +6,15 @@ import type { Metadata } from 'next'
 import { GENRE_MAP } from '@/lib/genres'
 import AiOneriWidget from '@/components/AiOneriWidget'
 import { getTranslations } from '@/lib/i18n'
+import {
+  IconStarFilled, IconZap, IconLaugh, IconMasks, IconGhost, IconRocket,
+  IconHeart, IconAlertTriangle, IconPalette, IconCamera, IconWand,
+  IconFingerprint, IconMap, IconScroll, IconMusic, IconFamily, IconSearch,
+  IconSwords, IconHat, IconFilm,
+} from '@/components/icons'
+import type { ComponentType, SVGProps } from 'react'
+
+type IconType = ComponentType<SVGProps<SVGSVGElement> & { size?: number; strokeWidth?: number }>
 
 export const metadata: Metadata = { title: 'Öneriler | Sinezon' }
 
@@ -202,8 +211,8 @@ export default async function OnerilerPage() {
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-[--text-secondary] text-xs text-center p-1">{item.title}</div>
                   )}
-                  <div className="absolute top-1 right-1 bg-black/70 rounded px-1 py-0.5 text-[10px] font-bold" style={{ color: 'var(--gold)' }}>
-                    ★{item.rating}
+                  <div className="absolute top-1 right-1 bg-black/70 rounded px-1 py-0.5 text-[10px] font-bold flex items-center gap-0.5" style={{ color: 'var(--gold)' }}>
+                    <IconStarFilled size={10} />{item.rating}
                   </div>
                 </div>
                 <p className="mt-1.5 text-xs text-[--text-secondary] line-clamp-1 group-hover:text-white transition-colors">{item.title}</p>
@@ -245,8 +254,8 @@ export default async function OnerilerPage() {
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-[--text-secondary] text-xs text-center p-1">{pick.title}</div>
                   )}
-                  <div className="absolute top-1 right-1 bg-black/70 rounded px-1 py-0.5 text-[10px] font-bold" style={{ color: 'var(--gold)' }}>
-                    ★{pick.avgRating.toFixed(1)}
+                  <div className="absolute top-1 right-1 bg-black/70 rounded px-1 py-0.5 text-[10px] font-bold flex items-center gap-0.5" style={{ color: 'var(--gold)' }}>
+                    <IconStarFilled size={10} />{pick.avgRating.toFixed(1)}
                   </div>
                   <div className="absolute bottom-1 left-1 right-1">
                     <span className="text-white text-[9px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'rgba(225,29,72,0.8)' }}>
@@ -272,7 +281,8 @@ export default async function OnerilerPage() {
         return (
           <GenreSection
             key={g.movieId}
-            title={t('recommend.genreSelectionsTitle', { emoji: genreEmoji(g.slug), name: g.name })}
+            icon={genreIcon(g.slug)}
+            title={t('recommend.genreSelectionsTitle', { emoji: '', name: g.name }).trimStart()}
             subtitle={t('recommend.genreSelectionsSubtitle', { name: g.name.toLowerCase() })}
             items={mixedItems}
             slug={g.slug}
@@ -342,14 +352,14 @@ const PLATFORM_NAMES: Record<number, string> = {
   1770: 'Gain', 188: 'YouTube Premium',
 }
 
-const GENRE_EMOJIS: Record<string, string> = {
-  aksiyon: '💥', komedi: '😂', drama: '🎭', korku: '👻', 'bilim-kurgu': '🚀',
-  romantik: '❤️', gerilim: '😱', animasyon: '🎨', belgesel: '📷', fantezi: '🧙',
-  suc: '🔫', macera: '🗺️', tarih: '📜', muzik: '🎵', aile: '👨‍👩‍👧',
-  gizem: '🔍', savas: '⚔️', western: '🤠',
+const GENRE_ICONS: Record<string, IconType> = {
+  aksiyon: IconZap, komedi: IconLaugh, drama: IconMasks, korku: IconGhost, 'bilim-kurgu': IconRocket,
+  romantik: IconHeart, gerilim: IconAlertTriangle, animasyon: IconPalette, belgesel: IconCamera, fantezi: IconWand,
+  suc: IconFingerprint, macera: IconMap, tarih: IconScroll, muzik: IconMusic, aile: IconFamily,
+  gizem: IconSearch, savas: IconSwords, western: IconHat,
 }
 
-function genreEmoji(slug: string) { return GENRE_EMOJIS[slug] ?? '🎬' }
+function genreIcon(slug: string): IconType { return GENRE_ICONS[slug] ?? IconFilm }
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
@@ -396,13 +406,13 @@ function ItemGrid({ items }: { items: CardItem[] }) {
   )
 }
 
-function GenreSection({ title, subtitle, items, slug, seeAllLabel }: { title: string; subtitle: string; items: CardItem[]; slug: string; seeAllLabel: string }) {
+function GenreSection({ icon: Icon, title, subtitle, items, slug, seeAllLabel }: { icon: IconType; title: string; subtitle: string; items: CardItem[]; slug: string; seeAllLabel: string }) {
   if (items.length === 0) return null
   return (
     <section className="mb-10">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="text-lg font-bold text-white">{title}</h2>
+          <h2 className="text-lg font-bold text-white flex items-center gap-2"><Icon size={20} />{title}</h2>
           <p className="text-xs text-[--text-secondary] mt-0.5">{subtitle}</p>
         </div>
         <Link href={`/tur/${slug}`} className="text-xs whitespace-nowrap" style={{ color: 'var(--accent)' }}>

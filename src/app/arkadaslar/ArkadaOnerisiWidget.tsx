@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { IconHandshake, IconCheck } from '@/components/icons'
 
 interface Suggestion {
   id: string
@@ -44,7 +45,7 @@ export default function ArkadaOnerisiWidget() {
   if (suggestions.length === 0) {
     return (
       <div className="rounded-2xl p-12 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-        <p className="text-4xl mb-3">🤝</p>
+        <IconHandshake size={40} strokeWidth={1.5} className="mb-3 mx-auto text-white/30" />
         <p className="text-sm text-[--text-secondary]">
           Henüz yeterli veri yok. Daha fazla film izleyerek başla!
         </p>
@@ -68,7 +69,7 @@ export default function ArkadaOnerisiWidget() {
             <p className="text-[10px] text-[--accent] mt-0.5 font-medium">{s.common_count} ortak izlenen</p>
           </div>
           {followed.has(s.id) ? (
-            <span className="text-xs text-green-400 font-semibold shrink-0">Takip Edildi ✓</span>
+            <span className="text-xs text-green-400 font-semibold shrink-0 inline-flex items-center gap-1">Takip Edildi <IconCheck size={12} /></span>
           ) : (
             <button onClick={() => follow(s.id)}
               className="px-3 py-1.5 text-xs rounded-full bg-[--accent] hover:bg-[--accent-hover] text-white font-semibold transition-colors shrink-0">

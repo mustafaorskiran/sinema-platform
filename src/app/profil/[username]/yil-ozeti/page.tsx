@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle } from '@/lib/tmdb'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconArrowLeft, IconFilm, IconStarFilled } from '@/components/icons'
 
 interface Props {
   params: Promise<{ username: string }>
@@ -93,7 +94,7 @@ export default async function YilOzetiPage({ params, searchParams }: Props) {
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
       <div className="flex items-center gap-2 text-sm text-[--text-secondary] mb-6">
-        <Link href={`/profil/${username}`} className="hover:text-white transition-colors">← {username}</Link>
+        <Link href={`/profil/${username}`} className="hover:text-white transition-colors inline-flex items-center gap-1"><IconArrowLeft size={14} /> {username}</Link>
       </div>
 
       {/* Başlık */}
@@ -120,7 +121,7 @@ export default async function YilOzetiPage({ params, searchParams }: Props) {
 
       {entries.length === 0 && totalReviews === 0 ? (
         <div className="text-center py-16 text-[--text-secondary]">
-          <p className="text-4xl mb-4">🎬</p>
+          <p className="flex justify-center mb-4"><IconFilm size={40} /></p>
           <p>{t('profile.yearNoEntries', { year })}</p>
         </div>
       ) : (
@@ -186,14 +187,14 @@ export default async function YilOzetiPage({ params, searchParams }: Props) {
           {/* En yüksek puan verilen */}
           {bestEntry && bestTitle && (
             <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <p className="text-sm font-semibold text-white mb-3">⭐ {t('profile.topRatedTitle')}</p>
+              <p className="text-sm font-semibold text-white mb-3 flex items-center gap-1.5"><IconStarFilled size={16} /> {t('profile.topRatedTitle')}</p>
               <Link href={`/${bestEntry.media_type}/${bestEntry.media_id}`} className="flex items-center gap-3 hover:opacity-90 transition-opacity">
                 {bestPoster && (
                   <img src={bestPoster} alt={bestTitle} className="w-12 h-18 rounded-lg object-cover" />
                 )}
                 <div>
                   <p className="font-semibold text-white">{bestTitle}</p>
-                  <p className="text-xs text-[--gold] mt-0.5">★ 10/10</p>
+                  <p className="text-xs text-[--gold] mt-0.5 flex items-center gap-1"><IconStarFilled size={12} /> 10/10</p>
                   <p className="text-xs text-[--text-secondary]">{new Date(bestEntry.watched_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })}</p>
                 </div>
               </Link>

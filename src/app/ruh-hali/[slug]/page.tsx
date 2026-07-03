@@ -4,6 +4,7 @@ import { getMoodBySlug, MOODS } from '@/lib/moods'
 import { discoverMovieRaw, discoverTVRaw, getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb'
 import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
+import { IconFilm, IconTv } from '@/components/icons'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -13,7 +14,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const mood = getMoodBySlug(slug)
-  return { title: mood ? `${mood.emoji} ${mood.title}` : 'Ruh Haline Göre' }
+  return { title: mood ? mood.title : 'Ruh Haline Göre' }
 }
 
 export default async function RuhHaliDetayPage({ params, searchParams }: Props) {
@@ -59,7 +60,7 @@ export default async function RuhHaliDetayPage({ params, searchParams }: Props) 
 
       {/* Başlık */}
       <div className={`flex items-center gap-4 p-6 rounded-2xl bg-gradient-to-br ${mood.color} border mb-8`}>
-        <span className="text-5xl">{mood.emoji}</span>
+        <mood.icon size={44} strokeWidth={1.5} className="text-white shrink-0" />
         <div>
           <h1 className="text-2xl font-bold text-white">{mood.title}</h1>
           <p className="text-[--text-secondary] text-sm mt-1">{mood.subtitle}</p>
@@ -78,7 +79,10 @@ export default async function RuhHaliDetayPage({ params, searchParams }: Props) 
               : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }
             }
           >
-            {tabKey === 'filmler' ? `🎬 ${t('genre.film')}` : `📺 ${t('genre.dizi')}`}
+            <span className="inline-flex items-center gap-1.5">
+              {tabKey === 'filmler' ? <IconFilm size={14} /> : <IconTv size={14} />}
+              {tabKey === 'filmler' ? t('genre.film') : t('genre.dizi')}
+            </span>
           </Link>
         ))}
       </div>
@@ -153,7 +157,7 @@ export default async function RuhHaliDetayPage({ params, searchParams }: Props) 
               href={`/ruh-hali/${m.slug}`}
               className={`flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br ${m.color} border transition-all hover:scale-105`}
             >
-              <span className="text-2xl">{m.emoji}</span>
+              <m.icon size={22} strokeWidth={1.5} className="text-white shrink-0" />
               <p className="text-xs font-semibold text-white leading-tight">{m.title}</p>
             </Link>
           ))}

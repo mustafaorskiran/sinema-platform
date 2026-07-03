@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { IconStar, IconLoader, IconCheck } from '@/components/icons'
+import { IconStar, IconLoader, IconCheck, IconHeart, IconArrowRight } from '@/components/icons'
 
 interface FeaturedList {
   id: string
@@ -115,8 +115,8 @@ function ListRow({ list, loading, done, onToggle }: {
         <div className="flex items-center gap-3 mt-1 text-xs text-[--text-secondary]">
           <span>@{list.profiles?.username ?? '—'}</span>
           <span>{list.list_items?.[0]?.count ?? 0} içerik</span>
-          <span>♥ {list.list_likes?.[0]?.count ?? 0}</span>
-          {until && <span className="text-[--gold]">→ {until} kadar</span>}
+          <span className="inline-flex items-center gap-1"><IconHeart size={14} />{list.list_likes?.[0]?.count ?? 0}</span>
+          {until && <span className="text-[--gold] inline-flex items-center gap-1"><IconArrowRight size={14} />{until} kadar</span>}
         </div>
       </div>
       <button

@@ -1,6 +1,10 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import {
+  IconFilm, IconStarFilled, IconPencil, IconClipboard, IconCalendar, IconUsers,
+  IconTrophy, IconRobot, IconFire, IconTv, IconMasks, IconNewspaper, IconGift,
+} from '@/components/icons'
 
 export const metadata: Metadata = {
   title: 'Sinezon Hakkında | Sinezon',
@@ -11,18 +15,18 @@ export default async function HakkindaPage() {
   const { t } = await getTranslations()
 
   const FEATURES = [
-    { icon: '🎬', title: t('legal.featureCatalogTitle'), desc: t('legal.featureCatalogDesc') },
-    { icon: '⭐', title: t('legal.featureRatingTitle'), desc: t('legal.featureRatingDesc') },
-    { icon: '✍️', title: t('legal.featureReviewsTitle'), desc: t('legal.featureReviewsDesc') },
-    { icon: '📋', title: t('legal.featureListsTitle'), desc: t('legal.featureListsDesc') },
-    { icon: '📅', title: t('legal.featureDiaryTitle'), desc: t('legal.featureDiaryDesc') },
-    { icon: '👥', title: t('legal.featureSocialTitle'), desc: t('legal.featureSocialDesc') },
-    { icon: '🏆', title: t('legal.featureBadgesTitle'), desc: t('legal.featureBadgesDesc') },
-    { icon: '🤖', title: t('legal.featureAiTitle'), desc: t('legal.featureAiDesc') },
-    { icon: '🔥', title: t('legal.featureTrendsTitle'), desc: t('legal.featureTrendsDesc') },
-    { icon: '📺', title: t('legal.featureSeriesTitle'), desc: t('legal.featureSeriesDesc') },
-    { icon: '🎭', title: t('legal.featureUniverseTitle'), desc: t('legal.featureUniverseDesc') },
-    { icon: '📰', title: t('legal.featureNewsTitle'), desc: t('legal.featureNewsDesc') },
+    { icon: IconFilm, title: t('legal.featureCatalogTitle'), desc: t('legal.featureCatalogDesc') },
+    { icon: IconStarFilled, title: t('legal.featureRatingTitle'), desc: t('legal.featureRatingDesc') },
+    { icon: IconPencil, title: t('legal.featureReviewsTitle'), desc: t('legal.featureReviewsDesc') },
+    { icon: IconClipboard, title: t('legal.featureListsTitle'), desc: t('legal.featureListsDesc') },
+    { icon: IconCalendar, title: t('legal.featureDiaryTitle'), desc: t('legal.featureDiaryDesc') },
+    { icon: IconUsers, title: t('legal.featureSocialTitle'), desc: t('legal.featureSocialDesc') },
+    { icon: IconTrophy, title: t('legal.featureBadgesTitle'), desc: t('legal.featureBadgesDesc') },
+    { icon: IconRobot, title: t('legal.featureAiTitle'), desc: t('legal.featureAiDesc') },
+    { icon: IconFire, title: t('legal.featureTrendsTitle'), desc: t('legal.featureTrendsDesc') },
+    { icon: IconTv, title: t('legal.featureSeriesTitle'), desc: t('legal.featureSeriesDesc') },
+    { icon: IconMasks, title: t('legal.featureUniverseTitle'), desc: t('legal.featureUniverseDesc') },
+    { icon: IconNewspaper, title: t('legal.featureNewsTitle'), desc: t('legal.featureNewsDesc') },
   ]
 
   const FAQ = [
@@ -78,8 +82,8 @@ export default async function HakkindaPage() {
         <h2 className="text-xl font-bold text-white mb-6 text-center">{t('legal.featuresTitle')}</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {FEATURES.map(f => (
-            <div key={f.icon} className="p-4 rounded-xl" style={card}>
-              <div className="text-2xl mb-2">{f.icon}</div>
+            <div key={f.title} className="p-4 rounded-xl" style={card}>
+              <div className="mb-2 text-[--accent]"><f.icon size={24} /></div>
               <p className="font-semibold text-white text-sm mb-1">{f.title}</p>
               <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.4)' }}>{f.desc}</p>
             </div>
@@ -119,7 +123,7 @@ export default async function HakkindaPage() {
       {/* Destek */}
       <section className="text-center">
         <div className="rounded-2xl p-6 mb-4" style={{ background: 'linear-gradient(160deg, rgba(212,168,67,0.08), rgba(14,20,32,0.95))', border: '1px solid rgba(212,168,67,0.2)' }}>
-          <p className="text-lg font-bold text-white mb-1">☕ {t('legal.supportTitle')}</p>
+          <p className="text-lg font-bold text-white mb-1 inline-flex items-center gap-2"><IconGift size={20} /> {t('legal.supportTitle')}</p>
           <p className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.45)' }}>
             {t('legal.supportDesc')}
           </p>
@@ -130,7 +134,7 @@ export default async function HakkindaPage() {
             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-105 active:scale-95"
             style={{ background: 'rgba(212,168,67,0.15)', border: '1px solid rgba(212,168,67,0.3)', color: '#D4A843' }}
           >
-            ☕ {t('legal.supportKofi')}
+            <IconGift size={16} /> {t('legal.supportKofi')}
           </a>
         </div>
       </section>

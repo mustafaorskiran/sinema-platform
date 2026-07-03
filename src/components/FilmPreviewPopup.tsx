@@ -4,6 +4,7 @@ import { useRef, useState, useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useLocale } from '@/context/LocaleContext'
+import { IconStarFilled } from '@/components/icons'
 
 interface Props {
   mediaId: number
@@ -97,8 +98,8 @@ export default function FilmPreviewPopup({
 
             {/* Puan */}
             {rating != null && rating > 0 && (
-              <span className="block text-xs text-[--gold] font-semibold mb-2">
-                ⭐ {rating.toFixed(1)}
+              <span className="flex items-center gap-1 text-xs text-[--gold] font-semibold mb-2">
+                <IconStarFilled size={12} /> {rating.toFixed(1)}
               </span>
             )}
 

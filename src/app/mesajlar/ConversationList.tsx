@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import { IconMessageSquare } from '@/components/icons'
 
 interface Profile { id: string; username: string; avatar_url: string | null }
 interface Message { content: string; created_at: string; sender_id: string }
@@ -42,7 +43,7 @@ export default function ConversationList({ conversations, currentUserId }: Props
 
       {filtered.length === 0 ? (
         <div className="rounded-2xl p-12 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <p className="text-4xl mb-3">💬</p>
+          <div className="flex justify-center mb-3"><IconMessageSquare size={40} /></div>
           <p className="text-sm text-[--text-secondary]">Henüz mesajın yok. Birisinin profiline git ve mesaj gönder.</p>
         </div>
       ) : (

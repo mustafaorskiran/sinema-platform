@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { containsProfanity } from '@/lib/profanityFilter'
+import { IconPin, IconLock } from '@/components/icons'
 
 interface Profile { username: string; avatar_url: string | null }
 
@@ -118,8 +119,8 @@ export default function ForumThreadClient({ thread, initialPosts, currentUser, i
       <div className="rounded-2xl p-6 mb-4" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.95), rgba(14,20,32,0.98))', border: '1px solid rgba(212,168,67,0.1)' }}>
         <div className="flex items-start justify-between gap-4 mb-4">
           <h1 className="text-xl font-bold text-white leading-snug">
-            {thread.pinned && <span className="mr-2">📌</span>}
-            {thread.locked && <span className="mr-2">🔒</span>}
+            {thread.pinned && <span className="mr-2 inline-flex align-middle"><IconPin size={18} /></span>}
+            {thread.locked && <span className="mr-2 inline-flex align-middle"><IconLock size={18} /></span>}
             {thread.title}
           </h1>
           {canDelete(thread.user_id) && (
@@ -212,7 +213,7 @@ export default function ForumThreadClient({ thread, initialPosts, currentUser, i
       ) : currentUser && thread.locked ? (
         <div className="rounded-xl p-4 text-center text-sm text-[--text-secondary]"
           style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
-          🔒 Bu konu kilitlenmiş, yeni yanıt eklenemez.
+          <span className="inline-flex items-center gap-1.5 align-middle"><IconLock size={14} /> Bu konu kilitlenmiş, yeni yanıt eklenemez.</span>
         </div>
       ) : (
         <div className="rounded-xl p-4 text-center text-sm text-[--text-secondary]"

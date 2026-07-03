@@ -5,6 +5,7 @@ import MovieCard from '@/components/MovieCard'
 import Pagination from '@/components/Pagination'
 import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
+import { IconFilm, IconTv } from '@/components/icons'
 
 const ULKELER: Record<string, { bayrak: string; ad: string; nameKey: string; dil: string }> = {
   kore:       { bayrak: '🇰🇷', ad: 'Kore',       nameKey: 'country.names.kore',       dil: 'ko' },
@@ -94,16 +95,16 @@ export default async function UlkeSinemasPage({ params, searchParams }: Props) {
       {/* Sekmeler */}
       <div className="flex gap-2 mb-6">
         {[
-          { key: 'filmler', label: `🎬 ${t('genre.film')} (${(filmCount ?? 0).toLocaleString()})` },
-          { key: 'diziler', label: `📺 ${t('genre.dizi')} (${(seriesCount ?? 0).toLocaleString()})` },
+          { key: 'filmler', icon: <IconFilm size={16} />, label: `${t('genre.film')} (${(filmCount ?? 0).toLocaleString()})` },
+          { key: 'diziler', icon: <IconTv size={16} />, label: `${t('genre.dizi')} (${(seriesCount ?? 0).toLocaleString()})` },
         ].map(tab_ => (
           <Link key={tab_.key} href={`/sinema/${ulke}?tab=${tab_.key}`}
-            className="px-5 py-2 rounded-full text-sm font-medium transition-all hover:scale-105"
+            className="px-5 py-2 rounded-full text-sm font-medium transition-all hover:scale-105 inline-flex items-center gap-1.5"
             style={tab === tab_.key
               ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff', boxShadow: '0 2px 8px rgba(225,29,72,0.3)' }
               : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }
             }>
-            {tab_.label}
+            {tab_.icon} {tab_.label}
           </Link>
         ))}
       </div>

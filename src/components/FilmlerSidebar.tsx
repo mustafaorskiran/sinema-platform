@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { IconChevronDown, IconSlidersHorizontal, IconClose } from '@/components/icons'
+import { IconChevronDown, IconSlidersHorizontal, IconClose, IconLock } from '@/components/icons'
 import { FILM_GENRES } from '@/lib/film-genres'
 import { WATCH_REGIONS } from '@/lib/watch-regions'
 import { useLocale } from '@/context/LocaleContext'
@@ -394,7 +394,7 @@ export default function FilmlerSidebar({
                         onClick={() => !needsAuth && setGoster(opt.value)}
                       >
                         {opt.label}
-                        {needsAuth && <span className="ml-1 text-[10px]">🔒</span>}
+                        {needsAuth && <IconLock size={10} className="inline-block ml-1 align-text-top" />}
                       </span>
                     </label>
                   )

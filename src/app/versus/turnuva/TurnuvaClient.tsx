@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { IconTrophy, IconFilm, IconCheck } from '@/components/icons'
 
 interface Film { id: number; title: string; poster: string | null; rating: number }
 interface Vote { match_index: number; round_number: number; film_id: number }
@@ -58,7 +59,7 @@ export default function TurnuvaClient({ tournament, filmDetails, userId, userVot
     <div className="max-w-3xl mx-auto px-4 py-10">
       <div className="text-center mb-8">
         <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.3)' }}>Film Turnuvası</p>
-        <h1 className="text-2xl font-bold text-white mb-2">🏆 {tournament.title}</h1>
+        <h1 className="text-2xl font-bold text-white mb-2 flex items-center justify-center gap-2"><IconTrophy size={22} style={{ color: '#D4A843' }} /> {tournament.title}</h1>
         {tournament.ends_at && (
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>
             Son oy: {new Date(tournament.ends_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}
@@ -101,14 +102,14 @@ export default function TurnuvaClient({ tournament, filmDetails, userId, userVot
                       }}>
                       {film.poster
                         ? <img src={film.poster} alt={film.title} className="w-16 h-24 object-cover rounded-lg" />
-                        : <div className="w-16 h-24 rounded-lg flex items-center justify-center text-2xl" style={{ background: 'rgba(255,255,255,0.06)' }}>🎬</div>}
+                        : <div className="w-16 h-24 rounded-lg flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.06)' }}><IconFilm size={24} /></div>}
                       <p className="text-xs font-semibold text-white text-center line-clamp-2 leading-snug">{film.title}</p>
                       {totalVotes > 0 && (
                         <p className="text-[10px] tabular-nums" style={{ color: 'rgba(255,255,255,0.4)' }}>
                           {Math.round((votes / totalVotes) * 100)}% ({votes})
                         </p>
                       )}
-                      {isVoted && <span className="text-[10px] text-[--accent] font-bold">✓ Oyum</span>}
+                      {isVoted && <span className="text-[10px] text-[--accent] font-bold inline-flex items-center gap-1"><IconCheck size={12} /> Oyum</span>}
                     </button>
                   )
                 })}

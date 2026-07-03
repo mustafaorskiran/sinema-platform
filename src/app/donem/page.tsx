@@ -4,19 +4,23 @@ import MovieCard from '@/components/MovieCard'
 import Pagination from '@/components/Pagination'
 import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
+import {
+  IconFire, IconSmartphone, IconDisc, IconCassette, IconGamepad, IconMusic, IconFlower, IconMasks,
+  IconFilm, IconCalendarDays, IconSparkles,
+} from '@/components/icons'
 
 export const metadata: Metadata = { title: 'Dönemlere Göre Filmler | SineMa' }
 
 const DECADES = [
-  { label: '2020\'ler', start: 2020, end: 2029, emoji: '🔥' },
-  { label: '2010\'lar', start: 2010, end: 2019, emoji: '📱' },
-  { label: '2000\'ler', start: 2000, end: 2009, emoji: '💿' },
-  { label: '90\'lar',   start: 1990, end: 1999, emoji: '📼' },
-  { label: '80\'ler',   start: 1980, end: 1989, emoji: '🕹️' },
-  { label: '70\'ler',   start: 1970, end: 1979, emoji: '🎸' },
-  { label: '60\'lar',   start: 1960, end: 1969, emoji: '🌸' },
-  { label: '50\'ler',   start: 1950, end: 1959, emoji: '🎭' },
-  { label: 'Klasikler', start: 1900, end: 1949, emoji: '🎞️' },
+  { label: '2020\'ler', start: 2020, end: 2029, icon: IconFire },
+  { label: '2010\'lar', start: 2010, end: 2019, icon: IconSmartphone },
+  { label: '2000\'ler', start: 2000, end: 2009, icon: IconDisc },
+  { label: '90\'lar',   start: 1990, end: 1999, icon: IconCassette },
+  { label: '80\'ler',   start: 1980, end: 1989, icon: IconGamepad },
+  { label: '70\'ler',   start: 1970, end: 1979, icon: IconMusic },
+  { label: '60\'lar',   start: 1960, end: 1969, icon: IconFlower },
+  { label: '50\'ler',   start: 1950, end: 1959, icon: IconMasks },
+  { label: 'Klasikler', start: 1900, end: 1949, icon: IconFilm },
 ]
 
 interface Props {
@@ -61,7 +65,7 @@ export default async function DonemPage({ searchParams }: Props) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">📅 {t('browse.donem.title')}</h1>
+        <h1 className="text-3xl font-bold text-white mb-2 inline-flex items-center gap-2"><IconCalendarDays size={28} />{t('browse.donem.title')}</h1>
         <p className="text-[--text-secondary]">{t('browse.donem.subtitle')}</p>
       </div>
 
@@ -74,7 +78,7 @@ export default async function DonemPage({ searchParams }: Props) {
                 ? 'bg-[--accent] border-[--accent] text-white shadow-lg shadow-[--accent]/20'
                 : 'bg-[--bg-card] border-[--border] text-[--text-secondary] hover:text-white hover:border-[--accent]/50'
             }`}>
-            <span>{d.emoji}</span>
+            <d.icon size={18} />
             <span>{d.label}</span>
             <span className="text-xs opacity-60">({d.start}–{d.end})</span>
           </Link>
@@ -84,7 +88,7 @@ export default async function DonemPage({ searchParams }: Props) {
       {selected && (
         <>
           <div className="flex items-center gap-3 mb-5">
-            <span className="text-2xl">{selected.emoji}</span>
+            <selected.icon size={26} className="text-[--accent]" />
             <h2 className="text-xl font-bold text-white">{selected.label} ({selected.start}–{selected.end})</h2>
             <span className="text-sm text-[--text-secondary]">· {t('browse.donem.filmCount', { count: totalCount.toLocaleString('tr-TR') })}</span>
           </div>
@@ -105,7 +109,7 @@ export default async function DonemPage({ searchParams }: Props) {
 
       {!donem && (
         <div className="text-center py-8 text-[--text-secondary] text-sm">
-          {t('browse.donem.selectPrompt')} ✨
+          {t('browse.donem.selectPrompt')} <IconSparkles size={14} className="inline" />
         </div>
       )}
     </div>

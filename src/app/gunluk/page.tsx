@@ -4,6 +4,7 @@ import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle } from '@/
 import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
 import DiaryPageClient from './DiaryPageClient'
+import { IconCalendar } from '@/components/icons'
 
 export const metadata: Metadata = { title: 'Film Günlüğüm' }
 
@@ -72,7 +73,7 @@ export default async function GunlukPage({ searchParams }: Props) {
 
       {enriched.length === 0 ? (
         <div className="rounded-2xl py-20 text-center px-6" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <p className="text-4xl mb-4">📅</p>
+          <p className="mb-4 flex justify-center"><IconCalendar size={40} /></p>
           <p className="text-lg font-medium text-white mb-2">{t('profile.diaryEmptyTitle')}</p>
           <p className="text-sm text-[--text-secondary]">
             {t('profile.diaryEmptyDesc')}

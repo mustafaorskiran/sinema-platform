@@ -60,10 +60,10 @@ export default async function DavetPage({ params }: Props) {
           }}
         >
           <div
-            className="h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-5 text-2xl"
-            style={{ background: 'rgba(225,29,72,0.15)', border: '1px solid rgba(225,29,72,0.25)' }}
+            className="h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-5"
+            style={{ background: 'rgba(225,29,72,0.15)', border: '1px solid rgba(225,29,72,0.25)', color: 'var(--accent)' }}
           >
-            🎬
+            <IconFilm size={28} />
           </div>
 
           {inviterProfile ? (

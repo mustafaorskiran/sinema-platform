@@ -39,6 +39,7 @@ import FilmOnerButton from '@/components/FilmOnerButton'
 import AlsoWatched from '@/components/AlsoWatched'
 import ReleaseReminderButton from '@/components/ReleaseReminderButton'
 import AdBanner from '@/components/AdBanner'
+import { IconCake, IconScale, IconFilm, IconStar, IconStarFilled, IconClipboard } from '@/components/icons'
 import type { Review } from '@/lib/types'
 import type { Metadata } from 'next'
 
@@ -419,7 +420,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
             {anniversary && (
               <div className="mb-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold animate-pulse"
                 style={{ background: 'rgba(212,168,67,0.15)', border: '1px solid rgba(212,168,67,0.3)', color: '#D4A843' }}>
-                🎂 {anniversary.type === 'exact' ? t('film.anniversaryToday', { years: anniversary.years }) : t('film.anniversaryWeek', { years: anniversary.years })}
+                <IconCake size={14} /> {anniversary.type === 'exact' ? t('film.anniversaryToday', { years: anniversary.years }) : t('film.anniversaryWeek', { years: anniversary.years })}
               </div>
             )}
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight tracking-tight">{title}</h1>
@@ -531,7 +532,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
                 className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition-all hover:text-white hover:scale-105"
                 style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.55)' }}
               >
-                ⚖️ {t('film.compare')}
+                <IconScale size={14} /> {t('film.compare')}
               </a>
               {user && (
                 <FilmOnerButton
@@ -677,7 +678,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
               <div className="mt-3">
                 <a href={`/koleksiyon/${movie.belongs_to_collection.id}`}
                   className="collection-chip inline-flex items-center gap-2 text-[12px] px-4 py-2 rounded-xl">
-                  🎬 {movie.belongs_to_collection.name} →
+                  <IconFilm size={14} /> {movie.belongs_to_collection.name} →
                 </a>
               </div>
             )}
@@ -731,14 +732,14 @@ export default async function FilmPage({ params, searchParams }: Props) {
 
         {/* Sayfa içi navigasyon */}
         <PageNav sections={[
-          { id: 'oyuncular', label: `🎭 ${t('film.cast')}` },
-          { id: 'odüller', label: `🏆 ${t('film.awardsNav')}` },
-          { id: 'puan-dagilimi', label: `📊 ${t('film.ratingsNav')}` },
-          ...(videos.length > 0 ? [{ id: 'videolar', label: `🎬 ${t('film.videosNav')}` }] : []),
-          ...(backdrops.length > 0 || posters.length > 0 ? [{ id: 'galeri', label: `🖼 ${t('film.galleryNav')}` }] : []),
-          { id: 'trivia', label: `💡 ${t('film.triviaNav')}` },
-          { id: 'yorumlar', label: `💬 ${t('film.reviewsNav')}` },
-          { id: 'benzer', label: `🎞 ${t('film.similarNav')}` },
+          { id: 'oyuncular', label: t('film.cast') },
+          { id: 'odüller', label: t('film.awardsNav') },
+          { id: 'puan-dagilimi', label: t('film.ratingsNav') },
+          ...(videos.length > 0 ? [{ id: 'videolar', label: t('film.videosNav') }] : []),
+          ...(backdrops.length > 0 || posters.length > 0 ? [{ id: 'galeri', label: t('film.galleryNav') }] : []),
+          { id: 'trivia', label: t('film.triviaNav') },
+          { id: 'yorumlar', label: t('film.reviewsNav') },
+          { id: 'benzer', label: t('film.similarNav') },
         ]} />
 
         {/* Cast & Crew */}
@@ -780,7 +781,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
               <a href={`https://www.imdb.com/title/${imdbId}`} target="_blank" rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[12px] font-semibold transition-all hover:scale-105"
                 style={{ background: 'rgba(212,168,67,0.1)', border: '1px solid rgba(212,168,67,0.25)', color: '#D4A843' }}>
-                ⭐ {t('film.imdbOpen')} →
+                <IconStar size={14} /> {t('film.imdbOpen')} →
               </a>
             </div>
           )}
@@ -875,7 +876,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
                     }
                   </div>
                   <span className="text-[12px]" style={{ color: 'rgba(255,255,255,0.55)' }}>{fr.username}</span>
-                  <span className="text-[13px] font-bold" style={{ color: '#D4A843' }}>★ {fr.rating}</span>
+                  <span className="text-[13px] font-bold inline-flex items-center gap-1" style={{ color: '#D4A843' }}><IconStarFilled size={12} /> {fr.rating}</span>
                 </a>
               ))}
             </div>
@@ -1020,9 +1021,9 @@ export default async function FilmPage({ params, searchParams }: Props) {
                       <img src={getPosterUrl(film.poster_path, 'w342')!} alt={film.title}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
                     )}
-                    <div className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded text-[10px] font-bold"
+                    <div className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded text-[10px] font-bold inline-flex items-center gap-0.5"
                       style={{ background: 'rgba(0,0,0,0.75)', color: '#D4A843', backdropFilter: 'blur(4px)' }}>
-                      ★ {film.vote_average.toFixed(1)}
+                      <IconStarFilled size={10} /> {film.vote_average.toFixed(1)}
                     </div>
                   </div>
                   <p className="mt-1.5 text-xs font-medium line-clamp-2 group-hover:text-white transition-colors"
@@ -1064,9 +1065,9 @@ export default async function FilmPage({ params, searchParams }: Props) {
                       </div>
                     )}
                     {item.vote_average > 0 && (
-                      <div className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded text-[10px] font-bold"
+                      <div className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded text-[10px] font-bold inline-flex items-center gap-0.5"
                         style={{ background: 'rgba(0,0,0,0.75)', color: '#D4A843', backdropFilter: 'blur(4px)' }}>
-                        ★ {item.vote_average.toFixed(1)}
+                        <IconStarFilled size={10} /> {item.vote_average.toFixed(1)}
                       </div>
                     )}
                   </div>
@@ -1094,7 +1095,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
                 <a key={l.id} href={`/liste/${l.id}`}
                   className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-all hover:-translate-y-0.5"
                   style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                  <span className="text-xs">📋</span>
+                  <span className="text-xs"><IconClipboard size={14} /></span>
                   <span className="text-white font-medium">{l.title}</span>
                   <span className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>
                     @{(l.profiles as any)?.username}

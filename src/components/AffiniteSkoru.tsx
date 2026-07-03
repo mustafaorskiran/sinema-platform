@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useLocale } from '@/context/LocaleContext'
+import { IconFilm, IconMasks } from '@/components/icons'
 
 interface Props {
   username: string
@@ -49,7 +50,7 @@ export default function AffiniteSkoru({ username }: Props) {
   if (!data || data.shared === 0) return (
     <div className="rounded-xl px-4 py-3 text-xs"
       style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.3)' }}>
-      🎬 {t('affiniteSkoru.noShared')}
+      <span className="inline-flex items-center gap-1.5"><IconFilm size={14} />{t('affiniteSkoru.noShared')}</span>
     </div>
   )
 
@@ -62,7 +63,7 @@ export default function AffiniteSkoru({ username }: Props) {
 
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <span className="text-base">🎭</span>
+          <IconMasks size={16} />
           <div>
             <p className="text-xs font-semibold text-white">{t('affiniteSkoru.title')}</p>
             <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.35)' }}>

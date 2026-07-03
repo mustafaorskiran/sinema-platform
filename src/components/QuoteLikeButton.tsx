@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useLocale } from '@/context/LocaleContext'
+import { IconHeart, IconHeartFilled } from '@/components/icons'
 
 export default function QuoteLikeButton({ quoteId, initialLiked, initialCount }: {
   quoteId: string
@@ -37,7 +38,7 @@ export default function QuoteLikeButton({ quoteId, initialLiked, initialCount }:
       style={{ color: liked ? '#E11D48' : 'rgba(255,255,255,0.35)' }}
       title={liked ? t('quote.unlike') : t('quote.like')}
     >
-      <span className="text-base leading-none">{liked ? '♥' : '♡'}</span>
+      {liked ? <IconHeartFilled size={16} /> : <IconHeart size={16} />}
       {count > 0 && <span>{count}</span>}
     </button>
   )

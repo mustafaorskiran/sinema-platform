@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import ConversationList from './ConversationList'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconMessageSquare } from '@/components/icons'
 
 export const metadata: Metadata = { title: 'Mesajlar' }
 
@@ -35,7 +36,7 @@ export default async function MesajlarPage() {
       {/* Masaüstü: sağ panel placeholder (sidebar zaten layout'ta var) */}
       <div className="hidden md:flex flex-col items-center justify-center h-[60vh] rounded-2xl"
         style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
-        <p className="text-4xl mb-3">💬</p>
+        <div className="mb-3"><IconMessageSquare size={40} /></div>
         <p className="text-sm font-medium text-white mb-1">{t('messages.selectConversation')}</p>
         <p className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>{t('messages.selectConversationHint')}</p>
       </div>

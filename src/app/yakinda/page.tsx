@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getPosterUrl } from '@/lib/tmdb'
 import { getTranslations } from '@/lib/i18n'
+import { IconCalendarDays, IconFilm, IconTv, IconFire, IconCalendar } from '@/components/icons'
 
 export const revalidate = 3600
 
@@ -86,22 +87,22 @@ export default async function YakindaPage({ searchParams }: Props) {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Başlık */}
       <div className="mb-8">
-        <h1 className="text-3xl font-black text-white mb-1">📅 {t('comingSoon.title')}</h1>
+        <h1 className="text-3xl font-black text-white mb-1 flex items-center gap-2"><IconCalendarDays size={28} /> {t('comingSoon.title')}</h1>
         <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>{t('comingSoon.subtitle')}</p>
       </div>
 
       {/* Tabs */}
       <div className="flex gap-2 mb-8">
         {[
-          { id: 'film', label: `🎬 ${t('upcoming.tabs.movies')}`, count: films.length },
-          { id: 'dizi', label: `📺 ${t('upcoming.tabs.series')}`, count: diziler.length },
+          { id: 'film', icon: <IconFilm size={16} />, label: t('upcoming.tabs.movies'), count: films.length },
+          { id: 'dizi', icon: <IconTv size={16} />, label: t('upcoming.tabs.series'), count: diziler.length },
         ].map(tab => (
           <Link key={tab.id} href={`/yakinda?tip=${tab.id}`}
-            className="px-5 py-2 rounded-full text-sm font-semibold transition-all"
+            className="px-5 py-2 rounded-full text-sm font-semibold transition-all inline-flex items-center gap-1.5"
             style={tab.id === tip
               ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: 'white' }
               : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
-            {tab.label} <span className="ml-1 opacity-60">{tab.count}</span>
+            {tab.icon} {tab.label} <span className="ml-1 opacity-60">{tab.count}</span>
           </Link>
         ))}
       </div>
@@ -110,7 +111,7 @@ export default async function YakindaPage({ searchParams }: Props) {
       {items.length === 0 ? (
         <div className="text-center py-20 rounded-2xl"
           style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <p className="text-4xl mb-3">📽️</p>
+          <p className="mb-3 flex justify-center"><IconFilm size={40} /></p>
           <p style={{ color: 'rgba(255,255,255,0.4)' }}>{t('upcoming.empty')}</p>
         </div>
       ) : (
@@ -153,9 +154,9 @@ export default async function YakindaPage({ searchParams }: Props) {
                   {/* Tarih badge */}
                   <div className="flex items-center gap-1.5 mb-2">
                     {isVeryClose && (
-                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold animate-pulse"
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold animate-pulse inline-flex items-center gap-1"
                         style={{ background: 'rgba(225,29,72,0.2)', color: '#f87171', border: '1px solid rgba(225,29,72,0.3)' }}>
-                        🔥 {t('upcoming.thisWeek')}
+                        <IconFire size={11} /> {t('upcoming.thisWeek')}
                       </span>
                     )}
                     {!isVeryClose && isThisMonth && (
@@ -166,8 +167,8 @@ export default async function YakindaPage({ searchParams }: Props) {
                     )}
                   </div>
 
-                  <p className="text-xs mb-2" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                    📅 {releaseDate ? formatDate(releaseDate) : '?'}
+                  <p className="text-xs mb-2 flex items-center gap-1" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                    <IconCalendar size={12} /> {releaseDate ? formatDate(releaseDate) : '?'}
                     {days >= 0 && days !== Infinity && (
                       <span style={{ color: 'rgba(255,255,255,0.3)' }}> · {t('upcoming.daysLater', { days })}</span>
                     )}

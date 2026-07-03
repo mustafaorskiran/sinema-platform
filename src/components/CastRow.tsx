@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState, useEffect, useCallback } from 'react'
-import { IconChevronLeft, IconChevronRight } from '@/components/icons'
+import { IconChevronLeft, IconChevronRight, IconFilm } from '@/components/icons'
 import { useLocale } from '@/context/LocaleContext'
 
 interface Person {
@@ -184,7 +184,9 @@ export default function CastRow({ cast, director }: Props) {
                 className="mt-0.5 text-[11px] line-clamp-1"
                 style={{ color: 'var(--text-secondary)', opacity: 0.7 }}
               >
-                {p.isDirector ? `🎬 ${t('castRow.director')}` : p.role}
+                {p.isDirector
+                  ? <span className="inline-flex items-center gap-1"><IconFilm size={11} />{t('castRow.director')}</span>
+                  : p.role}
               </p>
             </a>
           ))}

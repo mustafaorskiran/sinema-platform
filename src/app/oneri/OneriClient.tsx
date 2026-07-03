@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { IconSparkles, IconRobot, IconRotateCw } from '@/components/icons'
 
 interface Suggestion {
   title: string
@@ -44,9 +45,9 @@ export default function OneriClient() {
       <div className="rounded-2xl p-5"
         style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(139,92,246,0.15)' }}>
         <div className="flex items-start gap-3">
-          <div className="shrink-0 h-8 w-8 rounded-lg flex items-center justify-center text-sm"
+          <div className="shrink-0 h-8 w-8 rounded-lg flex items-center justify-center"
             style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)' }}>
-            ✨
+            <IconSparkles size={16} />
           </div>
           <div>
             <p className="text-[9.5px] font-bold uppercase tracking-[0.16em] mb-1" style={{ color: 'rgba(139,92,246,0.6)' }}>
@@ -70,7 +71,7 @@ export default function OneriClient() {
             <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block" />
             AI Analiz Ediyor...
           </span>
-        ) : '🤖 Öneri Al'}
+        ) : <span className="inline-flex items-center justify-center gap-1.5"><IconRobot size={16} />Öneri Al</span>}
       </button>
 
       {error && (
@@ -125,9 +126,9 @@ export default function OneriClient() {
           </div>
 
           <button onClick={handleGenerate} disabled={loading}
-            className="w-full py-2 rounded-xl text-[12px] font-semibold transition-all hover:opacity-80"
+            className="w-full py-2 rounded-xl text-[12px] font-semibold transition-all hover:opacity-80 inline-flex items-center justify-center gap-1.5"
             style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.2)', color: 'rgba(139,92,246,0.8)' }}>
-            🔄 Farklı Öneriler Al
+            <IconRotateCw size={12} />Farklı Öneriler Al
           </button>
         </div>
       )}

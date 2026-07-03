@@ -13,6 +13,7 @@ import {
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconFilm, IconTv } from '@/components/icons'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -22,7 +23,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const list = CURATED_LISTS.find(l => l.slug === slug)
-  return { title: list ? `${list.emoji} ${list.title}` : 'Özel Liste' }
+  return { title: list ? list.title : 'Özel Liste' }
 }
 
 async function fetchListItems(list: (typeof CURATED_LISTS)[number], page: number) {
@@ -76,16 +77,17 @@ export default async function OzelListeDetayPage({ params, searchParams }: Props
 
       {/* Başlık */}
       <div className="flex items-center gap-4 mb-8">
-        <span className="text-5xl">{list.emoji}</span>
+        <list.icon size={48} strokeWidth={1.5} className="text-[--accent] shrink-0" />
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-bold text-white">{list.title}</h1>
-            <span className={`text-xs font-bold uppercase px-2 py-1 rounded ${
+            <span className={`inline-flex items-center gap-1 text-xs font-bold uppercase px-2 py-1 rounded ${
               list.mediaType === 'film'
                 ? 'bg-blue-500/15 text-blue-400'
                 : 'bg-purple-500/15 text-purple-400'
             }`}>
-              {list.mediaType === 'film' ? `🎬 ${t('film.badge')}` : `📺 ${t('series.badge')}`}
+              {list.mediaType === 'film' ? <IconFilm size={13} /> : <IconTv size={13} />}
+              {list.mediaType === 'film' ? t('film.badge') : t('series.badge')}
             </span>
           </div>
           <p className="text-[--text-secondary] text-sm mt-1">{list.description}</p>

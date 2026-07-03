@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getPosterUrl, getMediaTitle, getMovieDetail, getSeriesDetail } from '@/lib/tmdb'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconArrowLeft, IconFilm, IconTv, IconCalendarDays, IconRotateCw, IconChevronLeft, IconChevronRight } from '@/components/icons'
 
 interface Props {
   params: Promise<{ username: string }>
@@ -86,9 +87,9 @@ export default async function ProfilGunlukPage({ params, searchParams }: Props) 
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
       {/* Geri */}
       <div className="flex items-center gap-3 mb-6">
-        <Link href={`/profil/${username}`} className="text-sm hover:text-white transition-colors"
+        <Link href={`/profil/${username}`} className="text-sm hover:text-white transition-colors inline-flex items-center gap-1"
           style={{ color: 'rgba(255,255,255,0.4)' }}>
-          ← @{username}
+          <IconArrowLeft size={14} /> @{username}
         </Link>
       </div>
 
@@ -135,7 +136,7 @@ export default async function ProfilGunlukPage({ params, searchParams }: Props) 
           <Link href="/filmler"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:scale-105"
             style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', boxShadow: '0 4px 14px rgba(225,29,72,0.25)' }}>
-            🎬 {t('profile.diaryTab.exploreFilms')}
+            <IconFilm size={16} /> {t('profile.diaryTab.exploreFilms')}
           </Link>
         </div>
       ) : (
@@ -150,8 +151,8 @@ export default async function ProfilGunlukPage({ params, searchParams }: Props) 
                     style={{ background: 'rgba(255,255,255,0.06)' }}>
                     {entry.poster
                       ? <img src={entry.poster} alt={entry.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-                      : <div className="w-full h-full flex items-center justify-center text-lg">
-                          {entry.media_type === 'film' ? '🎬' : '📺'}
+                      : <div className="w-full h-full flex items-center justify-center">
+                          {entry.media_type === 'film' ? <IconFilm size={20} /> : <IconTv size={20} />}
                         </div>
                     }
                   </Link>
@@ -171,13 +172,13 @@ export default async function ProfilGunlukPage({ params, searchParams }: Props) 
                       )}
                     </div>
                     <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                      <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                        📅 {formatDate(entry.watched_at)}
+                      <span className="text-[11px] inline-flex items-center gap-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                        <IconCalendarDays size={12} /> {formatDate(entry.watched_at)}
                       </span>
                       {entry.rewatch && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded"
+                        <span className="text-[10px] px-1.5 py-0.5 rounded inline-flex items-center gap-1"
                           style={{ background: 'rgba(96,165,250,0.1)', color: '#60a5fa', border: '1px solid rgba(96,165,250,0.2)' }}>
-                          🔁 {t('profile.diaryTab.rewatch')}
+                          <IconRotateCw size={10} /> {t('profile.diaryTab.rewatch')}
                         </span>
                       )}
                       {ratingInfo && (
@@ -203,9 +204,9 @@ export default async function ProfilGunlukPage({ params, searchParams }: Props) 
             <div className="flex items-center justify-center gap-2 mt-8">
               {page > 1 && (
                 <Link href={`/profil/${username}/gunluk?sayfa=${page - 1}`}
-                  className="px-4 py-2 rounded-xl text-sm transition-colors hover:bg-white/5"
+                  className="px-4 py-2 rounded-xl text-sm transition-colors hover:bg-white/5 inline-flex items-center gap-1"
                   style={{ color: 'rgba(255,255,255,0.4)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  ← {t('common.prev')}
+                  <IconChevronLeft size={14} /> {t('common.prev')}
                 </Link>
               )}
               <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
@@ -213,9 +214,9 @@ export default async function ProfilGunlukPage({ params, searchParams }: Props) 
               </span>
               {page < totalPages && (
                 <Link href={`/profil/${username}/gunluk?sayfa=${page + 1}`}
-                  className="px-4 py-2 rounded-xl text-sm transition-colors hover:bg-white/5"
+                  className="px-4 py-2 rounded-xl text-sm transition-colors hover:bg-white/5 inline-flex items-center gap-1"
                   style={{ color: 'rgba(255,255,255,0.4)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  {t('common.next')} →
+                  {t('common.next')} <IconChevronRight size={14} />
                 </Link>
               )}
             </div>

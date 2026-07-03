@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { IconArrowRight } from '@/components/icons'
 
 interface EditorialList {
   id: string
@@ -220,9 +221,9 @@ export default function EditorialListManager({ lists }: Props) {
                     href={list.slug ? `/liste/editorial/${list.slug}` : `/liste/${list.id}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs text-[--accent] hover:underline"
+                    className="text-xs text-[--accent] hover:underline inline-flex items-center gap-1"
                   >
-                    Görüntüle →
+                    Görüntüle <IconArrowRight size={12} />
                   </a>
                 </td>
               </tr>

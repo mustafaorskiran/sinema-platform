@@ -2,6 +2,7 @@ import { discoverMovieRaw, getPosterUrl, getMediaTitle, getMediaYear } from '@/l
 import { getTranslations } from '@/lib/i18n'
 import TvFilmleriClient from './TvFilmleriClient'
 import type { Metadata } from 'next'
+import { IconTv } from '@/components/icons'
 
 export const metadata: Metadata = { title: 'TV Filmleri' }
 
@@ -50,7 +51,7 @@ export default async function TvFilmleriPage({ searchParams }: Props) {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white">📺 {t('browse.tvFilmleri.title')}</h1>
+        <h1 className="text-3xl font-bold text-white flex items-center gap-2"><IconTv size={28} /> {t('browse.tvFilmleri.title')}</h1>
         <p className="text-[--text-secondary] text-sm mt-1">
           {t('browse.tvFilmleri.subtitle')}
         </p>

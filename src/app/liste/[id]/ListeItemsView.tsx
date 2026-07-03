@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, type ReactNode } from 'react'
 import Link from 'next/link'
+import { IconStarFilled, IconList, IconGrid, IconFilm, IconTv, IconMessageSquare } from '@/components/icons'
 
 interface MediaItem {
   id: string
@@ -61,7 +62,7 @@ function RatingBadge({ score }: { score: number }) {
   return (
     <span className="inline-flex items-center gap-0.5 text-[11px] font-bold px-1.5 py-0.5 rounded"
       style={{ background: `${color}22`, color, border: `1px solid ${color}44` }}>
-      ★ {score.toFixed(1)}
+      <IconStarFilled size={11} />{score.toFixed(1)}
     </span>
   )
 }
@@ -105,7 +106,7 @@ export default function ListeItemsView({ items }: Props) {
     return (
       <div className="rounded-2xl py-16 text-center"
         style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-        <p className="text-4xl mb-3">📋</p>
+        <div className="flex justify-center mb-3"><IconList size={40} /></div>
         <p style={{ color: 'rgba(255,255,255,0.4)' }}>Bu liste henüz boş.</p>
       </div>
     )
@@ -116,10 +117,10 @@ export default function ListeItemsView({ items }: Props) {
       {/* ── Stats Bar ── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         {[
-          { label: 'Toplam', value: items.length.toString(), sub: `${films.length} film · ${diziler.length} dizi` },
-          { label: 'Ort. Puan', value: avgRating > 0 ? `★ ${avgRating.toFixed(1)}` : '—', sub: 'TMDb ortalaması' },
-          { label: 'Toplam Süre', value: totalRuntime > 0 ? fmtRuntime(totalRuntime) : '—', sub: 'yalnızca filmler' },
-          { label: 'En Çok Tür', value: topGenres[0]?.[0] ?? '—', sub: topGenres.slice(1, 3).map(([g]) => g).join(' · ') || '' },
+          { label: 'Toplam', value: items.length.toString() as ReactNode, sub: `${films.length} film · ${diziler.length} dizi` },
+          { label: 'Ort. Puan', value: (avgRating > 0 ? <span className="inline-flex items-center gap-1"><IconStarFilled size={14} />{avgRating.toFixed(1)}</span> : '—') as ReactNode, sub: 'TMDb ortalaması' },
+          { label: 'Toplam Süre', value: (totalRuntime > 0 ? fmtRuntime(totalRuntime) : '—') as ReactNode, sub: 'yalnızca filmler' },
+          { label: 'En Çok Tür', value: (topGenres[0]?.[0] ?? '—') as ReactNode, sub: topGenres.slice(1, 3).map(([g]) => g).join(' · ') || '' },
         ].map(s => (
           <div key={s.label} className="rounded-xl p-3"
             style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
@@ -136,11 +137,11 @@ export default function ListeItemsView({ items }: Props) {
         <div className="flex items-center gap-1 rounded-xl p-1"
           style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
           {([
-            { key: 'rank', label: 'Sıra' },
-            { key: 'rating', label: '★ Puan' },
-            { key: 'year', label: 'Yıl' },
-            { key: 'title', label: 'A-Z' },
-          ] as { key: SortKey; label: string }[]).map(({ key, label }) => (
+            { key: 'rank', label: 'Sıra' as ReactNode },
+            { key: 'rating', label: <span className="inline-flex items-center gap-1"><IconStarFilled size={12} />Puan</span> as ReactNode },
+            { key: 'year', label: 'Yıl' as ReactNode },
+            { key: 'title', label: 'A-Z' as ReactNode },
+          ] as { key: SortKey; label: ReactNode }[]).map(({ key, label }) => (
             <button key={key} onClick={() => setSort(key)}
               className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
               style={{
@@ -156,16 +157,16 @@ export default function ListeItemsView({ items }: Props) {
         <div className="flex items-center gap-1 rounded-xl p-1"
           style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
           {([
-            { key: 'list', icon: '☰' },
-            { key: 'grid', icon: '⊞' },
-          ] as { key: ViewMode; icon: string }[]).map(({ key, icon }) => (
+            { key: 'list', Icon: IconList },
+            { key: 'grid', Icon: IconGrid },
+          ] as { key: ViewMode; Icon: typeof IconList }[]).map(({ key, Icon }) => (
             <button key={key} onClick={() => setView(key)}
-              className="w-8 h-8 rounded-lg text-sm font-bold transition-colors"
+              className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
               style={{
                 background: view === key ? 'rgba(255,255,255,0.12)' : 'transparent',
                 color: view === key ? 'white' : 'rgba(255,255,255,0.3)',
               }}>
-              {icon}
+              <Icon size={16} />
             </button>
           ))}
         </div>
@@ -186,7 +187,7 @@ export default function ListeItemsView({ items }: Props) {
                     style={{ background: 'rgba(255,255,255,0.05)' }}>
                     {poster
                       ? <img src={poster} alt={title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
-                      : <div className="w-full h-full flex items-center justify-center text-2xl opacity-20">{item.media_type === 'film' ? '🎬' : '📺'}</div>
+                      : <div className="w-full h-full flex items-center justify-center opacity-20">{item.media_type === 'film' ? <IconFilm size={24} /> : <IconTv size={24} />}</div>
                     }
                     <div className="absolute top-1.5 left-1.5 h-5 min-w-[20px] px-1.5 rounded-md text-[10px] font-bold flex items-center justify-center"
                       style={{ background: 'rgba(11,15,25,0.9)', color: 'white', border: '1px solid rgba(255,255,255,0.12)' }}>
@@ -240,7 +241,7 @@ export default function ListeItemsView({ items }: Props) {
                     style={{ aspectRatio: '2/3', background: 'rgba(255,255,255,0.06)' }}>
                     {poster
                       ? <img src={poster} alt={title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-                      : <div className="w-full h-full flex items-center justify-center text-lg opacity-20">{item.media_type === 'film' ? '🎬' : '📺'}</div>
+                      : <div className="w-full h-full flex items-center justify-center opacity-20">{item.media_type === 'film' ? <IconFilm size={18} /> : <IconTv size={18} />}</div>
                     }
                   </div>
                 </Link>
@@ -277,9 +278,9 @@ export default function ListeItemsView({ items }: Props) {
                       style={{ color: 'rgba(255,255,255,0.35)' }}>{overview}</p>
                   )}
                   {item.note && (
-                    <p className="text-xs mt-1.5 italic line-clamp-1"
+                    <p className="text-xs mt-1.5 italic line-clamp-1 inline-flex items-center gap-1"
                       style={{ color: '#D4A843', opacity: 0.85 }}>
-                      💬 "{item.note}"
+                      <IconMessageSquare size={12} />"{item.note}"
                     </p>
                   )}
                 </div>

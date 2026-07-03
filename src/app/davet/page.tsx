@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
+import { IconMedal, IconUsers } from '@/components/icons'
 
 export const metadata: Metadata = {
   title: 'Davet Liderleri — Sinezon',
@@ -36,7 +37,7 @@ export default async function DavetLeaderboardPage() {
     .filter(l => l.inviteCount > 0)
     .slice(0, 10)
 
-  const medalEmoji = ['🥇', '🥈', '🥉']
+  const medalColorClasses = ['text-[#D4A803]', 'text-[#C0C0C0]', 'text-[#B87333]']
 
   return (
     <div className="max-w-xl mx-auto px-4 py-10">
@@ -52,7 +53,7 @@ export default async function DavetLeaderboardPage() {
           className="rounded-xl py-16 text-center text-[--text-secondary]"
           style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
         >
-          <p className="text-3xl mb-3">👥</p>
+          <p className="mb-3 flex justify-center"><IconUsers size={32} /></p>
           <p className="text-sm">{t('invite.leaderboardEmpty')}</p>
         </div>
       ) : (
@@ -71,8 +72,8 @@ export default async function DavetLeaderboardPage() {
               }}
             >
               {/* Sıra */}
-              <span className="text-xl shrink-0 w-8 text-center">
-                {index < 3 ? medalEmoji[index] : <span className="text-sm font-bold text-[--text-secondary]">#{index + 1}</span>}
+              <span className="shrink-0 w-8 flex items-center justify-center">
+                {index < 3 ? <IconMedal size={20} className={medalColorClasses[index]} /> : <span className="text-sm font-bold text-[--text-secondary]">#{index + 1}</span>}
               </span>
 
               {/* Avatar */}

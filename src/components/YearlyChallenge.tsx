@@ -1,7 +1,9 @@
 ﻿"use client"
 
 import { useEffect, useState } from "react"
+import type { ComponentType } from "react"
 import { useLocale } from "@/context/LocaleContext"
+import { IconTrophy, IconFilm, IconTv, IconMedal, IconCheck } from "@/components/icons"
 
 interface Data {
   challenge: { film_goal: number; series_goal: number } | null
@@ -27,17 +29,17 @@ function ProgressRing({ pct, size = 80, color }: { pct: number; size?: number; c
   )
 }
 
-function MilestoneBadge({ pct, threshold, label }: { pct: number; threshold: number; label: string }) {
+function MilestoneBadge({ pct, threshold, Icon, iconColor }: { pct: number; threshold: number; Icon: ComponentType<{ size?: number; className?: string; style?: React.CSSProperties }>; iconColor?: string }) {
   const reached = pct >= threshold
   return (
     <div className="flex flex-col items-center gap-1">
-      <div className="w-8 h-8 rounded-full flex items-center justify-center text-base transition-all"
+      <div className="w-8 h-8 rounded-full flex items-center justify-center transition-all"
         style={{
           background: reached ? "rgba(212,168,67,0.15)" : "rgba(255,255,255,0.04)",
           border: reached ? "1px solid rgba(212,168,67,0.4)" : "1px solid rgba(255,255,255,0.08)",
           filter: reached ? "none" : "grayscale(1) opacity(0.3)",
         }}>
-        {label}
+        <Icon size={16} style={{ color: iconColor ?? '#D4A843' }} />
       </div>
       <span className="text-[9px]" style={{ color: reached ? "#D4A843" : "rgba(255,255,255,0.2)" }}>
         %{threshold}
@@ -112,7 +114,7 @@ export default function YearlyChallenge() {
   if (!data.challenge && !editing) {
     return (
       <div className="rounded-2xl p-6 text-center" style={goldBorder}>
-        <p className="text-3xl mb-3">🏆</p>
+        <IconTrophy size={32} className="mx-auto mb-3 text-[--gold]" />
         <p className="text-sm font-bold text-white mb-1">{t('yearlyChallenge.challengeTitle', { year })}</p>
         <p className="text-xs mb-4" style={{ color: "rgba(255,255,255,0.4)" }}>{t('yearlyChallenge.askGoal')}</p>
         <button
@@ -130,15 +132,15 @@ export default function YearlyChallenge() {
       <div className="rounded-2xl p-5" style={glassCard}>
         <div className="flex items-center gap-2 mb-5">
           <div className="w-1 h-5 rounded-full" style={{ background: "linear-gradient(180deg, #D4A843, #E11D48)" }} />
-          <p className="text-sm font-bold text-white">🏆 {t('yearlyChallenge.setGoalTitle', { year })}</p>
+          <p className="flex items-center gap-2 text-sm font-bold text-white"><IconTrophy size={16} className="text-[--gold]" />{t('yearlyChallenge.setGoalTitle', { year })}</p>
         </div>
         <div className="space-y-4">
           {[
-            { label: `🎬 ${t('yearlyChallenge.filmGoalLabel')}`, value: filmGoal, set: setFilmGoal, max: 1000 },
-            { label: `📺 ${t('yearlyChallenge.seriesGoalLabel')}`, value: seriesGoal, set: setSeriesGoal, max: 500 },
-          ].map(({ label, value, set, max }) => (
-            <div key={label}>
-              <label className="text-xs mb-2 block" style={{ color: "rgba(255,255,255,0.4)" }}>{label}</label>
+            { key: 'film', Icon: IconFilm, label: t('yearlyChallenge.filmGoalLabel'), value: filmGoal, set: setFilmGoal, max: 1000 },
+            { key: 'series', Icon: IconTv, label: t('yearlyChallenge.seriesGoalLabel'), value: seriesGoal, set: setSeriesGoal, max: 500 },
+          ].map(({ key, Icon, label, value, set, max }) => (
+            <div key={key}>
+              <label className="flex items-center gap-1.5 text-xs mb-2" style={{ color: "rgba(255,255,255,0.4)" }}><Icon size={14} />{label}</label>
               <div className="flex items-center gap-3">
                 <button onClick={() => set(Math.max(0, value - 1))}
                   className="w-9 h-9 rounded-xl text-white font-bold text-lg transition-all hover:scale-105"
@@ -185,13 +187,13 @@ export default function YearlyChallenge() {
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
           <div className="w-1 h-5 rounded-full" style={{ background: "linear-gradient(180deg, #D4A843, #E11D48)" }} />
-          <p className="text-sm font-bold text-white">🏆 {t('yearlyChallenge.mainTitle', { year })}</p>
+          <p className="flex items-center gap-2 text-sm font-bold text-white"><IconTrophy size={16} className="text-[--gold]" />{t('yearlyChallenge.mainTitle', { year })}</p>
         </div>
         <div className="flex gap-2">
           <button onClick={share}
             className="text-[11px] px-3 py-1.5 rounded-lg transition-all hover:scale-105"
             style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: shared ? "#4ade80" : "rgba(255,255,255,0.4)" }}>
-            {shared ? `✓ ${t('yearlyChallenge.copied')}` : t('yearlyChallenge.share')}
+            {shared ? <span className="inline-flex items-center gap-1"><IconCheck size={11} />{t('yearlyChallenge.copied')}</span> : t('yearlyChallenge.share')}
           </button>
           <button onClick={() => setEditing(true)}
             className="text-[11px] px-3 py-1.5 rounded-lg transition-all hover:scale-105"
@@ -212,8 +214,8 @@ export default function YearlyChallenge() {
             </div>
             <div className="text-center">
               <p className="text-lg font-black text-white leading-none">{filmWatched}<span className="text-xs font-normal text-white/30">/{filmGoalVal}</span></p>
-              <p className="text-[10px] mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>🎬 {t('yearlyChallenge.film')}</p>
-              {filmPct >= 100 && <p className="text-[10px] text-green-400 font-bold mt-0.5">{t('yearlyChallenge.completed')} ✓</p>}
+              <p className="flex items-center justify-center gap-1 text-[10px] mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}><IconFilm size={11} />{t('yearlyChallenge.film')}</p>
+              {filmPct >= 100 && <p className="flex items-center justify-center gap-1 text-[10px] text-green-400 font-bold mt-0.5">{t('yearlyChallenge.completed')}<IconCheck size={11} /></p>}
             </div>
           </div>
         )}
@@ -232,8 +234,8 @@ export default function YearlyChallenge() {
             </div>
             <div className="text-center">
               <p className="text-lg font-black text-white leading-none">{seriesWatched}<span className="text-xs font-normal text-white/30">/{seriesGoalVal}</span></p>
-              <p className="text-[10px] mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>📺 {t('yearlyChallenge.series')}</p>
-              {seriesPct >= 100 && <p className="text-[10px] text-green-400 font-bold mt-0.5">{t('yearlyChallenge.completed')} ✓</p>}
+              <p className="flex items-center justify-center gap-1 text-[10px] mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}><IconTv size={11} />{t('yearlyChallenge.series')}</p>
+              {seriesPct >= 100 && <p className="flex items-center justify-center gap-1 text-[10px] text-green-400 font-bold mt-0.5">{t('yearlyChallenge.completed')}<IconCheck size={11} /></p>}
             </div>
           </div>
         )}
@@ -246,10 +248,10 @@ export default function YearlyChallenge() {
             {t('yearlyChallenge.milestones')}
           </p>
           <div className="flex justify-around">
-            <MilestoneBadge pct={combinedPct} threshold={25} label="🥉" />
-            <MilestoneBadge pct={combinedPct} threshold={50} label="🥈" />
-            <MilestoneBadge pct={combinedPct} threshold={75} label="🥇" />
-            <MilestoneBadge pct={combinedPct} threshold={100} label="🏆" />
+            <MilestoneBadge pct={combinedPct} threshold={25} Icon={IconMedal} iconColor="#B87333" />
+            <MilestoneBadge pct={combinedPct} threshold={50} Icon={IconMedal} iconColor="#C0C0C0" />
+            <MilestoneBadge pct={combinedPct} threshold={75} Icon={IconMedal} iconColor="#D4A803" />
+            <MilestoneBadge pct={combinedPct} threshold={100} Icon={IconTrophy} iconColor="#D4A843" />
           </div>
         </div>
       )}

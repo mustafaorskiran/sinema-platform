@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { IconFilm, IconCheck } from '@/components/icons'
 
 interface VersusItem {
   id: string
@@ -76,12 +77,12 @@ export default function VersusClient({ items: initialItems, userId }: Props) {
                   style={{ background: 'rgba(255,255,255,0.06)', border: item.myVote === item.filmAId ? '2px solid #E11D48' : '2px solid transparent' }}>
                   {item.filmAPoster
                     ? <img src={item.filmAPoster} alt={item.filmATitle} className="w-full h-full object-cover" />
-                    : <div className="w-full h-full flex items-center justify-center text-2xl">🎬</div>
+                    : <div className="w-full h-full flex items-center justify-center"><IconFilm size={24} /></div>
                   }
                   {item.myVote === item.filmAId && (
                     <div className="absolute inset-0 flex items-center justify-center"
                       style={{ background: 'rgba(225,29,72,0.3)' }}>
-                      <span className="text-2xl">✓</span>
+                      <IconCheck size={24} className="text-white" />
                     </div>
                   )}
                 </div>
@@ -117,12 +118,12 @@ export default function VersusClient({ items: initialItems, userId }: Props) {
                   style={{ background: 'rgba(255,255,255,0.06)', border: item.myVote === item.filmBId ? '2px solid #E11D48' : '2px solid transparent' }}>
                   {item.filmBPoster
                     ? <img src={item.filmBPoster} alt={item.filmBTitle} className="w-full h-full object-cover" />
-                    : <div className="w-full h-full flex items-center justify-center text-2xl">🎬</div>
+                    : <div className="w-full h-full flex items-center justify-center"><IconFilm size={24} /></div>
                   }
                   {item.myVote === item.filmBId && (
                     <div className="absolute inset-0 flex items-center justify-center"
                       style={{ background: 'rgba(225,29,72,0.3)' }}>
-                      <span className="text-2xl">✓</span>
+                      <IconCheck size={24} className="text-white" />
                     </div>
                   )}
                 </div>

@@ -2,9 +2,19 @@
 
 import { useState, useTransition } from 'react'
 import { useLocale } from '@/context/LocaleContext'
+import { IconClap, IconLaugh, IconCry, IconAngry, IconFire, IconStarFilled } from '@/components/icons'
 
 const REACTIONS = ['👏', '😂', '😢', '😡', '🔥', '💯'] as const
 type Reaction = typeof REACTIONS[number]
+
+const REACTION_ICONS: Record<Reaction, typeof IconClap> = {
+  '👏': IconClap,
+  '😂': IconLaugh,
+  '😢': IconCry,
+  '😡': IconAngry,
+  '🔥': IconFire,
+  '💯': IconStarFilled,
+}
 
 interface ReactionCount { reaction: Reaction; count: number; userReacted: boolean }
 
@@ -57,6 +67,7 @@ export default function ReviewReactions({ reviewId, initialReactions, isLoggedIn
     <div className="flex items-center gap-1.5 flex-wrap">
       {REACTIONS.map(reaction => {
         const r = reactions.find(x => x.reaction === reaction)!
+        const Icon = REACTION_ICONS[reaction]
         return (
           <button
             key={reaction}
@@ -69,7 +80,7 @@ export default function ReviewReactions({ reviewId, initialReactions, isLoggedIn
             }
             title={isLoggedIn ? undefined : t('review.reactionLoginPrompt')}
           >
-            <span>{reaction}</span>
+            <Icon size={14} />
             {r.count > 0 && (
               <span className="font-semibold" style={{ color: r.userReacted ? 'var(--accent)' : 'rgba(255,255,255,0.5)' }}>
                 {r.count}

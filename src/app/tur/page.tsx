@@ -1,17 +1,21 @@
 import Link from 'next/link'
 import { GENRE_MAP } from '@/lib/genres'
-import { IconFilm, IconLayers, IconTv } from '@/components/icons'
+import {
+  IconFilm, IconLayers, IconTv, IconZap, IconLaugh, IconMasks, IconGhost, IconAlertTriangle,
+  IconHeartFilled, IconPalette, IconCamera, IconRocket, IconWand, IconMap, IconMusic, IconScroll,
+  IconSearch, IconFamily, IconSwords, IconHat,
+} from '@/components/icons'
 import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Türler | Sinezon' }
 
-const GENRE_EMOJIS: Record<string, string> = {
-  aksiyon: '💥', komedi: '😂', drama: '🎭', korku: '👻',
-  gerilim: '😰', romantik: '❤️', animasyon: '🎨', belgesel: '📽️',
-  bilim_kurgu: '🚀', fantezi: '🧙', macera: '🗺️', muzik: '🎵',
-  tarih: '📜', suc: '🔍', aile: '👨‍👩‍👧', savas: '⚔️',
-  western: '🤠', gizem: '🕵️',
+const GENRE_ICONS: Record<string, typeof IconFilm> = {
+  aksiyon: IconZap, komedi: IconLaugh, drama: IconMasks, korku: IconGhost,
+  gerilim: IconAlertTriangle, romantik: IconHeartFilled, animasyon: IconPalette, belgesel: IconCamera,
+  bilim_kurgu: IconRocket, fantezi: IconWand, macera: IconMap, muzik: IconMusic,
+  tarih: IconScroll, suc: IconSearch, aile: IconFamily, savas: IconSwords,
+  western: IconHat, gizem: IconSearch,
 }
 
 export default async function TurlerPage() {
@@ -36,7 +40,7 @@ export default async function TurlerPage() {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
         {entries.map(([slug, info]) => {
-          const emoji = GENRE_EMOJIS[slug] ?? '🎬'
+          const GenreIcon = GENRE_ICONS[slug] ?? IconFilm
           return (
             <Link
               key={slug}
@@ -47,7 +51,7 @@ export default async function TurlerPage() {
                 border: '1px solid rgba(255,255,255,0.06)',
               }}
             >
-              <span className="text-2xl">{emoji}</span>
+              <GenreIcon size={26} strokeWidth={1.5} className="text-[--accent]" />
               <span className="font-semibold text-white group-hover:text-[--accent] transition-colors text-sm">
                 {info.name}
               </span>

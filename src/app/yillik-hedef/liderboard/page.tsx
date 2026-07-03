@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconTrophy, IconMedal, IconFilm, IconTv } from '@/components/icons'
 
 export const metadata: Metadata = {
   title: 'Yıllık Hedef Liderboard | Sinezon',
@@ -24,7 +25,7 @@ export default async function YillikLiderboardPage() {
   if (!challenges || challenges.length === 0) {
     return (
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-16 text-center">
-        <div className="text-5xl mb-4">🏆</div>
+        <div className="flex justify-center mb-4"><IconTrophy size={48} className="text-[--gold]" /></div>
         <h1 className="text-2xl font-bold text-white mb-2">{t('yearlyGoal.leaderboardYearTitle', { year: YEAR })}</h1>
         <p className="text-[--text-secondary]">{t('yearlyGoal.noOneYet')}</p>
         <Link href="/yillik-hedef" className="inline-block mt-6 px-6 py-2.5 rounded-full text-sm font-semibold text-white transition-all hover:scale-105"
@@ -64,7 +65,7 @@ export default async function YillikLiderboardPage() {
     })
     .sort((a, b) => b.pct - a.pct || (b.watched.film + b.watched.dizi) - (a.watched.film + a.watched.dizi))
 
-  const medals = ['🥇', '🥈', '🥉']
+  const medalColors = ['#D4A803', '#C0C0C0', '#B87333']
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
@@ -84,7 +85,7 @@ export default async function YillikLiderboardPage() {
 
       <div className="space-y-3">
         {ranked.map((u, i) => {
-          const medal = medals[i] ?? null
+          const medalColor = medalColors[i] ?? null
           const isTop3 = i < 3
           return (
             <div
@@ -99,9 +100,9 @@ export default async function YillikLiderboardPage() {
             >
               <div className="flex items-center gap-3">
                 {/* Sıra / Madalya */}
-                <div className="w-8 text-center shrink-0">
-                  {medal
-                    ? <span className="text-xl">{medal}</span>
+                <div className="w-8 text-center shrink-0 flex items-center justify-center">
+                  {medalColor
+                    ? <IconMedal size={20} style={{ color: medalColor }} />
                     : <span className="text-sm font-bold" style={{ color: 'rgba(255,255,255,0.3)' }}>#{i + 1}</span>
                   }
                 </div>
@@ -125,10 +126,10 @@ export default async function YillikLiderboardPage() {
                   </Link>
                   <div className="flex items-center gap-3 text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.4)' }}>
                     {u.film_goal > 0 && (
-                      <span>🎬 {u.watched.film}/{u.film_goal}</span>
+                      <span className="inline-flex items-center gap-1"><IconFilm size={14} />{u.watched.film}/{u.film_goal}</span>
                     )}
                     {u.series_goal > 0 && (
-                      <span>📺 {u.watched.dizi}/{u.series_goal}</span>
+                      <span className="inline-flex items-center gap-1"><IconTv size={14} />{u.watched.dizi}/{u.series_goal}</span>
                     )}
                   </div>
                 </div>
@@ -168,7 +169,7 @@ export default async function YillikLiderboardPage() {
         <Link href="/yillik-hedef"
           className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold text-white transition-all hover:scale-105"
           style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', boxShadow: '0 4px 14px rgba(225,29,72,0.25)' }}>
-          🏆 {t('yearlyGoal.updateGoal')}
+<IconTrophy size={16} /> {t('yearlyGoal.updateGoal')}
         </Link>
       </div>
     </div>

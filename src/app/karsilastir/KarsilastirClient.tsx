@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { IconSearch, IconClose, IconStar } from '@/components/icons'
+import { IconSearch, IconClose, IconStar, IconStarFilled, IconScale } from '@/components/icons'
 import { useLocale } from '@/context/LocaleContext'
 
 interface MediaItem {
@@ -214,11 +214,11 @@ export default function KarsilastirClient({ itemA, itemB }: { itemA: MediaItem |
             </thead>
             <tbody>
               <CompareRow label={t('versus.rating')}
-                a={<span className={`font-bold text-base ${ratingWinner === 'a' ? 'text-green-400' : 'text-[--gold]'}`}>
-                  ★ {selA.rating.toFixed(1)} <span className="text-xs font-normal text-[--text-secondary]">({selA.voteCount.toLocaleString()})</span>
+                a={<span className={`font-bold text-base inline-flex items-center gap-1 ${ratingWinner === 'a' ? 'text-green-400' : 'text-[--gold]'}`}>
+                  <IconStarFilled size={14} /> {selA.rating.toFixed(1)} <span className="text-xs font-normal text-[--text-secondary]">({selA.voteCount.toLocaleString()})</span>
                 </span>}
-                b={<span className={`font-bold text-base ${ratingWinner === 'b' ? 'text-green-400' : 'text-[--gold]'}`}>
-                  ★ {selB.rating.toFixed(1)} <span className="text-xs font-normal text-[--text-secondary]">({selB.voteCount.toLocaleString()})</span>
+                b={<span className={`font-bold text-base inline-flex items-center gap-1 ${ratingWinner === 'b' ? 'text-green-400' : 'text-[--gold]'}`}>
+                  <IconStarFilled size={14} /> {selB.rating.toFixed(1)} <span className="text-xs font-normal text-[--text-secondary]">({selB.voteCount.toLocaleString()})</span>
                 </span>}
                 highlight
               />
@@ -272,7 +272,7 @@ export default function KarsilastirClient({ itemA, itemB }: { itemA: MediaItem |
 
       {!selA && !selB && (
         <div className="text-center py-16 text-[--text-secondary]">
-          <p className="text-5xl mb-4">⚖️</p>
+          <p className="mb-4 flex justify-center"><IconScale size={56} /></p>
           <p>{t('versus.searchPrompt')}</p>
         </div>
       )}

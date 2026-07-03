@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconGem, IconTomato, IconZap, IconStarFilled, IconFire } from '@/components/icons'
 
 export const revalidate = 3600
 
@@ -30,7 +31,7 @@ async function tmdb(path: string, params: Record<string, string>) {
 
 interface Category {
   key: string
-  emoji: string
+  Icon: typeof IconGem
   titleKey: string
   descKey: string
   color: string
@@ -42,7 +43,7 @@ interface Category {
 const CATEGORIES: Category[] = [
   {
     key: 'gizli',
-    emoji: '💎',
+    Icon: IconGem,
     titleKey: 'discover.gizliTitle',
     descKey: 'discover.gizliDesc',
     color: '#a78bfa',
@@ -52,7 +53,7 @@ const CATEGORIES: Category[] = [
   },
   {
     key: 'hate',
-    emoji: '🍅',
+    Icon: IconTomato,
     titleKey: 'discover.hateTitle',
     descKey: 'discover.hateDesc',
     color: '#f87171',
@@ -62,7 +63,7 @@ const CATEGORIES: Category[] = [
   },
   {
     key: 'surprise',
-    emoji: '⚡',
+    Icon: IconZap,
     titleKey: 'discover.surpriseTitle',
     descKey: 'discover.surpriseDesc',
     color: '#fbbf24',
@@ -99,9 +100,9 @@ export default async function KesfetPage() {
           <section key={cat.key}>
             {/* Kategori Başlık */}
             <div className="flex items-center gap-3 mb-5">
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl text-xl shrink-0"
-                style={{ background: cat.bg, border: `1px solid ${cat.border}` }}>
-                {cat.emoji}
+              <div className="flex items-center justify-center w-10 h-10 rounded-xl shrink-0"
+                style={{ background: cat.bg, border: `1px solid ${cat.border}`, color: cat.color }}>
+                <cat.Icon size={20} />
               </div>
               <div>
                 <h2 className="text-lg font-bold text-white">{t(cat.titleKey)}</h2>
@@ -136,7 +137,7 @@ export default async function KesfetPage() {
                             background: 'rgba(0,0,0,0.8)',
                             color: item.vote_average >= 7 ? '#4ade80' : item.vote_average >= 5 ? '#fbbf24' : '#f87171',
                           }}>
-                          ★ {item.vote_average.toFixed(1)}
+                          <span className="inline-flex items-center gap-0.5"><IconStarFilled size={10} />{item.vote_average.toFixed(1)}</span>
                         </div>
                       )}
 
@@ -150,7 +151,7 @@ export default async function KesfetPage() {
                       {cat.key === 'hate' && item.popularity > 0 && (
                         <div className="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded text-[9px] font-bold"
                           style={{ background: 'rgba(248,113,113,0.9)', color: '#fff' }}>
-                          🔥 {Math.round(item.popularity)}
+                          <span className="inline-flex items-center gap-0.5"><IconFire size={10} />{Math.round(item.popularity)}</span>
                         </div>
                       )}
                     </div>

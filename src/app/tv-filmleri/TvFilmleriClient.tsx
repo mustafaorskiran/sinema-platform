@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { IconGlobe, IconStarFilled } from '@/components/icons'
 
 interface MediaItem {
   id: number
@@ -22,9 +23,9 @@ interface Props {
 }
 
 const TABS = [
-  { key: 'tumü', label: '🌐 Tümü' },
-  { key: 'turkiye', label: '🇹🇷 Türkiye' },
-  { key: 'uluslararasi', label: '🌍 Uluslararası' },
+  { key: 'tumü', label: 'Tümü', icon: IconGlobe },
+  { key: 'turkiye', label: '🇹🇷 Türkiye', icon: null },
+  { key: 'uluslararasi', label: 'Uluslararası', icon: IconGlobe },
 ] as const
 
 const SORT_OPTIONS = ['popularity.desc', 'vote_average.desc', 'release_date.desc', 'release_date.asc']
@@ -46,13 +47,13 @@ export default function TvFilmleriClient({ activeTab, activeSiralama, items, cur
             <button
               key={t.key}
               onClick={() => navigate(t.key, activeSiralama, 1)}
-              className="px-4 py-2 rounded-full text-sm font-medium transition-all hover:scale-105"
+              className="px-4 py-2 rounded-full text-sm font-medium transition-all hover:scale-105 inline-flex items-center gap-1.5"
               style={activeTab === t.key
                 ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff', boxShadow: '0 2px 8px rgba(225,29,72,0.3)' }
                 : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }
               }
             >
-              {t.label}
+              {t.icon && <t.icon size={14} />} {t.label}
             </button>
           ))}
         </div>
@@ -90,7 +91,7 @@ export default function TvFilmleriClient({ activeTab, activeSiralama, items, cur
                 </div>
                 {item.rating > 0 && (
                   <div className="absolute bottom-2 right-2 bg-black/70 rounded-md px-1.5 py-0.5">
-                    <span className="text-[10px] font-bold text-[--gold]">★ {item.rating.toFixed(1)}</span>
+                    <span className="text-[10px] font-bold text-[--gold] inline-flex items-center gap-0.5"><IconStarFilled size={10} /> {item.rating.toFixed(1)}</span>
                   </div>
                 )}
                 <div className="absolute top-2 right-2 bg-purple-600/80 rounded-md px-1.5 py-0.5">

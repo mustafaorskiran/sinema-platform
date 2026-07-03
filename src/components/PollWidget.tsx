@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useLocale } from '@/context/LocaleContext'
+import { IconBarChart, IconCheck } from '@/components/icons'
 
 interface Poll {
   id: string
@@ -66,7 +67,7 @@ export default function PollWidget({ poll, currentUserId }: Props) {
   return (
     <div className="rounded-2xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
       <div className="flex items-center gap-2 mb-4">
-        <span className="text-base">🗳️</span>
+        <IconBarChart size={16} style={{ color: 'rgba(255,255,255,0.3)' }} />
         <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.3)' }}>{t('community.pollLabel')}</p>
         {isExpired && <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold ml-auto" style={{ background: 'rgba(248,113,113,0.1)', color: '#f87171', border: '1px solid rgba(248,113,113,0.2)' }}>{t('community.pollEnded')}</span>}
       </div>
@@ -107,7 +108,7 @@ export default function PollWidget({ poll, currentUserId }: Props) {
                       ? { background: 'var(--accent)', border: '1.5px solid var(--accent)' }
                       : { border: '1.5px solid rgba(255,255,255,0.2)' }
                     }>
-                    {isSelected && <span className="text-[8px] text-white">✓</span>}
+                    {isSelected && <IconCheck size={8} className="text-white" />}
                   </div>
                   <span className="text-sm" style={{ color: isSelected ? '#fff' : 'rgba(255,255,255,0.7)' }}>{opt}</span>
                 </div>

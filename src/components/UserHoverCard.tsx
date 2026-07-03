@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { useLocale } from '@/context/LocaleContext'
+import { IconStarFilled } from '@/components/icons'
 
 interface UserData {
   username: string
@@ -78,7 +79,7 @@ export default function UserHoverCard({ username, children }: { username: string
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1">
                       <p className="text-xs font-bold text-white truncate">{userData.full_name || username}</p>
-                      {userData.is_premium && <span className="text-[10px]">⭐</span>}
+                      {userData.is_premium && <IconStarFilled size={10} className="text-[--gold]" />}
                     </div>
                     <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.4)' }}>@{username}</p>
                   </div>

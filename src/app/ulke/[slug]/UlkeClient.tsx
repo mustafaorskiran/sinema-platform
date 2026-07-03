@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { IconFilm, IconTv, IconStarFilled } from '@/components/icons'
 
 interface MediaItem {
   id: number
@@ -36,13 +37,13 @@ export default function UlkeClient({ slug, activeTab, items, currentPage, totalP
           <button
             key={tab}
             onClick={() => switchTab(tab)}
-            className="px-5 py-2 rounded-full text-sm font-medium transition-all hover:scale-105"
+            className="px-5 py-2 rounded-full text-sm font-medium transition-all hover:scale-105 inline-flex items-center gap-1.5"
             style={activeTab === tab
               ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff', boxShadow: '0 2px 8px rgba(225,29,72,0.3)' }
               : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }
             }
           >
-            {tab === 'filmler' ? '🎬 Filmler' : '📺 Diziler'}
+            {tab === 'filmler' ? <><IconFilm size={16} /> Filmler</> : <><IconTv size={16} /> Diziler</>}
           </button>
         ))}
       </div>
@@ -75,7 +76,7 @@ export default function UlkeClient({ slug, activeTab, items, currentPage, totalP
                 {/* Puan */}
                 {item.rating > 0 && (
                   <div className="absolute bottom-2 right-2 bg-black/70 rounded-md px-1.5 py-0.5">
-                    <span className="text-[10px] font-bold text-[--gold]">★ {item.rating.toFixed(1)}</span>
+                    <span className="text-[10px] font-bold text-[--gold] inline-flex items-center gap-0.5"><IconStarFilled size={10} /> {item.rating.toFixed(1)}</span>
                   </div>
                 )}
               </div>

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import type { TMDbVideo } from '@/lib/types'
 import { useLocale } from '@/context/LocaleContext'
+import { IconClapperboard, IconPlay } from '@/components/icons'
 
 interface Props {
   videos: TMDbVideo[]
@@ -37,7 +38,7 @@ export default function VideoGallery({ videos, title }: Props) {
     <div className="mt-12" id="videolar">
       <div className="flex items-center gap-3 mb-4">
         <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #f87171 0%, #E11D48 100%)' }} />
-        <h2 className="text-xl font-bold text-white tracking-tight">🎬 {t('videoGallery.title')}</h2>
+        <h2 className="flex items-center gap-2 text-xl font-bold text-white tracking-tight"><IconClapperboard size={20} />{t('videoGallery.title')}</h2>
         <span className="text-sm" style={{ color: 'rgba(255,255,255,0.3)' }}>({ytVideos.length})</span>
       </div>
       <div className="flex gap-5 flex-col lg:flex-row">
@@ -75,7 +76,7 @@ export default function VideoGallery({ videos, title }: Props) {
                   />
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors flex items-center justify-center">
                     <div className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center">
-                      <span className="text-black text-xs ml-0.5">▶</span>
+                      <IconPlay size={14} className="text-black ml-0.5" />
                     </div>
                   </div>
                 </div>

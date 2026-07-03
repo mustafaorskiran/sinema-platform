@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useLocale } from '@/context/LocaleContext'
+import { IconRobot, IconFilm, IconTv, IconSparkles } from '@/components/icons'
 
 interface Oneri {
   baslik: string
@@ -42,7 +43,7 @@ export default function AiOneriWidget() {
       style={{ background: 'linear-gradient(160deg, rgba(14,10,30,0.98), rgba(10,6,22,0.99))', border: '1px solid rgba(139,92,246,0.15)', boxShadow: '0 0 40px rgba(139,92,246,0.05)' }}>
       <div className="flex items-center gap-2 mb-4">
         <div className="w-1 h-5 rounded-full" style={{ background: 'linear-gradient(180deg, #a78bfa, #E11D48)' }} />
-        <p className="text-sm font-bold text-white">🤖 {t('aiOneri.title')}</p>
+        <p className="text-sm font-bold text-white inline-flex items-center gap-1.5"><IconRobot size={16} /> {t('aiOneri.title')}</p>
       </div>
 
       {/* Tip seçimi */}
@@ -54,7 +55,9 @@ export default function AiOneriWidget() {
               ? { background: 'rgba(139,92,246,0.2)', border: '1px solid rgba(139,92,246,0.4)', color: '#a78bfa' }
               : { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.4)' }
             }>
-            {opt === 'film' ? `🎬 ${t('film.badge')}` : `📺 ${t('series.badge')}`}
+            {opt === 'film'
+              ? <span className="inline-flex items-center gap-1.5"><IconFilm size={14} />{t('film.badge')}</span>
+              : <span className="inline-flex items-center gap-1.5"><IconTv size={14} />{t('series.badge')}</span>}
           </button>
         ))}
       </div>
@@ -77,7 +80,9 @@ export default function AiOneriWidget() {
         className="w-full py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-[1.02] disabled:opacity-50"
         style={{ background: 'linear-gradient(135deg, #7c3aed, #5b21b6)', color: '#fff', boxShadow: '0 4px 14px rgba(124,58,237,0.3)' }}
       >
-        {loading ? `✨ ${t('aiOneri.thinking')}` : `✨ ${t('aiOneri.getSuggestion')}`}
+        {loading
+          ? <span className="inline-flex items-center gap-1.5"><IconSparkles size={16} />{t('aiOneri.thinking')}</span>
+          : <span className="inline-flex items-center gap-1.5"><IconSparkles size={16} />{t('aiOneri.getSuggestion')}</span>}
       </button>
 
       {error && (

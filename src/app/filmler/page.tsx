@@ -12,6 +12,7 @@ import {
 import { OSCAR_WINNER_IDS } from '@/lib/oscar-winners'
 import { KULT_FILM_IDS } from '@/lib/kult-filmler'
 import { getTranslations } from '@/lib/i18n'
+import { IconFilm } from '@/components/icons'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -358,7 +359,7 @@ export default async function FilmlerPage({ searchParams }: Props) {
 
           {results.length === 0 ? (
             <div className="text-center py-24 text-[--text-secondary]">
-              <p className="text-4xl mb-4">🎬</p>
+              <p className="mb-4 flex justify-center"><IconFilm size={40} /></p>
               <p>{t('browse.noResultsFilm')}</p>
             </div>
           ) : (

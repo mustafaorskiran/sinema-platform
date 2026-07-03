@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useLocale } from '@/context/LocaleContext'
+import { IconRobot } from '@/components/icons'
 
 interface Props {
   mediaId: number
@@ -62,8 +63,8 @@ export default function AISummary({ mediaId, mediaType, title, year, genres, dir
   return (
     <div className="mt-4 rounded-xl p-4"
       style={{ background: 'rgba(124,58,237,0.05)', border: '1px solid rgba(124,58,237,0.12)', borderLeft: '3px solid rgba(124,58,237,0.5)' }}>
-      <p className="text-[10px] font-bold uppercase tracking-wider mb-2" style={{ color: '#a78bfa' }}>
-        🤖 {t('aiSummary.title')}
+      <p className="text-[10px] font-bold uppercase tracking-wider mb-2 inline-flex items-center gap-1.5" style={{ color: '#a78bfa' }}>
+        <IconRobot size={14} /> {t('aiSummary.title')}
       </p>
       <p className="text-sm leading-relaxed italic" style={{ color: 'rgba(255,255,255,0.7)' }}>
         {summary}

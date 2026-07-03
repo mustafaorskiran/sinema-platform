@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { IconSparkles } from '@/components/icons'
 
 interface Props {
   list: {
@@ -61,7 +62,7 @@ export default function EditorialCard({ list, posters }: Props) {
         </div>
         {/* Editörün seçimi rozeti */}
         <div className="absolute top-2.5 right-2.5 flex items-center gap-1 bg-[--accent]/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">
-          ✦ Editöryal
+          <IconSparkles size={11} /> Editöryal
         </div>
       </div>
 

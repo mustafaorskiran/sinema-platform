@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { IconStarFilled, IconTrendingUp, IconGlobe, IconMapPin } from '@/components/icons'
+import { IconStarFilled, IconTrendingUp, IconGlobe, IconMapPin, IconMedal } from '@/components/icons'
 import { getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb'
 import { getTranslations } from '@/lib/i18n'
 import type { TMDbMovie, TMDbSearchResult } from '@/lib/types'
@@ -33,7 +33,7 @@ async function fetchGise(endpoint: string): Promise<TMDbMovie[]> {
   }
 }
 
-const MEDAL = ['🥇', '🥈', '🥉']
+const MEDAL_COLORS = ['#D4A803', '#C0C0C0', '#B87333']
 
 interface PageProps {
   searchParams: Promise<{ tab?: string }>
@@ -119,7 +119,7 @@ export default async function GisePage({ searchParams }: PageProps) {
                 {/* Sıra */}
                 <div className="w-8 text-center shrink-0">
                   {isTop3
-                    ? <span className="text-xl">{MEDAL[index]}</span>
+                    ? <IconMedal size={20} className="inline-block" style={{ color: MEDAL_COLORS[index] }} />
                     : <span className="text-lg font-bold" style={{ color: 'rgba(255,255,255,0.25)' }}>{index + 1}</span>
                   }
                 </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useLocale } from '@/context/LocaleContext'
+import { IconMusic, IconCheck, IconLoader, IconPlay } from '@/components/icons'
 
 interface Track {
   id: string
@@ -58,7 +59,7 @@ export default function SoundtrackSection({ mediaId, mediaType, isLoggedIn }: Pr
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #4ade80 0%, #22c55e 100%)' }} />
-          <h2 className="text-xl font-bold text-white tracking-tight">🎵 {t('soundtrack.title')}</h2>
+          <h2 className="flex items-center gap-2 text-xl font-bold text-white tracking-tight"><IconMusic size={20} />{t('soundtrack.title')}</h2>
           {tracks.length > 0 && (
             <span className="text-sm" style={{ color: 'rgba(255,255,255,0.3)' }}>({tracks.length})</span>
           )}
@@ -78,8 +79,8 @@ export default function SoundtrackSection({ mediaId, mediaType, isLoggedIn }: Pr
             <div key={t.id}
               className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 hover:-translate-y-0.5"
               style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.85), rgba(14,20,32,0.9))', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <div className="h-10 w-10 rounded-lg flex items-center justify-center text-xl shrink-0"
-                style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.15)' }}>🎵</div>
+              <div className="h-10 w-10 rounded-lg flex items-center justify-center shrink-0"
+                style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.15)', color: '#4ade80' }}><IconMusic size={20} /></div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-white truncate">{t.title}</p>
                 {t.artist && <p className="text-xs truncate" style={{ color: 'rgba(255,255,255,0.4)' }}>{t.artist}</p>}
@@ -88,7 +89,7 @@ export default function SoundtrackSection({ mediaId, mediaType, isLoggedIn }: Pr
                 <a href={t.spotify_url} target="_blank" rel="noopener noreferrer"
                   className="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-[10px] font-semibold transition-all hover:scale-105"
                   style={{ background: 'rgba(29,185,84,0.15)', color: '#1db954', border: '1px solid rgba(29,185,84,0.3)' }}>
-                  ▶ Spotify
+                  <IconPlay size={11} /> Spotify
                 </a>
               )}
             </div>
@@ -115,7 +116,7 @@ export default function SoundtrackSection({ mediaId, mediaType, isLoggedIn }: Pr
           style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.95), rgba(14,20,32,0.98))', border: '1px solid rgba(74,222,128,0.15)' }}>
           {sent ? (
             <div className="text-center py-4">
-              <p className="text-2xl mb-2">✓</p>
+              <IconCheck size={28} className="mx-auto mb-2 text-green-400" />
               <p className="text-green-400 text-sm">{t('soundtrack.submitted')}</p>
             </div>
           ) : (
@@ -155,7 +156,11 @@ export default function SoundtrackSection({ mediaId, mediaType, isLoggedIn }: Pr
                 <button type="submit" disabled={sending || !title.trim()}
                   className="px-5 py-2 text-sm rounded-lg font-semibold transition-all hover:scale-105 disabled:opacity-40"
                   style={{ background: 'rgba(74,222,128,0.2)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.3)' }}>
-                  {sending ? `⟳ ${t('soundtrack.sending')}` : `🎵 ${t('soundtrack.add')}`}
+                  {sending ? (
+                    <span className="inline-flex items-center gap-1.5"><IconLoader size={14} className="animate-spin" />{t('soundtrack.sending')}</span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5"><IconMusic size={14} />{t('soundtrack.add')}</span>
+                  )}
                 </button>
               </div>
             </>

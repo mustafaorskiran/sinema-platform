@@ -2,6 +2,7 @@
 import { useState, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import { useLocale } from '@/context/LocaleContext'
+import { IconFilm, IconTv, IconStarFilled, IconCheck, IconSearch } from '@/components/icons'
 
 type Tip = 'film' | 'dizi'
 
@@ -85,7 +86,9 @@ export default function KatkilClient({ isLoggedIn }: { isLoggedIn: boolean }) {
               color: tip === opt ? '#D4A843' : 'rgba(255,255,255,0.4)',
               borderRight: opt === 'film' ? '1px solid rgba(255,255,255,0.08)' : 'none',
             }}>
-            {opt === 'film' ? `🎬 ${t('contribute.tabMovie')}` : `📺 ${t('contribute.tabSeries')}`}
+            {opt === 'film'
+              ? <span className="inline-flex items-center gap-1.5"><IconFilm size={16} />{t('contribute.tabMovie')}</span>
+              : <span className="inline-flex items-center gap-1.5"><IconTv size={16} />{t('contribute.tabSeries')}</span>}
           </button>
         ))}
       </div>
@@ -140,7 +143,7 @@ export default function KatkilClient({ isLoggedIn }: { isLoggedIn: boolean }) {
                   style={{ background: 'rgba(255,255,255,0.05)' }}>
                   {item.posterPath
                     ? <img src={`${POSTER}${item.posterPath}`} alt={item.title} className="w-full h-full object-cover" />
-                    : <div className="w-full h-full flex items-center justify-center text-xl">🎬</div>
+                    : <div className="w-full h-full flex items-center justify-center"><IconFilm size={20} /></div>
                   }
                 </div>
 
@@ -155,7 +158,7 @@ export default function KatkilClient({ isLoggedIn }: { isLoggedIn: boolean }) {
                       <div className="flex items-center gap-2 mt-0.5">
                         {item.year && <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.35)' }}>{item.year}</span>}
                         {item.voteAverage > 0 && (
-                          <span className="text-[11px] font-medium" style={{ color: '#D4A843' }}>★ {item.voteAverage.toFixed(1)}</span>
+                          <span className="text-[11px] font-medium inline-flex items-center gap-1" style={{ color: '#D4A843' }}><IconStarFilled size={11} />{item.voteAverage.toFixed(1)}</span>
                         )}
                       </div>
                     </div>
@@ -172,7 +175,7 @@ export default function KatkilClient({ isLoggedIn }: { isLoggedIn: boolean }) {
                         <Link href={`/${tip}/${item.id}`}
                           className="text-[11px] font-semibold px-3 py-1.5 rounded-lg"
                           style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.25)', color: '#4ade80' }}>
-                          ✓ Eklendi →
+                          <span className="inline-flex items-center gap-1"><IconCheck size={12} />Eklendi →</span>
                         </Link>
                       ) : isLoggedIn ? (
                         <button onClick={() => handleAdd(item)} disabled={isAdding}
@@ -205,7 +208,7 @@ export default function KatkilClient({ isLoggedIn }: { isLoggedIn: boolean }) {
       {/* Boş sonuç */}
       {!loading && q.length >= 2 && results.length === 0 && (
         <div className="text-center py-12" style={{ color: 'rgba(255,255,255,0.3)' }}>
-          <div className="text-4xl mb-3">🔍</div>
+          <div className="mb-3 flex justify-center"><IconSearch size={40} /></div>
           <p className="text-sm">Sonuç bulunamadı</p>
           <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.2)' }}>TMDb&apos;de bu isimde içerik yok olabilir</p>
         </div>
@@ -214,7 +217,7 @@ export default function KatkilClient({ isLoggedIn }: { isLoggedIn: boolean }) {
       {/* Boş başlangıç hali */}
       {q.length < 2 && (
         <div className="text-center py-12" style={{ color: 'rgba(255,255,255,0.2)' }}>
-          <div className="text-4xl mb-3">🎬</div>
+          <div className="mb-3 flex justify-center"><IconFilm size={40} /></div>
           <p className="text-sm">Aramak istediğin {tip === 'film' ? 'filmi' : 'diziyi'} yaz</p>
         </div>
       )}

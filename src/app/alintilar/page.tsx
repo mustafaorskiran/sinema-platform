@@ -4,6 +4,7 @@ import UserHoverCard from '@/components/UserHoverCard'
 import QuoteLikeButton from '@/components/QuoteLikeButton'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconSparkles, IconFilm, IconTv, IconArrowRight } from '@/components/icons'
 
 export const metadata: Metadata = {
   title: 'Film & Dizi Alıntıları | Sinezon',
@@ -68,8 +69,8 @@ export default async function AlintilarPage() {
             boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(212,168,67,0.05)',
           }}
         >
-          <p className="text-[9.5px] font-bold uppercase tracking-[0.2em] mb-5" style={{ color: 'rgba(212,168,67,0.6)' }}>
-            ✦ {t('quotes.mostLiked')}
+          <p className="text-[9.5px] font-bold uppercase tracking-[0.2em] mb-5 inline-flex items-center gap-1" style={{ color: 'rgba(212,168,67,0.6)' }}>
+            <IconSparkles size={11} /> {t('quotes.mostLiked')}
           </p>
           <span
             className="absolute top-2 right-5 text-[9rem] font-serif leading-none select-none pointer-events-none"
@@ -89,9 +90,9 @@ export default async function AlintilarPage() {
           <div className="flex items-center gap-4 mt-4 flex-wrap">
             <Link
               href={`/${heroQuote.media_type === 'film' ? 'film' : 'dizi'}/${heroQuote.media_id}`}
-              className="text-sm text-[--accent] hover:underline font-medium"
+              className="text-sm text-[--accent] hover:underline font-medium inline-flex items-center gap-1.5"
             >
-              {heroQuote.media_type === 'film' ? `🎬 ${t('quotes.goToMovie')}` : `📺 ${t('quotes.goToSeries')}`}
+              {heroQuote.media_type === 'film' ? <IconFilm size={16} /> : <IconTv size={16} />} {heroQuote.media_type === 'film' ? t('quotes.goToMovie') : t('quotes.goToSeries')}
             </Link>
             {heroQuote.profiles?.username && (
               <span className="text-xs text-[--text-secondary]">
@@ -149,9 +150,9 @@ export default async function AlintilarPage() {
                 <div className="flex items-center gap-3">
                   <Link
                     href={`/${quote.media_type === 'film' ? 'film' : 'dizi'}/${quote.media_id}`}
-                    className="text-xs text-[--accent] hover:underline font-medium"
+                    className="text-xs text-[--accent] hover:underline font-medium inline-flex items-center gap-1"
                   >
-                    {quote.media_type === 'film' ? `🎬 ${t('quotes.movie')}` : `📺 ${t('quotes.series')}`} →
+                    {quote.media_type === 'film' ? <IconFilm size={14} /> : <IconTv size={14} />} {quote.media_type === 'film' ? t('quotes.movie') : t('quotes.series')} <IconArrowRight size={12} />
                   </Link>
                   <QuoteLikeButton
                     quoteId={quote.id}

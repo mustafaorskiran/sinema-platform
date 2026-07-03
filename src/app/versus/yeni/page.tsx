@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import VersusYeniClient from './VersusYeniClient'
 import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
+import { IconSwords } from '@/components/icons'
 
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await getTranslations()
@@ -18,7 +19,7 @@ export default async function VersusYeniPage() {
   return (
     <div className="max-w-lg mx-auto px-4 sm:px-6 py-10">
       <div className="mb-8 text-center">
-        <h1 className="text-2xl font-black text-white mb-1">⚔️ {t('versus.new.title')}</h1>
+        <h1 className="text-2xl font-black text-white mb-1 inline-flex items-center gap-2"><IconSwords size={22} />{t('versus.new.title')}</h1>
         <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
           {t('versus.new.subtitle')}
         </p>

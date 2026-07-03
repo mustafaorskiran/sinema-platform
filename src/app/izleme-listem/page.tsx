@@ -86,10 +86,10 @@ export default async function IzlemeLisTemPage({ searchParams }: Props) {
         </div>
         <div className="ml-auto flex items-center gap-1 rounded-lg overflow-hidden"
           style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-          {[{ key: 'eklenme', label: t('watchlist.newest') }, { key: 'oncelik', label: `⭐ ${t('watchlist.priority')}` }].map(s => (
+          {[{ key: 'eklenme', label: t('watchlist.newest'), icon: null }, { key: 'oncelik', label: t('watchlist.priority'), icon: IconStar }].map(s => (
             <Link key={s.key} href={`/izleme-listem?tip=${tip}&sirala=${s.key}`}
-              className={`px-3 py-1.5 text-xs font-medium transition-colors ${sirala === s.key ? 'bg-[--accent] text-white' : 'text-[--text-secondary] hover:text-white'}`}>
-              {s.label}
+              className={`px-3 py-1.5 text-xs font-medium transition-colors inline-flex items-center gap-1 ${sirala === s.key ? 'bg-[--accent] text-white' : 'text-[--text-secondary] hover:text-white'}`}>
+              {s.icon && <s.icon size={12} />} {s.label}
             </Link>
           ))}
         </div>

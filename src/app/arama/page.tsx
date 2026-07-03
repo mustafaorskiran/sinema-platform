@@ -1,4 +1,4 @@
-import { IconSearch, IconUser } from '@/components/icons'
+import { IconSearch, IconUser, IconFilm, IconTv, IconTrophy, IconNewspaper } from '@/components/icons'
 import { getProfileUrl, searchPeople } from '@/lib/tmdb'
 import MovieCard from '@/components/MovieCard'
 import Link from 'next/link'
@@ -298,15 +298,15 @@ export default async function AramaPage({ searchParams }: Props) {
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
-                { href: '/filmler', icon: '🎬', label: t('search.tabFilms') },
-                { href: '/diziler', icon: '📺', label: t('search.tabSeries') },
-                { href: '/top10', icon: '🏆', label: t('search.top10') },
-                { href: '/haberler', icon: '📰', label: t('search.news') },
+                { href: '/filmler', Icon: IconFilm, label: t('search.tabFilms') },
+                { href: '/diziler', Icon: IconTv, label: t('search.tabSeries') },
+                { href: '/top10', Icon: IconTrophy, label: t('search.top10') },
+                { href: '/haberler', Icon: IconNewspaper, label: t('search.news') },
               ].map(item => (
                 <Link key={item.href} href={item.href}
                   className="flex flex-col items-center gap-2 p-4 rounded-xl text-sm font-medium text-white transition-all hover:scale-105"
                   style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.85), rgba(14,20,32,0.9))', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <span className="text-2xl">{item.icon}</span>
+                  <item.Icon size={24} />
                   <span className="text-xs text-[--text-secondary]">{item.label}</span>
                 </Link>
               ))}

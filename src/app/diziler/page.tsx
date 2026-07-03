@@ -7,6 +7,7 @@ import { OZEL_KATEGORILER } from '@/lib/ozel-kategoriler'
 import { createClient } from '@/lib/supabase/server'
 import { discoverSeries, getTVProviderList } from '@/lib/tmdb'
 import { getTranslations } from '@/lib/i18n'
+import { IconTv, IconStarFilled } from '@/components/icons'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -191,7 +192,7 @@ export default async function DizilerPage({ searchParams }: Props) {
 
           {results.length === 0 ? (
             <div className="text-center py-24 text-[--text-secondary]">
-              <p className="text-4xl mb-4">📺</p>
+              <p className="mb-4 flex justify-center"><IconTv size={40} /></p>
               <p>{t('browse.noResultsDizi')}</p>
             </div>
           ) : viewMode === 'liste' ? (
@@ -219,7 +220,7 @@ export default async function DizilerPage({ searchParams }: Props) {
                       </p>
                       {s.vote_average > 0 && (
                         <span className="inline-flex items-center gap-1 mt-1 text-[12px] font-bold text-[--gold]">
-                          ★ {s.vote_average.toFixed(1)}
+                          <IconStarFilled size={12} /> {s.vote_average.toFixed(1)}
                         </span>
                       )}
                     </div>

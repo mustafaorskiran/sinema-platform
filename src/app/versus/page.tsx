@@ -4,6 +4,7 @@ import VersusClient from './VersusClient'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconSwords } from '@/components/icons'
 
 export const metadata: Metadata = {
   title: 'Film vs Film | Sinezon',
@@ -90,7 +91,7 @@ export default async function VersusPage() {
   return (
     <div className="max-w-xl mx-auto px-4 sm:px-6 py-10">
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-black text-white mb-1">⚔️ {t('versus.pageTitle')}</h1>
+        <h1 className="text-3xl font-black text-white mb-1 flex items-center justify-center gap-2"><IconSwords size={28} /> {t('versus.pageTitle')}</h1>
         <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
           {t('versus.pageDesc')}
         </p>

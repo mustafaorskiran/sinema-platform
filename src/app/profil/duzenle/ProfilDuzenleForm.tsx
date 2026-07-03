@@ -2,7 +2,7 @@
 
 import { useState, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import { IconCamera, IconCheckCircle, IconLoader, IconEye, IconEyeOff } from '@/components/icons'
+import { IconCamera, IconCheckCircle, IconLoader, IconEye, IconEyeOff, IconFilm, IconStar, IconLock, IconChevronDown } from '@/components/icons'
 import { createClient } from '@/lib/supabase/client'
 import { useLocale } from '@/context/LocaleContext'
 
@@ -382,14 +382,14 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
             />
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-lg w-6 text-center">🎬</span>
+            <span className="w-6 flex items-center justify-center"><IconFilm size={18} /></span>
             <input type="url" value={letterboxdUrl} onChange={e => setLetterboxdUrl(e.target.value)} maxLength={200} placeholder="https://letterboxd.com/kullaniciadi"
               className="flex-1 rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-white/25 outline-none transition-colors"
               style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
             />
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-lg w-6 text-center">⭐</span>
+            <span className="w-6 flex items-center justify-center"><IconStar size={18} /></span>
             <input type="url" value={imdbUrl} onChange={e => setImdbUrl(e.target.value)} maxLength={200} placeholder="https://imdb.com/user/..."
               className="flex-1 rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-white/25 outline-none transition-colors"
               style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
@@ -474,10 +474,10 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
         className="w-full flex items-center justify-between px-5 py-4 text-left transition-colors hover:bg-white/[0.02]"
         style={{ background: 'rgba(255,255,255,0.02)' }}>
         <div className="flex items-center gap-3">
-          <span className="text-base">🔐</span>
+          <span className="flex items-center"><IconLock size={16} /></span>
           <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Güvenlik Ayarları</span>
         </div>
-        <span className="text-xs transition-transform" style={{ color: 'var(--text-secondary)', transform: secOpen ? 'rotate(180deg)' : 'none' }}>▼</span>
+        <span className="transition-transform" style={{ color: 'var(--text-secondary)', transform: secOpen ? 'rotate(180deg)' : 'none' }}><IconChevronDown size={14} /></span>
       </button>
 
       {secOpen && (

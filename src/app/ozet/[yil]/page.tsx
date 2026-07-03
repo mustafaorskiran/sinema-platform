@@ -4,6 +4,10 @@ import { createClient } from '@/lib/supabase/server'
 import KarnePaylas from './KarnePaylas'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import {
+  IconClapperboard, IconFilm, IconTv, IconRotateCw, IconPencil,
+  IconStarFilled, IconMedal, IconBookOpen,
+} from '@/components/icons'
 
 interface Props {
   params: Promise<{ yil: string }>
@@ -135,7 +139,7 @@ export default async function YilOzetiPage({ params }: Props) {
   if (allEntries.length === 0) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <p className="text-6xl mb-4">📽️</p>
+        <p className="flex justify-center mb-4"><IconClapperboard size={56} /></p>
         <h1 className="text-2xl font-bold text-white mb-2">{t('profile.yearSummaryTitle', { year })}</h1>
         <p className="text-white/50 mb-8">{t('profile.yearSummaryEmpty', { year })}</p>
         <div className="flex justify-center gap-3 flex-wrap">
@@ -184,14 +188,14 @@ export default async function YilOzetiPage({ params }: Props) {
       {/* Ana İstatistikler */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         {[
-          { label: t('profile.films'), value: totalFilm, emoji: '🎬', color: '#E11D48' },
-          { label: t('profile.series'), value: totalDizi, emoji: '📺', color: '#a78bfa' },
-          { label: t('profile.rewatch'), value: totalRewatch, emoji: '🔁', color: '#34d399' },
-          { label: t('social.reviewsLabel'), value: totalReviews, emoji: '✍️', color: '#D4A843' },
+          { label: t('profile.films'), value: totalFilm, icon: IconFilm, color: '#E11D48' },
+          { label: t('profile.series'), value: totalDizi, icon: IconTv, color: '#a78bfa' },
+          { label: t('profile.rewatch'), value: totalRewatch, icon: IconRotateCw, color: '#34d399' },
+          { label: t('social.reviewsLabel'), value: totalReviews, icon: IconPencil, color: '#D4A843' },
         ].map(stat => (
           <div key={stat.label} className="rounded-2xl p-4 text-center"
             style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: `1px solid ${stat.color}20` }}>
-            <div className="text-2xl mb-1">{stat.emoji}</div>
+            <div className="flex justify-center mb-1" style={{ color: stat.color }}><stat.icon size={24} /></div>
             <div className="text-3xl font-black text-white">{stat.value}</div>
             <div className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>{stat.label}</div>
           </div>
@@ -205,10 +209,10 @@ export default async function YilOzetiPage({ params }: Props) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.4)' }}>{t('profile.yourAvgRating')}</p>
-                <p className="text-4xl font-black" style={{ color: '#D4A843' }}>★ {avgRating}</p>
+                <p className="text-4xl font-black flex items-center gap-2" style={{ color: '#D4A843' }}><IconStarFilled size={32} /> {avgRating}</p>
                 <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.35)' }}>{t('profile.basedOnRatings', { count: ratedEntries.length })}</p>
               </div>
-              <div className="text-6xl opacity-20">⭐</div>
+              <div className="opacity-20"><IconStarFilled size={56} /></div>
             </div>,
             '#D4A843'
           )}
@@ -278,18 +282,18 @@ export default async function YilOzetiPage({ params }: Props) {
                   <Link key={`${e.media_id}-${i}`}
                     href={`/${e.media_type}/${e.media_id}`}
                     className="flex items-center gap-3 hover:bg-white/5 rounded-lg px-2 py-1.5 transition-colors group">
-                    <span className="text-sm font-bold w-5 text-center shrink-0" style={{ color: ['#FFD700','#C0C0C0','#CD7F32','rgba(255,255,255,0.4)','rgba(255,255,255,0.4)'][i] }}>
-                      {['🥇','🥈','🥉','4.','5.'][i]}
+                    <span className="text-sm font-bold w-5 text-center shrink-0 flex items-center justify-center" style={{ color: ['#FFD700','#C0C0C0','#CD7F32','rgba(255,255,255,0.4)','rgba(255,255,255,0.4)'][i] }}>
+                      {i === 0 ? <IconMedal size={16} className="text-[#D4A803]" /> : i === 1 ? <IconMedal size={16} className="text-[#C0C0C0]" /> : i === 2 ? <IconMedal size={16} className="text-[#B87333]" /> : `${i + 1}.`}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-white truncate group-hover:text-[--accent] transition-colors">
-                        {e.media_type === 'film' ? '🎬' : '📺'} {e.title}
+                      <p className="text-sm text-white truncate group-hover:text-[--accent] transition-colors flex items-center gap-1.5">
+                        {e.media_type === 'film' ? <IconFilm size={14} /> : <IconTv size={14} />} {e.title}
                       </p>
                       <p className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>
                         {new Date(e.watched_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })}
                       </p>
                     </div>
-                    <span className="text-sm font-bold shrink-0" style={{ color: '#D4A843' }}>★ {e.rating}</span>
+                    <span className="text-sm font-bold shrink-0 flex items-center gap-1" style={{ color: '#D4A843' }}><IconStarFilled size={14} /> {e.rating}</span>
                   </Link>
                 ))}
               </div>
@@ -324,7 +328,7 @@ export default async function YilOzetiPage({ params }: Props) {
         <Link href="/gunluk"
           className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-white text-sm transition-all hover:scale-105"
           style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', boxShadow: '0 4px 20px rgba(225,29,72,0.3)' }}>
-          📖 {t('profile.backToDiary')}
+          <IconBookOpen size={16} /> {t('profile.backToDiary')}
         </Link>
       </div>
     </div>

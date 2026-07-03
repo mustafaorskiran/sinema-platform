@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { IconFilm, IconSwords } from '@/components/icons'
 
 function posterUrl(path: string | null, size = 'w342') {
   if (!path) return null
@@ -94,7 +95,7 @@ export default function VersusYeniClient({ userId }: Props) {
                     style={{ background: 'rgba(255,255,255,0.06)' }}>
                     {film.poster_path
                       ? <img src={posterUrl(film.poster_path) ?? ''} alt={film.title ?? film.name ?? ''} className="w-full h-full object-cover" />
-                      : <div className="w-full h-full flex items-center justify-center text-2xl">🎬</div>
+                      : <div className="w-full h-full flex items-center justify-center"><IconFilm size={24} /></div>
                     }
                   </div>
                   <p className="text-xs font-semibold text-white text-center line-clamp-2">{film.title ?? film.name}</p>
@@ -143,7 +144,7 @@ export default function VersusYeniClient({ userId }: Props) {
                   style={{ background: 'rgba(255,255,255,0.06)' }}>
                   {r.poster_path
                     ? <img src={posterUrl(r.poster_path) ?? ''} alt="" className="w-full h-full object-cover" />
-                    : <div className="w-full h-full flex items-center justify-center text-sm">🎬</div>
+                    : <div className="w-full h-full flex items-center justify-center"><IconFilm size={16} /></div>
                   }
                 </div>
                 <div>
@@ -166,7 +167,7 @@ export default function VersusYeniClient({ userId }: Props) {
         disabled={!filmA || !filmB || saving}
         className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all hover:scale-[1.02] disabled:opacity-40 disabled:cursor-not-allowed"
         style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', boxShadow: '0 4px 16px rgba(225,29,72,0.2)' }}>
-        {saving ? 'Oluşturuluyor...' : '⚔️ Karşılaştırmayı Oluştur'}
+        {saving ? 'Oluşturuluyor...' : <span className="inline-flex items-center justify-center gap-2"><IconSwords size={16} /> Karşılaştırmayı Oluştur</span>}
       </button>
     </div>
   )

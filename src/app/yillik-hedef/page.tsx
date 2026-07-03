@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import YearlyChallenge from '@/components/YearlyChallenge'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconTrophy } from '@/components/icons'
 
 export const metadata: Metadata = {
   title: 'Yıllık İzleme Hedefim | Sinezon',
@@ -25,7 +26,7 @@ export default async function YillikHedefPage() {
     >
       {/* Başlık */}
       <div className="mb-8 text-center">
-        <div className="text-5xl mb-4">🏆</div>
+        <div className="flex justify-center mb-4"><IconTrophy size={48} className="text-[--gold]" /></div>
         <h1 className="text-3xl font-extrabold" style={{ color: 'var(--text-primary)' }}>
           {t('yearlyGoal.title')}
         </h1>

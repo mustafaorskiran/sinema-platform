@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import type { ScheduleItem } from './page'
+import { IconStarFilled, IconCalendarDays } from '@/components/icons'
 
 interface Props {
   filmItems: ScheduleItem[]
@@ -99,7 +100,7 @@ function ItemRow({ item }: { item: ScheduleItem }) {
           </p>
         )}
         {item.rating > 0 && (
-          <p className="text-[11px] text-[--gold] mt-0.5">★ {item.rating.toFixed(1)}</p>
+          <p className="text-[11px] text-[--gold] mt-0.5 flex items-center gap-0.5"><IconStarFilled size={10} /> {item.rating.toFixed(1)}</p>
         )}
       </div>
 
@@ -194,7 +195,7 @@ export default function YayinTakvimiClient({ filmItems, tvItems, tvBolumItems }:
       {/* Content */}
       {groups.length === 0 ? (
         <div className="text-center py-20 text-[--text-secondary]">
-          <p className="text-3xl mb-3">📅</p>
+          <p className="mb-3 flex justify-center"><IconCalendarDays size={32} /></p>
           <p className="text-sm">Şu an için içerik bulunamadı.</p>
         </div>
       ) : (

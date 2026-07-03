@@ -1,4 +1,5 @@
 import { getTranslations } from '@/lib/i18n'
+import { IconTomato, IconStarFilled } from '@/components/icons'
 
 interface OmdbRating { Source: string; Value: string }
 interface OmdbResponse { Ratings?: OmdbRating[]; imdbRating?: string; Response?: string }
@@ -51,7 +52,7 @@ export default async function CriticScores({ imdbId }: Props) {
         {rtValue && rtC && (
           <div className="flex items-center gap-3 px-4 py-3 rounded-xl flex-1 min-w-[120px]"
             style={{ background: rtC.bg, border: `1px solid ${rtC.border}` }}>
-            <span className="text-2xl">🍅</span>
+            <IconTomato size={24} />
             <div>
               <p className="text-[10px] uppercase tracking-[0.1em] mb-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>Rotten Tomatoes</p>
               <p className="text-2xl font-black leading-none" style={{ color: rtC.text }}>{rtValue}%</p>
@@ -71,7 +72,7 @@ export default async function CriticScores({ imdbId }: Props) {
         {imdbVal && (
           <div className="flex items-center gap-3 px-4 py-3 rounded-xl flex-1 min-w-[120px]"
             style={{ background: 'rgba(212,168,67,0.08)', border: '1px solid rgba(212,168,67,0.25)' }}>
-            <span className="text-2xl">⭐</span>
+            <IconStarFilled size={24} className="text-[--gold]" />
             <div>
               <p className="text-[10px] uppercase tracking-[0.1em] mb-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>IMDb</p>
               <p className="text-2xl font-black leading-none" style={{ color: '#D4A843' }}>{imdbVal}</p>

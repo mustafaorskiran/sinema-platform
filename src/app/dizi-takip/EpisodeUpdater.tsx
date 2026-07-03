@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { IconPlay, IconPencil } from '@/components/icons'
 
 interface Props {
   seriesId: number
@@ -50,13 +51,13 @@ export default function EpisodeUpdater({ seriesId, currentSeason, currentEpisode
           <button onClick={markNext} disabled={saving}
             className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all active:scale-95 hover:scale-105 disabled:opacity-50"
             style={{ background: 'linear-gradient(135deg, rgba(225,29,72,0.15), rgba(190,18,60,0.1))', border: '1px solid rgba(225,29,72,0.25)', color: '#E11D48' }}>
-            {saving ? '...' : `▶ S${String(nextSeason).padStart(2,'0')}B${String(nextEpisode).padStart(2,'0')} izledim`}
+            {saving ? '...' : <><IconPlay size={12} /> {`S${String(nextSeason).padStart(2,'0')}B${String(nextEpisode).padStart(2,'0')} izledim`}</>}
           </button>
         )}
         <button onClick={() => setOpen(true)}
           className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs transition-all hover:scale-105"
           style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.35)' }}>
-          ✏️ Güncelle
+          <IconPencil size={12} /> Güncelle
         </button>
       </div>
     )

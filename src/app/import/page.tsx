@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import ImportClient from './ImportClient'
 import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
+import { IconInbox } from '@/components/icons'
 
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await getTranslations()
@@ -24,7 +25,7 @@ export default async function ImportPage() {
       <div className="mb-8 text-center">
         <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl mb-5"
           style={{ background: 'rgba(212,168,67,0.1)', border: '1px solid rgba(212,168,67,0.2)' }}>
-          <span className="text-2xl">📥</span>
+          <IconInbox size={24} strokeWidth={1.5} className="text-[--gold]" />
         </div>
         <h1 className="text-2xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
           {t('importPage.title')}

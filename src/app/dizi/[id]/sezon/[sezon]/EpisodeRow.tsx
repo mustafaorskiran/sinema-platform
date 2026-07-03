@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useLocale } from '@/context/LocaleContext'
+import { IconPlay } from '@/components/icons'
 
 interface Episode {
   episode_number: number
@@ -76,7 +77,7 @@ export default function EpisodeRow({ episode, seriesId, seasonNumber, isWatched:
         >
           {stillUrl
             ? <img src={stillUrl} alt={episode.name} className="w-full h-full object-cover" />
-            : <div className="w-full h-full flex items-center justify-center text-lg" style={{ color: 'rgba(255,255,255,0.2)' }}>▶</div>
+            : <div className="w-full h-full flex items-center justify-center" style={{ color: 'rgba(255,255,255,0.2)' }}><IconPlay size={18} /></div>
           }
         </button>
 

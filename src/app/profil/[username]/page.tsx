@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { IconStar, IconFilm, IconTv, IconCalendarDays, IconBookmark, IconCheck, IconPencil, IconList, IconGlobe, IconLock, IconMapPin, IconTrendingUp, IconClapperboard, IconMessageSquare } from '@/components/icons'
+import { IconStar, IconStarFilled, IconFilm, IconTv, IconCalendarDays, IconBookmark, IconCheck, IconPencil, IconList, IconGlobe, IconLock, IconMapPin, IconTrendingUp, IconClapperboard, IconMessageSquare, IconFire, IconEye, IconPin, IconChevronRight, IconClipboard, IconPackage } from '@/components/icons'
 import { createClient } from '@/lib/supabase/server'
 import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle } from '@/lib/tmdb'
 import FollowButton from '@/components/FollowButton'
@@ -352,7 +352,7 @@ export default async function ProfilPage({ params }: Props) {
               return (
                 <span className="flex items-center gap-1 px-2 py-0.5 rounded-lg text-sm font-semibold"
                   style={{ background: 'rgba(212,168,67,0.1)', border: '1px solid rgba(212,168,67,0.2)', color: '#D4A843' }}>
-                  ★ {avg.toFixed(1)}
+                  <IconStarFilled size={14} /> {avg.toFixed(1)}
                   <span className="font-normal text-xs" style={{ color: 'rgba(212,168,67,0.5)' }}>{t('profile.avgSuffix')}</span>
                 </span>
               )
@@ -366,12 +366,12 @@ export default async function ProfilPage({ params }: Props) {
               {streak > 0 && (
                 <span className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg"
                   style={{ background: 'rgba(251,146,60,0.1)', border: '1px solid rgba(251,146,60,0.2)', color: '#fb923c' }}>
-                  🔥 {t('profile.streakDays', { count: streak })}
+                  <IconFire size={14} /> {t('profile.streakDays', { count: streak })}
                 </span>
               )}
               {isOwnProfile && viewCount != null && viewCount > 0 && (
-                <span className="text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>
-                  👁 {t('profile.viewsThisMonth', { count: viewCount })}
+                <span className="text-xs flex items-center gap-1" style={{ color: 'rgba(255,255,255,0.25)' }}>
+                  <IconEye size={12} /> {t('profile.viewsThisMonth', { count: viewCount })}
                 </span>
               )}
             </div>
@@ -405,13 +405,13 @@ export default async function ProfilPage({ params }: Props) {
               {(profile as any).letterboxd_url && (
                 <a href={(profile as any).letterboxd_url} target="_blank" rel="noopener noreferrer"
                   className="flex items-center gap-1 hover:text-white transition-colors">
-                  🎬 Letterboxd
+                  <IconFilm size={14} /> Letterboxd
                 </a>
               )}
               {(profile as any).imdb_url && (
                 <a href={(profile as any).imdb_url} target="_blank" rel="noopener noreferrer"
                   className="flex items-center gap-1 hover:text-white transition-colors">
-                  ⭐ IMDb
+                  <IconStar size={14} /> IMDb
                 </a>
               )}
             </div>
@@ -435,7 +435,7 @@ export default async function ProfilPage({ params }: Props) {
       {pinnedReviewWithMedia && (
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-xs font-semibold text-[--accent] uppercase tracking-wider">📌 {t('profile.pinnedReview')}</span>
+            <span className="text-xs font-semibold text-[--accent] uppercase tracking-wider inline-flex items-center gap-1"><IconPin size={12} /> {t('profile.pinnedReview')}</span>
           </div>
           <div className="flex gap-4 rounded-xl bg-gradient-to-br from-[--accent]/10 via-[--bg-card] to-[--bg-card] border border-[--accent]/25 p-4">
             <Link href={`/${pinnedReviewWithMedia.media_type}/${pinnedReviewWithMedia.media_id}`} className="shrink-0">
@@ -489,18 +489,18 @@ export default async function ProfilPage({ params }: Props) {
           <p className="text-xs font-semibold text-[--text-secondary] uppercase tracking-wider mb-3">{t('profile.downloadData')}</p>
           <div className="flex flex-wrap gap-2">
             {[
-              { type: 'watchlist', label: `📋 ${t('profile.watchlistLabel')}` },
-              { type: 'diary', label: `📅 ${t('profile.diaryShort')}` },
-              { type: 'reviews', label: `💬 ${t('review.title')}` },
-              { type: 'collection', label: `📦 ${t('profile.collectionTab.title')}` },
-            ].map(({ type, label }) => (
+              { type: 'watchlist', label: t('profile.watchlistLabel'), icon: IconClipboard },
+              { type: 'diary', label: t('profile.diaryShort'), icon: IconCalendarDays },
+              { type: 'reviews', label: t('review.title'), icon: IconMessageSquare },
+              { type: 'collection', label: t('profile.collectionTab.title'), icon: IconPackage },
+            ].map(({ type, label, icon: Icon }) => (
               <a
                 key={type}
                 href={`/api/export?type=${type}`}
                 download
-                className="px-3 py-1.5 rounded-lg border border-[--border] text-xs text-[--text-secondary] hover:text-white hover:border-white/30 transition-colors"
+                className="px-3 py-1.5 rounded-lg border border-[--border] text-xs text-[--text-secondary] hover:text-white hover:border-white/30 transition-colors inline-flex items-center gap-1.5"
               >
-                {label} CSV
+                <Icon size={14} /> {label} CSV
               </a>
             ))}
           </div>
@@ -530,8 +530,8 @@ export default async function ProfilPage({ params }: Props) {
         <div className="mb-12 space-y-8">
           <div className="flex justify-end -mt-4 mb-2">
             <Link href={`/profil/${username}/izleme-listesi`}
-              className="text-xs hover:underline" style={{ color: 'rgba(255,255,255,0.35)' }}>
-              {t('common.seeAll')} →
+              className="text-xs hover:underline inline-flex items-center gap-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>
+              {t('common.seeAll')} <IconChevronRight size={12} />
             </Link>
           </div>
           {izlemekIstiyorum.length > 0 && (
@@ -603,8 +603,8 @@ export default async function ProfilPage({ params }: Props) {
                 {earnedBadges.length}/{badges.length}
               </span>
             </div>
-            <Link href={`/profil/${username}/rozetler`} className="text-sm hover:underline" style={{ color: 'var(--accent)' }}>
-              Tüm rozetler →
+            <Link href={`/profil/${username}/rozetler`} className="text-sm hover:underline inline-flex items-center gap-0.5" style={{ color: 'var(--accent)' }}>
+              Tüm rozetler <IconChevronRight size={14} />
             </Link>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -619,7 +619,7 @@ export default async function ProfilPage({ params }: Props) {
                   boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
                 }}
               >
-                <span className="text-2xl">{badge.emoji}</span>
+                <badge.icon size={24} strokeWidth={1.5} className="text-[--gold] shrink-0" />
                 <div>
                   <p className="text-[12px] font-semibold leading-none" style={{ color: 'var(--text-primary)' }}>{badge.name}</p>
                   <p className="text-[10px] mt-0.5 max-w-[140px]" style={{ color: 'rgba(255,255,255,0.35)' }}>{badge.desc}</p>
@@ -639,8 +639,8 @@ export default async function ProfilPage({ params }: Props) {
               Son İzlemeler
             </h2>
             <Link href={isOwnProfile ? '/gunluk' : `/profil/${username}/gunluk`}
-              className="text-sm hover:underline" style={{ color: 'var(--accent)' }}>
-              Tüm Günlük →
+              className="text-sm hover:underline inline-flex items-center gap-0.5" style={{ color: 'var(--accent)' }}>
+              Tüm Günlük <IconChevronRight size={14} />
             </Link>
           </div>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
@@ -652,8 +652,8 @@ export default async function ProfilPage({ params }: Props) {
                     : <div className="w-full h-full flex items-center justify-center text-[--text-secondary] text-xs p-1 text-center leading-tight">{entry.title}</div>
                   }
                   {entry.rating && (
-                    <div className="absolute bottom-1 right-1 bg-black/70 rounded px-1 text-[9px] font-bold text-[--gold]">
-                      ★{entry.rating}
+                    <div className="absolute bottom-1 right-1 bg-black/70 rounded px-1 text-[9px] font-bold text-[--gold] flex items-center gap-0.5">
+                      <IconStarFilled size={9} />{entry.rating}
                     </div>
                   )}
                 </div>
@@ -682,8 +682,8 @@ export default async function ProfilPage({ params }: Props) {
         </h2>
         {totalReviews > 5 && (
           <Link href={`/profil/${username}/yorumlar`}
-            className="text-sm hover:underline" style={{ color: 'var(--accent)' }}>
-            Tümünü gör →
+            className="text-sm hover:underline inline-flex items-center gap-0.5" style={{ color: 'var(--accent)' }}>
+            Tümünü gör <IconChevronRight size={14} />
           </Link>
         )}
       </div>

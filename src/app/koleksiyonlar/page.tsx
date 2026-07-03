@@ -4,6 +4,10 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import {
+  IconMasks, IconShield, IconTrophy, IconClapperboard, IconFlower, IconDragon, IconGhost, IconDroplet,
+  IconTarget, IconCheck,
+} from '@/components/icons'
 
 export const metadata: Metadata = {
   title: 'Koleksiyon Tamamla | Sinezon',
@@ -15,56 +19,56 @@ const COLLECTIONS = [
     key: 'nolan',
     title: 'Christopher Nolan Külliyatı',
     desc: 'The Dark Knight\'tan Oppenheimer\'a tüm Nolan filmleri',
-    emoji: '🎭',
+    Icon: IconMasks,
     tmdbIds: [155, 49521, 27205, 37165, 109445, 157336, 419430, 522627, 505642],
   },
   {
     key: 'mcu_phase1',
     title: 'MCU 1. Faz',
     desc: 'Iron Man\'dan The Avengers\'a Marvel\'ın ilk fazı',
-    emoji: '🦸',
+    Icon: IconShield,
     tmdbIds: [1726, 10138, 10195, 22970, 10364, 24428],
   },
   {
     key: 'oscar_best_pic_2020s',
     title: '2020\'ler Oscar En İyi Film',
     desc: '2020-2024 yılları Oscar En İyi Film ödülü kazananları',
-    emoji: '🏆',
+    Icon: IconTrophy,
     tmdbIds: [581734, 777245, 1217255, 792307, 872585],
   },
   {
     key: 'kubrick',
     title: 'Stanley Kubrick Tüm Filmleri',
     desc: '2001\'den Full Metal Jacket\'a Kubrick\'in başyapıtları',
-    emoji: '🎬',
+    Icon: IconClapperboard,
     tmdbIds: [935, 424, 562, 694, 855, 1640, 37165],
   },
   {
     key: 'godfather',
     title: 'Baba Üçlemesi',
     desc: 'Godfather, II ve III',
-    emoji: '🌹',
+    Icon: IconFlower,
     tmdbIds: [238, 1574, 1576],
   },
   {
     key: 'ghibli',
     title: 'Studio Ghibli Klasikleri',
     desc: 'Miyazaki\'nin en iyi 8 filmi',
-    emoji: '🐉',
+    Icon: IconDragon,
     tmdbIds: [129, 4935, 12477, 149870, 8392, 37797, 65, 10515],
   },
   {
     key: 'horror_classics',
     title: 'Korku Klasikleri',
     desc: 'The Shining\'den Hereditary\'ye modern korku ikonları',
-    emoji: '👻',
+    Icon: IconGhost,
     tmdbIds: [694, 539, 568012, 420818, 585083],
   },
   {
     key: 'tarantino',
     title: 'Tarantino Evren',
     desc: 'Pulp Fiction\'dan Once Upon a Time\'a tüm Tarantino',
-    emoji: '🩸',
+    Icon: IconDroplet,
     tmdbIds: [680, 207, 1154, 4390, 16869, 58972, 45243, 522],
   },
 ]
@@ -105,7 +109,7 @@ export default async function KoleksiyonlarPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
       <div className="mb-10">
-        <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">🎯 {t('collection.title')}</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2 inline-flex items-center gap-2"><IconTarget size={28} />{t('collection.title')}</h1>
         <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
           {t('collection.subtitle')}
         </p>
@@ -125,16 +129,16 @@ export default async function KoleksiyonlarPage() {
 
               <div className="flex items-start justify-between gap-3 mb-3">
                 <div className="flex items-center gap-2.5">
-                  <span className="text-2xl">{col.emoji}</span>
+                  <col.Icon size={24} />
                   <div>
                     <p className="font-bold text-white text-sm">{col.title}</p>
                     <p className="text-[11px] mt-0.5" style={{ color: 'rgba(255,255,255,0.4)' }}>{col.desc}</p>
                   </div>
                 </div>
                 {isComplete && (
-                  <span className="shrink-0 text-xs font-bold px-2 py-0.5 rounded-full"
+                  <span className="shrink-0 text-xs font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1"
                     style={{ background: 'rgba(74,222,128,0.15)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.3)' }}>
-                    ✓ {t('collection.done')}
+                    <IconCheck size={12} />{t('collection.done')}
                   </span>
                 )}
               </div>
@@ -161,7 +165,7 @@ export default async function KoleksiyonlarPage() {
                       : { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.25)' }
                     }
                     title={t('collection.filmHash', { id })}>
-                    {watchedSet.has(id) ? '✓' : '○'}
+                    {watchedSet.has(id) ? <IconCheck size={12} /> : '○'}
                   </Link>
                 ))}
               </div>
@@ -170,14 +174,14 @@ export default async function KoleksiyonlarPage() {
                 <form action={startCollection}>
                   <input type="hidden" name="key" value={col.key} />
                   <button type="submit"
-                    className="text-xs px-3 py-1.5 rounded-full font-semibold transition-all hover:scale-105"
+                    className="text-xs px-3 py-1.5 rounded-full font-semibold transition-all hover:scale-105 inline-flex items-center gap-1"
                     style={{ background: 'rgba(225,29,72,0.1)', border: '1px solid rgba(225,29,72,0.25)', color: 'rgba(225,29,72,0.8)' }}>
-                    🎯 {t('collection.start')}
+                    <IconTarget size={14} />{t('collection.start')}
                   </button>
                 </form>
               )}
               {isStarted && !isComplete && (
-                <p className="text-[11px]" style={{ color: 'rgba(74,222,128,0.7)' }}>🎯 {t('collection.active')}</p>
+                <p className="text-[11px] inline-flex items-center gap-1" style={{ color: 'rgba(74,222,128,0.7)' }}><IconTarget size={14} />{t('collection.active')}</p>
               )}
             </div>
           )

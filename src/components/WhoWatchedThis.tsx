@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
 import { getTranslations } from '@/lib/i18n'
+import { IconCheck, IconPlay, IconBookmark } from '@/components/icons'
 
 interface Props {
   mediaId: number
@@ -23,9 +24,9 @@ export default async function WhoWatchedThis({ mediaId, mediaType }: Props) {
   if (!data || data.length === 0) return null
 
   const statusGroups = {
-    'izledim': { label: t('whoWatchedThis.watched'), color: '#4ade80', emoji: '✓' },
-    'izliyorum': { label: t('whoWatchedThis.watching'), color: '#38bdf8', emoji: '▶' },
-    'izlemek-istiyorum': { label: t('whoWatchedThis.willWatch'), color: '#a78bfa', emoji: '🔖' },
+    'izledim': { label: t('whoWatchedThis.watched'), color: '#4ade80', Icon: IconCheck },
+    'izliyorum': { label: t('whoWatchedThis.watching'), color: '#38bdf8', Icon: IconPlay },
+    'izlemek-istiyorum': { label: t('whoWatchedThis.willWatch'), color: '#a78bfa', Icon: IconBookmark },
   }
 
   const groups: Record<string, { username: string; avatar_url: string | null }[]> = {
@@ -54,7 +55,7 @@ export default async function WhoWatchedThis({ mediaId, mediaType }: Props) {
             return (
               <div key={status}>
                 <div className="flex items-center gap-1.5 mb-2">
-                  <span className="text-xs font-semibold" style={{ color: info.color }}>{info.emoji} {info.label}</span>
+                  <span className="flex items-center gap-1 text-xs font-semibold" style={{ color: info.color }}><info.Icon size={12} />{info.label}</span>
                   <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.25)' }}>({users.length})</span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">

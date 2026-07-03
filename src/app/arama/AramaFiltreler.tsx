@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback } from 'react'
+import { IconClose } from '@/components/icons'
 
 const GENRES = [
   { id: 28, name: 'Aksiyon' }, { id: 35, name: 'Komedi' }, { id: 18, name: 'Drama' },
@@ -108,9 +109,9 @@ export default function AramaFiltreler({ tip, q }: Props) {
           if (tip && tip !== 'hepsi') params.set('tip', tip)
           router.push(`/arama?${params.toString()}`)
         }}
-          className="rounded-lg px-3 py-1.5 text-[11px] font-semibold transition-all hover:opacity-80"
+          className="rounded-lg px-3 py-1.5 text-[11px] font-semibold transition-all hover:opacity-80 inline-flex items-center gap-1"
           style={{ background: 'rgba(225,29,72,0.12)', border: '1px solid rgba(225,29,72,0.25)', color: 'rgba(225,29,72,0.8)' }}>
-          ✕ Filtreleri Temizle
+          <IconClose size={12} /> Filtreleri Temizle
         </button>
       )}
     </div>

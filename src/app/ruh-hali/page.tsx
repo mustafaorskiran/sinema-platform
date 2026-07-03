@@ -33,9 +33,7 @@ export default async function RuhHaliPage() {
               boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
             }}
           >
-            <span className="text-4xl mb-3 transition-transform duration-300 group-hover:scale-110 block">
-              {mood.emoji}
-            </span>
+            <mood.icon size={36} strokeWidth={1.5} className="mb-3 transition-transform duration-300 group-hover:scale-110 block text-[--accent]" />
             <p className="font-bold text-sm leading-tight mb-1" style={{ color: 'var(--text-primary)' }}>
               {mood.title}
             </p>

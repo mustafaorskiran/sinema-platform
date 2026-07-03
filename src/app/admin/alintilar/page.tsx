@@ -2,6 +2,7 @@ import { requireAdmin } from '@/lib/admin'
 import { createClient } from '@/lib/supabase/server'
 import { getTranslations } from '@/lib/i18n'
 import ApproveQuoteButton from './ApproveQuoteButton'
+import { IconFilm, IconTv } from '@/components/icons'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Admin — Alıntılar' }
@@ -33,7 +34,7 @@ export default async function AdminAlıntilarPage() {
                   <p className="text-sm text-white italic">"{q.content}"</p>
                   {q.character_name && <p className="text-xs text-[--accent] mt-1">— {q.character_name}</p>}
                   <div className="flex items-center gap-3 mt-2 text-[10px] text-[--text-secondary]">
-                    <span>{q.media_type === 'film' ? '🎬' : '📺'} #{q.media_id}</span>
+                    <span className="inline-flex items-center gap-1">{q.media_type === 'film' ? <IconFilm size={12} /> : <IconTv size={12} />} #{q.media_id}</span>
                     <span>@{q.profiles?.username}</span>
                   </div>
                 </div>

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { getTranslations } from '@/lib/i18n'
+import { IconCalendarDays, IconStarFilled } from '@/components/icons'
 
 const BASE = 'https://api.themoviedb.org/3'
 
@@ -51,7 +52,7 @@ export default async function OnThisDayWidget() {
       <div className="flex items-center justify-between mb-5">
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            🗓️ {t('home.onThisDayTitle', { date: dateLabel })}
+            <IconCalendarDays size={20} /> {t('home.onThisDayTitle', { date: dateLabel })}
           </h2>
           <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>
             {t('home.onThisDaySubtitle')}
@@ -89,7 +90,7 @@ export default async function OnThisDayWidget() {
                 <div className="absolute bottom-2 left-2 right-2">
                   <p className="text-xs font-semibold text-white line-clamp-2 leading-tight">{title}</p>
                   {item.vote_average > 0 && (
-                    <p className="text-[10px] mt-0.5" style={{ color: '#D4A843' }}>★ {item.vote_average.toFixed(1)}</p>
+                    <p className="text-[10px] mt-0.5 flex items-center gap-1" style={{ color: '#D4A843' }}><IconStarFilled size={10} /> {item.vote_average.toFixed(1)}</p>
                   )}
                 </div>
               </div>

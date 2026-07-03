@@ -1,16 +1,18 @@
 'use client'
 import { useState } from 'react'
+import { IconCheck, IconTrophy } from '@/components/icons'
 
 export default function TurnuvaYonetim({ tournaments }: { tournaments: any[] }) {
   const [title, setTitle] = useState('')
   const [filmIds, setFilmIds] = useState('')
   const [loading, setLoading] = useState(false)
   const [msg, setMsg] = useState('')
+  const [msgOk, setMsgOk] = useState(false)
 
   async function create() {
     const ids = filmIds.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n))
-    if (ids.length !== 8) { setMsg('Tam olarak 8 film ID girin (virgülle ayırın)'); return }
-    if (!title.trim()) { setMsg('Başlık girin'); return }
+    if (ids.length !== 8) { setMsg('Tam olarak 8 film ID girin (virgülle ayırın)'); setMsgOk(false); return }
+    if (!title.trim()) { setMsg('Başlık girin'); setMsgOk(false); return }
     setLoading(true); setMsg('')
     try {
       const res = await fetch('/api/admin/turnuva', {
@@ -20,11 +22,13 @@ export default function TurnuvaYonetim({ tournaments }: { tournaments: any[] }) 
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
-      setMsg('✓ Turnuva oluşturuldu! Sayfa yenileniyor...')
+      setMsg('Turnuva oluşturuldu! Sayfa yenileniyor...')
+      setMsgOk(true)
       setTitle(''); setFilmIds('')
       setTimeout(() => window.location.reload(), 1500)
     } catch (e) {
       setMsg(e instanceof Error ? e.message : 'Hata oluştu')
+      setMsgOk(false)
     } finally {
       setLoading(false)
     }
@@ -53,16 +57,17 @@ export default function TurnuvaYonetim({ tournaments }: { tournaments: any[] }) 
             style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
           />
           {msg && (
-            <p className={`text-xs px-3 py-2 rounded-lg ${msg.startsWith('✓') ? 'text-green-400 bg-green-500/10' : 'text-red-400 bg-red-500/10'}`}>
+            <p className={`text-xs px-3 py-2 rounded-lg flex items-center gap-1.5 ${msgOk ? 'text-green-400 bg-green-500/10' : 'text-red-400 bg-red-500/10'}`}>
+              {msgOk && <IconCheck size={14} />}
               {msg}
             </p>
           )}
           <button
             onClick={create}
             disabled={loading}
-            className="px-6 py-2.5 rounded-xl text-sm font-bold text-white disabled:opacity-50 transition-all hover:scale-105"
+            className="px-6 py-2.5 rounded-xl text-sm font-bold text-white disabled:opacity-50 transition-all hover:scale-105 flex items-center justify-center gap-1.5"
             style={{ background: 'linear-gradient(135deg,#E11D48,#be123c)' }}>
-            {loading ? '...' : '🏆 Turnuva Oluştur'}
+            {loading ? '...' : <><IconTrophy size={16} /> Turnuva Oluştur</>}
           </button>
         </div>
       </div>

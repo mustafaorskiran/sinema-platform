@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { useLocale } from '@/context/LocaleContext'
+import { IconFilm, IconStar, IconPaperclip, IconFolder } from '@/components/icons'
 
 interface ImportResult {
   total: number
@@ -145,15 +146,15 @@ export default function ImportClient() {
     <div className="space-y-4">
       {/* Kaynak Seçici */}
       <div className="flex rounded-xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
-        {([['letterboxd', '🎬 Letterboxd'], ['imdb', '⭐ IMDb']] as [Mode, string][]).map(([m, label]) => (
+        {([['letterboxd', IconFilm, 'Letterboxd'], ['imdb', IconStar, 'IMDb']] as [Mode, typeof IconFilm, string][]).map(([m, Icon, label]) => (
           <button key={m} onClick={() => switchMode(m)}
-            className="flex-1 py-2.5 text-sm font-semibold transition-all"
+            className="flex-1 py-2.5 text-sm font-semibold transition-all inline-flex items-center justify-center gap-1.5"
             style={{
               background: mode === m ? 'rgba(212,168,67,0.12)' : 'transparent',
               color: mode === m ? '#D4A843' : 'rgba(255,255,255,0.4)',
               borderRight: m === 'letterboxd' ? '1px solid rgba(255,255,255,0.08)' : 'none',
             }}>
-            {label}
+            <Icon size={16} /> {label}
           </button>
         ))}
       </div>
@@ -172,7 +173,7 @@ export default function ImportClient() {
           onChange={e => handleFile(e.target.files?.[0] ?? null)} />
         {file ? (
           <div>
-            <div className="text-2xl mb-2">📄</div>
+            <div className="mb-2 flex justify-center" style={{ color: '#D4A843' }}><IconPaperclip size={24} /></div>
             <p className="font-semibold text-sm" style={{ color: '#D4A843' }}>{file.name}</p>
             <p className="text-[11px] mt-1" style={{ color: 'rgba(255,255,255,0.3)' }}>
               {t('importPage.fileSizeInfo', { size: (file.size / 1024).toFixed(1) })}
@@ -180,7 +181,7 @@ export default function ImportClient() {
           </div>
         ) : (
           <div>
-            <div className="text-3xl mb-2">📂</div>
+            <div className="mb-2 flex justify-center" style={{ color: 'var(--text-secondary)' }}><IconFolder size={32} /></div>
             <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
               {t('importPage.dragDrop')}
             </p>

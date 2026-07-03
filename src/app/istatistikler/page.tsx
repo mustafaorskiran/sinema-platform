@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconUser, IconMessageSquare, IconClipboard, IconTrendingUp } from '@/components/icons'
 
 export const metadata: Metadata = {
   title: 'Platform İstatistikleri | Sinezon',
@@ -90,10 +91,10 @@ export default async function IstatistiklerPage() {
   const maxMonthly = Math.max(...monthlyData.map(m => m.count), 1)
 
   const stats = [
-    { label: t('stats.users'), value: userCount ?? 0, icon: '👤', color: '#60a5fa' },
-    { label: t('stats.reviews'), value: reviewCount ?? 0, icon: '💬', color: 'var(--accent)' },
-    { label: t('stats.watchlist'), value: watchlistCount ?? 0, icon: '📋', color: '#a78bfa' },
-    { label: t('stats.thisWeek'), value: weeklyCount ?? 0, icon: '📈', color: '#34d399' },
+    { label: t('stats.users'), value: userCount ?? 0, icon: IconUser, color: '#60a5fa' },
+    { label: t('stats.reviews'), value: reviewCount ?? 0, icon: IconMessageSquare, color: 'var(--accent)' },
+    { label: t('stats.watchlist'), value: watchlistCount ?? 0, icon: IconClipboard, color: '#a78bfa' },
+    { label: t('stats.thisWeek'), value: weeklyCount ?? 0, icon: IconTrendingUp, color: '#34d399' },
   ]
 
   return (
@@ -123,7 +124,7 @@ export default async function IstatistiklerPage() {
               borderTop: `3px solid ${stat.color}`,
             }}
           >
-            <div className="text-3xl mb-2">{stat.icon}</div>
+            <div className="mb-2 flex justify-center" style={{ color: stat.color }}><stat.icon size={32} /></div>
             <div className="text-3xl font-extrabold mb-1" style={{ color: 'var(--text-primary)' }}>
               {stat.value.toLocaleString('tr-TR')}
             </div>

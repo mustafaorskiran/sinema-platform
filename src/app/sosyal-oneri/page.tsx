@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getPosterUrl, getMediaTitle, getMovieDetail, getSeriesDetail } from '@/lib/tmdb'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconUsers, IconFilm, IconTv, IconStarFilled } from '@/components/icons'
 
 export const metadata: Metadata = {
   title: 'Arkadaşlarım Ne Beğendi? | Sinezon',
@@ -29,7 +30,7 @@ export default async function SosyalOneriPage() {
   if (followingIds.length === 0) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <p className="text-4xl mb-4">👥</p>
+        <p className="mb-4 flex justify-center"><IconUsers size={40} /></p>
         <h1 className="text-2xl font-bold text-white mb-2">{t('social.noFollowingTitle')}</h1>
         <p className="text-sm mb-6" style={{ color: 'rgba(255,255,255,0.4)' }}>
           {t('social.noFollowingDesc')}
@@ -118,7 +119,7 @@ export default async function SosyalOneriPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="mb-8">
-        <h1 className="text-3xl font-black text-white mb-1">👥 {t('social.pageTitle')}</h1>
+        <h1 className="text-3xl font-black text-white mb-1 flex items-center gap-2"><IconUsers size={28} /> {t('social.pageTitle')}</h1>
         <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
           {t('social.pageDesc')}
         </p>
@@ -127,7 +128,7 @@ export default async function SosyalOneriPage() {
       {enriched.length === 0 ? (
         <div className="text-center py-20 rounded-2xl"
           style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <p className="text-4xl mb-3">🎬</p>
+          <p className="mb-3 flex justify-center"><IconFilm size={40} /></p>
           <p className="text-white font-medium mb-1">{t('social.noRecsTitle')}</p>
           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
             {t('social.noRecsDesc')}
@@ -151,13 +152,15 @@ export default async function SosyalOneriPage() {
                   <p className="font-bold text-white text-sm group-hover:text-[--accent] transition-colors line-clamp-2">
                     {item.title}
                   </p>
-                  <span className="shrink-0 text-xs font-black px-1.5 py-0.5 rounded"
+                  <span className="shrink-0 text-xs font-black px-1.5 py-0.5 rounded inline-flex items-center gap-0.5"
                     style={{ background: 'rgba(212,168,67,0.15)', color: '#D4A843' }}>
-                    ★ {item.avgRating}
+                    <IconStarFilled size={11} /> {item.avgRating}
                   </span>
                 </div>
-                <p className="text-[11px] mb-2" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                  {item.media_type === 'film' ? `🎬 ${t('film.badge')}` : `📺 ${t('series.badge')}`}
+                <p className="text-[11px] mb-2 flex items-center gap-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                  {item.media_type === 'film'
+                    ? <span className="inline-flex items-center gap-1"><IconFilm size={12} /> {t('film.badge')}</span>
+                    : <span className="inline-flex items-center gap-1"><IconTv size={12} /> {t('series.badge')}</span>}
                   {item.ratings.length > 1 && ` ${t('social.likedByCount', { count: item.ratings.length })}`}
                 </p>
                 {/* Öneren avatarlar */}

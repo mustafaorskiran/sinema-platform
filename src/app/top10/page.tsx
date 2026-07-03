@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
+import { IconFire, IconFilm, IconTv, IconStarFilled } from '@/components/icons'
 
 export const revalidate = 3600
 
@@ -176,8 +177,8 @@ export default async function Top10Page({ searchParams }: PageProps) {
               <p className="font-semibold text-white text-sm leading-tight line-clamp-1 group-hover:text-[--accent] transition-colors">
                 {item.title}
               </p>
-              <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                {item.year}{item.rating ? ` · ★ ${item.rating.toFixed(1)}` : ''}
+              <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                {item.year}{item.rating ? <> · <IconStarFilled size={11} className="text-[--gold]" /> {item.rating.toFixed(1)}</> : ''}
               </p>
             </div>
             {item.count > 0 && (
@@ -214,7 +215,7 @@ export default async function Top10Page({ searchParams }: PageProps) {
       <div className="mb-6">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-3 text-xs font-semibold"
           style={{ background: 'rgba(225,29,72,0.1)', border: '1px solid rgba(225,29,72,0.2)', color: '#E11D48' }}>
-          🔥 Top 10
+          <IconFire size={14} /> Top 10
         </div>
         <h1 className="text-3xl font-black text-white mb-1">Sinezon Top 10</h1>
         <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>{periodLabel}</p>
@@ -240,14 +241,14 @@ export default async function Top10Page({ searchParams }: PageProps) {
       <div className="grid md:grid-cols-2 gap-8">
         <div>
           <div className="flex items-center gap-2 mb-4">
-            <span className="text-xl">🎬</span>
+            <IconFilm size={24} />
             <h2 className="text-lg font-bold text-white">Filmler</h2>
           </div>
           <TopList items={filmTop} type="film" />
         </div>
         <div>
           <div className="flex items-center gap-2 mb-4">
-            <span className="text-xl">📺</span>
+            <IconTv size={24} />
             <h2 className="text-lg font-bold text-white">Diziler</h2>
           </div>
           <TopList items={diziTop} type="dizi" />

@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useLocale } from '@/context/LocaleContext'
+import { IconSend, IconCheck } from '@/components/icons'
 
 interface Props {
   filmId: number
@@ -41,7 +42,7 @@ export default function FilmOnerButton({ filmId, filmType, filmTitle, filmPoster
     <button onClick={() => setOpen(true)}
       className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-all hover:scale-105"
       style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)' }}>
-      📤 {t('social.recommendToFriend')}
+      <IconSend size={14} /> {t('social.recommendToFriend')}
     </button>
   )
 
@@ -49,7 +50,7 @@ export default function FilmOnerButton({ filmId, filmType, filmTitle, filmPoster
     <div className="rounded-xl p-4 space-y-3" style={{ background: 'rgba(20,28,47,0.95)', border: '1px solid rgba(255,255,255,0.1)' }}>
       <p className="text-sm font-semibold text-white">{t('social.recommendToFriend')}</p>
       {sent ? (
-        <p className="text-green-400 text-sm">✓ {t('social.sent')}</p>
+        <p className="text-green-400 text-sm inline-flex items-center gap-1"><IconCheck size={14} /> {t('social.sent')}</p>
       ) : (
         <>
           <input

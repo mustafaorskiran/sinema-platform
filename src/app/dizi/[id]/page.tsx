@@ -39,6 +39,7 @@ import AIChatWidget from '@/components/AIChatWidget'
 import AlsoWatched from '@/components/AlsoWatched'
 import FilmOnerButton from '@/components/FilmOnerButton'
 import AdBanner from '@/components/AdBanner'
+import { IconCake, IconScale, IconTv, IconStar, IconStarFilled, IconClipboard } from '@/components/icons'
 import type { Review } from '@/lib/types'
 import type { Metadata } from 'next'
 
@@ -416,7 +417,7 @@ export default async function DiziPage({ params, searchParams }: Props) {
             {anniversary && (
               <div className="mb-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold animate-pulse"
                 style={{ background: 'rgba(212,168,67,0.15)', border: '1px solid rgba(212,168,67,0.3)', color: '#D4A843' }}>
-                🎂 {anniversary.type === 'exact' ? t('film.anniversaryToday', { years: anniversary.years }) : t('film.anniversaryWeek', { years: anniversary.years })}
+                <IconCake size={14} /> {anniversary.type === 'exact' ? t('film.anniversaryToday', { years: anniversary.years }) : t('film.anniversaryWeek', { years: anniversary.years })}
               </div>
             )}
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight tracking-tight">{title}</h1>
@@ -562,7 +563,7 @@ export default async function DiziPage({ params, searchParams }: Props) {
                 className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition-all hover:text-white hover:scale-105"
                 style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.55)' }}
               >
-                ⚖️ {t('film.compare')}
+                <IconScale size={14} /> {t('film.compare')}
               </a>
               {user && (
                 <FilmOnerButton
@@ -663,8 +664,8 @@ export default async function DiziPage({ params, searchParams }: Props) {
                       {s.poster_path
                         ? <img src={`https://image.tmdb.org/t/p/w92${s.poster_path}`} alt={t('series.seasonNumber', { n: s.season_number })}
                             className="w-8 h-12 rounded-md object-cover shrink-0" />
-                        : <div className="w-8 h-12 rounded-md shrink-0 flex items-center justify-center text-lg"
-                            style={{ background: 'rgba(255,255,255,0.05)' }}>📺</div>
+                        : <div className="w-8 h-12 rounded-md shrink-0 flex items-center justify-center"
+                            style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.3)' }}><IconTv size={18} /></div>
                       }
                       <div className="min-w-0">
                         <p className="text-xs font-bold text-white">{t('series.seasonNumber', { n: s.season_number })}</p>
@@ -716,14 +717,14 @@ export default async function DiziPage({ params, searchParams }: Props) {
 
         {/* Sayfa içi navigasyon */}
         <PageNav sections={[
-          { id: 'oyuncular', label: `🎭 ${t('film.cast')}` },
-          { id: 'odüller', label: `🏆 ${t('film.awardsNav')}` },
-          { id: 'puan-dagilimi', label: `📊 ${t('film.ratingsNav')}` },
-          ...(videos.length > 0 ? [{ id: 'videolar', label: `🎬 ${t('film.videosNav')}` }] : []),
-          ...(backdrops.length > 0 || posters.length > 0 ? [{ id: 'galeri', label: `🖼 ${t('film.galleryNav')}` }] : []),
-          { id: 'trivia', label: `💡 ${t('film.triviaNav')}` },
-          { id: 'yorumlar', label: `💬 ${t('film.reviewsNav')}` },
-          { id: 'benzer', label: `📺 ${t('film.similarNav')}` },
+          { id: 'oyuncular', label: t('film.cast') },
+          { id: 'odüller', label: t('film.awardsNav') },
+          { id: 'puan-dagilimi', label: t('film.ratingsNav') },
+          ...(videos.length > 0 ? [{ id: 'videolar', label: t('film.videosNav') }] : []),
+          ...(backdrops.length > 0 || posters.length > 0 ? [{ id: 'galeri', label: t('film.galleryNav') }] : []),
+          { id: 'trivia', label: t('film.triviaNav') },
+          { id: 'yorumlar', label: t('film.reviewsNav') },
+          { id: 'benzer', label: t('film.similarNav') },
         ]} />
 
         {/* Cast & Crew */}
@@ -764,7 +765,7 @@ export default async function DiziPage({ params, searchParams }: Props) {
               <a href={`https://www.imdb.com/title/${imdbId}`} target="_blank" rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[12px] font-semibold transition-all hover:scale-105"
                 style={{ background: 'rgba(212,168,67,0.1)', border: '1px solid rgba(212,168,67,0.25)', color: '#D4A843' }}>
-                ⭐ {t('film.imdbOpen')} →
+                <IconStar size={14} /> {t('film.imdbOpen')} →
               </a>
             </div>
           )}
@@ -806,7 +807,7 @@ export default async function DiziPage({ params, searchParams }: Props) {
                     {fr.avatar_url ? <img src={fr.avatar_url} alt={fr.username} className="w-full h-full object-cover" /> : fr.username[0]?.toUpperCase()}
                   </div>
                   <span className="text-[12px]" style={{ color: 'rgba(255,255,255,0.55)' }}>{fr.username}</span>
-                  <span className="text-[13px] font-bold" style={{ color: '#D4A843' }}>★ {fr.rating}</span>
+                  <span className="text-[13px] font-bold inline-flex items-center gap-1" style={{ color: '#D4A843' }}><IconStarFilled size={12} /> {fr.rating}</span>
                 </a>
               ))}
             </div>
@@ -890,7 +891,7 @@ export default async function DiziPage({ params, searchParams }: Props) {
                 <a key={list.id} href={`/liste/${list.id}`}
                   className="flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition-all hover:-translate-y-0.5"
                   style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)', color: 'rgba(255,255,255,0.7)' }}>
-                  📋 {list.title}
+                  <IconClipboard size={14} /> {list.title}
                   {list.profiles?.username && (
                     <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>@{list.profiles.username}</span>
                   )}
@@ -973,9 +974,9 @@ export default async function DiziPage({ params, searchParams }: Props) {
                       <img src={getPosterUrl(s.poster_path, 'w342')!} alt={s.name}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
                     )}
-                    <div className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded text-[10px] font-bold"
+                    <div className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded text-[10px] font-bold inline-flex items-center gap-0.5"
                       style={{ background: 'rgba(0,0,0,0.75)', color: '#D4A843', backdropFilter: 'blur(4px)' }}>
-                      ★ {s.vote_average.toFixed(1)}
+                      <IconStarFilled size={10} /> {s.vote_average.toFixed(1)}
                     </div>
                   </div>
                   <p className="mt-1.5 text-xs font-medium line-clamp-2 group-hover:text-white transition-colors"
@@ -1017,9 +1018,9 @@ export default async function DiziPage({ params, searchParams }: Props) {
                       </div>
                     )}
                     {item.vote_average > 0 && (
-                      <div className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded text-[10px] font-bold"
+                      <div className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded text-[10px] font-bold inline-flex items-center gap-0.5"
                         style={{ background: 'rgba(0,0,0,0.75)', color: '#D4A843', backdropFilter: 'blur(4px)' }}>
-                        ★ {item.vote_average.toFixed(1)}
+                        <IconStarFilled size={10} /> {item.vote_average.toFixed(1)}
                       </div>
                     )}
                   </div>

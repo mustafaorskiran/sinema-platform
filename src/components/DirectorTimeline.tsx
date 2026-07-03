@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { getTranslations } from '@/lib/i18n'
+import { IconFilm } from '@/components/icons'
 
 interface Credit {
   id: number
@@ -46,7 +47,7 @@ export default async function DirectorTimeline({ credits, personName }: Props) {
   return (
     <div className="mt-8">
       <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-        🎬 {t('person.timeline.title')}
+        <IconFilm size={20} /> {t('person.timeline.title')}
       </h2>
 
       <div className="relative pl-4" style={{ borderLeft: '2px solid rgba(255,255,255,0.08)' }}>

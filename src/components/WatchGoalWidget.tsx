@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useLocale } from '@/context/LocaleContext'
+import { IconTarget } from '@/components/icons'
 
 interface Goal {
   target_films: number
@@ -134,7 +135,7 @@ export default function WatchGoalWidget() {
         </div>
       ) : (
         <div className="text-center py-6">
-          <p className="text-4xl mb-2">🎯</p>
+          <IconTarget size={40} className="mx-auto mb-2 text-[--text-secondary]" />
           <p className="text-sm text-[--text-secondary]">{t('watchGoal.noGoalYet', { year })}</p>
         </div>
       )}

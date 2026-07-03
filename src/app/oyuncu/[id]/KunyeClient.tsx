@@ -4,6 +4,10 @@ import { useState } from 'react'
 import FilmografiClient from './FilmografiClient'
 import { useLocale } from '@/context/LocaleContext'
 import type { TMDbPersonCredit } from '@/lib/types'
+import {
+  IconFilm, IconHourglass, IconClapperboard, IconTv, IconTrophy,
+  IconChevronRight, IconSparkles, IconMasks, IconTent,
+} from '@/components/icons'
 
 const GOLD = '#D4A843'
 const GOLD_B = '#F0C060'
@@ -99,10 +103,10 @@ export default function KunyeClient({
           {(firstYear || careerYears || totalMovies > 0 || totalTV > 0) && (
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
-                { value: firstYear, label: t('person.firstWork'), icon: '🎬' },
-                { value: careerYears ? `${careerYears}` : null, label: t('person.careerYears'), icon: '⏳' },
-                { value: totalMovies > 0 ? String(totalMovies) : null, label: t('film.badge'), icon: '🎥' },
-                { value: totalTV > 0 ? String(totalTV) : null, label: t('series.badge'), icon: '📺' },
+                { value: firstYear, label: t('person.firstWork'), icon: IconFilm },
+                { value: careerYears ? `${careerYears}` : null, label: t('person.careerYears'), icon: IconHourglass },
+                { value: totalMovies > 0 ? String(totalMovies) : null, label: t('film.badge'), icon: IconClapperboard },
+                { value: totalTV > 0 ? String(totalTV) : null, label: t('series.badge'), icon: IconTv },
               ].filter(s => s.value).map(stat => (
                 <div key={stat.label}
                   className="relative overflow-hidden rounded-2xl p-5 text-center"
@@ -112,7 +116,7 @@ export default function KunyeClient({
                   }}>
                   <div className="absolute inset-0 opacity-[0.05]"
                     style={{ background: 'radial-gradient(circle at 50% 0%, var(--gold) 0%, transparent 70%)' }} />
-                  <p className="text-xl mb-0.5">{stat.icon}</p>
+                  <p className="relative flex justify-center mb-0.5" style={{ color: GOLD }}><stat.icon size={20} /></p>
                   <p className="relative text-3xl font-black tabular-nums mt-1"
                      style={{
                        background: `linear-gradient(135deg, ${GOLD_B} 0%, ${GOLD} 100%)`,
@@ -190,9 +194,9 @@ export default function KunyeClient({
                       IMDb
                     </a>
                     <a href={`https://www.imdb.com/name/${imdbId}/awards`} target="_blank" rel="noopener noreferrer"
-                      className="text-[12px] px-3 py-1.5 rounded-xl transition-all hover:scale-105"
+                      className="text-[12px] px-3 py-1.5 rounded-xl transition-all hover:scale-105 inline-flex items-center gap-1.5"
                       style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-secondary)' }}>
-                      🏆 {t('person.awards')}
+                      <IconTrophy size={14} /> {t('person.awards')}
                     </a>
                   </div>
                 </div>
@@ -236,9 +240,9 @@ export default function KunyeClient({
                 }}
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0"
-                       style={{ background: 'rgba(212,168,67,0.15)' }}>
-                    🏆
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                       style={{ background: 'rgba(212,168,67,0.15)', color: GOLD }}>
+                    <IconTrophy size={24} />
                   </div>
                   <div>
                     <p className="text-white font-semibold text-sm">{t('person.imdbAwardsTitle')}</p>
@@ -247,7 +251,7 @@ export default function KunyeClient({
                     </p>
                   </div>
                 </div>
-                <span className="text-[--text-secondary] group-hover:text-white transition-colors text-lg">→</span>
+                <span className="text-[--text-secondary] group-hover:text-white transition-colors"><IconChevronRight size={18} /></span>
               </a>
 
               <div className="rounded-2xl overflow-hidden"
@@ -260,11 +264,11 @@ export default function KunyeClient({
                 </div>
                 <div className="divide-y" style={{ borderColor: 'rgba(212,168,67,0.08)' }}>
                   {[
-                    { name: 'Academy Awards (Oscar)', emoji: '🎬' },
-                    { name: 'Emmy Awards', emoji: '📺' },
-                    { name: 'Golden Globe Awards', emoji: '🌟' },
-                    { name: 'BAFTA Awards', emoji: '🎭' },
-                    { name: 'Screen Actors Guild Awards', emoji: '🎪' },
+                    { name: 'Academy Awards (Oscar)', icon: IconFilm },
+                    { name: 'Emmy Awards', icon: IconTv },
+                    { name: 'Golden Globe Awards', icon: IconSparkles },
+                    { name: 'BAFTA Awards', icon: IconMasks },
+                    { name: 'Screen Actors Guild Awards', icon: IconTent },
                   ].map(award => (
                     <a key={award.name}
                        href={`https://www.imdb.com/name/${imdbId}/awards`}
@@ -274,13 +278,13 @@ export default function KunyeClient({
                        onMouseEnter={e => (e.currentTarget.style.background = 'rgba(212,168,67,0.04)')}
                        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                     >
-                      <span className="text-lg w-6 shrink-0">{award.emoji}</span>
+                      <span className="w-6 shrink-0 flex items-center justify-center" style={{ color: GOLD_DIM }}><award.icon size={18} /></span>
                       <span className="text-[13px] flex-1 transition-colors"
                             style={{ color: 'var(--text-secondary)' }}>
                         {award.name}
                       </span>
-                      <span className="text-[10px] transition-colors" style={{ color: GOLD_DIM }}>
-                        IMDb →
+                      <span className="text-[10px] transition-colors flex items-center gap-1" style={{ color: GOLD_DIM }}>
+                        IMDb <IconChevronRight size={12} />
                       </span>
                     </a>
                   ))}
@@ -289,7 +293,7 @@ export default function KunyeClient({
             </>
           ) : (
             <div className="text-center py-20" style={{ color: 'var(--text-secondary)' }}>
-              <p className="text-4xl mb-4">🏆</p>
+              <p className="flex justify-center mb-4"><IconTrophy size={40} /></p>
               <p className="text-sm">{t('person.noAwardsFound')}</p>
             </div>
           )}

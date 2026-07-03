@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { computeBadges, ALL_BADGE_COUNT } from '@/lib/badges'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconMedal, IconLock } from '@/components/icons'
 
 interface Props {
   params: Promise<{ username: string }>
@@ -126,14 +127,14 @@ export default async function ProfilRozetlerPage({ params }: Props) {
       {earned.length > 0 && (
         <section className="mb-8">
           <h2 className="text-base font-bold text-white mb-4 flex items-center gap-2">
-            <span>🏅</span> {t('profile.badgesTab.earnedBadges')}
+            <IconMedal size={18} className="text-[--gold]" /> {t('profile.badgesTab.earnedBadges')}
             <span className="text-sm font-normal" style={{ color: 'rgba(255,255,255,0.4)' }}>({earned.length})</span>
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {earned.map(b => (
               <div key={b.id} className="flex items-center gap-3 p-3 rounded-xl"
                 style={{ background: 'rgba(212,168,67,0.07)', border: '1px solid rgba(212,168,67,0.2)' }}>
-                <span className="text-2xl shrink-0">{b.emoji}</span>
+                <b.icon size={26} strokeWidth={1.5} className="shrink-0 text-[--gold]" />
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-white truncate">{b.name}</p>
                   <p className="text-[11px] leading-tight" style={{ color: 'rgba(255,255,255,0.45)' }}>{b.desc}</p>
@@ -149,14 +150,14 @@ export default async function ProfilRozetlerPage({ params }: Props) {
         <section>
           <h2 className="text-base font-bold mb-4 flex items-center gap-2"
             style={{ color: 'rgba(255,255,255,0.5)' }}>
-            <span>🔒</span> {t('profile.badgesTab.lockedBadges')}
+            <IconLock size={16} /> {t('profile.badgesTab.lockedBadges')}
             <span className="text-sm font-normal" style={{ color: 'rgba(255,255,255,0.25)' }}>({unearned.length})</span>
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {unearned.map(b => (
               <div key={b.id} className="flex items-center gap-3 p-3 rounded-xl opacity-50"
                 style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <span className="text-2xl shrink-0 grayscale">{b.emoji}</span>
+                <b.icon size={26} strokeWidth={1.5} className="shrink-0 opacity-60" />
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-white truncate">{b.name}</p>
                   <p className="text-[11px] leading-tight" style={{ color: 'rgba(255,255,255,0.35)' }}>{b.desc}</p>

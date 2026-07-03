@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useLocale } from '@/context/LocaleContext'
+import { IconMessageSquare } from '@/components/icons'
 
 export default function MessageButton({ targetUserId }: { targetUserId: string }) {
   const router = useRouter()
@@ -24,7 +25,9 @@ export default function MessageButton({ targetUserId }: { targetUserId: string }
   return (
     <button onClick={open} disabled={loading}
       className="px-3 py-1.5 rounded-lg border border-[--border] text-sm text-[--text-secondary] hover:text-white hover:border-[--accent]/50 transition-colors disabled:opacity-50">
-      {loading ? '...' : `💬 ${t('social.message')}`}
+      {loading
+        ? '...'
+        : <span className="inline-flex items-center gap-1.5"><IconMessageSquare size={14} />{t('social.message')}</span>}
     </button>
   )
 }

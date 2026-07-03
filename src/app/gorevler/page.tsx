@@ -2,15 +2,16 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconStarFilled, IconPencil, IconBookOpen, IconUsers, IconClipboard, IconTarget, IconTrophy } from '@/components/icons'
 
 export const metadata: Metadata = { title: 'Günlük Görevler — Sinezon' }
 
 const DAILY_TASKS = [
-  { key: 'rate_3', label: 'community.taskRate3Label', desc: 'community.taskRate3Desc', xp: 15, icon: '⭐' },
-  { key: 'write_review', label: 'community.taskWriteReviewLabel', desc: 'community.taskWriteReviewDesc', xp: 25, icon: '✍️' },
-  { key: 'add_diary', label: 'community.taskAddDiaryLabel', desc: 'community.taskAddDiaryDesc', xp: 10, icon: '📖' },
-  { key: 'follow_someone', label: 'community.taskFollowSomeoneLabel', desc: 'community.taskFollowSomeoneDesc', xp: 5, icon: '👥' },
-  { key: 'update_watchlist', label: 'community.taskUpdateWatchlistLabel', desc: 'community.taskUpdateWatchlistDesc', xp: 8, icon: '📋' },
+  { key: 'rate_3', label: 'community.taskRate3Label', desc: 'community.taskRate3Desc', xp: 15, icon: IconStarFilled },
+  { key: 'write_review', label: 'community.taskWriteReviewLabel', desc: 'community.taskWriteReviewDesc', xp: 25, icon: IconPencil },
+  { key: 'add_diary', label: 'community.taskAddDiaryLabel', desc: 'community.taskAddDiaryDesc', xp: 10, icon: IconBookOpen },
+  { key: 'follow_someone', label: 'community.taskFollowSomeoneLabel', desc: 'community.taskFollowSomeoneDesc', xp: 5, icon: IconUsers },
+  { key: 'update_watchlist', label: 'community.taskUpdateWatchlistLabel', desc: 'community.taskUpdateWatchlistDesc', xp: 8, icon: IconClipboard },
 ]
 
 export default async function GorevlerPage() {
@@ -102,7 +103,7 @@ export default async function GorevlerPage() {
   return (
     <div className="max-w-xl mx-auto px-4 py-10">
       <div className="flex items-center gap-3 mb-8">
-        <h1 className="text-2xl font-bold text-white">🎯 {t('community.dailyTasksTitle')}</h1>
+        <h1 className="text-2xl font-bold text-white inline-flex items-center gap-2"><IconTarget size={24} className="text-[--accent]" /> {t('community.dailyTasksTitle')}</h1>
         <span className="text-xs px-2.5 py-1 rounded-full" style={{ background: 'rgba(225,29,72,0.1)', color: '#E11D48', border: '1px solid rgba(225,29,72,0.2)' }}>
           {new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })}
         </span>
@@ -135,7 +136,7 @@ export default async function GorevlerPage() {
                 border: done ? '1px solid rgba(52,211,153,0.2)' : '1px solid rgba(255,255,255,0.06)',
               }}
             >
-              <span className="text-2xl shrink-0">{task.icon}</span>
+              <span className="shrink-0 flex" style={{ color: done ? '#34d399' : '#D4A843' }}><task.icon size={24} /></span>
               <div className="flex-1 min-w-0">
                 <p className={`font-semibold text-sm ${done ? 'text-green-400 line-through opacity-60' : 'text-white'}`}>
                   {t(task.label)}
@@ -154,7 +155,7 @@ export default async function GorevlerPage() {
       {/* Tüm görevler bitti mi? */}
       {completedToday.size === DAILY_TASKS.length && (
         <div className="text-center mt-8 p-6 rounded-2xl" style={{ background: 'linear-gradient(135deg,rgba(52,211,153,0.08),rgba(16,185,129,0.04))', border: '1px solid rgba(52,211,153,0.2)' }}>
-          <p className="text-3xl mb-2">🏆</p>
+          <p className="mb-2 flex justify-center text-green-400"><IconTrophy size={32} /></p>
           <p className="font-bold text-green-400 mb-1">{t('community.allTasksDoneTitle')}</p>
           <p className="text-xs text-[--text-secondary]">{t('community.allTasksDoneDesc')}</p>
         </div>

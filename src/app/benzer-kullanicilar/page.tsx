@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb'
-import { IconUsers } from '@/components/icons'
+import { IconUsers, IconFilm, IconSearch, IconArrowRight } from '@/components/icons'
 import BenzerClient from './BenzerClient'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
@@ -92,7 +92,7 @@ export default async function BenzerKullanicilarPage() {
 function LowDataPage({ count, t }: { count: number; t: (key: string, params?: Record<string, string | number>) => string }) {
   return (
     <div className="max-w-md mx-auto px-4 py-24 text-center">
-      <div className="text-5xl mb-6">🎬</div>
+      <div className="mb-6 flex justify-center"><IconFilm size={56} /></div>
       <h1 className="text-xl font-bold text-white mb-3">{t('social.rateMoreTitle')}</h1>
       <p className="text-[--text-secondary] mb-2 text-sm leading-relaxed">
         {t('social.rateMoreDescPrefix')}{' '}
@@ -104,13 +104,13 @@ function LowDataPage({ count, t }: { count: number; t: (key: string, params?: Re
       </p>
       <div className="flex flex-col sm:flex-row gap-3 justify-center">
         <Link href="/filmler"
-          className="px-6 py-2.5 bg-[--accent] hover:bg-[--accent-hover] text-white font-semibold rounded-full transition-colors text-sm">
-          {t('social.discoverFilms')} →
+          className="px-6 py-2.5 bg-[--accent] hover:bg-[--accent-hover] text-white font-semibold rounded-full transition-colors text-sm inline-flex items-center justify-center gap-1.5">
+          {t('social.discoverFilms')} <IconArrowRight size={14} />
         </Link>
         <Link href="/diziler"
-          className="px-6 py-2.5 text-white text-sm rounded-full transition-all hover:scale-105"
+          className="px-6 py-2.5 text-white text-sm rounded-full transition-all hover:scale-105 inline-flex items-center justify-center gap-1.5"
           style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-          {t('social.discoverSeries')} →
+          {t('social.discoverSeries')} <IconArrowRight size={14} />
         </Link>
       </div>
     </div>
@@ -120,14 +120,14 @@ function LowDataPage({ count, t }: { count: number; t: (key: string, params?: Re
 function NoSimilarUsersPage({ t }: { t: (key: string, params?: Record<string, string | number>) => string }) {
   return (
     <div className="max-w-md mx-auto px-4 py-24 text-center">
-      <div className="text-5xl mb-6">🔍</div>
+      <div className="mb-6 flex justify-center"><IconSearch size={56} /></div>
       <h1 className="text-xl font-bold text-white mb-3">{t('social.noSimilarUsersTitle')}</h1>
       <p className="text-[--text-secondary] text-sm leading-relaxed mb-8">
         {t('social.noSimilarUsersDesc')}
       </p>
       <Link href="/kullanicilar"
-        className="inline-block px-6 py-2.5 rounded-xl hover:border-[--accent]/50 text-white text-sm font-medium rounded-full transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-        {t('social.discoverAllUsers')} →
+        className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl hover:border-[--accent]/50 text-white text-sm font-medium rounded-full transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
+        {t('social.discoverAllUsers')} <IconArrowRight size={14} />
       </Link>
     </div>
   )

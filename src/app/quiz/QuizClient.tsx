@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import { useLocale } from '@/context/LocaleContext'
+import { IconTrophy, IconFilm, IconMasks, IconCheck, IconClose } from '@/components/icons'
 
 interface Film {
   id: number
@@ -107,8 +108,8 @@ export default function QuizClient({ films }: Props) {
           className="w-full max-w-sm rounded-2xl p-8 text-center"
           style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.97), rgba(14,20,32,0.99))', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 32px 80px rgba(0,0,0,0.6)' }}
         >
-          <div className="text-6xl mb-4">
-            {pct >= 80 ? '🏆' : pct >= 50 ? '🎬' : '🎭'}
+          <div className="mb-4 flex justify-center" style={{ color: pct >= 80 ? '#D4A843' : 'inherit' }}>
+            {pct >= 80 ? <IconTrophy size={56} /> : pct >= 50 ? <IconFilm size={56} /> : <IconMasks size={56} />}
           </div>
           <h2 className="text-2xl font-extrabold mb-2 text-white">
             {t('quiz.finishedTitle')}
@@ -191,7 +192,7 @@ export default function QuizClient({ films }: Props) {
               className="rounded-xl flex items-center justify-center text-3xl"
               style={{ width: 160, height: 240, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
             >
-              🎬
+              <IconFilm size={32} />
             </div>
           )}
 
@@ -252,8 +253,8 @@ export default function QuizClient({ films }: Props) {
                 }}
               >
                 <span className="flex items-center gap-2">
-                  {selected !== null && isCorrect && <span>✓</span>}
-                  {selected !== null && isSelected && !isCorrect && <span>✗</span>}
+                  {selected !== null && isCorrect && <IconCheck size={16} />}
+                  {selected !== null && isSelected && !isCorrect && <IconClose size={16} />}
                   {choice}
                 </span>
               </button>

@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
-import { IconCalendarDays, IconMapPin, IconStarFilled } from '@/components/icons'
+import { IconCalendarDays, IconMapPin, IconStarFilled, IconTrophy, IconCamera } from '@/components/icons'
 import { getPersonDetail, getPersonCredits, getProfileUrl, getPersonExternalIds, getPersonImages } from '@/lib/tmdb'
 import { getTranslations } from '@/lib/i18n'
 import FilmografiClient from './FilmografiClient'
@@ -282,7 +282,7 @@ export default async function OyuncuPage({ params }: Props) {
                    target="_blank" rel="noopener noreferrer"
                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[12px] font-semibold transition-all hover:scale-105"
                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-secondary)' }}>
-                  🏆 {t('film.awardsNav')}
+                  <IconTrophy size={14} /> {t('film.awardsNav')}
                 </a>
               )}
               {externalIds.instagram_id && (
@@ -290,7 +290,7 @@ export default async function OyuncuPage({ params }: Props) {
                    target="_blank" rel="noopener noreferrer"
                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[12px] font-semibold transition-all hover:scale-105"
                    style={{ background: 'rgba(131,58,180,0.12)', border: '1px solid rgba(131,58,180,0.3)', color: '#c084fc' }}>
-                  📷 Instagram
+                  <IconCamera size={14} /> Instagram
                 </a>
               )}
             </div>

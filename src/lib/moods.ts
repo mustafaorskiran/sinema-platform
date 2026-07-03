@@ -1,6 +1,14 @@
+import type { ComponentType, SVGProps } from 'react'
+import {
+  IconLaugh, IconCry, IconZap, IconGhost, IconHeartFilled, IconThinking, IconRocket,
+  IconFamily, IconSearch, IconGlobe,
+} from '@/components/icons'
+
+type IconType = ComponentType<SVGProps<SVGSVGElement> & { size?: number; strokeWidth?: number }>
+
 export interface Mood {
   slug: string
-  emoji: string
+  icon: IconType
   title: string
   subtitle: string
   color: string // Tailwind gradient classes
@@ -13,7 +21,7 @@ export interface Mood {
 export const MOODS: Mood[] = [
   {
     slug: 'gul-eglence',
-    emoji: '😂',
+    icon: IconLaugh,
     title: 'Güldür Beni',
     subtitle: 'Kahkaha atıp eğlenmek istiyorum',
     color: 'from-yellow-500/20 to-orange-500/20 border-yellow-500/30',
@@ -24,7 +32,7 @@ export const MOODS: Mood[] = [
   },
   {
     slug: 'duygu-yuku',
-    emoji: '🥺',
+    icon: IconCry,
     title: 'Duygu Yükü',
     subtitle: 'İçimi dökeceğim bir drama arıyorum',
     color: 'from-blue-500/20 to-indigo-500/20 border-blue-500/30',
@@ -35,7 +43,7 @@ export const MOODS: Mood[] = [
   },
   {
     slug: 'aksiyon-enerji',
-    emoji: '💥',
+    icon: IconZap,
     title: 'Aksiyon & Enerji',
     subtitle: 'Adrenalini yüksek, nefes kesen bir şey',
     color: 'from-red-500/20 to-rose-500/20 border-red-500/30',
@@ -46,7 +54,7 @@ export const MOODS: Mood[] = [
   },
   {
     slug: 'korku-gerilim',
-    emoji: '😱',
+    icon: IconGhost,
     title: 'Korkut Beni',
     subtitle: 'Kalbim ağzıma gelsin istiyorum',
     color: 'from-purple-500/20 to-violet-500/20 border-purple-500/30',
@@ -57,7 +65,7 @@ export const MOODS: Mood[] = [
   },
   {
     slug: 'romantik',
-    emoji: '💕',
+    icon: IconHeartFilled,
     title: 'Romantik Mood',
     subtitle: 'Aşk ve duygu dolu bir hikaye',
     color: 'from-pink-500/20 to-rose-500/20 border-pink-500/30',
@@ -68,7 +76,7 @@ export const MOODS: Mood[] = [
   },
   {
     slug: 'dusundurucu',
-    emoji: '🤔',
+    icon: IconThinking,
     title: 'Düşündürücü',
     subtitle: 'Kafamı çalıştıracak, iz bırakacak bir şey',
     color: 'from-teal-500/20 to-cyan-500/20 border-teal-500/30',
@@ -79,7 +87,7 @@ export const MOODS: Mood[] = [
   },
   {
     slug: 'macera-fantezi',
-    emoji: '🚀',
+    icon: IconRocket,
     title: 'Macera & Fantezi',
     subtitle: 'Bambaşka bir dünyaya kaçmak istiyorum',
     color: 'from-emerald-500/20 to-green-500/20 border-emerald-500/30',
@@ -90,7 +98,7 @@ export const MOODS: Mood[] = [
   },
   {
     slug: 'aile-beraber',
-    emoji: '👨‍👩‍👧',
+    icon: IconFamily,
     title: 'Aileyle Beraber',
     subtitle: 'Herkesin izleyebileceği keyifli bir şey',
     color: 'from-amber-500/20 to-yellow-500/20 border-amber-500/30',
@@ -101,7 +109,7 @@ export const MOODS: Mood[] = [
   },
   {
     slug: 'gizem-suc',
-    emoji: '🕵️',
+    icon: IconSearch,
     title: 'Gizem & Suç',
     subtitle: 'Ipuçlarını takip edip gerçeği bulmak istiyorum',
     color: 'from-slate-500/20 to-gray-500/20 border-slate-500/30',
@@ -112,7 +120,7 @@ export const MOODS: Mood[] = [
   },
   {
     slug: 'belgesel',
-    emoji: '🌍',
+    icon: IconGlobe,
     title: 'Gerçek Hayat',
     subtitle: 'Dünyayı ve insanları daha iyi anlamak istiyorum',
     color: 'from-sky-500/20 to-blue-500/20 border-sky-500/30',

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useLocale } from '@/context/LocaleContext'
+import { IconLightbulb, IconClapperboard, IconLoader } from '@/components/icons'
 
 interface TriviaItem {
   id: string
@@ -52,8 +53,8 @@ export default function TriviaSection({ items, mediaId, mediaType, isLoggedIn }:
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%)' }} />
-          <h2 className="text-xl font-bold text-white tracking-tight">
-            {tab === 'trivia' ? `💡 ${t('trivia.triviaHeading')}` : `🎬 ${t('trivia.goofsHeading')}`}
+          <h2 className="flex items-center gap-2 text-xl font-bold text-white tracking-tight">
+            {tab === 'trivia' ? <><IconLightbulb size={20} />{t('trivia.triviaHeading')}</> : <><IconClapperboard size={20} />{t('trivia.goofsHeading')}</>}
           </h2>
           <div className="flex rounded-lg p-0.5"
             style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
@@ -113,7 +114,7 @@ export default function TriviaSection({ items, mediaId, mediaType, isLoggedIn }:
             <button onClick={submit} disabled={!content.trim() || submitting}
               className="text-xs px-4 py-1.5 rounded-lg text-white font-semibold disabled:opacity-40 transition-all hover:scale-105"
               style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)' }}>
-              {submitting ? `⟳ ${t('trivia.sending')}` : t('common.submit')}
+              {submitting ? <span className="inline-flex items-center gap-1.5"><IconLoader size={12} className="animate-spin" />{t('trivia.sending')}</span> : t('common.submit')}
             </button>
           </div>
         </div>

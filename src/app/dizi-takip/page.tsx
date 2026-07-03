@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getTranslations } from '@/lib/i18n'
 import { getSeriesDetail, getPosterUrl, getMediaTitle } from '@/lib/tmdb'
 import EpisodeUpdater from './EpisodeUpdater'
+import { IconTv } from '@/components/icons'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -55,7 +56,7 @@ export default async function DiziTakipPage() {
   if (allSeriesIds.size === 0) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <p className="text-5xl mb-4">📺</p>
+        <p className="mb-4 flex justify-center" style={{ color: 'rgba(255,255,255,0.4)' }}><IconTv size={56} /></p>
         <h1 className="text-2xl font-bold text-white mb-2">{t('seriesTracking.emptyTitle')}</h1>
         <p className="text-sm mb-6" style={{ color: 'rgba(255,255,255,0.4)' }}>
           {t('seriesTracking.emptyDesc')}
@@ -134,7 +135,7 @@ export default async function DiziTakipPage() {
               style={{ background: 'rgba(255,255,255,0.06)' }}>
               {show.poster
                 ? <img src={show.poster} alt={show.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-                : <div className="w-full h-full flex items-center justify-center text-2xl">📺</div>
+                : <div className="w-full h-full flex items-center justify-center" style={{ color: 'rgba(255,255,255,0.3)' }}><IconTv size={24} /></div>
               }
             </Link>
 

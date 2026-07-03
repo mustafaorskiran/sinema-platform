@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
+import { IconTv, IconChevronRight, IconCheck } from '@/components/icons'
 
 interface Props {
   userId: string
@@ -69,11 +70,11 @@ export default async function DiziProgressWidget({ userId, username }: Props) {
     <div className="mb-12">
       <div className="flex items-center justify-between mb-5">
         <h2 className="text-xl font-bold text-white flex items-center gap-2">
-          📺 Dizi İlerlemesi
+          <IconTv size={20} /> Dizi İlerlemesi
         </h2>
         <Link href={`/dizi-takip`}
-          className="text-xs hover:underline" style={{ color: 'rgba(255,255,255,0.35)' }}>
-          Tümünü gör →
+          className="text-xs hover:underline inline-flex items-center gap-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>
+          Tümünü gör <IconChevronRight size={12} />
         </Link>
       </div>
 
@@ -122,10 +123,10 @@ export default async function DiziProgressWidget({ userId, username }: Props) {
                     {s.watchedEpisodes}/{s.total} bölüm
                   </p>
                   <span
-                    className="text-[10px] font-bold"
+                    className="text-[10px] font-bold inline-flex items-center gap-0.5"
                     style={{ color: isFinished ? '#4ade80' : 'rgba(255,255,255,0.4)' }}
                   >
-                    {isFinished ? '✓ Bitti' : `%${pct}`}
+                    {isFinished ? <><IconCheck size={10} /> Bitti</> : `%${pct}`}
                   </span>
                 </div>
               </div>

@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconPin, IconLock } from '@/components/icons'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -94,8 +95,8 @@ export default async function KategoriPage({ params, searchParams }: Props) {
               >
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    {thread.pinned && <span className="text-xs">📌</span>}
-                    {thread.locked && <span className="text-xs">🔒</span>}
+                    {thread.pinned && <IconPin size={13} />}
+                    {thread.locked && <IconLock size={13} />}
                     <p className="font-medium text-white group-hover:text-[--accent] transition-colors line-clamp-1">
                       {thread.title}
                     </p>

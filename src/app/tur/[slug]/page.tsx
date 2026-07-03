@@ -1,6 +1,11 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { IconStar } from '@/components/icons'
+import type { ComponentType } from 'react'
+import {
+  IconStar, IconZap, IconMap, IconPalette, IconLaugh, IconFingerprint, IconCamera,
+  IconMasks, IconFamily, IconWand, IconScroll, IconGhost, IconMusic, IconSearch,
+  IconHeartFilled, IconRocket, IconTv, IconAlertTriangle, IconSwords, IconHat, IconFilm,
+} from '@/components/icons'
 import { discoverMovies, discoverSeries, getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb'
 import { GENRE_MAP } from '@/lib/genres'
 import MovieCard from '@/components/MovieCard'
@@ -17,12 +22,12 @@ interface Props {
   }>
 }
 
-const GENRE_EMOJIS: Record<string, string> = {
-  aksiyon: '💥', macera: '🗺️', animasyon: '🎨', komedi: '😂',
-  suc: '🔫', belgesel: '📷', drama: '🎭', aile: '👨‍👩‍👧',
-  fantezi: '🧙', tarih: '📜', korku: '👻', muzik: '🎵',
-  gizem: '🔍', romantik: '❤️', 'bilim-kurgu': '🚀', 'tv-film': '📺',
-  gerilim: '😱', savas: '⚔️', western: '🤠',
+const GENRE_ICONS: Record<string, ComponentType<{ size?: number; className?: string }>> = {
+  aksiyon: IconZap, macera: IconMap, animasyon: IconPalette, komedi: IconLaugh,
+  suc: IconFingerprint, belgesel: IconCamera, drama: IconMasks, aile: IconFamily,
+  fantezi: IconWand, tarih: IconScroll, korku: IconGhost, muzik: IconMusic,
+  gizem: IconSearch, romantik: IconHeartFilled, 'bilim-kurgu': IconRocket, 'tv-film': IconTv,
+  gerilim: IconAlertTriangle, savas: IconSwords, western: IconHat,
 }
 
 const GENRE_DESC: Record<string, string> = {
@@ -92,7 +97,7 @@ export default async function TurPage({ params, searchParams }: Props) {
   const totalPages = mainData.total_pages
   const topPicks   = topPicksData?.results.slice(0, 6) ?? []
 
-  const emoji = GENRE_EMOJIS[slug] ?? '🎬'
+  const GenreIcon = GENRE_ICONS[slug] ?? IconFilm
   const desc  = GENRE_DESC[slug]
 
   const paginationBase = `/tur/${slug}?tab=${activeTab}&sirala=${sirala}${yil ? `&yil=${yil}` : ''}${min_puan ? `&min_puan=${min_puan}` : ''}`
@@ -127,7 +132,7 @@ export default async function TurPage({ params, searchParams }: Props) {
 
           {/* Başlık */}
           <div className="flex items-center gap-3 mb-6">
-            <span className="text-3xl">{emoji}</span>
+            <GenreIcon size={32} className="text-[--accent]" />
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-white">{genre.name}</h1>
               {desc && <p className="text-[--text-secondary] text-sm mt-0.5">{desc}</p>}

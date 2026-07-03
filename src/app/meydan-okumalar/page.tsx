@@ -2,16 +2,17 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconPencil, IconStarFilled, IconBookOpen, IconUsers, IconClipboard, IconGamepad, IconSwords, IconTrophy } from '@/components/icons'
 
 export const metadata: Metadata = { title: 'Meydan Okumalar | Sinezon' }
 
 const MONTHLY_CHALLENGES = [
-  { key: 'write_5_reviews', label: 'community.challengeWrite5ReviewsLabel', desc: 'community.challengeWrite5ReviewsDesc', goal: 5, icon: '✍️' },
-  { key: 'rate_20_films', label: 'community.challengeRate20FilmsLabel', desc: 'community.challengeRate20FilmsDesc', goal: 20, icon: '⭐' },
-  { key: 'add_10_diary', label: 'community.challengeAdd10DiaryLabel', desc: 'community.challengeAdd10DiaryDesc', goal: 10, icon: '📖' },
-  { key: 'follow_5_users', label: 'community.challengeFollow5UsersLabel', desc: 'community.challengeFollow5UsersDesc', goal: 5, icon: '👥' },
-  { key: 'create_list', label: 'community.challengeCreateListLabel', desc: 'community.challengeCreateListDesc', goal: 1, icon: '📋' },
-  { key: 'use_quiz', label: 'community.challengeUseQuizLabel', desc: 'community.challengeUseQuizDesc', goal: 1, icon: '🎮' },
+  { key: 'write_5_reviews', label: 'community.challengeWrite5ReviewsLabel', desc: 'community.challengeWrite5ReviewsDesc', goal: 5, Icon: IconPencil },
+  { key: 'rate_20_films', label: 'community.challengeRate20FilmsLabel', desc: 'community.challengeRate20FilmsDesc', goal: 20, Icon: IconStarFilled },
+  { key: 'add_10_diary', label: 'community.challengeAdd10DiaryLabel', desc: 'community.challengeAdd10DiaryDesc', goal: 10, Icon: IconBookOpen },
+  { key: 'follow_5_users', label: 'community.challengeFollow5UsersLabel', desc: 'community.challengeFollow5UsersDesc', goal: 5, Icon: IconUsers },
+  { key: 'create_list', label: 'community.challengeCreateListLabel', desc: 'community.challengeCreateListDesc', goal: 1, Icon: IconClipboard },
+  { key: 'use_quiz', label: 'community.challengeUseQuizLabel', desc: 'community.challengeUseQuizDesc', goal: 1, Icon: IconGamepad },
 ]
 
 export default async function MeydanOkumalarPage() {
@@ -74,7 +75,7 @@ export default async function MeydanOkumalarPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-10">
       <div className="flex items-center gap-3 mb-2">
-        <h1 className="text-2xl font-bold text-white">⚔️ {t('community.challengesTitle')}</h1>
+        <h1 className="text-2xl font-bold text-white inline-flex items-center gap-2"><IconSwords size={26} />{t('community.challengesTitle')}</h1>
       </div>
       <p className="text-sm mb-8" style={{ color: 'rgba(255,255,255,0.4)' }}>
         {monthLabel} · {t('community.challengesSummary', { completed: completedCount, total: MONTHLY_CHALLENGES.length })}
@@ -107,7 +108,7 @@ export default async function MeydanOkumalarPage() {
               border: done ? '1px solid rgba(52,211,153,0.2)' : '1px solid rgba(255,255,255,0.06)',
             }}>
               <div className="flex items-start gap-3">
-                <span className="text-2xl shrink-0 mt-0.5">{ch.icon}</span>
+                <span className="shrink-0 mt-0.5"><ch.Icon size={24} /></span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2 mb-0.5">
                     <p className={`font-semibold text-sm ${done ? 'text-green-400' : 'text-white'}`}>{t(ch.label)}</p>
@@ -130,7 +131,7 @@ export default async function MeydanOkumalarPage() {
 
       {completedCount === MONTHLY_CHALLENGES.length && (
         <div className="text-center mt-8 p-8 rounded-2xl" style={{ background: 'linear-gradient(160deg,rgba(212,168,67,0.1),rgba(212,168,67,0.05))', border: '1px solid rgba(212,168,67,0.3)' }}>
-          <p className="text-4xl mb-3">🏆</p>
+          <div className="flex justify-center mb-3"><IconTrophy size={40} /></div>
           <p className="text-lg font-bold" style={{ color: '#D4A843' }}>{t('community.allChallengesDoneTitle')}</p>
           <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>{t('community.allChallengesDoneDesc')}</p>
         </div>

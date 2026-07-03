@@ -1,7 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, type ReactNode, type ComponentType } from 'react'
 import Link from 'next/link'
+import {
+  IconFilm, IconCalendarDays, IconBuilding, IconStarFilled, IconMapPin,
+  IconClapperboard, IconMasks, IconTent, IconAnchor, IconSparkles, IconTicket,
+} from '@/components/icons'
 
 type Tab = 'vizyonda' | 'yakinda' | 'zincirler'
 
@@ -32,13 +36,25 @@ interface Props {
   zincirleri: Zincir[]
 }
 
+// Sinema zinciri "logo" emojisini SVG ikonuna eşler (veri kaynağı hâlâ emoji tutuyor)
+const ZINCIR_LOGO_ICONS: Record<string, ComponentType<{ size?: number; className?: string }>> = {
+  '🎬': IconClapperboard,
+  '🎭': IconMasks,
+  '🎪': IconTent,
+  '⚓': IconAnchor,
+  '🌟': IconSparkles,
+  '🎟️': IconTicket,
+  '📽️': IconFilm,
+  '🏢': IconBuilding,
+}
+
 export default function SinemalarClient({ nowPlaying, upcoming, zincirleri }: Props) {
   const [tab, setTab] = useState<Tab>('vizyonda')
 
-  const tabs: { key: Tab; label: string; count?: number }[] = [
-    { key: 'vizyonda', label: '🎬 Vizyonda', count: nowPlaying.length },
-    { key: 'yakinda', label: '🗓️ Yakında', count: upcoming.length },
-    { key: 'zincirler', label: '🏢 Sinema Zincirleri' },
+  const tabs: { key: Tab; icon: ReactNode; label: string; count?: number }[] = [
+    { key: 'vizyonda', icon: <IconFilm size={16} />, label: 'Vizyonda', count: nowPlaying.length },
+    { key: 'yakinda', icon: <IconCalendarDays size={16} />, label: 'Yakında', count: upcoming.length },
+    { key: 'zincirler', icon: <IconBuilding size={16} />, label: 'Sinema Zincirleri' },
   ]
 
   return (
@@ -55,7 +71,7 @@ export default function SinemalarClient({ nowPlaying, upcoming, zincirleri }: Pr
                 : 'text-[--text-secondary] hover:text-white'
             }`}
           >
-            {t.label}
+            {t.icon} {t.label}
             {t.count !== undefined && (
               <span className={`text-xs px-1.5 py-0.5 rounded-full ${
                 tab === t.key ? 'bg-white/20' : 'bg-white/5'
@@ -87,8 +103,8 @@ export default function SinemalarClient({ nowPlaying, upcoming, zincirleri }: Pr
                       <span className="text-[9px] font-bold uppercase bg-[--accent] text-white px-1.5 py-0.5 rounded">Vizyonda</span>
                     </div>
                     {movie.rating > 0 && (
-                      <div className="absolute bottom-2 right-2 bg-black/70 rounded-md px-1.5 py-0.5 text-[11px] font-bold text-[--gold]">
-                        ★ {movie.rating.toFixed(1)}
+                      <div className="absolute bottom-2 right-2 bg-black/70 rounded-md px-1.5 py-0.5 text-[11px] font-bold text-[--gold] flex items-center gap-0.5">
+                        <IconStarFilled size={11} /> {movie.rating.toFixed(1)}
                       </div>
                     )}
                   </div>
@@ -151,7 +167,9 @@ export default function SinemalarClient({ nowPlaying, upcoming, zincirleri }: Pr
             Türkiye'nin büyük sinema zincirleri ve bilet siteleri
           </p>
           <div className="grid sm:grid-cols-2 gap-4">
-            {zincirleri.map(z => (
+            {zincirleri.map(z => {
+              const LogoIcon = ZINCIR_LOGO_ICONS[z.logo] ?? IconBuilding
+              return (
               <a
                 key={z.name}
                 href={z.url}
@@ -159,18 +177,19 @@ export default function SinemalarClient({ nowPlaying, upcoming, zincirleri }: Pr
                 rel="noopener noreferrer"
                 className="flex items-center gap-4 p-5 rounded-xl hover:border-[--accent]/40 transition-colors group" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
               >
-                <span className="text-3xl shrink-0">{z.logo}</span>
+                <LogoIcon size={32} className="shrink-0 text-[--accent]" />
                 <div className="flex-1">
                   <p className="font-semibold text-white group-hover:text-[--accent] transition-colors">{z.name}</p>
                   <p className="text-xs text-[--text-secondary] mt-0.5">{z.desc}</p>
                 </div>
                 <span className="text-xs text-[--text-secondary] shrink-0">→</span>
               </a>
-            ))}
+              )
+            })}
           </div>
 
           <div className="mt-8 rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-            <p className="text-sm font-semibold text-white mb-2">📍 Şehrine göre sinema bul</p>
+            <p className="text-sm font-semibold text-white mb-2 flex items-center gap-1.5"><IconMapPin size={16} /> Şehrine göre sinema bul</p>
             <p className="text-xs text-[--text-secondary] mb-3">
               Bulunduğun şehirdeki sinemaları ve seans saatlerini görmek için aşağıdaki siteleri kullanabilirsin:
             </p>

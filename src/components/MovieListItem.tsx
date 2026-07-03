@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb'
 import { getTranslations } from '@/lib/i18n'
+import { IconStarFilled } from '@/components/icons'
 
 interface Props {
   media: any
@@ -92,7 +93,7 @@ export default async function MovieListItem({ media, type, genreIdToName, sinema
               className="inline-flex items-center gap-1 px-2.5 py-1 rounded text-[12.5px] font-bold"
               style={{ background: '#f5c518', color: '#111' }}
             >
-              ⭐ {imdbRating.toFixed(1)}
+              <IconStarFilled size={14} /> {imdbRating.toFixed(1)}
             </span>
           )}
           {sinemaPuan ? (

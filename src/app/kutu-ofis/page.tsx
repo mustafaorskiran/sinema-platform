@@ -3,6 +3,7 @@ import Image from 'next/image'
 import type { Metadata } from 'next'
 import { getPosterUrl } from '@/lib/tmdb'
 import { getTranslations } from '@/lib/i18n'
+import { IconStarFilled, IconClapperboard, IconMasks, IconFilm } from '@/components/icons'
 
 export const revalidate = 3600
 
@@ -55,7 +56,7 @@ function RatingBadge({ score }: { score: number }) {
       className="text-xs font-bold px-1.5 py-0.5 rounded"
       style={{ background: `${color}22`, color, border: `1px solid ${color}44` }}
     >
-      ★ {score.toFixed(1)}
+      <span className="inline-flex items-center gap-1"><IconStarFilled size={12} />{score.toFixed(1)}</span>
     </span>
   )
 }
@@ -74,7 +75,7 @@ export default async function KutuOfisPage() {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <span className="text-2xl">🎬</span>
+          <IconClapperboard size={24} />
           <h1 className="text-2xl font-black text-white">{t('cinemaListings.title')}</h1>
         </div>
         <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
@@ -84,7 +85,7 @@ export default async function KutuOfisPage() {
 
       {movies.length === 0 ? (
         <div className="text-center py-20 rounded-2xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)' }}>
-          <p className="text-4xl mb-4">🎭</p>
+          <div className="flex justify-center mb-4"><IconMasks size={40} /></div>
           <p style={{ color: 'var(--text-secondary)' }}>{t('cinemaListings.loadError')}</p>
         </div>
       ) : (
@@ -127,7 +128,7 @@ export default async function KutuOfisPage() {
                   />
                 ) : (
                   <div className="shrink-0 rounded-lg bg-white/5 flex items-center justify-center" style={{ width: 44, height: 66 }}>
-                    <span className="text-lg">🎬</span>
+                    <IconFilm size={18} />
                   </div>
                 )}
 

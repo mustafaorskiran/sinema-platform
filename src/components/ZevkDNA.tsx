@@ -1,6 +1,7 @@
 'use client'
 
 import { useLocale } from '@/context/LocaleContext'
+import { IconDna, IconStarFilled } from '@/components/icons'
 
 interface GenreData { genre: string; count: number; avgRating: number }
 
@@ -15,7 +16,7 @@ export default function ZevkDNA({ genreData }: Props) {
 
   return (
     <div className="rounded-2xl p-6" style={{ background: 'linear-gradient(160deg,rgba(20,28,47,0.9),rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-      <h3 className="text-base font-bold text-white mb-1">🧬 {t('zevkDna.title')}</h3>
+      <h3 className="text-base font-bold text-white mb-1 inline-flex items-center gap-1.5"><IconDna size={18} className="text-[--accent]" />{t('zevkDna.title')}</h3>
       <p className="text-xs mb-5" style={{ color: 'rgba(255,255,255,0.35)' }}>{t('zevkDna.subtitle')}</p>
       <div className="space-y-3">
         {genreData.slice(0, 10).map(g => (
@@ -26,7 +27,7 @@ export default function ZevkDNA({ genreData }: Props) {
                 style={{ width: `${(g.count / maxCount) * 100}%`, background: `linear-gradient(90deg, #E11D48, #be123c)` }} />
             </div>
             <span className="text-[10px] w-8 text-right tabular-nums" style={{ color: 'rgba(255,255,255,0.3)' }}>{g.count}</span>
-            <span className="text-[10px] w-8 text-right tabular-nums" style={{ color: '#D4A843' }}>★{g.avgRating.toFixed(1)}</span>
+            <span className="text-[10px] w-8 text-right tabular-nums inline-flex items-center justify-end gap-0.5" style={{ color: '#D4A843' }}><IconStarFilled size={9} />{g.avgRating.toFixed(1)}</span>
           </div>
         ))}
       </div>

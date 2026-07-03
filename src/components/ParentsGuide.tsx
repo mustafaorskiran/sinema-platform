@@ -1,4 +1,6 @@
 import { getTranslations } from '@/lib/i18n'
+import { IconSwords, IconGhost, IconHeartFilled, IconAlertTriangle } from '@/components/icons'
+import type { ComponentType, CSSProperties } from 'react'
 
 interface Props {
   certification: string | null
@@ -32,11 +34,11 @@ export default async function ParentsGuide({ certification, genres }: Props) {
   const { t } = await getTranslations()
   const certInfo = certification ? CERT_INFO[certification] : null
   const genreIds = genres.map(g => g.id)
-  const warnings: { icon: string; textKey: string }[] = []
-  if (genreIds.some(id => VIOLENCE_GENRES.includes(id))) warnings.push({ icon: '⚔️', textKey: 'violenceWarning' })
-  if (genreIds.some(id => HORROR_GENRES.includes(id)))   warnings.push({ icon: '👻', textKey: 'horrorWarning' })
-  if (genreIds.some(id => ROMANCE_GENRES.includes(id)))  warnings.push({ icon: '💕', textKey: 'romanceWarning' })
-  if (certInfo && ['R', 'NC-17', 'TV-MA', '18+'].includes(certification!)) warnings.push({ icon: '🔞', textKey: 'adultContentWarning' })
+  const warnings: { Icon: ComponentType<{ size?: number; className?: string; style?: CSSProperties }>; textKey: string }[] = []
+  if (genreIds.some(id => VIOLENCE_GENRES.includes(id))) warnings.push({ Icon: IconSwords, textKey: 'violenceWarning' })
+  if (genreIds.some(id => HORROR_GENRES.includes(id)))   warnings.push({ Icon: IconGhost, textKey: 'horrorWarning' })
+  if (genreIds.some(id => ROMANCE_GENRES.includes(id)))  warnings.push({ Icon: IconHeartFilled, textKey: 'romanceWarning' })
+  if (certInfo && ['R', 'NC-17', 'TV-MA', '18+'].includes(certification!)) warnings.push({ Icon: IconAlertTriangle, textKey: 'adultContentWarning' })
   if (!certInfo && warnings.length === 0) return null
 
   return (
@@ -62,7 +64,7 @@ export default async function ParentsGuide({ certification, genres }: Props) {
               background: 'rgba(251,191,36,0.06)',
               border: '1px solid rgba(251,191,36,0.2)',
             }}>
-            <span className="text-base">{w.icon}</span>
+            <w.Icon size={16} style={{ color: 'rgba(255,255,255,0.6)' }} />
             <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.5)' }}>{t(`parentsGuide.${w.textKey}`)}</span>
           </div>
         ))}

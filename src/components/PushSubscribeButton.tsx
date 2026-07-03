@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useLocale } from '@/context/LocaleContext'
+import { IconBell, IconBellOff } from '@/components/icons'
 
 const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? ''
 
@@ -77,8 +78,8 @@ export default function PushSubscribeButton() {
 
   if (status === 'denied') {
     return (
-      <div className="text-xs px-3 py-2 rounded-lg" style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', color: '#f87171' }}>
-        🔕 {t('settings.pushBlocked')}
+      <div className="flex items-center gap-1.5 text-xs px-3 py-2 rounded-lg" style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', color: '#f87171' }}>
+        <IconBellOff size={14} /> {t('settings.pushBlocked')}
       </div>
     )
   }
@@ -88,7 +89,7 @@ export default function PushSubscribeButton() {
       <button onClick={unsubscribe} disabled={busy}
         className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all disabled:opacity-50 hover:brightness-110"
         style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.25)', color: '#4ade80' }}>
-        🔔 {t('settings.pushActive')}
+        <IconBell size={14} /> {t('settings.pushActive')}
       </button>
     )
   }
@@ -97,7 +98,7 @@ export default function PushSubscribeButton() {
     <button onClick={subscribe} disabled={busy}
       className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all disabled:opacity-50 hover:scale-[1.02] active:scale-[0.98]"
       style={{ background: 'linear-gradient(135deg, rgba(212,168,67,0.15), rgba(212,168,67,0.08))', border: '1px solid rgba(212,168,67,0.3)', color: '#D4A843' }}>
-      🔔 {busy ? t('settings.pushEnabling') : t('settings.pushEnable')}
+      <IconBell size={14} /> {busy ? t('settings.pushEnabling') : t('settings.pushEnable')}
     </button>
   )
 }

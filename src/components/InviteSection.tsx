@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useLocale } from '@/context/LocaleContext'
+import { IconLink, IconCheck } from '@/components/icons'
 
 export default function InviteSection() {
   const { t } = useLocale()
@@ -43,7 +44,7 @@ export default function InviteSection() {
       style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
     >
       <div className="flex items-center gap-2 mb-3">
-        <span className="text-lg">🔗</span>
+        <IconLink size={18} />
         <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
           {t('social.inviteFriends')}
         </p>
@@ -75,7 +76,9 @@ export default function InviteSection() {
               border: copied ? '1px solid rgba(34,197,94,0.4)' : '1px solid transparent',
             }}
           >
-            {copied ? `✓ ${t('profile.copied')}` : t('social.copy')}
+            {copied
+              ? <span className="inline-flex items-center gap-1"><IconCheck size={12} />{t('profile.copied')}</span>
+              : t('social.copy')}
           </button>
         </div>
       ) : (

@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { IconUsers } from '@/components/icons'
 
 interface Props { params: Promise<{ username: string }> }
 
@@ -37,7 +38,7 @@ export default async function TakipcilerPage({ params }: Props) {
 
       {followers.length === 0 ? (
         <div className="rounded-2xl p-12 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <p className="text-2xl mb-2">👥</p>
+          <IconUsers size={24} strokeWidth={1.5} className="mb-2 mx-auto text-white/40" />
           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>{t('profile.noFollowers')}</p>
         </div>
       ) : (
