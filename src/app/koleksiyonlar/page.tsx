@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 export const metadata: Metadata = {
   title: 'Koleksiyon Tamamla | Sinezon',
@@ -69,6 +70,7 @@ const COLLECTIONS = [
 ]
 
 export default async function KoleksiyonlarPage() {
+  const { t } = await getTranslations()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/giris?next=/koleksiyonlar')
@@ -103,9 +105,9 @@ export default async function KoleksiyonlarPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
       <div className="mb-10">
-        <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">🎯 Koleksiyon Tamamla</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">🎯 {t('collection.title')}</h1>
         <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-          Film koleksiyonlarını tamamla — ne kadarını izledin?
+          {t('collection.subtitle')}
         </p>
       </div>
 
@@ -132,7 +134,7 @@ export default async function KoleksiyonlarPage() {
                 {isComplete && (
                   <span className="shrink-0 text-xs font-bold px-2 py-0.5 rounded-full"
                     style={{ background: 'rgba(74,222,128,0.15)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.3)' }}>
-                    ✓ Tamam
+                    ✓ {t('collection.done')}
                   </span>
                 )}
               </div>
@@ -140,7 +142,7 @@ export default async function KoleksiyonlarPage() {
               {/* Progress */}
               <div className="mb-3">
                 <div className="flex justify-between text-xs mb-1.5">
-                  <span style={{ color: 'rgba(255,255,255,0.4)' }}>{watchedCount} / {total} film</span>
+                  <span style={{ color: 'rgba(255,255,255,0.4)' }}>{t('collection.filmCount', { watched: watchedCount, total })}</span>
                   <span style={{ color: isComplete ? '#4ade80' : 'rgba(255,255,255,0.5)' }} className="font-bold">%{pct}</span>
                 </div>
                 <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
@@ -158,7 +160,7 @@ export default async function KoleksiyonlarPage() {
                       ? { background: 'rgba(74,222,128,0.2)', border: '1px solid rgba(74,222,128,0.4)', color: '#4ade80' }
                       : { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.25)' }
                     }
-                    title={`Film #${id}`}>
+                    title={t('collection.filmHash', { id })}>
                     {watchedSet.has(id) ? '✓' : '○'}
                   </Link>
                 ))}
@@ -170,12 +172,12 @@ export default async function KoleksiyonlarPage() {
                   <button type="submit"
                     className="text-xs px-3 py-1.5 rounded-full font-semibold transition-all hover:scale-105"
                     style={{ background: 'rgba(225,29,72,0.1)', border: '1px solid rgba(225,29,72,0.25)', color: 'rgba(225,29,72,0.8)' }}>
-                    🎯 Koleksiyona Başla
+                    🎯 {t('collection.start')}
                   </button>
                 </form>
               )}
               {isStarted && !isComplete && (
-                <p className="text-[11px]" style={{ color: 'rgba(74,222,128,0.7)' }}>🎯 Aktif koleksiyon</p>
+                <p className="text-[11px]" style={{ color: 'rgba(74,222,128,0.7)' }}>🎯 {t('collection.active')}</p>
               )}
             </div>
           )

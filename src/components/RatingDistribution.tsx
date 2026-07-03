@@ -1,10 +1,13 @@
 'use client'
 
+import { useLocale } from '@/context/LocaleContext'
+
 interface Props {
   reviews: { rating: number }[]
 }
 
 export default function RatingDistribution({ reviews }: Props) {
+  const { t } = useLocale()
   const rated = reviews.filter(r => r.rating > 0)
   if (rated.length < 3) return null
 
@@ -29,7 +32,7 @@ export default function RatingDistribution({ reviews }: Props) {
     <div className="mt-10" id="puan-dagilimi">
       <div className="flex items-center gap-3 mb-5">
         <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
-        <h2 className="text-xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Puan Dağılımı</h2>
+        <h2 className="text-xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>{t('review.ratingDistributionTitle')}</h2>
       </div>
 
       <div className="rounded-2xl overflow-hidden"
@@ -39,7 +42,7 @@ export default function RatingDistribution({ reviews }: Props) {
           style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
           <div>
             <p className="text-[9.5px] font-bold uppercase tracking-[0.16em] mb-0.5" style={{ color: 'rgba(212,168,67,0.4)' }}>
-              Platform Puanı
+              {t('review.platformRating')}
             </p>
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-black" style={{ color: avgColor }}>{avg}</span>
@@ -48,7 +51,7 @@ export default function RatingDistribution({ reviews }: Props) {
           </div>
           <div className="text-right">
             <p className="text-[9.5px] font-bold uppercase tracking-[0.16em] mb-0.5" style={{ color: 'rgba(255,255,255,0.2)' }}>
-              Toplam Oy
+              {t('review.totalVotes')}
             </p>
             <p className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>{rated.length}</p>
           </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Props {
   mediaId: number
@@ -12,21 +13,21 @@ interface Props {
   isLoggedIn: boolean
 }
 
-const QUICK_QUESTIONS = [
-  'Bu film gerçek bir hikayeye mi dayalı?',
-  'Benzer filmler önerir misin?',
-  'Yönetmenin diğer önemli yapımları?',
-  'Film nerede çekildi?',
-]
-
-const DIZI_QUICK_QUESTIONS = [
-  'Kaç sezondan oluşuyor?',
-  'Benzer diziler önerir misin?',
-  'Yaratıcı/senarist kimler?',
-  'Dizi nerede geçiyor?',
-]
-
 export default function AIChatWidget({ mediaId, mediaType, title, year, genres, director, isLoggedIn }: Props) {
+  const { t } = useLocale()
+  const QUICK_QUESTIONS = [
+    t('aiChat.quickQuestions.film.realStory'),
+    t('aiChat.quickQuestions.film.similar'),
+    t('aiChat.quickQuestions.film.directorWorks'),
+    t('aiChat.quickQuestions.film.location'),
+  ]
+
+  const DIZI_QUICK_QUESTIONS = [
+    t('aiChat.quickQuestions.dizi.seasonCount'),
+    t('aiChat.quickQuestions.dizi.similar'),
+    t('aiChat.quickQuestions.dizi.creators'),
+    t('aiChat.quickQuestions.dizi.setting'),
+  ]
   const [open, setOpen] = useState(false)
   const [question, setQuestion] = useState('')
   const [messages, setMessages] = useState<{ q: string; a: string }[]>([])
@@ -49,9 +50,9 @@ export default function AIChatWidget({ mediaId, mediaType, title, year, genres, 
         body: JSON.stringify({ question: text, title, year, genres, director, mediaType }),
       })
       const data = await res.json()
-      setMessages(prev => [...prev, { q: text, a: data.answer || data.error || 'Yanıt alınamadı.' }])
+      setMessages(prev => [...prev, { q: text, a: data.answer || data.error || t('aiChat.answerError') }])
     } catch {
-      setMessages(prev => [...prev, { q: text, a: 'Yanıt alınamadı.' }])
+      setMessages(prev => [...prev, { q: text, a: t('aiChat.answerError') }])
     } finally {
       setLoading(false)
     }
@@ -79,9 +80,9 @@ export default function AIChatWidget({ mediaId, mediaType, title, year, genres, 
             ✦
           </div>
           <div className="text-left">
-            <p className="text-sm font-semibold text-white">Sinezon AI Asistanı</p>
+            <p className="text-sm font-semibold text-white">{t('aiChat.widgetTitle')}</p>
             <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
-              {title} hakkında soru sor
+              {t('aiChat.askAbout', { title })}
             </p>
           </div>
         </div>
@@ -98,7 +99,7 @@ export default function AIChatWidget({ mediaId, mediaType, title, year, genres, 
           {messages.length === 0 && (
             <div className="p-4 pb-2">
               <p className="text-[11px] font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(167,139,250,0.5)' }}>
-                Hızlı Sorular
+                {t('aiChat.quickQuestionsLabel')}
               </p>
               <div className="flex flex-wrap gap-2">
                 {quickQs.map(q => (
@@ -156,7 +157,7 @@ export default function AIChatWidget({ mediaId, mediaType, title, year, genres, 
               value={question}
               onChange={e => setQuestion(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && ask()}
-              placeholder={`${title} hakkında bir şey sor...`}
+              placeholder={t('aiChat.inputPlaceholder', { title })}
               disabled={loading}
               className="flex-1 rounded-xl px-4 py-2.5 text-sm text-white outline-none transition-all disabled:opacity-60"
               style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(167,139,250,0.15)' }}

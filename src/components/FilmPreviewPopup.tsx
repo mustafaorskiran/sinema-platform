@@ -3,6 +3,7 @@
 import { useRef, useState, useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Props {
   mediaId: number
@@ -23,6 +24,7 @@ export default function FilmPreviewPopup({
   rating,
   children,
 }: Props) {
+  const { t } = useLocale()
   const [visible, setVisible] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const href = `/${mediaType === 'film' ? 'film' : 'dizi'}/${mediaId}`
@@ -89,7 +91,7 @@ export default function FilmPreviewPopup({
                   lineHeight: 1.4,
                 }}
               >
-                {mediaType === 'film' ? 'Film' : 'Dizi'}
+                {mediaType === 'film' ? t('film.badge') : t('series.badge')}
               </span>
             </span>
 
@@ -105,7 +107,7 @@ export default function FilmPreviewPopup({
               href={href}
               className="block text-center text-xs font-medium text-[--accent] hover:underline mt-1"
             >
-              Detaya git →
+              {t('filmPreviewPopup.goToDetail')} →
             </Link>
           </span>
         </span>

@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getMoodBySlug, MOODS } from '@/lib/moods'
 import { discoverMovieRaw, discoverTVRaw, getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb'
+import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
 
 interface Props {
@@ -16,6 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function RuhHaliDetayPage({ params, searchParams }: Props) {
+  const { t } = await getTranslations()
   const { slug } = await params
   const { tab = 'filmler', sayfa } = await searchParams
   const page = Math.max(1, Number(sayfa) || 1)
@@ -52,7 +54,7 @@ export default async function RuhHaliDetayPage({ params, searchParams }: Props) 
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
       {/* Breadcrumb */}
       <div className="text-sm text-[--text-secondary] mb-6">
-        <Link href="/ruh-hali" className="hover:text-white transition-colors">← Ruh Haline Göre İzle</Link>
+        <Link href="/ruh-hali" className="hover:text-white transition-colors">← {t('mood.watchByMood')}</Link>
       </div>
 
       {/* Başlık */}
@@ -66,29 +68,29 @@ export default async function RuhHaliDetayPage({ params, searchParams }: Props) 
 
       {/* Tab */}
       <div className="flex gap-2 mb-6">
-        {(['filmler', 'diziler'] as const).map(t => (
+        {(['filmler', 'diziler'] as const).map(tabKey => (
           <Link
-            key={t}
-            href={`/ruh-hali/${slug}?tab=${t}&sayfa=1`}
+            key={tabKey}
+            href={`/ruh-hali/${slug}?tab=${tabKey}&sayfa=1`}
             className="px-5 py-2 rounded-full text-sm font-medium transition-all hover:scale-105"
-            style={tab === t
+            style={tab === tabKey
               ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff', boxShadow: '0 2px 8px rgba(225,29,72,0.3)' }
               : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }
             }
           >
-            {t === 'filmler' ? '🎬 Filmler' : '📺 Diziler'}
+            {tabKey === 'filmler' ? `🎬 ${t('genre.film')}` : `📺 ${t('genre.dizi')}`}
           </Link>
         ))}
       </div>
 
       {/* Sayfa bilgisi */}
       <p className="text-xs text-[--text-secondary] mb-4">
-        Sayfa {page} / {totalPages} · {items.length} öneri
+        {t('mood.pageInfo', { page, totalPages, count: items.length })}
       </p>
 
       {/* Izgara */}
       {items.length === 0 ? (
-        <p className="text-[--text-secondary] text-sm py-16 text-center">Bu ruh hali için içerik bulunamadı.</p>
+        <p className="text-[--text-secondary] text-sm py-16 text-center">{t('mood.noResults')}</p>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mb-10">
           {items.map(item => {
@@ -120,7 +122,7 @@ export default async function RuhHaliDetayPage({ params, searchParams }: Props) 
       {totalPages > 1 && (
         <div className="flex justify-center gap-2 flex-wrap mb-10">
           {page > 1 && (
-            <Link href={`/ruh-hali/${slug}?tab=${tab}&sayfa=${page - 1}`} className="px-4 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>← Önceki</Link>
+            <Link href={`/ruh-hali/${slug}?tab=${tab}&sayfa=${page - 1}`} className="px-4 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>← {t('common.prev')}</Link>
           )}
           {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
             const p = page <= 3 ? i + 1 : page - 2 + i
@@ -136,14 +138,14 @@ export default async function RuhHaliDetayPage({ params, searchParams }: Props) 
             )
           })}
           {page < totalPages && (
-            <Link href={`/ruh-hali/${slug}?tab=${tab}&sayfa=${page + 1}`} className="px-4 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>Sonraki →</Link>
+            <Link href={`/ruh-hali/${slug}?tab=${tab}&sayfa=${page + 1}`} className="px-4 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>{t('common.next')} →</Link>
           )}
         </div>
       )}
 
       {/* Diğer Ruh Halleri */}
       <div className="border-t border-[--border] pt-8">
-        <p className="text-sm font-semibold text-white mb-4">Diğer ruh halleri</p>
+        <p className="text-sm font-semibold text-white mb-4">{t('mood.otherMoods')}</p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {otherMoods.map(m => (
             <Link

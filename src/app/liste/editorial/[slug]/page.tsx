@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -17,6 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function EditorialListPage({ params }: Props) {
   const { slug } = await params
   const supabase = await createClient()
+  const { t } = await getTranslations()
 
   const { data: list } = await supabase
     .from('lists')
@@ -126,9 +128,9 @@ export default async function EditorialListPage({ params }: Props) {
           <div className="flex-1 min-w-0">
             {/* Breadcrumb */}
             <div className="flex items-center gap-2 text-xs text-[--text-secondary] mb-2">
-              <a href="/listeler" className="hover:text-white transition-colors">Listeler</a>
+              <a href="/listeler" className="hover:text-white transition-colors">{t('list.lists')}</a>
               <span>/</span>
-              <span className="text-[--accent]">Editöryal</span>
+              <span className="text-[--accent]">{t('list.editorial')}</span>
             </div>
 
             <div className="flex items-center gap-3 mb-2 flex-wrap">
@@ -145,14 +147,14 @@ export default async function EditorialListPage({ params }: Props) {
                 </span>
               )}
               <span className="text-xs bg-[--accent]/20 text-[--accent] border border-[--accent]/30 px-2.5 py-1 rounded-full font-semibold">
-                ✦ Editöryal
+                ✦ {t('list.editorial')}
               </span>
               {isDynamic && (
                 <span className="text-xs bg-[--bg-card] text-[--text-secondary] border border-[--border] px-2.5 py-1 rounded-full">
-                  Dinamik • Otomatik Güncellenir
+                  {t('list.dynamicAutoUpdate')}
                 </span>
               )}
-              <span className="text-xs text-[--text-secondary]">{items.length} içerik</span>
+              <span className="text-xs text-[--text-secondary]">{t('list.itemCount', { count: items.length })}</span>
             </div>
           </div>
         </div>
@@ -161,8 +163,8 @@ export default async function EditorialListPage({ params }: Props) {
       {/* ── Film Listesi ── */}
       {items.length === 0 ? (
         <div className="py-20 text-center text-[--text-secondary] rounded-xl rounded-2xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <p className="text-lg font-medium text-white mb-2">Bu liste henüz içerik içermiyor</p>
-          <p className="text-sm">Yakında eklenecek</p>
+          <p className="text-lg font-medium text-white mb-2">{t('list.editorialEmpty')}</p>
+          <p className="text-sm">{t('list.comingSoon')}</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -200,7 +202,7 @@ export default async function EditorialListPage({ params }: Props) {
                   {item.title}
                 </p>
                 <p className="text-[11px] text-[--text-secondary] mt-0.5">
-                  {item.media_type === 'dizi' ? 'Dizi' : 'Film'}
+                  {item.media_type === 'dizi' ? t('series.badge') : t('film.badge')}
                 </p>
               </div>
 
@@ -209,13 +211,13 @@ export default async function EditorialListPage({ params }: Props) {
                 {item.site_avg != null && (
                   <div className="text-center">
                     <div className="text-sm font-bold text-[--accent]">{item.site_avg}</div>
-                    <div className="text-[10px] text-[--text-secondary]">{item.site_count} oy</div>
+                    <div className="text-[10px] text-[--text-secondary]">{t('boxOffice.voteCount', { count: item.site_count ?? 0 })}</div>
                   </div>
                 )}
                 {item.vote_average != null && (
                   <div className="hidden sm:block text-center">
                     <div className="text-sm font-bold text-[--gold]">★ {item.vote_average?.toFixed(1)}</div>
-                    <div className="text-[10px] text-[--text-secondary]">TMDb</div>
+                    <div className="text-[10px] text-[--text-secondary]">{t('review.tmdb')}</div>
                   </div>
                 )}
               </div>

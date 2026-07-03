@@ -6,6 +6,7 @@ import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import AramaFiltreler from './AramaFiltreler'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props {
   searchParams: Promise<{ q?: string; sayfa?: string; tip?: string; yil?: string; tur?: string; min_puan?: string; dil?: string }>
@@ -18,21 +19,22 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 
 const PAGE_SIZE = 40
 
-const DEPT_TR: Record<string, string> = {
-  Acting:     'Oyuncu',
-  Directing:  'Yönetmen',
-  Writing:    'Senarist',
-  Production: 'Yapımcı',
-  Camera:     'Görüntü Yönetmeni',
-  Editing:    'Editör',
-  Sound:      'Ses',
-  Art:        'Sanat Yönetmeni',
-  Lighting:   'Işık',
-  Crew:       'Ekip',
-  Visual:     'VFX',
+const DEPT_KEYS: Record<string, string> = {
+  Acting:     'search.deptActing',
+  Directing:  'search.deptDirecting',
+  Writing:    'search.deptWriting',
+  Production: 'search.deptProduction',
+  Camera:     'search.deptCamera',
+  Editing:    'search.deptEditing',
+  Sound:      'search.deptSound',
+  Art:        'search.deptArt',
+  Lighting:   'search.deptLighting',
+  Crew:       'search.deptCrew',
+  Visual:     'search.deptVisual',
 }
 
 export default async function AramaPage({ searchParams }: Props) {
+  const { t } = await getTranslations()
   const { q, sayfa, tip = 'hepsi', yil, tur, min_puan, dil } = await searchParams
   const page   = Math.max(1, Number(sayfa) || 1)
   const offset = (page - 1) * PAGE_SIZE
@@ -41,8 +43,8 @@ export default async function AramaPage({ searchParams }: Props) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
         <IconSearch className="h-16 w-16 mx-auto mb-6 text-[--text-secondary] opacity-20" />
-        <p className="text-lg font-semibold text-white mb-2">Ne aramak istiyorsun?</p>
-        <p className="text-[--text-secondary] text-sm">Film, dizi, oyuncu veya yönetmen adı yaz</p>
+        <p className="text-lg font-semibold text-white mb-2">{t('search.whatToSearch')}</p>
+        <p className="text-[--text-secondary] text-sm">{t('search.searchHint')}</p>
       </div>
     )
   }
@@ -110,11 +112,11 @@ export default async function AramaPage({ searchParams }: Props) {
     1
 
   const tabs = [
-    { key: 'hepsi',     label: 'Tümü',              count: totalFilms + totalDiziler + totalKisiler + totalKullanicilar },
-    { key: 'film',      label: 'Filmler',            count: totalFilms },
-    { key: 'dizi',      label: 'Diziler',            count: totalDiziler },
-    { key: 'kisi',      label: 'Oyuncu & Yönetmen',  count: totalKisiler },
-    { key: 'kullanici', label: 'Kullanıcılar',       count: totalKullanicilar },
+    { key: 'hepsi',     label: t('common.all'),               count: totalFilms + totalDiziler + totalKisiler + totalKullanicilar },
+    { key: 'film',      label: t('search.tabFilms'),          count: totalFilms },
+    { key: 'dizi',      label: t('search.tabSeries'),         count: totalDiziler },
+    { key: 'kisi',      label: t('search.tabActorsDirectors'), count: totalKisiler },
+    { key: 'kullanici', label: t('search.tabUsers'),          count: totalKullanicilar },
   ]
 
   const baseUrl = `/arama?q=${encodeURIComponent(q)}&tip=${tip}${yil ? `&yil=${yil}` : ''}${tur ? `&tur=${tur}` : ''}${min_puan ? `&min_puan=${min_puan}` : ''}${dil ? `&dil=${dil}` : ''}`
@@ -123,22 +125,22 @@ export default async function AramaPage({ searchParams }: Props) {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-white">
-          "<span className="text-[--accent]">{q}</span>" için sonuçlar
+          "<span className="text-[--accent]">{q}</span>" {t('search.for')}
         </h1>
         <p className="text-[--text-secondary] text-sm mt-1">
-          {(totalFilms + totalDiziler + totalKisiler + totalKullanicilar).toLocaleString('tr-TR')} sonuç bulundu
+          {t('search.resultsCount', { count: (totalFilms + totalDiziler + totalKisiler + totalKullanicilar).toLocaleString('tr-TR') })}
         </p>
       </div>
 
       {/* Sekmeler */}
       <div className="flex items-center gap-1 border-b border-[--border] mb-4 overflow-x-auto">
-        {tabs.map(t => (
-          <Link key={t.key} href={`/arama?q=${encodeURIComponent(q)}&tip=${t.key}`}
+        {tabs.map(tab => (
+          <Link key={tab.key} href={`/arama?q=${encodeURIComponent(q)}&tip=${tab.key}`}
             className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap ${
-              tip === t.key ? 'border-[--accent] text-white' : 'border-transparent text-[--text-secondary] hover:text-white'
+              tip === tab.key ? 'border-[--accent] text-white' : 'border-transparent text-[--text-secondary] hover:text-white'
             }`}>
-            {t.label}
-            {t.count > 0 && <span className="ml-1.5 text-xs opacity-60">({t.count.toLocaleString()})</span>}
+            {tab.label}
+            {tab.count > 0 && <span className="ml-1.5 text-xs opacity-60">({tab.count.toLocaleString()})</span>}
           </Link>
         ))}
       </div>
@@ -153,10 +155,10 @@ export default async function AramaPage({ searchParams }: Props) {
         <div className={tip === 'hepsi' ? 'mb-10' : ''}>
           {tip === 'hepsi' && (
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base font-bold text-white">Oyuncu & Yönetmen</h2>
+              <h2 className="text-base font-bold text-white">{t('search.tabActorsDirectors')}</h2>
               {totalKisiler > 10 && (
                 <Link href={`/arama?q=${encodeURIComponent(q)}&tip=kisi`} className="text-xs text-[--accent] hover:underline">
-                  Tümünü gör ({totalKisiler.toLocaleString()}) →
+                  {t('search.seeAllCount', { count: totalKisiler.toLocaleString() })}
                 </Link>
               )}
             </div>
@@ -164,7 +166,8 @@ export default async function AramaPage({ searchParams }: Props) {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
             {(tip === 'hepsi' ? kisiler.slice(0, 6) : kisiler).map((p: any) => {
               const profileImg = getProfileUrl(p.profile_path, 'w185')
-              const dept = DEPT_TR[p.known_for_department] ?? p.known_for_department ?? ''
+              const deptKey = DEPT_KEYS[p.known_for_department]
+              const dept = deptKey ? t(deptKey) : (p.known_for_department ?? '')
               const knownFor = (p.known_for ?? []).slice(0, 2)
                 .map((w: any) => w.title ?? w.name)
                 .filter(Boolean)
@@ -199,10 +202,10 @@ export default async function AramaPage({ searchParams }: Props) {
         <div className={tip === 'hepsi' ? 'mb-10' : ''}>
           {tip === 'hepsi' && (
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base font-bold text-white">Filmler</h2>
+              <h2 className="text-base font-bold text-white">{t('search.tabFilms')}</h2>
               {totalFilms > 10 && (
                 <Link href={`/arama?q=${encodeURIComponent(q)}&tip=film`} className="text-xs text-[--accent] hover:underline">
-                  Tümünü gör ({totalFilms.toLocaleString()}) →
+                  {t('search.seeAllCount', { count: totalFilms.toLocaleString() })}
                 </Link>
               )}
             </div>
@@ -218,10 +221,10 @@ export default async function AramaPage({ searchParams }: Props) {
         <div className={tip === 'hepsi' ? 'mb-10' : ''}>
           {tip === 'hepsi' && (
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base font-bold text-white">Diziler</h2>
+              <h2 className="text-base font-bold text-white">{t('search.tabSeries')}</h2>
               {totalDiziler > 10 && (
                 <Link href={`/arama?q=${encodeURIComponent(q)}&tip=dizi`} className="text-xs text-[--accent] hover:underline">
-                  Tümünü gör ({totalDiziler.toLocaleString()}) →
+                  {t('search.seeAllCount', { count: totalDiziler.toLocaleString() })}
                 </Link>
               )}
             </div>
@@ -235,7 +238,7 @@ export default async function AramaPage({ searchParams }: Props) {
       {/* Platform kullanıcıları */}
       {(tip === 'hepsi' || tip === 'kullanici') && kullanicilar.length > 0 && (
         <div>
-          {tip === 'hepsi' && <h2 className="text-base font-bold text-white mb-4">Kullanıcılar</h2>}
+          {tip === 'hepsi' && <h2 className="text-base font-bold text-white mb-4">{t('search.tabUsers')}</h2>}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
             {kullanicilar.map((u: any) => (
               <Link key={u.id} href={`/profil/${u.username}`}
@@ -265,17 +268,17 @@ export default async function AramaPage({ searchParams }: Props) {
               <IconSearch className="h-8 w-8 opacity-25" style={{ color: 'rgba(255,255,255,0.6)' }} />
             </div>
             <h2 className="text-lg font-bold text-white mb-2">
-              "<span className="text-[--accent]">{q}</span>" için sonuç bulunamadı
+              "<span className="text-[--accent]">{q}</span>" {t('search.notFoundFor')}
             </h2>
             <p className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>
-              Yazım hatası olabilir veya farklı bir terim deneyin
+              {t('search.tryDifferentTerm')}
             </p>
           </div>
 
           {/* Popüler arama önerileri */}
           <div className="max-w-xl mx-auto mb-10">
             <p className="text-xs font-semibold uppercase tracking-widest mb-3 text-center" style={{ color: 'rgba(255,255,255,0.3)' }}>
-              Bunları denediniz mi?
+              {t('search.triedThese')}
             </p>
             <div className="flex flex-wrap justify-center gap-2">
               {['Inception', 'Breaking Bad', 'Interstellar', 'The Bear', 'Parasite', 'The Office', 'Dune', 'Severance', 'Christopher Nolan', 'Pedro Pascal'].map(s => (
@@ -291,14 +294,14 @@ export default async function AramaPage({ searchParams }: Props) {
           {/* Keşfet linkleri */}
           <div className="max-w-xl mx-auto">
             <p className="text-xs font-semibold uppercase tracking-widest mb-3 text-center" style={{ color: 'rgba(255,255,255,0.3)' }}>
-              Keşfetmeye devam et
+              {t('search.continueExploring')}
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
-                { href: '/filmler', icon: '🎬', label: 'Filmler' },
-                { href: '/diziler', icon: '📺', label: 'Diziler' },
-                { href: '/top10', icon: '🏆', label: 'Top 10' },
-                { href: '/haberler', icon: '📰', label: 'Haberler' },
+                { href: '/filmler', icon: '🎬', label: t('search.tabFilms') },
+                { href: '/diziler', icon: '📺', label: t('search.tabSeries') },
+                { href: '/top10', icon: '🏆', label: t('search.top10') },
+                { href: '/haberler', icon: '📰', label: t('search.news') },
               ].map(item => (
                 <Link key={item.href} href={item.href}
                   className="flex flex-col items-center gap-2 p-4 rounded-xl text-sm font-medium text-white transition-all hover:scale-105"
@@ -319,7 +322,7 @@ export default async function AramaPage({ searchParams }: Props) {
             <Link href={`${baseUrl}&sayfa=${page - 1}`}
               className="px-4 py-2 rounded-lg text-sm transition-all hover:scale-105"
               style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.6)' }}>
-              ← Önceki
+              {t('search.prevPage')}
             </Link>
           )}
           <span className="px-4 py-2 text-sm flex items-center" style={{ color: 'rgba(255,255,255,0.4)' }}>
@@ -329,7 +332,7 @@ export default async function AramaPage({ searchParams }: Props) {
             <Link href={`${baseUrl}&sayfa=${page + 1}`}
               className="px-4 py-2 rounded-lg text-sm transition-all hover:scale-105"
               style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.6)' }}>
-              Sonraki →
+              {t('search.nextPage')}
             </Link>
           )}
         </div>

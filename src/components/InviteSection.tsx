@@ -1,8 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useLocale } from '@/context/LocaleContext'
 
 export default function InviteSection() {
+  const { t } = useLocale()
   const [code, setCode] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -43,11 +45,11 @@ export default function InviteSection() {
       <div className="flex items-center gap-2 mb-3">
         <span className="text-lg">🔗</span>
         <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
-          Arkadaşlarını Davet Et
+          {t('social.inviteFriends')}
         </p>
       </div>
       <p className="text-xs mb-4" style={{ color: 'var(--text-secondary)' }}>
-        Özel davet linkini paylaşarak arkadaşlarını Sinezon&apos;a davet et.
+        {t('social.inviteFriendsDesc')}
       </p>
 
       {loading ? (
@@ -73,12 +75,12 @@ export default function InviteSection() {
               border: copied ? '1px solid rgba(34,197,94,0.4)' : '1px solid transparent',
             }}
           >
-            {copied ? '✓ Kopyalandı' : 'Kopyala'}
+            {copied ? `✓ ${t('profile.copied')}` : t('social.copy')}
           </button>
         </div>
       ) : (
         <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
-          Davet linki oluşturulamadı. Lütfen tekrar dene.
+          {t('social.inviteLinkError')}
         </p>
       )}
     </div>

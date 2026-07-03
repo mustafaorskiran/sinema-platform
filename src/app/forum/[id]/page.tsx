@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import ForumThreadClient from './ForumThreadClient'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -19,6 +20,7 @@ export default async function ForumThreadPage({ params }: Props) {
   const { id } = await params
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+  const { t } = await getTranslations()
 
   const [{ data: thread }, { data: posts }] = await Promise.all([
     supabase
@@ -49,7 +51,7 @@ export default async function ForumThreadPage({ params }: Props) {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-[--text-secondary] mb-6">
-        <Link href="/forum" className="hover:text-white transition-colors">Forum</Link>
+        <Link href="/forum" className="hover:text-white transition-colors">{t('forum.forumTitle')}</Link>
         <span>/</span>
         {cat && (
           <>

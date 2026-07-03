@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { IconFilm, IconMessageSquare, IconStar, IconTrendingUp, IconTv } from '@/components/icons'
 import { createClient } from '@/lib/supabase/server'
+import { getTranslations } from '@/lib/i18n'
 import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb'
 import type { Metadata } from 'next'
 
@@ -22,6 +23,7 @@ interface RankedItem {
 export default async function EnCokYorumlananPage({ searchParams }: Props) {
   const { tab } = await searchParams
   const activeTab = tab === 'film' ? 'film' : tab === 'dizi' ? 'dizi' : 'tumu'
+  const { t } = await getTranslations()
 
   const supabase = await createClient()
 
@@ -30,7 +32,7 @@ export default async function EnCokYorumlananPage({ searchParams }: Props) {
     .select('media_id, media_type, rating')
 
   if (!rows || rows.length === 0) {
-    return <EmptyState />
+    return <EmptyState t={t} />
   }
 
   // Gruplama: media_id + media_type bazında sayım ve ortalama
@@ -94,30 +96,30 @@ export default async function EnCokYorumlananPage({ searchParams }: Props) {
       {/* Başlık */}
       <div className="flex items-center gap-3 mb-8">
         <IconTrendingUp className="h-7 w-7 text-[--accent]" />
-        <h1 className="text-3xl font-bold text-white">En Çok Yorumlanan</h1>
+        <h1 className="text-3xl font-bold text-white">{t('mostReviewed.title')}</h1>
       </div>
 
       {/* Sekmeler */}
       <div className="flex gap-1 mb-8 rounded-xl p-1 w-fit" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
-        <Link href="/en-cok-yorumlanan" className={tabCls('tumu')} style={tabStyle('tumu')}>Tümü</Link>
+        <Link href="/en-cok-yorumlanan" className={tabCls('tumu')} style={tabStyle('tumu')}>{t('mostReviewed.tabAll')}</Link>
         <Link href="/en-cok-yorumlanan?tab=film" className={tabCls('film')} style={tabStyle('film')}>
           <IconFilm className="h-4 w-4" />
-          Filmler
+          {t('mostReviewed.tabFilms')}
         </Link>
         <Link href="/en-cok-yorumlanan?tab=dizi" className={tabCls('dizi')} style={tabStyle('dizi')}>
           <IconTv className="h-4 w-4" />
-          Diziler
+          {t('mostReviewed.tabSeries')}
         </Link>
       </div>
 
       {/* Liste */}
       {items.length === 0 ? (
-        <EmptyState />
+        <EmptyState t={t} />
       ) : (
         <div className="space-y-3">
           {items.map((item, idx) => {
             const poster = item.media ? getPosterUrl(item.media.poster_path, 'w342') : null
-            const title = item.media ? getMediaTitle(item.media) : `İçerik #${item.media_id}`
+            const title = item.media ? getMediaTitle(item.media) : t('mostReviewed.unknownTitle', { id: item.media_id })
             const year = item.media ? getMediaYear(item.media) : null
             const href = `/${item.media_type}/${item.media_id}`
             const rank = idx + 1
@@ -162,7 +164,7 @@ export default async function EnCokYorumlananPage({ searchParams }: Props) {
                         ? 'bg-blue-500/20 text-blue-400'
                         : 'bg-purple-500/20 text-purple-400'
                     }`}>
-                      {item.media_type === 'film' ? 'Film' : 'Dizi'}
+                      {item.media_type === 'film' ? t('film.badge') : t('series.badge')}
                     </span>
                   </div>
                 </div>
@@ -172,7 +174,7 @@ export default async function EnCokYorumlananPage({ searchParams }: Props) {
                   <div className="flex items-center gap-1 text-[--text-secondary]">
                     <IconMessageSquare className="h-3.5 w-3.5" />
                     <span className="text-sm font-semibold text-white">{item.review_count}</span>
-                    <span className="text-xs">yorum</span>
+                    <span className="text-xs">{t('mostReviewed.reviewsSuffix')}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <IconStar className="h-3.5 w-3.5 fill-[--gold] text-[--gold]" />
@@ -188,17 +190,17 @@ export default async function EnCokYorumlananPage({ searchParams }: Props) {
   )
 }
 
-function EmptyState() {
+function EmptyState({ t }: { t: (key: string, params?: Record<string, string | number>) => string }) {
   return (
     <div className="text-center py-24 text-[--text-secondary]">
       <IconMessageSquare className="h-12 w-12 mx-auto mb-4 opacity-30" />
-      <p className="text-lg font-medium">Henüz yorum yapılmamış.</p>
-      <p className="text-sm mt-1">İlk yorumu yapan sen ol!</p>
+      <p className="text-lg font-medium">{t('mostReviewed.emptyTitle')}</p>
+      <p className="text-sm mt-1">{t('mostReviewed.emptySubtitle')}</p>
       <Link
         href="/filmler"
         className="inline-block mt-6 bg-[--accent] hover:bg-[--accent-hover] text-white text-sm font-semibold px-6 py-2.5 rounded-full transition-colors"
       >
-        Filmlere Göz At
+        {t('mostReviewed.browseFilms')}
       </Link>
     </div>
   )

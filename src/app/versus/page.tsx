@@ -3,6 +3,7 @@ import { getMovieDetail, getPosterUrl, getMediaTitle } from '@/lib/tmdb'
 import VersusClient from './VersusClient'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 export const metadata: Metadata = {
   title: 'Film vs Film | Sinezon',
@@ -21,6 +22,7 @@ const VERSUS_PAIRS = [
 ]
 
 export default async function VersusPage() {
+  const { t } = await getTranslations()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -42,7 +44,7 @@ export default async function VersusPage() {
   if (!versusRows || versusRows.length === 0) {
     return (
       <div className="max-w-lg mx-auto px-4 py-20 text-center">
-        <p className="text-white">Yükleniyor...</p>
+        <p className="text-white">{t('common.loading')}</p>
       </div>
     )
   }
@@ -88,13 +90,13 @@ export default async function VersusPage() {
   return (
     <div className="max-w-xl mx-auto px-4 sm:px-6 py-10">
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-black text-white mb-1">⚔️ Film vs Film</h1>
+        <h1 className="text-3xl font-black text-white mb-1">⚔️ {t('versus.pageTitle')}</h1>
         <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
-          İkisi arasında tercihini yap — topluluk ne diyor?
+          {t('versus.pageDesc')}
         </p>
         {!user && (
           <p className="text-xs mt-2" style={{ color: 'rgba(255,255,255,0.3)' }}>
-            Oy vermek için <a href="/auth/giris" className="underline" style={{ color: '#E11D48' }}>giriş yap</a>
+            {t('versus.voteLoginPrompt')} <a href="/auth/giris" className="underline" style={{ color: '#E11D48' }}>{t('versus.loginLink')}</a>
           </p>
         )}
       </div>
@@ -106,7 +108,7 @@ export default async function VersusPage() {
           <div className="flex items-center gap-2 mb-4">
             <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.06)' }} />
             <p className="text-xs font-semibold px-3" style={{ color: 'rgba(255,255,255,0.3)' }}>
-              Topluluk Karşılaştırmaları
+              {t('versus.communityComparisons')}
             </p>
             <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.06)' }} />
           </div>
@@ -119,7 +121,7 @@ export default async function VersusPage() {
           <Link href="/versus/yeni"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all hover:scale-105"
             style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)' }}>
-            + Kendi karşılaştırmanı oluştur
+            + {t('versus.createOwn')}
           </Link>
         </div>
       )}

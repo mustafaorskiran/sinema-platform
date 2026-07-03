@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { computeBadges, ALL_BADGE_COUNT } from '@/lib/badges'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props {
   params: Promise<{ username: string }>
@@ -19,6 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProfilRozetlerPage({ params }: Props) {
   const { username } = await params
   const supabase = await createClient()
+  const { t } = await getTranslations()
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -92,10 +94,10 @@ export default async function ProfilRozetlerPage({ params }: Props) {
         }
         <div>
           <h1 className="text-xl font-bold text-white">
-            {profile.full_name ?? `@${username}`} — Rozetler
+            {t('profile.badgesTab.title', { name: profile.full_name ?? `@${username}` })}
           </h1>
           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
-            {earned.length}/{ALL_BADGE_COUNT} rozet kazanıldı ({pct}%)
+            {t('profile.badgesTab.earnedCount', { earned: earned.length, total: ALL_BADGE_COUNT, pct })}
           </p>
         </div>
       </div>
@@ -103,7 +105,7 @@ export default async function ProfilRozetlerPage({ params }: Props) {
       {/* İlerleme barı */}
       <div className="mb-8 p-5 rounded-2xl" style={card}>
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-semibold text-white">Genel İlerleme</span>
+          <span className="text-sm font-semibold text-white">{t('profile.badgesTab.overallProgress')}</span>
           <span className="text-sm font-bold" style={{ color: '#D4A843' }}>{pct}%</span>
         </div>
         <div className="h-2.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
@@ -116,7 +118,7 @@ export default async function ProfilRozetlerPage({ params }: Props) {
             }} />
         </div>
         <p className="text-xs mt-2" style={{ color: 'rgba(255,255,255,0.3)' }}>
-          {ALL_BADGE_COUNT - earned.length} rozet daha kazanabilirsin
+          {t('profile.badgesTab.remaining', { count: ALL_BADGE_COUNT - earned.length })}
         </p>
       </div>
 
@@ -124,7 +126,7 @@ export default async function ProfilRozetlerPage({ params }: Props) {
       {earned.length > 0 && (
         <section className="mb-8">
           <h2 className="text-base font-bold text-white mb-4 flex items-center gap-2">
-            <span>🏅</span> Kazanılan Rozetler
+            <span>🏅</span> {t('profile.badgesTab.earnedBadges')}
             <span className="text-sm font-normal" style={{ color: 'rgba(255,255,255,0.4)' }}>({earned.length})</span>
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -147,7 +149,7 @@ export default async function ProfilRozetlerPage({ params }: Props) {
         <section>
           <h2 className="text-base font-bold mb-4 flex items-center gap-2"
             style={{ color: 'rgba(255,255,255,0.5)' }}>
-            <span>🔒</span> Kilitli Rozetler
+            <span>🔒</span> {t('profile.badgesTab.lockedBadges')}
             <span className="text-sm font-normal" style={{ color: 'rgba(255,255,255,0.25)' }}>({unearned.length})</span>
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">

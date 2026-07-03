@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getPosterUrl, getMediaTitle, getMovieDetail, getSeriesDetail } from '@/lib/tmdb'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props {
   params: Promise<{ username: string }>
@@ -23,15 +24,6 @@ function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
-const RATING_LABELS: Record<number, { label: string; color: string }> = {
-  10: { label: 'Şaheser', color: '#D4A843' },
-  9:  { label: 'Mükemmel', color: '#4ade80' },
-  8:  { label: 'Harika', color: '#60a5fa' },
-  7:  { label: 'İyi', color: '#a78bfa' },
-  6:  { label: 'Fena Değil', color: 'rgba(255,255,255,0.4)' },
-  5:  { label: 'Vasat', color: 'rgba(255,255,255,0.3)' },
-}
-
 export default async function ProfilGunlukPage({ params, searchParams }: Props) {
   const { username } = await params
   const { sayfa } = await searchParams
@@ -39,6 +31,16 @@ export default async function ProfilGunlukPage({ params, searchParams }: Props) 
   const offset = (page - 1) * PAGE_SIZE
 
   const supabase = await createClient()
+  const { t } = await getTranslations()
+
+  const RATING_LABELS: Record<number, { label: string; color: string }> = {
+    10: { label: t('profile.diaryTab.ratingMasterpiece'), color: '#D4A843' },
+    9:  { label: t('profile.diaryTab.ratingExcellent'), color: '#4ade80' },
+    8:  { label: t('profile.diaryTab.ratingGreat'), color: '#60a5fa' },
+    7:  { label: t('profile.diaryTab.ratingGood'), color: '#a78bfa' },
+    6:  { label: t('profile.diaryTab.ratingNotBad'), color: 'rgba(255,255,255,0.4)' },
+    5:  { label: t('profile.diaryTab.ratingMediocre'), color: 'rgba(255,255,255,0.3)' },
+  }
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -101,10 +103,10 @@ export default async function ProfilGunlukPage({ params, searchParams }: Props) 
         }
         <div>
           <h1 className="text-xl font-bold text-white">
-            {profile.full_name ? `${profile.full_name}'in` : `@${username}'in`} Film Günlüğü
+            {t('profile.diaryTab.title', { name: profile.full_name ? `${profile.full_name}'in` : `@${username}'in` })}
           </h1>
           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
-            {count ?? 0} kayıt
+            {t('profile.diaryTab.recordCount', { count: count ?? 0 })}
           </p>
         </div>
       </div>
@@ -125,15 +127,15 @@ export default async function ProfilGunlukPage({ params, searchParams }: Props) 
             <path d="M83 30l4 4 8-8" stroke="rgba(212,168,67,0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
           <p className="text-base font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.7)' }}>
-            Günlük henüz boş
+            {t('profile.diaryTab.empty')}
           </p>
           <p className="text-sm mb-6 max-w-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>
-            Film veya dizi izledikçe günlük kaydı ekleyerek takip edebilirsin
+            {t('profile.diaryTab.emptyHint')}
           </p>
           <Link href="/filmler"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:scale-105"
             style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', boxShadow: '0 4px 14px rgba(225,29,72,0.25)' }}>
-            🎬 Film Keşfet
+            🎬 {t('profile.diaryTab.exploreFilms')}
           </Link>
         </div>
       ) : (
@@ -175,7 +177,7 @@ export default async function ProfilGunlukPage({ params, searchParams }: Props) 
                       {entry.rewatch && (
                         <span className="text-[10px] px-1.5 py-0.5 rounded"
                           style={{ background: 'rgba(96,165,250,0.1)', color: '#60a5fa', border: '1px solid rgba(96,165,250,0.2)' }}>
-                          🔁 Tekrar
+                          🔁 {t('profile.diaryTab.rewatch')}
                         </span>
                       )}
                       {ratingInfo && (
@@ -203,7 +205,7 @@ export default async function ProfilGunlukPage({ params, searchParams }: Props) 
                 <Link href={`/profil/${username}/gunluk?sayfa=${page - 1}`}
                   className="px-4 py-2 rounded-xl text-sm transition-colors hover:bg-white/5"
                   style={{ color: 'rgba(255,255,255,0.4)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  ← Önceki
+                  ← {t('common.prev')}
                 </Link>
               )}
               <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
@@ -213,7 +215,7 @@ export default async function ProfilGunlukPage({ params, searchParams }: Props) 
                 <Link href={`/profil/${username}/gunluk?sayfa=${page + 1}`}
                   className="px-4 py-2 rounded-xl text-sm transition-colors hover:bg-white/5"
                   style={{ color: 'rgba(255,255,255,0.4)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  Sonraki →
+                  {t('common.next')} →
                 </Link>
               )}
             </div>

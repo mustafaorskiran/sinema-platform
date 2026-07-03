@@ -5,6 +5,7 @@ import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle, getMediaY
 import { IconUsers } from '@/components/icons'
 import BenzerClient from './BenzerClient'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 export const metadata: Metadata = {
   title: 'Senin Gibi Kullanıcılar | Sinezon',
@@ -15,6 +16,7 @@ export default async function BenzerKullanicilarPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/giris')
+  const { t } = await getTranslations()
 
   // Yeterli yüksek puan kontrolü
   const { count: highRatingCount } = await supabase
@@ -24,7 +26,7 @@ export default async function BenzerKullanicilarPage() {
     .gte('rating', 4)
 
   if ((highRatingCount ?? 0) < 3) {
-    return <LowDataPage count={highRatingCount ?? 0} />
+    return <LowDataPage count={highRatingCount ?? 0} t={t} />
   }
 
   // Benzer kullanıcılar + öneri içerikleri paralel
@@ -34,7 +36,7 @@ export default async function BenzerKullanicilarPage() {
   ])
 
   if (suErr || !similarUsers || similarUsers.length === 0) {
-    return <NoSimilarUsersPage />
+    return <NoSimilarUsersPage t={t} />
   }
 
   // TMDb verisi paralel çek (en fazla 18)
@@ -71,10 +73,10 @@ export default async function BenzerKullanicilarPage() {
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-2">
           <IconUsers className="h-7 w-7 text-[--accent]" />
-          <h1 className="text-2xl font-bold text-white">Senin Gibi Kullanıcılar</h1>
+          <h1 className="text-2xl font-bold text-white">{t('social.similarUsersTitle')}</h1>
         </div>
         <p className="text-sm text-[--text-secondary] ml-10">
-          Verdiğin puanlar, izlediklerin ve listelerin üzerinden zevklerin örtüşen kullanıcılar.
+          {t('social.similarUsersDesc')}
         </p>
       </div>
 
@@ -87,46 +89,45 @@ export default async function BenzerKullanicilarPage() {
   )
 }
 
-function LowDataPage({ count }: { count: number }) {
+function LowDataPage({ count, t }: { count: number; t: (key: string, params?: Record<string, string | number>) => string }) {
   return (
     <div className="max-w-md mx-auto px-4 py-24 text-center">
       <div className="text-5xl mb-6">🎬</div>
-      <h1 className="text-xl font-bold text-white mb-3">Daha Fazla İçerik Puanla</h1>
+      <h1 className="text-xl font-bold text-white mb-3">{t('social.rateMoreTitle')}</h1>
       <p className="text-[--text-secondary] mb-2 text-sm leading-relaxed">
-        Sana benzer kullanıcılar bulmak için en az{' '}
-        <strong className="text-white">3 içeriğe ★4 veya üzeri puan</strong>{' '}
-        vermen gerekiyor.
+        {t('social.rateMoreDescPrefix')}{' '}
+        <strong className="text-white">{t('social.rateMoreDescStrong')}</strong>{' '}
+        {t('social.rateMoreDescSuffix')}
       </p>
       <p className="text-xs text-[--text-secondary] mb-8">
-        Şu anda <strong className="text-white">{count}</strong> yüksek puanın var.
+        {t('social.currentHighRatingsPrefix')} <strong className="text-white">{count}</strong> {t('social.currentHighRatingsSuffix')}
       </p>
       <div className="flex flex-col sm:flex-row gap-3 justify-center">
         <Link href="/filmler"
           className="px-6 py-2.5 bg-[--accent] hover:bg-[--accent-hover] text-white font-semibold rounded-full transition-colors text-sm">
-          Film Keşfet →
+          {t('social.discoverFilms')} →
         </Link>
         <Link href="/diziler"
           className="px-6 py-2.5 text-white text-sm rounded-full transition-all hover:scale-105"
           style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-          Dizi Keşfet →
+          {t('social.discoverSeries')} →
         </Link>
       </div>
     </div>
   )
 }
 
-function NoSimilarUsersPage() {
+function NoSimilarUsersPage({ t }: { t: (key: string, params?: Record<string, string | number>) => string }) {
   return (
     <div className="max-w-md mx-auto px-4 py-24 text-center">
       <div className="text-5xl mb-6">🔍</div>
-      <h1 className="text-xl font-bold text-white mb-3">Benzer Kullanıcı Bulunamadı</h1>
+      <h1 className="text-xl font-bold text-white mb-3">{t('social.noSimilarUsersTitle')}</h1>
       <p className="text-[--text-secondary] text-sm leading-relaxed mb-8">
-        Henüz zevklerin örtüşen yeterli kullanıcı bulunamadı. Daha fazla içerik puanladıkça
-        algoritmamız sana uygun kullanıcılar bulacak.
+        {t('social.noSimilarUsersDesc')}
       </p>
       <Link href="/kullanicilar"
         className="inline-block px-6 py-2.5 rounded-xl hover:border-[--accent]/50 text-white text-sm font-medium rounded-full transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-        Tüm Kullanıcıları Keşfet →
+        {t('social.discoverAllUsers')} →
       </Link>
     </div>
   )

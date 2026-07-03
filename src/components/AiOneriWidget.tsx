@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Oneri {
   baslik: string
@@ -9,6 +10,7 @@ interface Oneri {
 }
 
 export default function AiOneriWidget() {
+  const { t } = useLocale()
   const [mood, setMood] = useState('')
   const [type, setType] = useState<'film' | 'dizi'>('film')
   const [loading, setLoading] = useState(false)
@@ -29,7 +31,7 @@ export default function AiOneriWidget() {
       if (data.error) { setError(data.error); return }
       setResult(data.öneriler ?? [])
     } catch {
-      setError('Bağlantı hatası.')
+      setError(t('aiOneri.connectionError'))
     } finally {
       setLoading(false)
     }
@@ -40,19 +42,19 @@ export default function AiOneriWidget() {
       style={{ background: 'linear-gradient(160deg, rgba(14,10,30,0.98), rgba(10,6,22,0.99))', border: '1px solid rgba(139,92,246,0.15)', boxShadow: '0 0 40px rgba(139,92,246,0.05)' }}>
       <div className="flex items-center gap-2 mb-4">
         <div className="w-1 h-5 rounded-full" style={{ background: 'linear-gradient(180deg, #a78bfa, #E11D48)' }} />
-        <p className="text-sm font-bold text-white">🤖 Yapay Zeka Önerisi</p>
+        <p className="text-sm font-bold text-white">🤖 {t('aiOneri.title')}</p>
       </div>
 
       {/* Tip seçimi */}
       <div className="flex gap-2 mb-3">
-        {(['film', 'dizi'] as const).map(t => (
-          <button key={t} onClick={() => setType(t)}
+        {(['film', 'dizi'] as const).map(opt => (
+          <button key={opt} onClick={() => setType(opt)}
             className="flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all"
-            style={type === t
+            style={type === opt
               ? { background: 'rgba(139,92,246,0.2)', border: '1px solid rgba(139,92,246,0.4)', color: '#a78bfa' }
               : { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.4)' }
             }>
-            {t === 'film' ? '🎬 Film' : '📺 Dizi'}
+            {opt === 'film' ? `🎬 ${t('film.badge')}` : `📺 ${t('series.badge')}`}
           </button>
         ))}
       </div>
@@ -63,7 +65,7 @@ export default function AiOneriWidget() {
         value={mood}
         onChange={e => setMood(e.target.value)}
         onKeyDown={e => e.key === 'Enter' && !loading && getOneri()}
-        placeholder="Ruh halini yaz... (ör. hüzünlü, aksiyon dolu)"
+        placeholder={t('aiOneri.moodPlaceholder')}
         maxLength={100}
         className="w-full rounded-xl px-3 py-2 text-sm text-white placeholder:text-white/25 outline-none mb-3"
         style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
@@ -75,7 +77,7 @@ export default function AiOneriWidget() {
         className="w-full py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-[1.02] disabled:opacity-50"
         style={{ background: 'linear-gradient(135deg, #7c3aed, #5b21b6)', color: '#fff', boxShadow: '0 4px 14px rgba(124,58,237,0.3)' }}
       >
-        {loading ? '✨ Düşünüyor...' : '✨ Öneri Al'}
+        {loading ? `✨ ${t('aiOneri.thinking')}` : `✨ ${t('aiOneri.getSuggestion')}`}
       </button>
 
       {error && (

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import StarRating from './StarRating'
 import type { MediaType } from '@/lib/types'
 import { containsProfanity } from '@/lib/profanityFilter'
+import { useLocale } from '@/context/LocaleContext'
 
 function renderMarkdownPreview(text: string) {
   const lines = text.split('\n')
@@ -36,6 +37,7 @@ const QUICK_TAGS = ['harika', 'sıkıcı', 'duygusal', 'gerilim', 'komedi', 'kla
 
 export default function ReviewForm({ mediaId, mediaType, existingReview }: ReviewFormProps) {
   const router = useRouter()
+  const { t } = useLocale()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const [rating, setRating] = useState(existingReview?.rating ?? 0)
   const [content, setContent] = useState(existingReview?.content ?? '')
@@ -98,9 +100,9 @@ export default function ReviewForm({ mediaId, mediaType, existingReview }: Revie
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (rating === 0) { setError('Lütfen bir puan verin.'); return }
-    if (content.trim().length < 10) { setError('Yorum en az 10 karakter olmalı.'); return }
-    if (containsProfanity(content)) { setError('Yorumun uygunsuz ifadeler içeriyor. Lütfen düzenleyerek tekrar gönder.'); return }
+    if (rating === 0) { setError(t('review.errorNoRating')); return }
+    if (content.trim().length < 10) { setError(t('review.errorTooShort')); return }
+    if (containsProfanity(content)) { setError(t('review.errorProfanity')); return }
     setLoading(true); setError('')
     try {
       const res = await fetch('/api/reviews', {
@@ -108,11 +110,11 @@ export default function ReviewForm({ mediaId, mediaType, existingReview }: Revie
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: existingReview?.id, media_id: mediaId, media_type: mediaType, rating, content: content.trim(), has_spoiler: hasSpoiler, tags }),
       })
-      if (!res.ok) { const data = await res.json(); throw new Error(data.error || 'Bir hata oluştu.') }
+      if (!res.ok) { const data = await res.json(); throw new Error(data.error || t('review.errorGeneric')) }
       router.refresh()
       if (!existingReview) { setContent(''); setRating(0); setTags([]); setSuccess(true); setTimeout(() => setSuccess(false), 3000) }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Bir hata oluştu.')
+      setError(err instanceof Error ? err.message : t('review.errorGeneric'))
     } finally { setLoading(false) }
   }
 
@@ -125,11 +127,11 @@ export default function ReviewForm({ mediaId, mediaType, existingReview }: Revie
       <div className="rounded-xl p-4"
         style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
         <label className="block text-xs font-semibold uppercase tracking-widest mb-3"
-          style={{ color: 'rgba(255,255,255,0.4)' }}>Puanın</label>
+          style={{ color: 'rgba(255,255,255,0.4)' }}>{t('review.ratingLabel')}</label>
         <StarRating value={rating} onChange={setRating} />
         {rating > 0 && (
           <p className="text-xs mt-2 font-medium" style={{ color: rating >= 8 ? '#4ade80' : rating >= 6 ? '#D4A843' : '#f87171' }}>
-            {rating >= 9 ? 'Şaheser!' : rating >= 8 ? 'Harika' : rating >= 7 ? 'İyi' : rating >= 6 ? 'Fena değil' : rating >= 5 ? 'Ortalama' : rating >= 4 ? 'Zayıf' : 'Berbat'}
+            {rating >= 9 ? t('review.ratingMasterpiece') : rating >= 8 ? t('review.ratingGreat') : rating >= 7 ? t('review.ratingGood') : rating >= 6 ? t('review.ratingNotBad') : rating >= 5 ? t('review.ratingAverage') : rating >= 4 ? t('review.ratingWeak') : t('review.ratingTerrible')}
             {' '}· {rating}/10
           </p>
         )}
@@ -141,17 +143,17 @@ export default function ReviewForm({ mediaId, mediaType, existingReview }: Revie
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1">
             <label className="text-xs font-semibold uppercase tracking-widest"
-              style={{ color: 'rgba(255,255,255,0.4)' }}>Yorumun</label>
+              style={{ color: 'rgba(255,255,255,0.4)' }}>{t('review.contentLabel')}</label>
             <div className="flex items-center gap-1 ml-3">
               <button type="button" onClick={() => setPreview(false)}
                 className="text-[10px] px-2.5 py-1 rounded-lg font-medium transition-colors"
                 style={!preview ? { background: 'rgba(225,29,72,0.15)', color: '#E11D48', border: '1px solid rgba(225,29,72,0.3)' } : { background: 'transparent', color: 'rgba(255,255,255,0.3)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                Yaz
+                {t('review.writeTab')}
               </button>
               <button type="button" onClick={() => setPreview(true)}
                 className="text-[10px] px-2.5 py-1 rounded-lg font-medium transition-colors"
                 style={preview ? { background: 'rgba(225,29,72,0.15)', color: '#E11D48', border: '1px solid rgba(225,29,72,0.3)' } : { background: 'transparent', color: 'rgba(255,255,255,0.3)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                Önizle
+                {t('review.previewTab')}
               </button>
             </div>
           </div>
@@ -162,10 +164,10 @@ export default function ReviewForm({ mediaId, mediaType, existingReview }: Revie
         {!preview && (
           <div className="flex items-center gap-1.5 mb-2">
             {[
-              { label: 'B', title: 'Kalın (**metin**)', action: () => insertFormat('bold'), style: { fontWeight: 700 } },
-              { label: 'I', title: 'İtalik (*metin*)', action: () => insertFormat('italic'), style: { fontStyle: 'italic' } },
-              { label: '🔗', title: 'Link [metin](url)', action: () => insertFormat('link'), style: {} },
-              { label: '⚠️ [spoiler]', title: 'Spoiler etiketi', action: insertSpoilerTag, style: { color: 'rgba(248,113,113,0.8)' } },
+              { label: 'B', title: t('review.boldTitle'), action: () => insertFormat('bold'), style: { fontWeight: 700 } },
+              { label: 'I', title: t('review.italicTitle'), action: () => insertFormat('italic'), style: { fontStyle: 'italic' } },
+              { label: '🔗', title: t('review.linkTitle'), action: () => insertFormat('link'), style: {} },
+              { label: '⚠️ [spoiler]', title: t('review.spoilerTitle'), action: insertSpoilerTag, style: { color: 'rgba(248,113,113,0.8)' } },
             ].map(btn => (
               <button key={btn.label} type="button" onClick={btn.action} title={btn.title}
                 className="text-[10px] px-2 py-1 rounded transition-colors hover:text-white"
@@ -181,7 +183,7 @@ export default function ReviewForm({ mediaId, mediaType, existingReview }: Revie
           <div className="w-full rounded-xl px-4 py-3 text-sm text-white min-h-[120px] leading-relaxed"
             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
             {content.trim() ? renderMarkdownPreview(content) : (
-              <span style={{ color: 'rgba(255,255,255,0.25)' }}>Önizlenecek içerik yok...</span>
+              <span style={{ color: 'rgba(255,255,255,0.25)' }}>{t('review.noPreviewContent')}</span>
             )}
           </div>
         ) : (
@@ -189,7 +191,7 @@ export default function ReviewForm({ mediaId, mediaType, existingReview }: Revie
             ref={textareaRef}
             value={content}
             onChange={e => setContent(e.target.value)}
-            placeholder="Bu yapım hakkında ne düşünüyorsun? **kalın**, *italik*, [link](url) destekler"
+            placeholder={t('review.contentPlaceholder')}
             rows={5}
             maxLength={2000}
             className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-[--text-secondary] outline-none resize-none transition-all"
@@ -209,15 +211,15 @@ export default function ReviewForm({ mediaId, mediaType, existingReview }: Revie
         <input type="checkbox" checked={hasSpoiler} onChange={e => setHasSpoiler(e.target.checked)}
           className="w-4 h-4 rounded accent-red-500" />
         <div>
-          <p className="text-sm font-medium text-white">⚠️ Spoiler içeriyor</p>
-          <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.35)' }}>Yorum otomatik gizlenir</p>
+          <p className="text-sm font-medium text-white">{t('review.spoilerCheckboxLabel')}</p>
+          <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.35)' }}>{t('review.spoilerAutoHide')}</p>
         </div>
       </label>
 
       {/* Etiketler */}
       <div>
         <label className="block text-xs font-semibold uppercase tracking-widest mb-2"
-          style={{ color: 'rgba(255,255,255,0.4)' }}>Etiketler <span className="font-normal normal-case tracking-normal">(maks 5)</span></label>
+          style={{ color: 'rgba(255,255,255,0.4)' }}>{t('review.tagsLabel')} <span className="font-normal normal-case tracking-normal">{t('review.tagsMax')}</span></label>
 
         {/* Hızlı etiketler */}
         <div className="flex flex-wrap gap-1.5 mb-3">
@@ -249,7 +251,7 @@ export default function ReviewForm({ mediaId, mediaType, existingReview }: Revie
             value={tagInput}
             onChange={e => setTagInput(e.target.value)}
             onKeyDown={addTagFromInput}
-            placeholder="özel etiket yaz, Enter'a bas..."
+            placeholder={t('review.tagInputPlaceholder')}
             className="w-full rounded-lg px-3 py-2 text-sm text-white placeholder-[--text-secondary] outline-none transition-all"
             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
           />
@@ -265,7 +267,7 @@ export default function ReviewForm({ mediaId, mediaType, existingReview }: Revie
       {success && (
         <div className="text-sm text-green-400 rounded-lg px-3 py-2 text-center font-semibold"
           style={{ background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.2)' }}>
-          ✓ Yorumun başarıyla eklendi!
+          {t('review.successAdded')}
         </div>
       )}
 
@@ -279,7 +281,7 @@ export default function ReviewForm({ mediaId, mediaType, existingReview }: Revie
           boxShadow: rating > 0 && !loading ? '0 4px 20px rgba(225,29,72,0.3)' : 'none',
         }}
       >
-        {loading ? '⟳ Gönderiliyor...' : existingReview ? '✓ Yorumu Güncelle' : '✍️ Yorum Yap'}
+        {loading ? t('review.submitting') : existingReview ? t('review.updateBtn') : t('review.writeBtn')}
       </button>
     </form>
   )

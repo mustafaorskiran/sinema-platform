@@ -1,5 +1,6 @@
 import { requireAdmin } from '@/lib/admin'
 import { createClient } from '@/lib/supabase/server'
+import { getTranslations } from '@/lib/i18n'
 import ResolveButton from './ResolveButton'
 import type { Metadata } from 'next'
 
@@ -11,20 +12,8 @@ const TYPE_STYLE: Record<string, string> = {
   profile: 'bg-orange-500/20 text-orange-400',
 }
 
-const TYPE_LABEL: Record<string, string> = {
-  review:  'Yorum',
-  list:    'Liste',
-  profile: 'Profil',
-}
-
-const REASON_LABEL: Record<string, string> = {
-  spam:          'Spam',
-  harassment:    'Taciz',
-  inappropriate: 'Uygunsuz',
-  spoiler:       'Spoiler',
-  misinformation:'Yanlış bilgi',
-  other:         'Diğer',
-}
+const TYPE_KEYS = ['review', 'list', 'profile']
+const REASON_KEYS = ['spam', 'harassment', 'inappropriate', 'spoiler', 'misinformation', 'other']
 
 function targetLink(type: string, id: string) {
   if (type === 'list')    return `/listeler/${id}`
@@ -34,6 +23,7 @@ function targetLink(type: string, id: string) {
 
 export default async function AdminRaporlarPage() {
   await requireAdmin()
+  const { t } = await getTranslations()
   const supabase = await createClient()
 
   const { data: reports } = await supabase
@@ -66,13 +56,13 @@ export default async function AdminRaporlarPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-        <h1 className="text-2xl font-bold text-white">Raporlar</h1>
-        <span className="text-sm text-[--text-secondary]">{(reports ?? []).length} rapor, {deduped.length} benzersiz hedef</span>
+        <h1 className="text-2xl font-bold text-white">{t('admin.reports.title')}</h1>
+        <span className="text-sm text-[--text-secondary]">{t('admin.reports.summary', { total: (reports ?? []).length, unique: deduped.length })}</span>
       </div>
 
       {deduped.length === 0 ? (
         <p className="text-[--text-secondary] rounded-xl p-8 text-center"
-          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>Bekleyen rapor yok.</p>
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>{t('admin.reports.empty')}</p>
       ) : (
         <div className="space-y-3">
           {deduped.map((r: any) => {
@@ -85,14 +75,14 @@ export default async function AdminRaporlarPage() {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
                       <span className={`text-[10px] px-2 py-0.5 rounded font-bold ${TYPE_STYLE[r.target_type] ?? 'bg-zinc-500/20 text-zinc-400'}`}>
-                        {TYPE_LABEL[r.target_type] ?? r.target_type}
+                        {TYPE_KEYS.includes(r.target_type) ? t(`admin.reports.type.${r.target_type}`) : r.target_type}
                       </span>
                       <span className="text-xs font-semibold text-red-400">
-                        {REASON_LABEL[r.reason] ?? r.reason}
+                        {REASON_KEYS.includes(r.reason) ? t(`admin.reports.reason.${r.reason}`) : r.reason}
                       </span>
                       {count > 1 && (
                         <span className="text-[10px] font-bold bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full">
-                          {count}× rapor edildi
+                          {t('admin.reports.reportedCount', { count })}
                         </span>
                       )}
                     </div>
@@ -112,12 +102,12 @@ export default async function AdminRaporlarPage() {
                           rel="noopener noreferrer"
                           className="text-[10px] text-[--accent] hover:underline"
                         >
-                          Görüntüle →
+                          {t('admin.reports.viewLink')}
                         </a>
                       )}
                     </div>
                     <p className="text-[10px] text-[--text-secondary] mt-1">
-                      Son rapor: @{r.profiles?.username} • {new Date(r.created_at).toLocaleDateString('tr-TR')}
+                      {t('admin.reports.lastReportLabel')} @{r.profiles?.username} • {new Date(r.created_at).toLocaleDateString('tr-TR')}
                     </p>
                   </div>
                   <ResolveButton id={r.id} />

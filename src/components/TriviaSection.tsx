@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useLocale } from '@/context/LocaleContext'
 
 interface TriviaItem {
   id: string
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export default function TriviaSection({ items, mediaId, mediaType, isLoggedIn }: Props) {
+  const { t } = useLocale()
   const router = useRouter()
   const [tab, setTab] = useState<'trivia' | 'goof'>('trivia')
   const [showForm, setShowForm] = useState(false)
@@ -51,7 +53,7 @@ export default function TriviaSection({ items, mediaId, mediaType, isLoggedIn }:
         <div className="flex items-center gap-3">
           <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%)' }} />
           <h2 className="text-xl font-bold text-white tracking-tight">
-            {tab === 'trivia' ? '💡 İlginç Bilgiler' : '🎬 Yapım Hataları'}
+            {tab === 'trivia' ? `💡 ${t('trivia.triviaHeading')}` : `🎬 ${t('trivia.goofsHeading')}`}
           </h2>
           <div className="flex rounded-lg p-0.5"
             style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
@@ -59,13 +61,13 @@ export default function TriviaSection({ items, mediaId, mediaType, isLoggedIn }:
               onClick={() => { setTab('trivia'); setShowForm(false) }}
               className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${tab === 'trivia' ? 'bg-[--accent] text-white' : 'text-[--text-secondary] hover:text-white'}`}
             >
-              Trivia ({items.filter(i => i.type === 'trivia').length})
+              {t('trivia.triviaTabLabel', { count: items.filter(i => i.type === 'trivia').length })}
             </button>
             <button
               onClick={() => { setTab('goof'); setShowForm(false) }}
               className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${tab === 'goof' ? 'bg-[--accent] text-white' : 'text-[--text-secondary] hover:text-white'}`}
             >
-              Hatalar ({items.filter(i => i.type === 'goof').length})
+              {t('trivia.goofsTabLabel', { count: items.filter(i => i.type === 'goof').length })}
             </button>
           </div>
         </div>
@@ -74,14 +76,14 @@ export default function TriviaSection({ items, mediaId, mediaType, isLoggedIn }:
             onClick={() => setShowForm(true)}
             className="text-xs text-[--accent] hover:underline"
           >
-            + Ekle
+            + {t('trivia.addButton')}
           </button>
         )}
       </div>
 
       {done && (
         <div className="mb-4 px-4 py-2.5 rounded-lg bg-green-500/20 text-green-300 text-sm border border-green-500/30">
-          Gönderildi! Onaylandıktan sonra yayınlanacak.
+          {t('trivia.submittedNotice')}
         </div>
       )}
 
@@ -89,14 +91,14 @@ export default function TriviaSection({ items, mediaId, mediaType, isLoggedIn }:
         <div className="mb-5 rounded-xl p-4"
           style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.95), rgba(14,20,32,0.98))', border: '1px solid rgba(255,255,255,0.08)' }}>
           <p className="text-xs mb-2" style={{ color: 'rgba(255,255,255,0.4)' }}>
-            {tab === 'trivia' ? 'İlginç bir bilgi ekle (onaylandıktan sonra yayınlanır)' : 'Bir yapım hatası ekle'}
+            {tab === 'trivia' ? t('trivia.addTriviaHint') : t('trivia.addGoofHint')}
           </p>
           <textarea
             value={content}
             onChange={e => setContent(e.target.value)}
             rows={3}
             maxLength={1000}
-            placeholder={tab === 'trivia' ? 'Bu filmin çekimi sırasında...' : 'Filmin 1:23. dakikasında...'}
+            placeholder={tab === 'trivia' ? t('trivia.triviaPlaceholder') : t('trivia.goofPlaceholder')}
             className="w-full rounded-lg p-3 text-sm text-white outline-none resize-none transition-all"
             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
             onFocus={e => (e.target.style.borderColor = 'rgba(225,29,72,0.4)')}
@@ -106,12 +108,12 @@ export default function TriviaSection({ items, mediaId, mediaType, isLoggedIn }:
             <button onClick={() => setShowForm(false)}
               className="text-xs px-3 py-1.5 rounded-lg transition-colors"
               style={{ color: 'rgba(255,255,255,0.4)' }}>
-              İptal
+              {t('common.cancel')}
             </button>
             <button onClick={submit} disabled={!content.trim() || submitting}
               className="text-xs px-4 py-1.5 rounded-lg text-white font-semibold disabled:opacity-40 transition-all hover:scale-105"
               style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)' }}>
-              {submitting ? '⟳ Gönderiliyor...' : 'Gönder'}
+              {submitting ? `⟳ ${t('trivia.sending')}` : t('common.submit')}
             </button>
           </div>
         </div>
@@ -120,10 +122,10 @@ export default function TriviaSection({ items, mediaId, mediaType, isLoggedIn }:
       {filtered.length === 0 ? (
         <div className="py-8 text-center rounded-xl"
           style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
-          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>Henüz {tab === 'trivia' ? 'ilginç bilgi' : 'yapım hatası'} eklenmemiş.</p>
+          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>{t('trivia.emptyNotice', { type: tab === 'trivia' ? t('trivia.emptyTriviaText') : t('trivia.emptyGoofText') })}</p>
           {isLoggedIn && !showForm && (
             <button onClick={() => setShowForm(true)} className="mt-2 text-xs hover:underline" style={{ color: 'var(--accent)' }}>
-              İlk ekleyen sen ol →
+              {t('trivia.beFirst')}
             </button>
           )}
         </div>

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -33,6 +34,7 @@ export default async function KategoriPage({ params, searchParams }: Props) {
   const offset = (page - 1) * PAGE_SIZE
 
   const supabase = await createClient()
+  const { t } = await getTranslations()
   const { data: category } = await supabase
     .from('forum_categories')
     .select('*')
@@ -54,7 +56,7 @@ export default async function KategoriPage({ params, searchParams }: Props) {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
       <div className="flex items-center gap-3 mb-2">
-        <Link href="/forum" className="text-sm text-[--text-secondary] hover:text-white transition-colors">← Forum</Link>
+        <Link href="/forum" className="text-sm text-[--text-secondary] hover:text-white transition-colors">← {t('forum.forumTitle')}</Link>
       </div>
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
@@ -68,7 +70,7 @@ export default async function KategoriPage({ params, searchParams }: Props) {
           href={`/forum/yeni?kategori=${category.id}`}
           className="bg-[--accent] hover:bg-[--accent-hover] text-white text-sm font-semibold px-5 py-2.5 rounded-full transition-colors"
         >
-          + Konu Aç
+          + {t('forum.newThread')}
         </Link>
       </div>
 
@@ -76,9 +78,9 @@ export default async function KategoriPage({ params, searchParams }: Props) {
         style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.04)' }}>
         {(threads ?? []).length === 0 ? (
           <div className="py-16 text-center">
-            <p className="text-[--text-secondary] text-sm">Bu kategoride henüz konu yok.</p>
+            <p className="text-[--text-secondary] text-sm">{t('forum.noThreadsInCategory')}</p>
             <Link href={`/forum/yeni?kategori=${category.id}`} className="mt-4 inline-block text-sm text-[--accent] hover:underline">
-              İlk konuyu sen aç →
+              {t('forum.openFirstThread')} →
             </Link>
           </div>
         ) : (
@@ -102,7 +104,7 @@ export default async function KategoriPage({ params, searchParams }: Props) {
                     {profile?.username} · {timeAgo(thread.last_reply_at)}
                   </p>
                 </div>
-                <span className="text-xs text-[--text-secondary] shrink-0">{thread.reply_count} yanıt</span>
+                <span className="text-xs text-[--text-secondary] shrink-0">{t('forum.replyCount', { count: thread.reply_count })}</span>
               </Link>
             )
           })
@@ -115,7 +117,7 @@ export default async function KategoriPage({ params, searchParams }: Props) {
             <Link href={`/forum/kategori/${slug}?sayfa=${page - 1}`}
               className="px-5 py-2 rounded-lg text-sm transition-all hover:text-white hover:scale-105"
               style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
-              ← Önceki
+              ← {t('social.previous')}
             </Link>
           )}
           <span className="px-5 py-2 text-sm text-[--text-secondary] flex items-center">{page} / {totalPages}</span>
@@ -123,7 +125,7 @@ export default async function KategoriPage({ params, searchParams }: Props) {
             <Link href={`/forum/kategori/${slug}?sayfa=${page + 1}`}
               className="px-5 py-2 rounded-lg text-sm transition-all hover:text-white hover:scale-105"
               style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
-              Sonraki →
+              {t('social.next')} →
             </Link>
           )}
         </div>

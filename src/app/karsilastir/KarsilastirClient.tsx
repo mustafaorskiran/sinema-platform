@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { IconSearch, IconClose, IconStar } from '@/components/icons'
+import { useLocale } from '@/context/LocaleContext'
 
 interface MediaItem {
   id: number
@@ -33,6 +34,7 @@ function MediaSearch({ label, selected, onSelect }: {
   selected: MediaItem | null
   onSelect: (id: number, type: string) => void
 }) {
+  const { t } = useLocale()
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<SearchResult[]>([])
   const [open, setOpen] = useState(false)
@@ -40,7 +42,7 @@ function MediaSearch({ label, selected, onSelect }: {
 
   useEffect(() => {
     if (query.length < 2) { setResults([]); return }
-    const t = setTimeout(async () => {
+    const timer = setTimeout(async () => {
       try {
         const r = await fetch(`/api/search?q=${encodeURIComponent(query)}`)
         const data = await r.json()
@@ -48,7 +50,7 @@ function MediaSearch({ label, selected, onSelect }: {
         setOpen(true)
       } catch {}
     }, 300)
-    return () => clearTimeout(t)
+    return () => clearTimeout(timer)
   }, [query])
 
   useEffect(() => {
@@ -69,7 +71,7 @@ function MediaSearch({ label, selected, onSelect }: {
           )}
           <div className="flex-1 min-w-0">
             <p className="text-white font-semibold text-sm leading-tight">{selected.title}</p>
-            <p className="text-xs text-[--text-secondary] mt-0.5">{selected.year} · {selected.type === 'dizi' ? 'Dizi' : 'Film'}</p>
+            <p className="text-xs text-[--text-secondary] mt-0.5">{selected.year} · {selected.type === 'dizi' ? t('series.badge') : t('film.badge')}</p>
             <div className="flex items-center gap-1 mt-1">
               <IconStar className="h-3 w-3 text-[--gold]" />
               <span className="text-xs text-[--gold] font-semibold">{selected.rating.toFixed(1)}</span>
@@ -91,7 +93,7 @@ function MediaSearch({ label, selected, onSelect }: {
               value={query}
               onChange={e => setQuery(e.target.value)}
               onFocus={() => results.length > 0 && setOpen(true)}
-              placeholder="Film veya dizi ara..."
+              placeholder={t('search.placeholder')}
               className="w-full rounded-xl border border-[--border] bg-[--bg-card] pl-9 pr-4 py-3 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors"
             />
           </div>
@@ -114,7 +116,7 @@ function MediaSearch({ label, selected, onSelect }: {
                     </div>
                     <div>
                       <p className="text-sm text-white">{title}</p>
-                      <p className="text-xs text-[--text-secondary]">{year} · {type === 'dizi' ? 'Dizi' : 'Film'}</p>
+                      <p className="text-xs text-[--text-secondary]">{year} · {type === 'dizi' ? t('series.badge') : t('film.badge')}</p>
                     </div>
                   </button>
                 )
@@ -138,6 +140,7 @@ function CompareRow({ label, a, b, highlight = false }: { label: string; a: Reac
 }
 
 export default function KarsilastirClient({ itemA, itemB }: { itemA: MediaItem | null; itemB: MediaItem | null }) {
+  const { t } = useLocale()
   const router = useRouter()
   const [selA, setSelA] = useState<MediaItem | null>(itemA)
   const [selB, setSelB] = useState<MediaItem | null>(itemB)
@@ -160,16 +163,16 @@ export default function KarsilastirClient({ itemA, itemB }: { itemA: MediaItem |
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
-      <h1 className="text-2xl font-bold text-white mb-2">Film / Dizi Karşılaştır</h1>
-      <p className="text-sm text-[--text-secondary] mb-8">İki içeriği seçin ve yan yana karşılaştırın</p>
+      <h1 className="text-2xl font-bold text-white mb-2">{t('versus.compareTitle')}</h1>
+      <p className="text-sm text-[--text-secondary] mb-8">{t('versus.compareSubtitle')}</p>
 
       {/* Search boxes */}
       <div className="flex gap-4 mb-8">
-        <MediaSearch label="1. İçerik" selected={selA} onSelect={(id, type) => handleSelect('a', id, type)} />
+        <MediaSearch label={t('versus.content1')} selected={selA} onSelect={(id, type) => handleSelect('a', id, type)} />
         <div className="flex items-center justify-center shrink-0 mt-6">
           <span className="text-[--text-secondary] font-bold text-lg">VS</span>
         </div>
-        <MediaSearch label="2. İçerik" selected={selB} onSelect={(id, type) => handleSelect('b', id, type)} />
+        <MediaSearch label={t('versus.content2')} selected={selB} onSelect={(id, type) => handleSelect('b', id, type)} />
       </div>
 
       {/* Posters */}
@@ -190,7 +193,7 @@ export default function KarsilastirClient({ itemA, itemB }: { itemA: MediaItem |
                 </>
               ) : (
                 <div className="h-48 flex items-center justify-center text-[--text-secondary] text-sm">
-                  Seçilmedi
+                  {t('versus.notSelected')}
                 </div>
               )}
             </div>
@@ -204,13 +207,13 @@ export default function KarsilastirClient({ itemA, itemB }: { itemA: MediaItem |
           <table className="w-full">
             <thead>
               <tr style={{ background: 'rgba(255,255,255,0.05)' }}>
-                <th className="py-3 px-4 text-xs text-[--text-secondary] font-medium w-1/4 text-center">Özellik</th>
+                <th className="py-3 px-4 text-xs text-[--text-secondary] font-medium w-1/4 text-center">{t('versus.feature')}</th>
                 <th className="py-3 px-4 text-sm text-white font-semibold text-center border-x border-[--border]/50 w-[37.5%]">{selA.title}</th>
                 <th className="py-3 px-4 text-sm text-white font-semibold text-center w-[37.5%]">{selB.title}</th>
               </tr>
             </thead>
             <tbody>
-              <CompareRow label="Puan"
+              <CompareRow label={t('versus.rating')}
                 a={<span className={`font-bold text-base ${ratingWinner === 'a' ? 'text-green-400' : 'text-[--gold]'}`}>
                   ★ {selA.rating.toFixed(1)} <span className="text-xs font-normal text-[--text-secondary]">({selA.voteCount.toLocaleString()})</span>
                 </span>}
@@ -219,46 +222,46 @@ export default function KarsilastirClient({ itemA, itemB }: { itemA: MediaItem |
                 </span>}
                 highlight
               />
-              <CompareRow label="Yıl" a={selA.year} b={selB.year} />
-              <CompareRow label="Tür" a={selA.type === 'dizi' ? 'Dizi' : 'Film'} b={selB.type === 'dizi' ? 'Dizi' : 'Film'} />
-              <CompareRow label="Süre / Bölüm"
-                a={selA.runtime ? `${selA.runtime} dk` : selA.episodes ? `${selA.seasons} sezon · ${selA.episodes} bölüm` : null}
-                b={selB.runtime ? `${selB.runtime} dk` : selB.episodes ? `${selB.seasons} sezon · ${selB.episodes} bölüm` : null}
+              <CompareRow label={t('common.year')} a={selA.year} b={selB.year} />
+              <CompareRow label={t('film.genre')} a={selA.type === 'dizi' ? t('series.badge') : t('film.badge')} b={selB.type === 'dizi' ? t('series.badge') : t('film.badge')} />
+              <CompareRow label={t('versus.durationEpisode')}
+                a={selA.runtime ? `${selA.runtime} ${t('film.runtime')}` : selA.episodes ? `${selA.seasons} ${t('series.seasons')} · ${selA.episodes} ${t('profile.episodes')}` : null}
+                b={selB.runtime ? `${selB.runtime} ${t('film.runtime')}` : selB.episodes ? `${selB.seasons} ${t('series.seasons')} · ${selB.episodes} ${t('profile.episodes')}` : null}
                 highlight
               />
-              <CompareRow label="Türler"
+              <CompareRow label={t('versus.genres')}
                 a={selA.genres.slice(0, 3).join(', ')}
                 b={selB.genres.slice(0, 3).join(', ')}
               />
-              <CompareRow label="Durum" a={selA.status} b={selB.status} highlight />
-              <CompareRow label="Ülke"
+              <CompareRow label={t('versus.status')} a={selA.status} b={selB.status} highlight />
+              <CompareRow label={t('versus.country')}
                 a={selA.countries.slice(0, 2).join(', ')}
                 b={selB.countries.slice(0, 2).join(', ')}
               />
-              <CompareRow label="Yapım"
+              <CompareRow label={t('versus.production')}
                 a={selA.companies.slice(0, 2).join(', ')}
                 b={selB.companies.slice(0, 2).join(', ')}
                 highlight
               />
-              <CompareRow label="Dil"
+              <CompareRow label={t('versus.language')}
                 a={selA.language?.toUpperCase()}
                 b={selB.language?.toUpperCase()}
               />
               {(selA.budget || selB.budget) && (
-                <CompareRow label="Bütçe"
+                <CompareRow label={t('versus.budget')}
                   a={selA.budget ? `$${(selA.budget / 1_000_000).toFixed(1)}M` : null}
                   b={selB.budget ? `$${(selB.budget / 1_000_000).toFixed(1)}M` : null}
                   highlight
                 />
               )}
               {(selA.revenue || selB.revenue) && (
-                <CompareRow label="Gişe"
+                <CompareRow label={t('versus.boxOfficeRevenue')}
                   a={selA.revenue ? `$${(selA.revenue / 1_000_000).toFixed(1)}M` : null}
                   b={selB.revenue ? `$${(selB.revenue / 1_000_000).toFixed(1)}M` : null}
                 />
               )}
               <tr>
-                <td className="py-3 px-4 text-xs text-[--text-secondary] font-medium text-center align-top">Özet</td>
+                <td className="py-3 px-4 text-xs text-[--text-secondary] font-medium text-center align-top">{t('versus.overview')}</td>
                 <td className="py-3 px-4 text-xs text-[--text-secondary] leading-relaxed text-center border-x border-[--border]/50">{selA.overview?.slice(0, 200)}{selA.overview?.length > 200 ? '…' : ''}</td>
                 <td className="py-3 px-4 text-xs text-[--text-secondary] leading-relaxed text-center">{selB.overview?.slice(0, 200)}{selB.overview?.length > 200 ? '…' : ''}</td>
               </tr>
@@ -270,7 +273,7 @@ export default function KarsilastirClient({ itemA, itemB }: { itemA: MediaItem |
       {!selA && !selB && (
         <div className="text-center py-16 text-[--text-secondary]">
           <p className="text-5xl mb-4">⚖️</p>
-          <p>Karşılaştırmak istediğiniz iki içeriği yukarıdan arayın</p>
+          <p>{t('versus.searchPrompt')}</p>
         </div>
       )}
     </div>

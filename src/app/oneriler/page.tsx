@@ -5,6 +5,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { GENRE_MAP } from '@/lib/genres'
 import AiOneriWidget from '@/components/AiOneriWidget'
+import { getTranslations } from '@/lib/i18n'
 
 export const metadata: Metadata = { title: 'Öneriler | Sinezon' }
 
@@ -16,6 +17,7 @@ for (const [slug, info] of Object.entries(GENRE_MAP)) {
 }
 
 export default async function OnerilerPage() {
+  const { t } = await getTranslations()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/giris')
@@ -160,11 +162,11 @@ export default async function OnerilerPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Başlık */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white">Senin İçin Öneriler</h1>
+        <h1 className="text-2xl font-bold text-white">{t('recommend.title')}</h1>
         <p className="text-sm text-[--text-secondary] mt-1">
           {totalSeen > 0
-            ? `${totalSeen} izlediğin içeriğe ve zevklerine göre hazırlandı`
-            : 'Film ve dizi izledikçe öneriler daha da kişiselleşir'}
+            ? t('recommend.subtitleWithCount', { count: totalSeen })
+            : t('recommend.subtitleGeneric')}
         </p>
       </div>
 
@@ -176,9 +178,9 @@ export default async function OnerilerPage() {
       {/* İstatistikler */}
       {avgRating !== null && (
         <div className="grid grid-cols-3 gap-3 mb-10">
-          <StatCard label="İzlenen" value={String(totalSeen)} />
-          <StatCard label="Yorum" value={String(totalReviews)} />
-          <StatCard label="Ort. Puan" value={avgRating.toFixed(1)} />
+          <StatCard label={t('recommend.statWatched')} value={String(totalSeen)} />
+          <StatCard label={t('recommend.statReviews')} value={String(totalReviews)} />
+          <StatCard label={t('recommend.statAvgRating')} value={avgRating.toFixed(1)} />
         </div>
       )}
 
@@ -187,8 +189,8 @@ export default async function OnerilerPage() {
         <section className="mb-10">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-lg font-bold text-white">👥 Arkadaşların Beğendikleri</h2>
-              <p className="text-xs text-[--text-secondary] mt-0.5">Takip ettiklerinin son 2 haftada yüksek puan verdiği içerikler</p>
+              <h2 className="text-lg font-bold text-white">{t('recommend.friendsLikedTitle')}</h2>
+              <p className="text-xs text-[--text-secondary] mt-0.5">{t('recommend.friendsLikedSubtitle')}</p>
             </div>
           </div>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
@@ -213,11 +215,11 @@ export default async function OnerilerPage() {
       ) : followingIds.length === 0 ? (
         <div className="mb-10 rounded-xl border border-[--border] bg-[--bg-card] p-5 flex items-center justify-between gap-4 flex-wrap">
           <div>
-            <p className="text-sm font-medium text-white">Arkadaşlarını takip et, önerilerini gör</p>
-            <p className="text-xs text-[--text-secondary] mt-0.5">Takip ettiğin kullanıcıların beğendikleri burada görünür.</p>
+            <p className="text-sm font-medium text-white">{t('recommend.followFriendsTitle')}</p>
+            <p className="text-xs text-[--text-secondary] mt-0.5">{t('recommend.followFriendsSubtitle')}</p>
           </div>
           <Link href="/kullanicilar" className="text-sm font-medium whitespace-nowrap" style={{ color: 'var(--accent)' }}>
-            Kullanıcı Keşfet →
+            {t('recommend.discoverUsers')}
           </Link>
         </div>
       ) : null}
@@ -227,11 +229,11 @@ export default async function OnerilerPage() {
         <section className="mb-10">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-lg font-bold text-white">🤝 Senin Gibi Kullanıcılar Bunu Sevdi</h2>
-              <p className="text-xs text-[--text-secondary] mt-0.5">Zevklerin örtüşen kullanıcıların yüksek puan verdiği, henüz izlemediğin içerikler</p>
+              <h2 className="text-lg font-bold text-white">{t('recommend.similarUsersTitle')}</h2>
+              <p className="text-xs text-[--text-secondary] mt-0.5">{t('recommend.similarUsersSubtitle')}</p>
             </div>
             <Link href="/benzer-kullanicilar" className="text-xs whitespace-nowrap" style={{ color: 'var(--accent)' }}>
-              Tümünü Gör →
+              {t('recommend.seeAllArrow')}
             </Link>
           </div>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
@@ -248,7 +250,7 @@ export default async function OnerilerPage() {
                   </div>
                   <div className="absolute bottom-1 left-1 right-1">
                     <span className="text-white text-[9px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'rgba(225,29,72,0.8)' }}>
-                      {pick.fanCount} kişi
+                      {t('recommend.peopleCount', { count: pick.fanCount })}
                     </span>
                   </div>
                 </div>
@@ -270,25 +272,26 @@ export default async function OnerilerPage() {
         return (
           <GenreSection
             key={g.movieId}
-            title={`${genreEmoji(g.slug)} ${g.name} Seçkileri`}
-            subtitle={`Beğendiğin ${g.name.toLowerCase()} türünden öneriler`}
+            title={t('recommend.genreSelectionsTitle', { emoji: genreEmoji(g.slug), name: g.name })}
+            subtitle={t('recommend.genreSelectionsSubtitle', { name: g.name.toLowerCase() })}
             items={mixedItems}
             slug={g.slug}
+            seeAllLabel={t('home.seeAllArrow')}
           />
         )
       })}
 
       {/* Platform bazlı bölümler */}
       {topPlatforms.map((pid, i) => {
-        const platformName = PLATFORM_NAMES[pid] ?? `Platform ${pid}`
+        const platformName = PLATFORM_NAMES[pid] ?? t('recommend.platformFallback', { id: pid })
         const items = filterSeen(platformResults[i].results).map(m => ({ ...m, mediaType: 'film' as const }))
         if (items.length === 0) return null
         return (
           <section key={pid} className="mb-10">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-lg font-bold text-white">📺 {platformName}&apos;de Popüler</h2>
-                <p className="text-xs text-[--text-secondary] mt-0.5">Üye olduğun platformdan öneriler</p>
+                <h2 className="text-lg font-bold text-white">{t('recommend.platformPopularTitle', { platform: platformName })}</h2>
+                <p className="text-xs text-[--text-secondary] mt-0.5">{t('recommend.platformPopularSubtitle')}</p>
               </div>
             </div>
             <ItemGrid items={items} />
@@ -297,34 +300,34 @@ export default async function OnerilerPage() {
       })}
 
       {/* Genel öneriler */}
-      <Section title="🔥 Popüler Filmler" subtitle="Herkes için trend" items={filterSeen(popularMovies.results)} type="film" />
-      <Section title="⭐ En Yüksek Puanlı Filmler" subtitle="Genel izleyici tarafından" items={filterSeen(topRatedMovies.results)} type="film" />
-      <Section title="📺 Popüler Diziler" subtitle="Herkes için trend" items={filterSeen(popularSeries.results)} type="dizi" />
-      <Section title="🏆 En İyi Diziler" subtitle="Genel izleyici tarafından" items={filterSeen(topRatedSeries.results)} type="dizi" />
+      <Section title={t('recommend.popularFilmsTitle')} subtitle={t('recommend.popularFilmsSubtitle')} items={filterSeen(popularMovies.results)} type="film" />
+      <Section title={t('recommend.topRatedFilmsTitle')} subtitle={t('recommend.topRatedFilmsSubtitle')} items={filterSeen(topRatedMovies.results)} type="film" />
+      <Section title={t('recommend.popularSeriesTitle')} subtitle={t('recommend.popularFilmsSubtitle')} items={filterSeen(popularSeries.results)} type="dizi" />
+      <Section title={t('recommend.topSeriesTitle')} subtitle={t('recommend.topRatedFilmsSubtitle')} items={filterSeen(topRatedSeries.results)} type="dizi" />
 
       {/* Benzer Kullanıcılar CTA */}
       <div className="mt-12 rounded-xl p-5 flex items-center justify-between gap-4 flex-wrap" style={{ border: '1px solid rgba(225,29,72,0.3)', background: 'rgba(225,29,72,0.05)' }}>
         <div>
-          <p className="text-sm font-semibold text-white">Senin Gibi Kullanıcılar Ne İzliyor?</p>
-          <p className="text-xs text-[--text-secondary] mt-0.5">Puanların ve izlediklerinle örtüşen kullanıcıları keşfet, onların beğendiklerini izle.</p>
+          <p className="text-sm font-semibold text-white">{t('recommend.similarUsersCtaTitle')}</p>
+          <p className="text-xs text-[--text-secondary] mt-0.5">{t('recommend.similarUsersCtaSubtitle')}</p>
         </div>
         <Link
           href="/benzer-kullanicilar"
           className="text-sm text-white font-semibold px-5 py-2 rounded-full transition-colors whitespace-nowrap"
           style={{ background: 'var(--accent)' }}
         >
-          Keşfet →
+          {t('recommend.exploreArrow')}
         </Link>
       </div>
 
       {/* Tercihlerini güncelle */}
       <div className="mt-4 rounded-xl border border-[--border] bg-[--bg-card] p-5 flex items-center justify-between gap-4 flex-wrap">
         <div>
-          <p className="text-sm font-medium text-white">Öneriler beğenine uymuyor mu?</p>
-          <p className="text-xs text-[--text-secondary] mt-0.5">Türlerini ve platformlarını istediğin zaman güncelleyebilirsin.</p>
+          <p className="text-sm font-medium text-white">{t('recommend.preferencesNotMatchTitle')}</p>
+          <p className="text-xs text-[--text-secondary] mt-0.5">{t('recommend.preferencesNotMatchSubtitle')}</p>
         </div>
         <Link href="/profil/duzenle" className="text-sm font-medium whitespace-nowrap" style={{ color: 'var(--accent)' }}>
-          Tercihlerimi Düzenle →
+          {t('recommend.editPreferences')}
         </Link>
       </div>
     </div>
@@ -393,7 +396,7 @@ function ItemGrid({ items }: { items: CardItem[] }) {
   )
 }
 
-function GenreSection({ title, subtitle, items, slug }: { title: string; subtitle: string; items: CardItem[]; slug: string }) {
+function GenreSection({ title, subtitle, items, slug, seeAllLabel }: { title: string; subtitle: string; items: CardItem[]; slug: string; seeAllLabel: string }) {
   if (items.length === 0) return null
   return (
     <section className="mb-10">
@@ -403,7 +406,7 @@ function GenreSection({ title, subtitle, items, slug }: { title: string; subtitl
           <p className="text-xs text-[--text-secondary] mt-0.5">{subtitle}</p>
         </div>
         <Link href={`/tur/${slug}`} className="text-xs whitespace-nowrap" style={{ color: 'var(--accent)' }}>
-          Tümü →
+          {seeAllLabel}
         </Link>
       </div>
       <ItemGrid items={items} />

@@ -1,21 +1,23 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 export const metadata: Metadata = { title: 'Günlük Görevler — Sinezon' }
 
 const DAILY_TASKS = [
-  { key: 'rate_3', label: '3 film/dizi puanla', desc: 'Bugün en az 3 içeriğe puan ver', xp: 15, icon: '⭐' },
-  { key: 'write_review', label: 'Yorum yaz', desc: 'Herhangi bir film veya diziye yorum ekle', xp: 25, icon: '✍️' },
-  { key: 'add_diary', label: 'Günlüğe kayıt ekle', desc: 'Film günlüğüne izlediğini ekle', xp: 10, icon: '📖' },
-  { key: 'follow_someone', label: 'Birini takip et', desc: 'Yeni bir kullanıcı keşfet ve takip et', xp: 5, icon: '👥' },
-  { key: 'update_watchlist', label: 'İzleme listeni güncelle', desc: 'Listeye film/dizi ekle ya da işaretle', xp: 8, icon: '📋' },
+  { key: 'rate_3', label: 'community.taskRate3Label', desc: 'community.taskRate3Desc', xp: 15, icon: '⭐' },
+  { key: 'write_review', label: 'community.taskWriteReviewLabel', desc: 'community.taskWriteReviewDesc', xp: 25, icon: '✍️' },
+  { key: 'add_diary', label: 'community.taskAddDiaryLabel', desc: 'community.taskAddDiaryDesc', xp: 10, icon: '📖' },
+  { key: 'follow_someone', label: 'community.taskFollowSomeoneLabel', desc: 'community.taskFollowSomeoneDesc', xp: 5, icon: '👥' },
+  { key: 'update_watchlist', label: 'community.taskUpdateWatchlistLabel', desc: 'community.taskUpdateWatchlistDesc', xp: 8, icon: '📋' },
 ]
 
 export default async function GorevlerPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/giris')
+  const { t } = await getTranslations()
 
   const today = new Date().toISOString().split('T')[0]
   const todayStart = `${today}T00:00:00.000Z`
@@ -100,7 +102,7 @@ export default async function GorevlerPage() {
   return (
     <div className="max-w-xl mx-auto px-4 py-10">
       <div className="flex items-center gap-3 mb-8">
-        <h1 className="text-2xl font-bold text-white">🎯 Günlük Görevler</h1>
+        <h1 className="text-2xl font-bold text-white">🎯 {t('community.dailyTasksTitle')}</h1>
         <span className="text-xs px-2.5 py-1 rounded-full" style={{ background: 'rgba(225,29,72,0.1)', color: '#E11D48', border: '1px solid rgba(225,29,72,0.2)' }}>
           {new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })}
         </span>
@@ -109,7 +111,7 @@ export default async function GorevlerPage() {
       {/* XP bar */}
       <div className="rounded-xl p-4 mb-6" style={{ background: 'linear-gradient(160deg,rgba(20,28,47,0.9),rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-semibold text-white">Bugünkü XP</span>
+          <span className="text-sm font-semibold text-white">{t('community.todaysXp')}</span>
           <span className="text-sm font-bold" style={{ color: '#D4A843' }}>{earnedXP} / {totalXP} XP</span>
         </div>
         <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
@@ -136,13 +138,13 @@ export default async function GorevlerPage() {
               <span className="text-2xl shrink-0">{task.icon}</span>
               <div className="flex-1 min-w-0">
                 <p className={`font-semibold text-sm ${done ? 'text-green-400 line-through opacity-60' : 'text-white'}`}>
-                  {task.label}
+                  {t(task.label)}
                 </p>
-                <p className="text-xs text-[--text-secondary]">{task.desc}</p>
+                <p className="text-xs text-[--text-secondary]">{t(task.desc)}</p>
               </div>
               <div className="text-right shrink-0">
                 <span className="text-xs font-bold" style={{ color: done ? '#34d399' : '#D4A843' }}>+{task.xp} XP</span>
-                {done && <p className="text-[10px] text-green-400 mt-0.5">✓ Tamamlandı</p>}
+                {done && <p className="text-[10px] text-green-400 mt-0.5">{t('community.taskDone')}</p>}
               </div>
             </div>
           )
@@ -153,8 +155,8 @@ export default async function GorevlerPage() {
       {completedToday.size === DAILY_TASKS.length && (
         <div className="text-center mt-8 p-6 rounded-2xl" style={{ background: 'linear-gradient(135deg,rgba(52,211,153,0.08),rgba(16,185,129,0.04))', border: '1px solid rgba(52,211,153,0.2)' }}>
           <p className="text-3xl mb-2">🏆</p>
-          <p className="font-bold text-green-400 mb-1">Tüm görevleri tamamladın!</p>
-          <p className="text-xs text-[--text-secondary]">Yarın yeni görevler gelecek</p>
+          <p className="font-bold text-green-400 mb-1">{t('community.allTasksDoneTitle')}</p>
+          <p className="text-xs text-[--text-secondary]">{t('community.allTasksDoneDesc')}</p>
         </div>
       )}
     </div>

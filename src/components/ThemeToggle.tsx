@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { IconSun, IconMoon } from '@/components/icons'
+import { useLocale } from '@/context/LocaleContext'
 
 export default function ThemeToggle() {
+  const { t } = useLocale()
   const [theme, setTheme] = useState<'dark' | 'light'>('dark')
   const [mounted, setMounted] = useState(false)
 
@@ -27,7 +29,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      aria-label={theme === 'dark' ? 'Açık temaya geç' : 'Koyu temaya geç'}
+      aria-label={theme === 'dark' ? t('common.switchToLight') : t('common.switchToDark')}
       className="p-2 rounded-lg text-[--text-secondary] hover:text-white hover:bg-white/5 transition-colors"
     >
       {theme === 'dark'

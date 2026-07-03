@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { IconListPlus, IconCheck, IconPlus, IconLoader, IconChevronDown } from '@/components/icons'
 import Link from 'next/link'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Props {
   mediaId: number
@@ -18,6 +19,7 @@ interface UserList {
 }
 
 export default function AddToListButton({ mediaId, mediaType, userId }: Props) {
+  const { t } = useLocale()
   const [open, setOpen] = useState(false)
   const [lists, setLists] = useState<UserList[]>([])
   const [loading, setLoading] = useState(false)
@@ -68,7 +70,7 @@ export default function AddToListButton({ mediaId, mediaType, userId }: Props) {
         style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)' }}
       >
         <IconListPlus className="h-4 w-4" />
-        Listeye Ekle
+        {t('watchlist.addToList')}
         <IconChevronDown className={`h-3 w-3 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
@@ -80,10 +82,10 @@ export default function AddToListButton({ mediaId, mediaType, userId }: Props) {
             </div>
           ) : lists.length === 0 ? (
             <div className="p-4 text-center">
-              <p className="text-sm text-[--text-secondary] mb-3">Henüz listeniz yok.</p>
+              <p className="text-sm text-[--text-secondary] mb-3">{t('list.noListsYet')}</p>
               <Link href="/liste/yeni" onClick={() => setOpen(false)}
                 className="inline-flex items-center gap-1.5 text-sm font-medium text-[--accent] hover:underline">
-                <IconPlus className="h-3.5 w-3.5" /> Yeni Liste Oluştur
+                <IconPlus className="h-3.5 w-3.5" /> {t('list.createNewList')}
               </Link>
             </div>
           ) : (
@@ -111,7 +113,7 @@ export default function AddToListButton({ mediaId, mediaType, userId }: Props) {
               <div className="p-2" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                 <Link href="/liste/yeni" onClick={() => setOpen(false)}
                   className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/5 text-sm transition-colors" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                  <IconPlus className="h-4 w-4" /> Yeni Liste Oluştur
+                  <IconPlus className="h-4 w-4" /> {t('list.createNewList')}
                 </Link>
               </div>
             </>

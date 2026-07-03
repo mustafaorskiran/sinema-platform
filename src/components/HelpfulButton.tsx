@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Props {
   reviewId: string
@@ -12,6 +13,7 @@ interface Props {
 
 export default function HelpfulButton({ reviewId, initialCount, initialMarked, isLoggedIn }: Props) {
   const router = useRouter()
+  const { t } = useLocale()
   const [marked, setMarked]   = useState(initialMarked)
   const [count,  setCount]    = useState(initialCount)
   const [loading, setLoading] = useState(false)
@@ -37,8 +39,8 @@ export default function HelpfulButton({ reviewId, initialCount, initialMarked, i
           ? 'bg-green-500/15 border-green-500/30 text-green-400'
           : 'border-white/10 text-white/40 hover:text-green-400 hover:border-green-500/30 bg-white/5'
       }`}
-      title={marked ? 'Faydalı işaretini kaldır' : 'Bu yorum faydalıydı'}>
-      👍 Faydalı{count > 0 && <span className="font-semibold">{count}</span>}
+      title={marked ? t('review.unmarkHelpful') : t('review.markHelpful')}>
+      {t('review.helpfulBtn')}{count > 0 && <span className="font-semibold">{count}</span>}
     </button>
   )
 }

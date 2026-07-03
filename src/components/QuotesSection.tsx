@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Quote {
   id: string
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export default function QuotesSection({ mediaId, mediaType, isLoggedIn, title }: Props) {
+  const { t } = useLocale()
   const [quotes, setQuotes] = useState<Quote[]>([])
   const [loading, setLoading] = useState(true)
   const [adding, setAdding] = useState(false)
@@ -56,7 +58,7 @@ export default function QuotesSection({ mediaId, mediaType, isLoggedIn, title }:
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
-          <h2 className="text-xl font-bold text-white tracking-tight">Alıntılar</h2>
+          <h2 className="text-xl font-bold text-white tracking-tight">{t('quote.sectionTitle')}</h2>
           {quotes.length > 0 && (
             <span className="text-sm" style={{ color: 'rgba(255,255,255,0.3)' }}>({quotes.length})</span>
           )}
@@ -65,7 +67,7 @@ export default function QuotesSection({ mediaId, mediaType, isLoggedIn, title }:
           <button onClick={() => setAdding(true)}
             className="text-xs px-3 py-1.5 rounded-full transition-all hover:scale-105"
             style={{ background: 'rgba(212,168,67,0.1)', border: '1px solid rgba(212,168,67,0.2)', color: '#D4A843' }}>
-            + Alıntı Ekle
+            {t('quote.addQuote')}
           </button>
         )}
       </div>
@@ -83,7 +85,7 @@ export default function QuotesSection({ mediaId, mediaType, isLoggedIn, title }:
                 <footer className="mt-2 text-xs font-semibold" style={{ color: '#D4A843' }}>— {q.character_name}</footer>
               )}
               {q.profiles && (
-                <p className="mt-1.5 text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>ekleyen: @{q.profiles.username}</p>
+                <p className="mt-1.5 text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>{t('quote.addedBy', { username: q.profiles.username })}</p>
               )}
             </blockquote>
           ))}
@@ -93,12 +95,12 @@ export default function QuotesSection({ mediaId, mediaType, isLoggedIn, title }:
       {quotes.length === 0 && !adding && (
         <div className="rounded-xl p-6 text-center"
           style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.7), rgba(14,20,32,0.8))', border: '1px solid rgba(255,255,255,0.05)' }}>
-          <p className="text-sm mb-3" style={{ color: 'rgba(255,255,255,0.4)' }}>Henüz alıntı eklenmemiş.</p>
+          <p className="text-sm mb-3" style={{ color: 'rgba(255,255,255,0.4)' }}>{t('quote.empty')}</p>
           {isLoggedIn && (
             <button onClick={() => setAdding(true)}
               className="text-sm px-5 py-2 rounded-lg transition-all hover:scale-105"
               style={{ background: 'linear-gradient(135deg, #D4A843, #b8922a)', color: '#000', fontWeight: 600 }}>
-              İlk Alıntıyı Ekle
+              {t('quote.addFirstQuote')}
             </button>
           )}
         </div>
@@ -110,15 +112,15 @@ export default function QuotesSection({ mediaId, mediaType, isLoggedIn, title }:
           {sent ? (
             <div className="text-center py-4">
               <p className="text-2xl mb-2">✓</p>
-              <p className="text-green-400 text-sm">Alıntın incelemeye alındı, onaylandıktan sonra görünecek.</p>
+              <p className="text-green-400 text-sm">{t('quote.pendingReview')}</p>
             </div>
           ) : (
             <>
               <div>
                 <label className="text-xs font-semibold uppercase tracking-widest mb-2 block"
-                  style={{ color: 'rgba(255,255,255,0.4)' }}>Alıntı <span className="text-red-400 normal-case tracking-normal">*</span></label>
+                  style={{ color: 'rgba(255,255,255,0.4)' }}>{t('quote.quoteLabel')} <span className="text-red-400 normal-case tracking-normal">*</span></label>
                 <textarea value={content} onChange={e => setContent(e.target.value)} rows={3} maxLength={500}
-                  placeholder={`"${title}" filminden unutulmaz bir replik...`}
+                  placeholder={t('quote.quotePlaceholder', { title })}
                   className="w-full rounded-lg px-3 py-2.5 text-sm text-white outline-none resize-none transition-all"
                   style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
                   onFocus={e => (e.target.style.borderColor = 'rgba(212,168,67,0.4)')}
@@ -127,9 +129,9 @@ export default function QuotesSection({ mediaId, mediaType, isLoggedIn, title }:
               </div>
               <div>
                 <label className="text-xs font-semibold uppercase tracking-widest mb-2 block"
-                  style={{ color: 'rgba(255,255,255,0.4)' }}>Karakter <span className="font-normal normal-case tracking-normal">(opsiyonel)</span></label>
+                  style={{ color: 'rgba(255,255,255,0.4)' }}>{t('quote.characterLabel')} <span className="font-normal normal-case tracking-normal">{t('quote.optional')}</span></label>
                 <input value={character} onChange={e => setCharacter(e.target.value)} maxLength={100}
-                  placeholder="Tony Stark"
+                  placeholder={t('quote.characterPlaceholder')}
                   className="w-full rounded-lg px-3 py-2.5 text-sm text-white outline-none transition-all"
                   style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
                   onFocus={e => (e.target.style.borderColor = 'rgba(212,168,67,0.4)')}
@@ -139,11 +141,11 @@ export default function QuotesSection({ mediaId, mediaType, isLoggedIn, title }:
               <div className="flex gap-2 justify-end pt-1">
                 <button type="button" onClick={() => setAdding(false)}
                   className="px-4 py-2 text-sm rounded-lg transition-colors"
-                  style={{ color: 'rgba(255,255,255,0.4)' }}>İptal</button>
+                  style={{ color: 'rgba(255,255,255,0.4)' }}>{t('quote.cancel')}</button>
                 <button type="submit" disabled={sending || !content.trim()}
                   className="px-5 py-2 text-sm rounded-lg font-semibold transition-all hover:scale-105 disabled:opacity-40 disabled:cursor-not-allowed"
                   style={{ background: 'linear-gradient(135deg, #D4A843, #b8922a)', color: '#000' }}>
-                  {sending ? '⟳ Gönderiliyor...' : '✨ Gönder'}
+                  {sending ? t('quote.submitting') : t('quote.submit')}
                 </button>
               </div>
             </>

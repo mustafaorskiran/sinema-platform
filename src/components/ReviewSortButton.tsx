@@ -1,20 +1,22 @@
 'use client'
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { useLocale } from '@/context/LocaleContext'
 
 type SortOption = 'yeni' | 'populer' | 'puan_yuksek' | 'puan_dusuk'
-
-const OPTIONS: { key: SortOption; label: string }[] = [
-  { key: 'yeni',        label: 'En Yeni' },
-  { key: 'populer',     label: 'En Beğenilen' },
-  { key: 'puan_yuksek', label: 'Puan ↑' },
-  { key: 'puan_dusuk',  label: 'Puan ↓' },
-]
 
 export default function ReviewSortButton({ current }: { current: SortOption }) {
   const router = useRouter()
   const pathname = usePathname()
   const sp = useSearchParams()
+  const { t } = useLocale()
+
+  const OPTIONS: { key: SortOption; label: string }[] = [
+    { key: 'yeni',        label: t('review.sortNewest') },
+    { key: 'populer',     label: t('review.sortMostLikedShort') },
+    { key: 'puan_yuksek', label: t('review.sortRatingHigh') },
+    { key: 'puan_dusuk',  label: t('review.sortRatingLow') },
+  ]
 
   function handleChange(key: SortOption) {
     const params = new URLSearchParams(sp.toString())

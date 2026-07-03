@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Props {
   entries: { date: string }[] // watched_at veya created_at
@@ -44,6 +45,7 @@ const MONTH_LABELS = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 
 const DAY_LABELS = ['Paz', '', 'Sal', '', 'Per', '', 'Cmt']
 
 export default function ActivityHeatmap({ entries }: Props) {
+  const { t } = useLocale()
   const [tooltip, setTooltip] = useState<{ text: string; x: number; y: number } | null>(null)
   const weeks = useMemo(() => getLastNWeeks(52), [])
 
@@ -87,11 +89,11 @@ export default function ActivityHeatmap({ entries }: Props) {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <div className="w-1 h-4 rounded-full" style={{ background: 'linear-gradient(180deg, #E11D48, #D4A843)' }} />
-          <p className="text-sm font-semibold text-white">Aktivite Haritası</p>
+          <p className="text-sm font-semibold text-white">{t('activityHeatmap.title')}</p>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-xs font-bold" style={{ color: 'rgba(225,29,72,0.7)' }}>{totalThisYear}</span>
-          <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>bu yıl</span>
+          <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>{t('activityHeatmap.thisYear')}</span>
         </div>
       </div>
 
@@ -130,7 +132,7 @@ export default function ActivityHeatmap({ entries }: Props) {
                     className={`w-3 h-3 rounded-sm cursor-default transition-transform hover:scale-125 ${LEVEL_COLORS[lv]}`}
                     onMouseEnter={e => {
                       const rect = (e.target as HTMLElement).getBoundingClientRect()
-                      setTooltip({ text: `${count} aktivite · ${day.label}`, x: rect.left, y: rect.top - 30 })
+                      setTooltip({ text: t('activityHeatmap.tooltip', { count, date: day.label }), x: rect.left, y: rect.top - 30 })
                     }}
                     onMouseLeave={() => setTooltip(null)}
                   />
@@ -142,11 +144,11 @@ export default function ActivityHeatmap({ entries }: Props) {
 
         {/* Açıklama */}
         <div className="flex items-center gap-1.5 mt-3 justify-end">
-          <span className="text-[9px] text-[--text-secondary]">Az</span>
+          <span className="text-[9px] text-[--text-secondary]">{t('activityHeatmap.less')}</span>
           {LEVEL_COLORS.map((c, i) => (
             <div key={i} className={`w-3 h-3 rounded-sm ${c}`} />
           ))}
-          <span className="text-[9px] text-[--text-secondary]">Çok</span>
+          <span className="text-[9px] text-[--text-secondary]">{t('activityHeatmap.more')}</span>
         </div>
       </div>
 

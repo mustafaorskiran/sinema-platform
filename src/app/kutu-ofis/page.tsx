@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import type { Metadata } from 'next'
 import { getPosterUrl } from '@/lib/tmdb'
+import { getTranslations } from '@/lib/i18n'
 
 export const revalidate = 3600
 
@@ -60,6 +61,7 @@ function RatingBadge({ score }: { score: number }) {
 }
 
 export default async function KutuOfisPage() {
+  const { t } = await getTranslations()
   const movies = await fetchNowPlaying()
 
   // Sort by popularity descending (closest proxy for box office rank)
@@ -73,17 +75,17 @@ export default async function KutuOfisPage() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
           <span className="text-2xl">🎬</span>
-          <h1 className="text-2xl font-black text-white">Türkiye Gişe</h1>
+          <h1 className="text-2xl font-black text-white">{t('cinemaListings.title')}</h1>
         </div>
         <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-          Türkiye'de şu an vizyondaki filmler · {now}
+          {t('cinemaListings.subtitle', { date: now })}
         </p>
       </div>
 
       {movies.length === 0 ? (
         <div className="text-center py-20 rounded-2xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)' }}>
           <p className="text-4xl mb-4">🎭</p>
-          <p style={{ color: 'var(--text-secondary)' }}>Vizyon bilgisi yüklenemedi.</p>
+          <p style={{ color: 'var(--text-secondary)' }}>{t('cinemaListings.loadError')}</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -144,7 +146,7 @@ export default async function KutuOfisPage() {
                 <div className="shrink-0 flex flex-col items-end gap-1">
                   {movie.vote_average > 0 && <RatingBadge score={movie.vote_average} />}
                   <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
-                    {movie.vote_count.toLocaleString('tr-TR')} oy
+                    {t('boxOffice.voteCount', { count: movie.vote_count.toLocaleString('tr-TR') })}
                   </span>
                 </div>
               </Link>
@@ -155,7 +157,7 @@ export default async function KutuOfisPage() {
 
       {/* Note */}
       <p className="text-center text-xs mt-8" style={{ color: 'rgba(255,255,255,0.3)' }}>
-        Sıralama TMDb popülerlik skoruna göre · Veriler saatte bir güncellenir
+        {t('boxOffice.footnote')}
       </p>
     </div>
   )

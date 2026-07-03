@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import KarnePaylas from './KarnePaylas'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props {
   params: Promise<{ yil: string }>
@@ -39,6 +40,7 @@ export default async function YilOzetiPage({ params }: Props) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/giris')
+  const { t } = await getTranslations()
 
   const startDate = `${year}-01-01`
   const endDate = `${year}-12-31`
@@ -134,8 +136,8 @@ export default async function YilOzetiPage({ params }: Props) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
         <p className="text-6xl mb-4">📽️</p>
-        <h1 className="text-2xl font-bold text-white mb-2">{year} Yıl Özeti</h1>
-        <p className="text-white/50 mb-8">{year} yılında günlüğüne hiç kayıt eklememişsin.</p>
+        <h1 className="text-2xl font-bold text-white mb-2">{t('profile.yearSummaryTitle', { year })}</h1>
+        <p className="text-white/50 mb-8">{t('profile.yearSummaryEmpty', { year })}</p>
         <div className="flex justify-center gap-3 flex-wrap">
           {years.map(y => (
             <Link key={y} href={`/ozet/${y}`}
@@ -157,11 +159,11 @@ export default async function YilOzetiPage({ params }: Props) {
       <div className="text-center mb-10">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4 text-xs font-semibold uppercase tracking-widest"
           style={{ background: 'rgba(225,29,72,0.1)', border: '1px solid rgba(225,29,72,0.2)', color: '#E11D48' }}>
-          Yıl Özeti
+          {t('profile.yearSummaryBadge')}
         </div>
         <h1 className="text-4xl sm:text-5xl font-black text-white mb-2">{year}</h1>
         <p className="text-white/50 text-sm mb-4">
-          {profile?.full_name || profile?.username || 'Senin'} izleme yılı
+          {t('profile.yearSummaryOwnerLine', { name: profile?.full_name || profile?.username || t('profile.you') })}
         </p>
         <KarnePaylas year={year} totalFilm={totalFilm} totalDizi={totalDizi} totalReviews={totalReviews} username={profile?.username ?? ''} />
       </div>
@@ -182,10 +184,10 @@ export default async function YilOzetiPage({ params }: Props) {
       {/* Ana İstatistikler */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         {[
-          { label: 'Film', value: totalFilm, emoji: '🎬', color: '#E11D48' },
-          { label: 'Dizi', value: totalDizi, emoji: '📺', color: '#a78bfa' },
-          { label: 'Tekrar', value: totalRewatch, emoji: '🔁', color: '#34d399' },
-          { label: 'Yorum', value: totalReviews, emoji: '✍️', color: '#D4A843' },
+          { label: t('profile.films'), value: totalFilm, emoji: '🎬', color: '#E11D48' },
+          { label: t('profile.series'), value: totalDizi, emoji: '📺', color: '#a78bfa' },
+          { label: t('profile.rewatch'), value: totalRewatch, emoji: '🔁', color: '#34d399' },
+          { label: t('social.reviewsLabel'), value: totalReviews, emoji: '✍️', color: '#D4A843' },
         ].map(stat => (
           <div key={stat.label} className="rounded-2xl p-4 text-center"
             style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: `1px solid ${stat.color}20` }}>
@@ -202,9 +204,9 @@ export default async function YilOzetiPage({ params }: Props) {
           {gradientCard(
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.4)' }}>Ortalama Puanın</p>
+                <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.4)' }}>{t('profile.yourAvgRating')}</p>
                 <p className="text-4xl font-black" style={{ color: '#D4A843' }}>★ {avgRating}</p>
-                <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.35)' }}>{ratedEntries.length} puan üzerinden</p>
+                <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.35)' }}>{t('profile.basedOnRatings', { count: ratedEntries.length })}</p>
               </div>
               <div className="text-6xl opacity-20">⭐</div>
             </div>,
@@ -218,7 +220,7 @@ export default async function YilOzetiPage({ params }: Props) {
         {gradientCard(
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.4)' }}>
-              Aylık Aktivite — En çok: {MONTH_LABELS[bestMonthIdx]} ({byMonth[bestMonthIdx]} içerik)
+              {t('profile.monthlyActivity', { month: MONTH_LABELS[bestMonthIdx], count: byMonth[bestMonthIdx] })}
             </p>
             <div className="flex items-end gap-1 h-20">
               {byMonth.map((count, i) => (
@@ -245,7 +247,7 @@ export default async function YilOzetiPage({ params }: Props) {
         <div className="mb-6">
           {gradientCard(
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.4)' }}>Puan Dağılımı</p>
+              <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.4)' }}>{t('profile.ratingDistribution')}</p>
               <div className="flex items-end gap-1.5 h-16">
                 {ratingDist.map((count, i) => (
                   <div key={i} className="flex-1 flex flex-col items-center gap-1">
@@ -270,7 +272,7 @@ export default async function YilOzetiPage({ params }: Props) {
         <div className="mb-6">
           {gradientCard(
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.4)' }}>En Yüksek Puanladıkların</p>
+              <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.4)' }}>{t('profile.topRatedByYou')}</p>
               <div className="space-y-2">
                 {topRated.map((e, i) => (
                   <Link key={`${e.media_id}-${i}`}
@@ -302,7 +304,7 @@ export default async function YilOzetiPage({ params }: Props) {
         <div className="mb-6">
           {gradientCard(
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.4)' }}>En Çok Kullandığın Etiketler</p>
+              <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.4)' }}>{t('profile.topTagsUsed')}</p>
               <div className="flex flex-wrap gap-2">
                 {topTags.map(([tag, count]) => (
                   <span key={tag} className="px-3 py-1 rounded-full text-sm font-medium text-white flex items-center gap-1.5"
@@ -322,7 +324,7 @@ export default async function YilOzetiPage({ params }: Props) {
         <Link href="/gunluk"
           className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-white text-sm transition-all hover:scale-105"
           style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', boxShadow: '0 4px 20px rgba(225,29,72,0.3)' }}>
-          📖 Günlüğüme Dön
+          📖 {t('profile.backToDiary')}
         </Link>
       </div>
     </div>

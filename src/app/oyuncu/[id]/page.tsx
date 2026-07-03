@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import { IconCalendarDays, IconMapPin, IconStarFilled } from '@/components/icons'
 import { getPersonDetail, getPersonCredits, getProfileUrl, getPersonExternalIds, getPersonImages } from '@/lib/tmdb'
+import { getTranslations } from '@/lib/i18n'
 import FilmografiClient from './FilmografiClient'
 import KunyeClient from './KunyeClient'
 import type { Metadata } from 'next'
@@ -13,10 +14,11 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
+  const { t } = await getTranslations()
   try {
     const person = await getPersonDetail(Number(id))
     const description = person.biography?.slice(0, 155)
-      ?? `${person.name} filmleri, biyografisi ve haberleri Sinezon'da.`
+      ?? t('person.metaDescriptionFallback', { name: person.name })
     const ogImage = person.profile_path
       ? `https://image.tmdb.org/t/p/w342${person.profile_path}`
       : undefined
@@ -33,12 +35,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     }
   } catch {
-    return { title: 'Kişi bulunamadı' }
+    return { title: t('person.notFound') }
   }
 }
 
 export default async function OyuncuPage({ params }: Props) {
   const { id } = await params
+  const { t } = await getTranslations()
   const personId = Number(id)
 
   const [person, credits, externalIds, personImages] = await Promise.all([
@@ -69,8 +72,8 @@ export default async function OyuncuPage({ params }: Props) {
     const key2 = `${c.media_type}-${c.id}-${c.job}`
     if (!seenIds.has(key2)) {
       seenIds.add(key2)
-      if (c.job === 'Director') directorCredits.push({ ...c, role: 'Yönetmen' })
-      else if (c.job === 'Screenplay' || c.job === 'Writer' || c.job === 'Story') writerCredits.push({ ...c, role: c.job ?? 'Senaryo' })
+      if (c.job === 'Director') directorCredits.push({ ...c, role: t('film.director') })
+      else if (c.job === 'Screenplay' || c.job === 'Writer' || c.job === 'Story') writerCredits.push({ ...c, role: c.job ?? t('person.screenplay') })
     }
   }
 
@@ -80,8 +83,8 @@ export default async function OyuncuPage({ params }: Props) {
   const age = person.birthday ? calculateAge(person.birthday, person.deathday) : null
 
   const knownForLabel: Record<string, string> = {
-    Acting: 'Oyunculuk', Directing: 'Yönetmenlik', Writing: 'Senaristlik',
-    Production: 'Yapımcılık', Crew: 'Ekip', Sound: 'Ses', 'Visual Effects': 'Görsel Efekt',
+    Acting: t('person.deptActing'), Directing: t('person.deptDirecting'), Writing: t('person.deptWritingLong'),
+    Production: t('person.deptProductionLong'), Crew: t('person.deptCrew'), Sound: t('person.deptSound'), 'Visual Effects': t('person.roleVisualEffects'),
   }
 
   const popularFilms = castCredits
@@ -171,7 +174,7 @@ export default async function OyuncuPage({ params }: Props) {
               <div className="mt-5 w-48 sm:w-56">
                 <p className="text-[10px] font-bold uppercase tracking-[0.15em] mb-2.5"
                    style={{ color: 'rgba(212,168,67,0.5)' }}>
-                  Bilinen Yapımlar
+                  {t('person.knownFor')}
                 </p>
                 <div className="grid grid-cols-3 gap-1.5">
                   {popularFilms.map(c => (
@@ -209,7 +212,7 @@ export default async function OyuncuPage({ params }: Props) {
               {(castCredits.length + directorCredits.length) > 0 && (
                 <span className="text-[11px] px-2.5 py-1 rounded-full"
                   style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}>
-                  {castCredits.length + directorCredits.length} yapım
+                  {castCredits.length + directorCredits.length} {t('person.productionsSuffix')}
                 </span>
               )}
             </div>
@@ -235,7 +238,7 @@ export default async function OyuncuPage({ params }: Props) {
                     {age !== null && !person.deathday && (
                       <span className="ml-1.5 text-[12px] px-1.5 py-0.5 rounded"
                         style={{ background: 'rgba(255,255,255,0.06)', color: 'var(--text-secondary)' }}>
-                        {age} yaşında
+                        {t('person.yearsOldBadge', { age })}
                       </span>
                     )}
                     {person.deathday && ` — ${formatDate(person.deathday)}`}
@@ -253,7 +256,7 @@ export default async function OyuncuPage({ params }: Props) {
             {/* Diğer adlar */}
             {person.also_known_as && person.also_known_as.length > 0 && (
               <div className="flex flex-wrap items-center gap-1.5 mb-5">
-                <span className="text-[11px] shrink-0" style={{ color: 'rgba(255,255,255,0.3)' }}>Diğer adları:</span>
+                <span className="text-[11px] shrink-0" style={{ color: 'rgba(255,255,255,0.3)' }}>{t('person.otherNames')}</span>
                 {person.also_known_as.slice(0, 5).map(n => (
                   <span key={n}
                     className="text-[11px] px-2 py-0.5 rounded-full"
@@ -271,7 +274,7 @@ export default async function OyuncuPage({ params }: Props) {
                    target="_blank" rel="noopener noreferrer"
                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[12px] font-semibold transition-all hover:scale-105"
                    style={{ background: 'rgba(212,168,67,0.12)', border: '1px solid rgba(212,168,67,0.3)', color: 'var(--gold)' }}>
-                  <span className="font-black">IMDb</span> Profil
+                  <span className="font-black">IMDb</span> {t('person.profile')}
                 </a>
               )}
               {externalIds.imdb_id && (
@@ -279,7 +282,7 @@ export default async function OyuncuPage({ params }: Props) {
                    target="_blank" rel="noopener noreferrer"
                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[12px] font-semibold transition-all hover:scale-105"
                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-secondary)' }}>
-                  🏆 Ödüller
+                  🏆 {t('film.awardsNav')}
                 </a>
               )}
               {externalIds.instagram_id && (
@@ -296,10 +299,10 @@ export default async function OyuncuPage({ params }: Props) {
             {(firstYear || careerYears || totalMovies > 0 || totalTV > 0) && (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
                 {[
-                  { value: firstYear, label: 'İlk Yapım' },
-                  { value: careerYears ? `${careerYears}` : null, label: 'Yıllık Kariyer' },
-                  { value: totalMovies > 0 ? String(totalMovies) : null, label: 'Film' },
-                  { value: totalTV > 0 ? String(totalTV) : null, label: 'Dizi' },
+                  { value: firstYear, label: t('person.statFirstWork') },
+                  { value: careerYears ? `${careerYears}` : null, label: t('person.statCareerYears') },
+                  { value: totalMovies > 0 ? String(totalMovies) : null, label: t('film.badge') },
+                  { value: totalTV > 0 ? String(totalTV) : null, label: t('series.badge') },
                 ].filter(s => s.value).map(stat => (
                   <div key={stat.label}
                     className="relative overflow-hidden rounded-2xl p-4 text-center"
@@ -332,7 +335,7 @@ export default async function OyuncuPage({ params }: Props) {
               <div className="relative">
                 <h3 className="text-[10px] font-bold uppercase tracking-[0.18em] mb-2"
                     style={{ color: 'rgba(212,168,67,0.45)' }}>
-                  Biyografi
+                  {t('person.biography')}
                 </h3>
                 <p className="text-[13px] leading-relaxed line-clamp-4"
                    style={{ color: 'var(--text-secondary)' }}>
@@ -348,10 +351,10 @@ export default async function OyuncuPage({ params }: Props) {
           <div className="mb-10">
             <div className="flex items-center gap-3 mb-4">
               <h2 className="text-[10px] font-bold uppercase tracking-[0.18em]"
-                  style={{ color: 'rgba(212,168,67,0.5)' }}>Fotoğraflar</h2>
+                  style={{ color: 'rgba(212,168,67,0.5)' }}>{t('person.photos')}</h2>
               <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, rgba(212,168,67,0.2) 0%, transparent 100%)' }} />
               <span className="text-[11px]" style={{ color: 'var(--text-secondary)' }}>
-                {personImages.profiles.length} fotoğraf
+                {personImages.profiles.length} {t('person.photoSuffix')}
               </span>
             </div>
             <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-thin">

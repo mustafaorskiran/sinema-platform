@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import FilmografiClient from './FilmografiClient'
+import { useLocale } from '@/context/LocaleContext'
 import type { TMDbPersonCredit } from '@/lib/types'
 
 const GOLD = '#D4A843'
@@ -35,12 +36,13 @@ export default function KunyeClient({
   knownForDepartment, firstYear, totalMovies, totalTV,
   imdbId, knownForLabel,
 }: Props) {
+  const { t } = useLocale()
   const [tab, setTab] = useState<Tab>('filmografi')
 
   const tabs: { key: Tab; label: string }[] = [
-    { key: 'filmografi', label: 'Filmografi' },
-    { key: 'kunye', label: 'Künye' },
-    { key: 'oduller', label: 'Ödüller' },
+    { key: 'filmografi', label: t('person.tabFilmography') },
+    { key: 'kunye', label: t('person.tabProfile') },
+    { key: 'oduller', label: t('person.tabAwards') },
   ]
 
   function formatDate(dateStr: string) {
@@ -97,10 +99,10 @@ export default function KunyeClient({
           {(firstYear || careerYears || totalMovies > 0 || totalTV > 0) && (
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
-                { value: firstYear, label: 'İlk Yapım', icon: '🎬' },
-                { value: careerYears ? `${careerYears}` : null, label: 'Yıllık Kariyer', icon: '⏳' },
-                { value: totalMovies > 0 ? String(totalMovies) : null, label: 'Film', icon: '🎥' },
-                { value: totalTV > 0 ? String(totalTV) : null, label: 'Dizi', icon: '📺' },
+                { value: firstYear, label: t('person.firstWork'), icon: '🎬' },
+                { value: careerYears ? `${careerYears}` : null, label: t('person.careerYears'), icon: '⏳' },
+                { value: totalMovies > 0 ? String(totalMovies) : null, label: t('film.badge'), icon: '🎥' },
+                { value: totalTV > 0 ? String(totalTV) : null, label: t('series.badge'), icon: '📺' },
               ].filter(s => s.value).map(stat => (
                 <div key={stat.label}
                   className="relative overflow-hidden rounded-2xl p-5 text-center"
@@ -135,34 +137,34 @@ export default function KunyeClient({
             <div className="px-5 py-4"
               style={{ borderBottom: '1px solid rgba(212,168,67,0.1)', background: 'rgba(212,168,67,0.03)' }}>
               <h3 className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: GOLD_DIM }}>
-                Kişisel Bilgiler
+                {t('person.personalInfo')}
               </h3>
             </div>
             <div className="divide-y" style={{ borderColor: 'rgba(212,168,67,0.08)' }}>
               {knownForDepartment && (
-                <InfoRow label="Meslek" value={knownForLabel[knownForDepartment] ?? knownForDepartment} />
+                <InfoRow label={t('person.occupation')} value={knownForLabel[knownForDepartment] ?? knownForDepartment} />
               )}
               {birthday && (
                 <InfoRow
-                  label="Doğum Tarihi"
-                  value={`${formatDate(birthday)}${age !== null && !deathday ? ` (${age} yaşında)` : ''}`}
+                  label={t('person.birthDate')}
+                  value={`${formatDate(birthday)}${age !== null && !deathday ? ` (${t('person.ageSuffix', { age })})` : ''}`}
                 />
               )}
               {deathday && (
                 <InfoRow
-                  label="Ölüm Tarihi"
-                  value={`${formatDate(deathday)}${age !== null ? ` (${age} yaşında)` : ''}`}
+                  label={t('person.deathDate')}
+                  value={`${formatDate(deathday)}${age !== null ? ` (${t('person.ageSuffix', { age })})` : ''}`}
                 />
               )}
               {placeOfBirth && (
-                <InfoRow label="Doğum Yeri" value={placeOfBirth} />
+                <InfoRow label={t('person.birthPlace')} value={placeOfBirth} />
               )}
               {firstYear && (
-                <InfoRow label="Kariyer Başlangıcı" value={firstYear} />
+                <InfoRow label={t('person.careerStart')} value={firstYear} />
               )}
               {alsoKnownAs.length > 0 && (
                 <div className="flex gap-5 px-5 py-4" style={{ borderColor: 'rgba(212,168,67,0.08)' }}>
-                  <span className="text-[11px] w-36 shrink-0 pt-0.5" style={{ color: GOLD_DIM }}>Diğer Adlar</span>
+                  <span className="text-[11px] w-36 shrink-0 pt-0.5" style={{ color: GOLD_DIM }}>{t('person.otherNames')}</span>
                   <div className="flex flex-wrap gap-1.5">
                     {alsoKnownAs.map(n => (
                       <span key={n}
@@ -180,7 +182,7 @@ export default function KunyeClient({
               )}
               {imdbId && (
                 <div className="flex gap-5 px-5 py-4">
-                  <span className="text-[11px] w-36 shrink-0 pt-1" style={{ color: GOLD_DIM }}>Dış Bağlantılar</span>
+                  <span className="text-[11px] w-36 shrink-0 pt-1" style={{ color: GOLD_DIM }}>{t('person.externalLinks')}</span>
                   <div className="flex flex-wrap gap-2">
                     <a href={`https://www.imdb.com/name/${imdbId}`} target="_blank" rel="noopener noreferrer"
                       className="text-[12px] px-3 py-1.5 rounded-xl font-bold transition-all hover:scale-105"
@@ -190,7 +192,7 @@ export default function KunyeClient({
                     <a href={`https://www.imdb.com/name/${imdbId}/awards`} target="_blank" rel="noopener noreferrer"
                       className="text-[12px] px-3 py-1.5 rounded-xl transition-all hover:scale-105"
                       style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-secondary)' }}>
-                      🏆 Ödüller
+                      🏆 {t('person.awards')}
                     </a>
                   </div>
                 </div>
@@ -205,7 +207,7 @@ export default function KunyeClient({
               <div className="px-5 py-4"
                 style={{ borderBottom: '1px solid rgba(212,168,67,0.1)', background: 'rgba(212,168,67,0.03)' }}>
                 <h3 className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: GOLD_DIM }}>
-                  Biyografi
+                  {t('person.biography')}
                 </h3>
               </div>
               <div className="px-5 py-5">
@@ -239,9 +241,9 @@ export default function KunyeClient({
                     🏆
                   </div>
                   <div>
-                    <p className="text-white font-semibold text-sm">IMDb Ödüller & Adaylıklar</p>
+                    <p className="text-white font-semibold text-sm">{t('person.imdbAwardsTitle')}</p>
                     <p className="text-[11px] mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-                      Oscar, Emmy, BAFTA, Golden Globe ve daha fazlası
+                      {t('person.imdbAwardsSubtitle')}
                     </p>
                   </div>
                 </div>
@@ -253,7 +255,7 @@ export default function KunyeClient({
                 <div className="px-5 py-4"
                   style={{ borderBottom: '1px solid rgba(212,168,67,0.1)', background: 'rgba(212,168,67,0.03)' }}>
                   <h3 className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: GOLD_DIM }}>
-                    Başlıca Ödül Törenleri
+                    {t('person.majorAwardShows')}
                   </h3>
                 </div>
                 <div className="divide-y" style={{ borderColor: 'rgba(212,168,67,0.08)' }}>
@@ -288,7 +290,7 @@ export default function KunyeClient({
           ) : (
             <div className="text-center py-20" style={{ color: 'var(--text-secondary)' }}>
               <p className="text-4xl mb-4">🏆</p>
-              <p className="text-sm">Bu kişi için ödül bilgisi bulunamadı.</p>
+              <p className="text-sm">{t('person.noAwardsFound')}</p>
             </div>
           )}
         </div>

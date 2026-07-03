@@ -1,16 +1,18 @@
 import Link from 'next/link'
 import { COUNTRIES } from '@/lib/countries'
+import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Ülke Sineması' }
 
-export default function UlkelerPage() {
+export default async function UlkelerPage() {
+  const { t } = await getTranslations()
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white">Ülke Sineması</h1>
+        <h1 className="text-3xl font-bold text-white">{t('country.countryCinema')}</h1>
         <p className="text-[--text-secondary] text-sm mt-1">
-          Dünya genelinde ülkelere göre film ve dizi keşfet
+          {t('country.exploreByCountry')}
         </p>
       </div>
 

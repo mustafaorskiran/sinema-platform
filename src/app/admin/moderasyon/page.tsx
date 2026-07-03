@@ -1,5 +1,6 @@
 import { requireAdmin } from '@/lib/admin'
 import { createClient } from '@/lib/supabase/server'
+import { getTranslations } from '@/lib/i18n'
 import BulkModerationPanel from './BulkModerationPanel'
 import type { Metadata } from 'next'
 
@@ -7,6 +8,7 @@ export const metadata: Metadata = { title: 'Admin — Moderasyon' }
 
 export default async function AdminModerasyonPage() {
   await requireAdmin()
+  const { t } = await getTranslations()
   const supabase = await createClient()
 
   const [{ data: flagged }, { data: hidden }] = await Promise.all([
@@ -27,7 +29,7 @@ export default async function AdminModerasyonPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-white mb-6">Moderasyon</h1>
+      <h1 className="text-2xl font-bold text-white mb-6">{t('admin.moderation.title')}</h1>
       <BulkModerationPanel flagged={(flagged ?? []) as any} hidden={(hidden ?? []) as any} />
     </div>
   )

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { IconTrash, IconGlobe, IconLock, IconLoader, IconFilm, IconTv, IconAlertTriangle, IconCamera, IconClose } from '@/components/icons'
+import { useLocale } from '@/context/LocaleContext'
 
 interface ListItem {
   id: string; list_id: string; media_id: number; media_type: string
@@ -14,6 +15,7 @@ interface ListData {
 }
 
 export default function ListeDuzenleClient({ list, items: initial }: { list: ListData; items: ListItem[] }) {
+  const { t } = useLocale()
   const router = useRouter()
   const [title, setTitle]             = useState(list.title)
   const [description, setDescription] = useState(list.description ?? '')
@@ -27,7 +29,7 @@ export default function ListeDuzenleClient({ list, items: initial }: { list: Lis
   const [error, setError]             = useState('')
 
   async function saveInfo() {
-    if (!title.trim()) { setError('Başlık gerekli.'); return }
+    if (!title.trim()) { setError(t('list.titleRequired')); return }
     setSaving(true)
     setError('')
     const res = await fetch(`/api/lists/${list.id}`, {
@@ -37,7 +39,7 @@ export default function ListeDuzenleClient({ list, items: initial }: { list: Lis
     })
     setSaving(false)
     if (res.ok) router.push(`/liste/${list.id}`)
-    else setError('Kaydedilemedi.')
+    else setError(t('list.saveFailed'))
   }
 
   async function removeItem(itemId: string) {
@@ -60,38 +62,38 @@ export default function ListeDuzenleClient({ list, items: initial }: { list: Lis
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
       <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
-        <h1 className="text-2xl font-bold text-white">Listeyi Düzenle</h1>
+        <h1 className="text-2xl font-bold text-white">{t('list.editTitle')}</h1>
         <Link href={`/liste/${list.id}`} className="text-sm text-[--text-secondary] hover:text-white transition-colors">
-          ← Listeye Dön
+          ← {t('list.backToList')}
         </Link>
       </div>
 
       {/* Liste bilgileri */}
       <div className="rounded-xl rounded-2xl p-6 mb-6 space-y-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
         <div>
-          <label className="block text-sm font-medium text-[--text-secondary] mb-2">Başlık *</label>
+          <label className="block text-sm font-medium text-[--text-secondary] mb-2">{t('list.titleLabel')} *</label>
           <input value={title} onChange={e => setTitle(e.target.value)} maxLength={100}
             className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/25 outline-none transition-colors"
             style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }} />
           <p className="mt-1 text-xs text-[--text-secondary] text-right">{title.length}/100</p>
         </div>
         <div>
-          <label className="block text-sm font-medium text-[--text-secondary] mb-2">Açıklama</label>
+          <label className="block text-sm font-medium text-[--text-secondary] mb-2">{t('list.descriptionLabel')}</label>
           <textarea value={description} onChange={e => setDescription(e.target.value)} maxLength={500} rows={3}
             className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/25 outline-none transition-colors resize-none"
             style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }} />
           <p className="mt-1 text-xs text-[--text-secondary] text-right">{description.length}/500</p>
         </div>
         <div>
-          <label className="block text-sm font-medium text-[--text-secondary] mb-2">Gizlilik</label>
+          <label className="block text-sm font-medium text-[--text-secondary] mb-2">{t('list.visibilityLabel')}</label>
           <div className="flex gap-2">
             <button type="button" onClick={() => setIsPublic(true)}
               className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg border text-sm font-medium transition-colors ${isPublic ? 'border-[--accent] bg-[--accent]/10 text-white' : 'border-[--border] text-[--text-secondary] hover:border-white/30'}`}>
-              <IconGlobe className="h-4 w-4" /> Herkese Açık
+              <IconGlobe className="h-4 w-4" /> {t('list.public')}
             </button>
             <button type="button" onClick={() => setIsPublic(false)}
               className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg border text-sm font-medium transition-colors ${!isPublic ? 'border-[--accent] bg-[--accent]/10 text-white' : 'border-[--border] text-[--text-secondary] hover:border-white/30'}`}>
-              <IconLock className="h-4 w-4" /> Gizli
+              <IconLock className="h-4 w-4" /> {t('list.private')}
             </button>
           </div>
         </div>
@@ -100,14 +102,14 @@ export default function ListeDuzenleClient({ list, items: initial }: { list: Lis
           className="w-full py-3 rounded-lg text-white font-semibold text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2 hover:scale-[1.02]"
           style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', boxShadow: '0 2px 8px rgba(225,29,72,0.3)' }}>
           {saving && <IconLoader className="h-4 w-4 animate-spin" />}
-          {saving ? 'Kaydediliyor...' : 'Kaydet'}
+          {saving ? t('list.saving') : t('common.save')}
         </button>
       </div>
 
       {/* Kapak Görseli */}
       <div className="rounded-xl rounded-2xl p-6 mb-6" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
         <h2 className="font-semibold text-white mb-4 flex items-center gap-2">
-          <IconCamera className="h-4 w-4 text-[--accent]" /> Kapak Görseli
+          <IconCamera className="h-4 w-4 text-[--accent]" /> {t('list.coverImage')}
         </h2>
 
         {/* Preview */}
@@ -125,7 +127,7 @@ export default function ListeDuzenleClient({ list, items: initial }: { list: Lis
 
         {/* URL girişi */}
         <div className="mb-4">
-          <label className="block text-xs text-[--text-secondary] mb-2">Görsel URL'si</label>
+          <label className="block text-xs text-[--text-secondary] mb-2">{t('list.imageUrlLabel')}</label>
           <input
             value={coverUrl}
             onChange={e => setCoverUrl(e.target.value)}
@@ -142,7 +144,7 @@ export default function ListeDuzenleClient({ list, items: initial }: { list: Lis
               onClick={() => setShowCoverPicker(p => !p)}
               className="text-xs text-[--accent] hover:underline mb-3 block"
             >
-              {showCoverPicker ? '▲ Kapat' : '▼ Listeden poster seç'}
+              {showCoverPicker ? `▲ ${t('common.close')}` : `▼ ${t('list.pickFromList')}`}
             </button>
             {showCoverPicker && (
               <div className="grid grid-cols-5 gap-2">
@@ -166,9 +168,9 @@ export default function ListeDuzenleClient({ list, items: initial }: { list: Lis
 
       {/* İçerikler */}
       <div className="rounded-xl rounded-2xl p-6 mb-6" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-        <h2 className="font-semibold text-white mb-4">İçerikler ({items.length})</h2>
+        <h2 className="font-semibold text-white mb-4">{t('list.contents')} ({items.length})</h2>
         {items.length === 0 ? (
-          <p className="text-sm text-[--text-secondary] text-center py-8">Liste henüz boş.</p>
+          <p className="text-sm text-[--text-secondary] text-center py-8">{t('list.empty')}</p>
         ) : (
           <div className="space-y-2">
             {items.map((item) => (
@@ -184,7 +186,7 @@ export default function ListeDuzenleClient({ list, items: initial }: { list: Lis
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-white font-medium truncate">{item.title}</p>
-                  <p className="text-xs text-[--text-secondary]">{item.media_type === 'film' ? 'Film' : 'Dizi'}</p>
+                  <p className="text-xs text-[--text-secondary]">{item.media_type === 'film' ? t('film.badge') : t('series.badge')}</p>
                 </div>
                 <button onClick={() => removeItem(item.id)} disabled={deleting === item.id}
                   className="p-1.5 rounded-lg text-[--text-secondary] hover:text-red-400 hover:bg-red-400/10 transition-colors disabled:opacity-40">
@@ -199,23 +201,23 @@ export default function ListeDuzenleClient({ list, items: initial }: { list: Lis
       {/* Listeyi sil */}
       <div className="bg-[--bg-card] border border-red-900/30 rounded-2xl p-6">
         <h2 className="font-semibold text-red-400 mb-2 flex items-center gap-2">
-          <IconAlertTriangle className="h-4 w-4" /> Tehlikeli Bölge
+          <IconAlertTriangle className="h-4 w-4" /> {t('list.dangerZone')}
         </h2>
-        <p className="text-sm text-[--text-secondary] mb-4">Listeyi silerseniz geri alamazsınız.</p>
+        <p className="text-sm text-[--text-secondary] mb-4">{t('list.deleteConfirm')}</p>
         {!showDeleteConfirm ? (
           <button onClick={() => setShowDeleteConfirm(true)}
             className="px-4 py-2 rounded-lg border border-red-800 text-red-400 hover:bg-red-900/20 text-sm font-medium transition-colors">
-            Listeyi Sil
+            {t('list.deleteBtn')}
           </button>
         ) : (
           <div className="flex gap-2">
             <button onClick={deleteList}
               className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-semibold transition-colors">
-              Evet, Sil
+              {t('list.confirmDeleteYes')}
             </button>
             <button onClick={() => setShowDeleteConfirm(false)}
               className="px-4 py-2 rounded-lg border border-[--border] text-[--text-secondary] hover:text-white text-sm transition-colors">
-              İptal
+              {t('common.cancel')}
             </button>
           </div>
         )}

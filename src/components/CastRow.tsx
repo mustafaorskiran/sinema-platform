@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { IconChevronLeft, IconChevronRight } from '@/components/icons'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Person {
   id: number
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export default function CastRow({ cast, director }: Props) {
+  const { t } = useLocale()
   const scrollRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const isDragging = useRef(false)
@@ -30,7 +32,7 @@ export default function CastRow({ cast, director }: Props) {
   if (!director && cast.length === 0) return null
 
   const people: (Person & { role: string; isDirector?: boolean })[] = []
-  if (director) people.push({ ...director, role: 'Yönetmen', isDirector: true })
+  if (director) people.push({ ...director, role: t('castRow.director'), isDirector: true })
   for (const c of cast.slice(0, 20)) people.push({ ...c, role: c.character ?? '' })
 
   const updateThumb = useCallback(() => {
@@ -107,14 +109,14 @@ export default function CastRow({ cast, director }: Props) {
         className="text-xl font-bold text-white mb-5"
         style={{ borderLeft: '3px solid var(--accent)', paddingLeft: '12px' }}
       >
-        Oyuncular & Ekip
+        {t('castRow.title')}
       </h2>
 
       <div className="relative group/cast">
         {/* Sol ok */}
         <button
           onClick={() => scroll('left')}
-          aria-label="Sola kaydır"
+          aria-label={t('castRow.scrollLeft')}
           className="absolute left-0 top-[38%] z-10 -translate-x-4 w-9 h-9 rounded-full flex items-center justify-center opacity-0 group-hover/cast:opacity-100 transition-all duration-200 hover:scale-110"
           style={{
             background: 'rgba(11,15,25,0.95)',
@@ -182,7 +184,7 @@ export default function CastRow({ cast, director }: Props) {
                 className="mt-0.5 text-[11px] line-clamp-1"
                 style={{ color: 'var(--text-secondary)', opacity: 0.7 }}
               >
-                {p.isDirector ? '🎬 Yönetmen' : p.role}
+                {p.isDirector ? `🎬 ${t('castRow.director')}` : p.role}
               </p>
             </a>
           ))}
@@ -191,7 +193,7 @@ export default function CastRow({ cast, director }: Props) {
         {/* Sağ ok */}
         <button
           onClick={() => scroll('right')}
-          aria-label="Sağa kaydır"
+          aria-label={t('castRow.scrollRight')}
           className="absolute right-0 top-[38%] z-10 translate-x-4 w-9 h-9 rounded-full flex items-center justify-center opacity-0 group-hover/cast:opacity-100 transition-all duration-200 hover:scale-110"
           style={{
             background: 'rgba(11,15,25,0.95)',

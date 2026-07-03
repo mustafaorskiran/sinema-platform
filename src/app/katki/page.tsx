@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import KatkilClient from './KatkilClient'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 export const metadata: Metadata = {
   title: 'Katkıda Bulun | Sinezon',
@@ -8,6 +9,7 @@ export const metadata: Metadata = {
 }
 
 export default async function KatkilPage() {
+  const { t } = await getTranslations()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -42,15 +44,15 @@ export default async function KatkilPage() {
           style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <div className="flex items-center justify-between px-5 py-4"
             style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-            <h2 className="font-semibold text-white text-sm">En Çok Katkı Yapanlar</h2>
+            <h2 className="font-semibold text-white text-sm">{t('contribute.topContributorsTitle')}</h2>
             <span className="text-[11px] font-medium px-2 py-0.5 rounded-full"
               style={{ background: 'rgba(212,168,67,0.1)', color: '#D4A843' }}>
-              Toplam {totalContributions ?? 0} içerik
+              {t('contribute.totalContentBadge', { count: totalContributions ?? 0 })}
             </span>
           </div>
           {leaders.length === 0 ? (
             <div className="px-5 py-8 text-center text-sm" style={{ color: 'rgba(255,255,255,0.25)' }}>
-              Henüz katkı yapılmamış. İlk sen ol!
+              {t('contribute.noContributionsYet')}
             </div>
           ) : (
             <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.04)' }}>
@@ -71,7 +73,7 @@ export default async function KatkilPage() {
                     <p className="text-sm font-semibold text-white truncate">{l.username}</p>
                   </div>
                   <span className="text-sm font-bold shrink-0" style={{ color: '#D4A843' }}>
-                    {l.count} katkı
+                    {t('contribute.contributionCount', { count: l.count })}
                   </span>
                 </div>
               ))}

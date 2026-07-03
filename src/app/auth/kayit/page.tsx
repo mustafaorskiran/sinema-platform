@@ -5,8 +5,9 @@ import { useState, useMemo, useEffect } from 'react'
 import { IconEye, IconEyeOff, IconFilm, IconMail } from '@/components/icons'
 import { createClient } from '@/lib/supabase/client'
 import GoogleAuthButton from '@/components/GoogleAuthButton'
+import { useLocale } from '@/context/LocaleContext'
 
-function getPasswordStrength(pw: string): { score: number; label: string; color: string } {
+function getPasswordStrength(pw: string, t: (key: string) => string): { score: number; label: string; color: string } {
   if (pw.length === 0) return { score: 0, label: '', color: '' }
   let score = 0
   if (pw.length >= 6)  score++
@@ -14,14 +15,15 @@ function getPasswordStrength(pw: string): { score: number; label: string; color:
   if (/[A-Z]/.test(pw)) score++
   if (/[0-9]/.test(pw)) score++
   if (/[^A-Za-z0-9]/.test(pw)) score++
-  if (score <= 1) return { score, label: 'Çok Zayıf', color: '#f87171' }
-  if (score === 2) return { score, label: 'Zayıf', color: '#fb923c' }
-  if (score === 3) return { score, label: 'Orta', color: '#facc15' }
-  if (score === 4) return { score, label: 'Güçlü', color: '#4ade80' }
-  return { score, label: 'Çok Güçlü', color: '#22c55e' }
+  if (score <= 1) return { score, label: t('auth.strengthVeryWeak'), color: '#f87171' }
+  if (score === 2) return { score, label: t('auth.strengthWeak'), color: '#fb923c' }
+  if (score === 3) return { score, label: t('auth.strengthMedium'), color: '#facc15' }
+  if (score === 4) return { score, label: t('auth.strengthStrong'), color: '#4ade80' }
+  return { score, label: t('auth.strengthVeryStrong'), color: '#22c55e' }
 }
 
 export default function KayitPage() {
+  const { t } = useLocale()
   const [username, setUsername]         = useState('')
   const [email, setEmail]               = useState('')
   const [password, setPassword]         = useState('')
@@ -37,26 +39,26 @@ export default function KayitPage() {
     if (ref) setRefUser(ref)
   }, [])
 
-  const strength = useMemo(() => getPasswordStrength(password), [password])
+  const strength = useMemo(() => getPasswordStrength(password, t), [password, t])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
     const trimmedUser = username.trim()
-    if (trimmedUser.length < 3) { setError('Kullanıcı adı en az 3 karakter olmalı.'); return }
-    if (!/^[a-zA-Z0-9_]+$/.test(trimmedUser)) { setError('Kullanıcı adı yalnızca harf, rakam ve alt çizgi içerebilir.'); return }
-    if (password.length < 6) { setError('Şifre en az 6 karakter olmalı.'); return }
+    if (trimmedUser.length < 3) { setError(t('auth.usernameMinLength')); return }
+    if (!/^[a-zA-Z0-9_]+$/.test(trimmedUser)) { setError(t('auth.usernameInvalidChars')); return }
+    if (password.length < 6) { setError(t('auth.passwordMinLength')); return }
     setLoading(true)
     const supabase = createClient()
     const { data: existing } = await supabase.from('profiles').select('id').eq('username', trimmedUser).maybeSingle()
-    if (existing) { setError('Bu kullanıcı adı zaten kullanılıyor.'); setLoading(false); return }
+    if (existing) { setError(t('auth.usernameTaken')); setLoading(false); return }
     const nextUrl = refUser ? `/auth/callback?next=/onboarding&ref=${refUser}` : `/auth/callback?next=/onboarding`
     const { error: authError } = await supabase.auth.signUp({
       email, password,
       options: { data: { username: trimmedUser }, emailRedirectTo: `${window.location.origin}${nextUrl}` },
     })
     if (authError) {
-      setError(authError.message === 'User already registered' ? 'Bu e-posta adresi zaten kayıtlı.' : 'Kayıt sırasında bir hata oluştu. Lütfen tekrar dene.')
+      setError(authError.message === 'User already registered' ? t('auth.emailAlreadyRegistered') : t('auth.registerError'))
       setLoading(false); return
     }
     setSuccess(true); setLoading(false)
@@ -84,19 +86,18 @@ export default function KayitPage() {
             style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.25)' }}>
             <IconMail className="h-7 w-7" style={{ color: '#4ade80' }} />
           </div>
-          <p className="text-[9.5px] font-bold uppercase tracking-[0.18em] mb-2" style={{ color: 'rgba(212,168,67,0.5)' }}>Neredeyse Tamam</p>
-          <h2 className="text-xl font-bold mb-3" style={{ color: 'var(--text-primary)' }}>E-postanı Doğrula</h2>
+          <p className="text-[9.5px] font-bold uppercase tracking-[0.18em] mb-2" style={{ color: 'rgba(212,168,67,0.5)' }}>{t('auth.almostDone')}</p>
+          <h2 className="text-xl font-bold mb-3" style={{ color: 'var(--text-primary)' }}>{t('auth.verifyEmail')}</h2>
           <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-            <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{email}</span> adresine doğrulama bağlantısı gönderdik.
-            Bağlantıya tıkladıktan sonra hesabın aktif olacak.
+            <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{email}</span> {t('auth.verificationSentInfo')}
           </p>
           <p className="mt-2 text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>
-            Mail gelmediyse spam klasörünü kontrol et.
+            {t('auth.checkSpam')}
           </p>
           <Link href="/auth/giris"
             className="inline-block mt-6 px-6 py-2.5 rounded-xl text-sm font-medium transition-all hover:opacity-80"
             style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-secondary)' }}>
-            Giriş sayfasına dön
+            {t('auth.backToLogin')}
           </Link>
         </div>
       </div>
@@ -117,8 +118,8 @@ export default function KayitPage() {
               Sine<span style={{ color: 'var(--accent)' }}>zon</span>
             </span>
           </Link>
-          <h1 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>Hesap Oluştur</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>Topluluğa katıl, yorum yap</p>
+          <h1 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>{t('auth.createAccount')}</h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>{t('auth.registerSubtitle')}</p>
         </div>
 
         <div className="rounded-2xl p-7" style={{
@@ -129,10 +130,10 @@ export default function KayitPage() {
           {refUser && (
             <div className="mb-4 p-3 rounded-xl text-xs text-center"
               style={{ background: 'rgba(225,29,72,0.08)', border: '1px solid rgba(225,29,72,0.15)', color: 'rgba(255,255,255,0.6)' }}>
-              <span className="font-bold text-white">@{refUser}</span> seni Sinezon&apos;a davet etti! 🎬
+              <span className="font-bold text-white">@{refUser}</span> {t('auth.invitedByText')}
             </div>
           )}
-          <GoogleAuthButton next="/" label="Google ile kayıt ol" />
+          <GoogleAuthButton next="/" label={t('auth.googleRegister')} />
 
           <div className="relative my-5">
             <div className="absolute inset-0 flex items-center">
@@ -140,7 +141,7 @@ export default function KayitPage() {
             </div>
             <div className="relative flex justify-center">
               <span className="px-3 text-xs" style={{ background: 'rgba(14,20,32,0.98)', color: 'var(--text-secondary)' }}>
-                veya e-posta ile kayıt ol
+                {t('auth.orEmailRegister')}
               </span>
             </div>
           </div>
@@ -148,24 +149,24 @@ export default function KayitPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-[10px] font-bold mb-1.5 uppercase tracking-[0.12em]" style={{ color: 'rgba(212,168,67,0.5)' }}>
-                Kullanıcı Adı
+                {t('auth.username')}
               </label>
               <input type="text" value={username}
                 onChange={e => setUsername(e.target.value.toLowerCase().replace(/\s/g, ''))}
-                required maxLength={30} placeholder="sinemadostu"
+                required maxLength={30} placeholder={t('auth.usernamePlaceholder')}
                 className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-all" style={inputBase}
                 onFocus={e => (e.target.style.borderColor = 'rgba(212,168,67,0.4)')}
                 onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.09)')}
               />
-              <p className="mt-1 text-[11px]" style={{ color: 'rgba(255,255,255,0.2)' }}>Harf, rakam ve _ içerebilir</p>
+              <p className="mt-1 text-[11px]" style={{ color: 'rgba(255,255,255,0.2)' }}>{t('auth.usernameHint')}</p>
             </div>
 
             <div>
               <label className="block text-[10px] font-bold mb-1.5 uppercase tracking-[0.12em]" style={{ color: 'rgba(212,168,67,0.5)' }}>
-                E-posta
+                {t('auth.email')}
               </label>
               <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-                required placeholder="ornek@email.com"
+                required placeholder={t('auth.emailPlaceholder')}
                 className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-all" style={inputBase}
                 onFocus={e => (e.target.style.borderColor = 'rgba(212,168,67,0.4)')}
                 onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.09)')}
@@ -174,11 +175,11 @@ export default function KayitPage() {
 
             <div>
               <label className="block text-[10px] font-bold mb-1.5 uppercase tracking-[0.12em]" style={{ color: 'rgba(212,168,67,0.5)' }}>
-                Şifre
+                {t('auth.password')}
               </label>
               <div className="relative">
                 <input type={showPassword ? 'text' : 'password'} value={password}
-                  onChange={e => setPassword(e.target.value)} required placeholder="En az 6 karakter"
+                  onChange={e => setPassword(e.target.value)} required placeholder={t('auth.passwordMinPlaceholder')}
                   className="w-full rounded-xl px-4 py-2.5 pr-10 text-sm outline-none transition-all" style={inputBase}
                   onFocus={e => (e.target.style.borderColor = 'rgba(212,168,67,0.4)')}
                   onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.09)')}
@@ -212,14 +213,14 @@ export default function KayitPage() {
             <button type="submit" disabled={loading}
               className="w-full py-2.5 rounded-xl font-bold text-sm transition-all disabled:opacity-50 hover:opacity-90"
               style={{ background: 'linear-gradient(135deg, var(--accent) 0%, #be1a3e 100%)', color: '#fff', boxShadow: '0 4px 16px rgba(225,29,72,0.3)' }}>
-              {loading ? 'Kaydediliyor...' : 'Kayıt Ol'}
+              {loading ? t('auth.registering') : t('auth.registerTitle')}
             </button>
           </form>
 
           <p className="mt-5 text-center text-[12px]" style={{ color: 'var(--text-secondary)' }}>
-            Zaten hesabın var mı?{' '}
+            {t('auth.hasAccountQuestion')}{' '}
             <Link href="/auth/giris" className="font-bold hover:underline" style={{ color: 'var(--accent)' }}>
-              Giriş Yap
+              {t('auth.loginTitle')}
             </Link>
           </p>
         </div>

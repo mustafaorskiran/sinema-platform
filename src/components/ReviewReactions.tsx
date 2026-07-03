@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { useLocale } from '@/context/LocaleContext'
 
 const REACTIONS = ['👏', '😂', '😢', '😡', '🔥', '💯'] as const
 type Reaction = typeof REACTIONS[number]
@@ -18,6 +19,7 @@ export default function ReviewReactions({ reviewId, initialReactions, isLoggedIn
     REACTIONS.map(r => initialReactions.find(x => x.reaction === r) ?? { reaction: r, count: 0, userReacted: false })
   )
   const [, startTransition] = useTransition()
+  const { t } = useLocale()
 
   async function toggle(reaction: Reaction) {
     if (!isLoggedIn) return
@@ -65,7 +67,7 @@ export default function ReviewReactions({ reviewId, initialReactions, isLoggedIn
               ? { background: 'rgba(225,29,72,0.15)', border: '1px solid rgba(225,29,72,0.4)' }
               : { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }
             }
-            title={isLoggedIn ? undefined : 'Tepki eklemek için giriş yap'}
+            title={isLoggedIn ? undefined : t('review.reactionLoginPrompt')}
           >
             <span>{reaction}</span>
             {r.count > 0 && (
@@ -78,7 +80,7 @@ export default function ReviewReactions({ reviewId, initialReactions, isLoggedIn
       })}
       {total > 0 && (
         <span className="text-[10px] ml-1" style={{ color: 'rgba(255,255,255,0.25)' }}>
-          {total} tepki
+          {t('review.reactionCount', { n: total })}
         </span>
       )}
     </div>

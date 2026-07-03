@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { getCompanyDetail, getCompanyMovies, getCompanyTV, getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb'
 import MovieCard from '@/components/MovieCard'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -19,6 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function SirketPage({ params }: Props) {
+  const { t } = await getTranslations()
   const { id } = await params
   const companyId = Number(id)
 
@@ -57,7 +59,7 @@ export default async function SirketPage({ params }: Props) {
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
             <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[--accent]/20 text-[--accent] border border-[--accent]/30">
-              ✓ Resmi Profil
+              ✓ {t('company.officialProfile')}
             </span>
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">{company.name}</h1>
@@ -69,10 +71,10 @@ export default async function SirketPage({ params }: Props) {
               <span>{flag} {company.origin_country}</span>
             )}
             {moviesData.total_results > 0 && (
-              <span>🎬 {moviesData.total_results} film</span>
+              <span>🎬 {t('company.filmCount', { count: moviesData.total_results })}</span>
             )}
             {tvData.total_results > 0 && (
-              <span>📺 {tvData.total_results} dizi</span>
+              <span>📺 {t('company.seriesCount', { count: tvData.total_results })}</span>
             )}
           </div>
           {company.description && (
@@ -86,7 +88,7 @@ export default async function SirketPage({ params }: Props) {
                 rel="noopener noreferrer"
                 className="text-xs px-3 py-1.5 rounded-full border border-[--border] text-[--text-secondary] hover:text-white hover:border-white/30 transition-colors"
               >
-                🌐 Resmi Site
+                🌐 {t('company.officialSite')}
               </a>
             )}
             {company.parent_company && (
@@ -94,7 +96,7 @@ export default async function SirketPage({ params }: Props) {
                 href={`/sirket/${company.parent_company.id}`}
                 className="text-xs px-3 py-1.5 rounded-full border border-[--border] text-[--text-secondary] hover:text-white hover:border-white/30 transition-colors"
               >
-                🏢 Ana Şirket: {company.parent_company.name}
+                🏢 {t('company.parentCompany', { name: company.parent_company.name })}
               </Link>
             )}
           </div>
@@ -105,8 +107,8 @@ export default async function SirketPage({ params }: Props) {
       {movies.length > 0 && (
         <section className="mb-10">
           <h2 className="text-xl font-bold text-white mb-4">
-            Filmler
-            <span className="ml-2 text-sm font-normal text-[--text-secondary]">{moviesData.total_results} yapım</span>
+            {t('nav.films')}
+            <span className="ml-2 text-sm font-normal text-[--text-secondary]">{t('company.productionCount', { count: moviesData.total_results })}</span>
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {movies.map(movie => (
@@ -120,8 +122,8 @@ export default async function SirketPage({ params }: Props) {
       {tvShows.length > 0 && (
         <section className="mb-10">
           <h2 className="text-xl font-bold text-white mb-4">
-            Diziler
-            <span className="ml-2 text-sm font-normal text-[--text-secondary]">{tvData.total_results} yapım</span>
+            {t('nav.series')}
+            <span className="ml-2 text-sm font-normal text-[--text-secondary]">{t('company.productionCount', { count: tvData.total_results })}</span>
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {tvShows.map(show => (
@@ -133,7 +135,7 @@ export default async function SirketPage({ params }: Props) {
 
       {movies.length === 0 && tvShows.length === 0 && (
         <div className="text-center py-20 text-[--text-secondary]">
-          Bu şirkete ait içerik bulunamadı.
+          {t('company.noContent')}
         </div>
       )}
     </div>

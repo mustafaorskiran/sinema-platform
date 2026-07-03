@@ -3,8 +3,10 @@ import { IconPlay, IconChevronRight } from '@/components/icons'
 import { getTrendingMovies, getTrendingTV, getTrailersForMovies, getTrailersForTV } from '@/lib/tmdb'
 import HomeTrailerCards from './HomeTrailerCards'
 import type { TrailerItem } from '@/lib/types'
+import { getTranslations } from '@/lib/i18n'
 
 export default async function HomeTrailerSection() {
+  const { t } = await getTranslations()
   try {
     const [moviesData, tvData] = await Promise.all([
       getTrendingMovies(),
@@ -31,13 +33,13 @@ export default async function HomeTrailerSection() {
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
             <IconPlay className="h-5 w-5 text-[--accent]" />
-            <h2 className="text-xl font-bold text-white">Fragmanlar</h2>
+            <h2 className="text-xl font-bold text-white">{t('homeTrailerSection.title')}</h2>
           </div>
           <Link
             href="/fragmanlar"
             className="flex items-center gap-1 text-sm text-[--text-secondary] hover:text-[--accent] transition-colors"
           >
-            Tümünü Gör <IconChevronRight className="h-4 w-4" />
+            {t('common.seeAll')} <IconChevronRight className="h-4 w-4" />
           </Link>
         </div>
         <HomeTrailerCards trailers={trailers} />

@@ -7,6 +7,7 @@ import WatchCalendar from '@/components/WatchCalendar'
 import ZevkDNA from '@/components/ZevkDNA'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props {
   params: Promise<{ username: string }>
@@ -31,6 +32,7 @@ const GENRE_NAMES: Record<number, string> = {
 export default async function IstatistiklerPage({ params }: Props) {
   const { username } = await params
   const supabase = await createClient()
+  const { t } = await getTranslations()
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -232,7 +234,7 @@ export default async function IstatistiklerPage({ params }: Props) {
       <div className="flex items-center gap-2 text-sm text-[--text-secondary] mb-6">
         <Link href={`/profil/${username}`} className="hover:text-white transition-colors">← {username}</Link>
         <span>/</span>
-        <span className="text-white">İstatistikler</span>
+        <span className="text-white">{t('profile.statsTab.title')}</span>
       </div>
 
       <div className="flex items-center gap-4 mb-8">
@@ -244,39 +246,39 @@ export default async function IstatistiklerPage({ params }: Props) {
         </div>
         <div>
           <h1 className="text-2xl font-bold text-white">{username}</h1>
-          <p className="text-sm text-[--text-secondary]">Filografi & İstatistikler</p>
+          <p className="text-sm text-[--text-secondary]">{t('profile.statsTab.subtitle')}</p>
         </div>
       </div>
 
       {allReviews.length === 0 && allDiary.length === 0 ? (
         <div className="rounded-2xl py-16 text-center px-6" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <p className="text-4xl mb-3">📊</p>
-          <p className="text-[--text-secondary] text-sm">Henüz yorum ya da günlük kaydı yok.</p>
+          <p className="text-[--text-secondary] text-sm">{t('profile.statsTab.empty')}</p>
         </div>
       ) : (
         <div className="space-y-6">
 
           {/* Özet kartlar */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <StatCard value={allReviews.length} label="Yorum" />
-            <StatCard value={allDiary.length} label="Günlük Kayıt" />
-            <StatCard value={avgRating > 0 ? avgRating.toFixed(1) : '—'} label="Ort. Puan" gold />
-            <StatCard value={totalHours > 0 ? `${totalHours}s` : '—'} label={totalDays > 0 ? `≈ ${totalDays} gün` : 'İzleme Süresi'} />
+            <StatCard value={allReviews.length} label={t('profile.statsTab.reviews')} />
+            <StatCard value={allDiary.length} label={t('profile.statsTab.diaryRecords')} />
+            <StatCard value={avgRating > 0 ? avgRating.toFixed(1) : '—'} label={t('profile.statsTab.avgRating')} gold />
+            <StatCard value={totalHours > 0 ? `${totalHours}s` : '—'} label={totalDays > 0 ? t('profile.statsTab.approxDays', { days: totalDays }) : t('profile.statsTab.watchTime')} />
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <StatCard value={filmReviews.length} label="Film Yorumu" />
-            <StatCard value={diziReviews.length} label="Dizi Yorumu" />
-            <StatCard value={currentStreak > 0 ? `${currentStreak} gün` : '—'} label="Mevcut Seri" />
-            <StatCard value={maxStreak > 0 ? `${maxStreak} gün` : '—'} label="En Uzun Seri" />
+            <StatCard value={filmReviews.length} label={t('profile.statsTab.filmReviews')} />
+            <StatCard value={diziReviews.length} label={t('profile.statsTab.seriesReviews')} />
+            <StatCard value={currentStreak > 0 ? t('profile.statsTab.dayCount', { count: currentStreak }) : '—'} label={t('profile.statsTab.currentStreak')} />
+            <StatCard value={maxStreak > 0 ? t('profile.statsTab.dayCount', { count: maxStreak }) : '—'} label={t('profile.statsTab.longestStreak')} />
           </div>
 
           {/* İzleme hızı */}
           {monthlyAvg > 0 && (
             <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               <div className="flex items-center justify-between mb-4">
-                <p className="text-sm font-semibold text-white">İzleme Hızı</p>
-                <span className="text-xs text-[--text-secondary]">Son 12 ay</span>
+                <p className="text-sm font-semibold text-white">{t('profile.statsTab.watchSpeed')}</p>
+                <span className="text-xs text-[--text-secondary]">{t('profile.statsTab.last12Months')}</span>
               </div>
               <div className="flex items-end gap-1 h-20 mb-3">
                 {months.map(m => (
@@ -296,12 +298,12 @@ export default async function IstatistiklerPage({ params }: Props) {
               <div className="mt-4 flex items-center gap-4 pt-4 border-t border-[--border]/50">
                 <div>
                   <p className="text-2xl font-bold text-white">{monthlyAvg}</p>
-                  <p className="text-xs text-[--text-secondary]">aylık ortalama (son 3 ay)</p>
+                  <p className="text-xs text-[--text-secondary]">{t('profile.statsTab.monthlyAvg')}</p>
                 </div>
                 {speedChange !== 0 && (
                   <div className={`ml-auto text-sm font-semibold ${speedChange > 0 ? 'text-green-400' : 'text-red-400'}`}>
                     {speedChange > 0 ? '↑' : '↓'} %{Math.abs(speedChange)}
-                    <p className="text-xs font-normal text-[--text-secondary]">önceki 3 aya göre</p>
+                    <p className="text-xs font-normal text-[--text-secondary]">{t('profile.statsTab.vsPrev3Months')}</p>
                   </div>
                 )}
               </div>
@@ -321,7 +323,7 @@ export default async function IstatistiklerPage({ params }: Props) {
           {/* Film / Dizi oranı */}
           {allReviews.length > 0 && (
             <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <p className="text-sm font-semibold text-white mb-3">Film / Dizi Oranı</p>
+              <p className="text-sm font-semibold text-white mb-3">{t('profile.statsTab.filmSeriesRatio')}</p>
               <div className="flex h-4 rounded-full overflow-hidden gap-0.5">
                 <div
                   className="bg-blue-500 transition-all"
@@ -332,8 +334,8 @@ export default async function IstatistiklerPage({ params }: Props) {
                 />
               </div>
               <div className="flex justify-between mt-2 text-xs text-[--text-secondary]">
-                <span className="text-blue-400">🎬 Film %{Math.round((filmReviews.length / allReviews.length) * 100)}</span>
-                <span className="text-purple-400">📺 Dizi %{Math.round((diziReviews.length / allReviews.length) * 100)}</span>
+                <span className="text-blue-400">🎬 {t('film.badge')} %{Math.round((filmReviews.length / allReviews.length) * 100)}</span>
+                <span className="text-purple-400">📺 {t('series.badge')} %{Math.round((diziReviews.length / allReviews.length) * 100)}</span>
               </div>
             </div>
           )}
@@ -341,7 +343,7 @@ export default async function IstatistiklerPage({ params }: Props) {
           {/* Puan dağılımı */}
           {allReviews.length > 0 && (
             <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <p className="text-sm font-semibold text-white mb-4">Puan Dağılımı</p>
+              <p className="text-sm font-semibold text-white mb-4">{t('profile.statsTab.ratingDistribution')}</p>
               <div className="flex items-end gap-1.5 h-28">
                 {[1,2,3,4,5,6,7,8,9,10].map(n => {
                   const count = ratingDist[n] ?? 0
@@ -368,7 +370,7 @@ export default async function IstatistiklerPage({ params }: Props) {
 
           {/* Aylık aktivite */}
           <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-            <p className="text-sm font-semibold text-white mb-4">Aylık Aktivite (Son 12 Ay)</p>
+            <p className="text-sm font-semibold text-white mb-4">{t('profile.statsTab.monthlyActivity')}</p>
             <div className="flex items-end gap-1 h-24">
               {months.map(m => {
                 const pct = (m.count / maxMonthCount) * 100
@@ -388,7 +390,7 @@ export default async function IstatistiklerPage({ params }: Props) {
           {/* Yıla göre */}
           {years.length > 1 && (
             <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <p className="text-sm font-semibold text-white mb-4">Yıllara Göre</p>
+              <p className="text-sm font-semibold text-white mb-4">{t('profile.statsTab.byYear')}</p>
               <div className="space-y-2">
                 {years.map(([year, count]) => (
                   <div key={year} className="flex items-center gap-3">
@@ -409,8 +411,8 @@ export default async function IstatistiklerPage({ params }: Props) {
           {/* Tür dağılımı */}
           {topGenres.length > 0 && (
             <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <p className="text-sm font-semibold text-white mb-1">En Çok İzlenen Türler</p>
-              <p className="text-xs text-[--text-secondary] mb-4">Son {uniqueFilmIds.length + uniqueDiziIds.length} içeriğe göre</p>
+              <p className="text-sm font-semibold text-white mb-1">{t('profile.statsTab.topGenres')}</p>
+              <p className="text-xs text-[--text-secondary] mb-4">{t('profile.statsTab.basedOnLast', { count: uniqueFilmIds.length + uniqueDiziIds.length })}</p>
               <div className="space-y-2.5">
                 {topGenres.map(g => (
                   <div key={g.id} className="flex items-center gap-3">
@@ -431,13 +433,13 @@ export default async function IstatistiklerPage({ params }: Props) {
           {/* Rozetler */}
           <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <p className="text-sm font-semibold text-white mb-1">
-              Rozetler
-              <span className="ml-2 text-xs font-normal text-[--text-secondary]">{earnedBadges.length}/{ALL_BADGE_COUNT} kazanıldı</span>
+              {t('profile.statsTab.badges')}
+              <span className="ml-2 text-xs font-normal text-[--text-secondary]">{t('profile.statsTab.badgesEarned', { earned: earnedBadges.length, total: ALL_BADGE_COUNT })}</span>
             </p>
 
             {earnedBadges.length > 0 && (
               <div className="mb-4">
-                <p className="text-xs text-green-400 mb-2">✓ Kazanıldı</p>
+                <p className="text-xs text-green-400 mb-2">✓ {t('profile.statsTab.earned')}</p>
                 <div className="flex flex-wrap gap-2">
                   {earnedBadges.map(badge => (
                     <div
@@ -459,7 +461,7 @@ export default async function IstatistiklerPage({ params }: Props) {
 
             {lockedBadges.length > 0 && (
               <div>
-                <p className="text-xs text-[--text-secondary] mb-2">🔒 Henüz kazanılmadı</p>
+                <p className="text-xs text-[--text-secondary] mb-2">🔒 {t('profile.statsTab.notEarnedYet')}</p>
                 <div className="flex flex-wrap gap-2">
                   {lockedBadges.map(badge => (
                     <div

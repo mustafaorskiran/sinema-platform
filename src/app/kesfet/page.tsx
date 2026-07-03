@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 export const revalidate = 3600
 
@@ -30,8 +31,8 @@ async function tmdb(path: string, params: Record<string, string>) {
 interface Category {
   key: string
   emoji: string
-  title: string
-  desc: string
+  titleKey: string
+  descKey: string
   color: string
   bg: string
   border: string
@@ -42,8 +43,8 @@ const CATEGORIES: Category[] = [
   {
     key: 'gizli',
     emoji: '💎',
-    title: 'Gizli Mücevherler',
-    desc: 'Yüksek puan ama az izlenmiş — çoğunun haberi yok',
+    titleKey: 'discover.gizliTitle',
+    descKey: 'discover.gizliDesc',
     color: '#a78bfa',
     bg: 'rgba(167,139,250,0.08)',
     border: 'rgba(167,139,250,0.2)',
@@ -52,8 +53,8 @@ const CATEGORIES: Category[] = [
   {
     key: 'hate',
     emoji: '🍅',
-    title: 'Neden İzlendi?',
-    desc: 'Düşük puan ama çok izlenmiş — meşhur kötü filmler',
+    titleKey: 'discover.hateTitle',
+    descKey: 'discover.hateDesc',
     color: '#f87171',
     bg: 'rgba(248,113,113,0.08)',
     border: 'rgba(248,113,113,0.2)',
@@ -62,8 +63,8 @@ const CATEGORIES: Category[] = [
   {
     key: 'surprise',
     emoji: '⚡',
-    title: 'Sürpriz Yapımlar',
-    desc: 'Bu yıl çıktı, beklenmedik ama çok beğenildi',
+    titleKey: 'discover.surpriseTitle',
+    descKey: 'discover.surpriseDesc',
     color: '#fbbf24',
     bg: 'rgba(251,191,36,0.08)',
     border: 'rgba(251,191,36,0.2)',
@@ -77,6 +78,7 @@ const CATEGORIES: Category[] = [
 ]
 
 export default async function KesfetPage() {
+  const { t } = await getTranslations()
   const results = await Promise.all(
     CATEGORIES.map(cat =>
       tmdb('/discover/movie', cat.params).then(items => ({ ...cat, items }))
@@ -86,9 +88,9 @@ export default async function KesfetPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
       <div className="mb-10">
-        <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Keşfet</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">{t('discover.title')}</h1>
         <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-          Algoritmadan kaçan filmler — niche, sürpriz ve efsane kötüler
+          {t('discover.subtitle')}
         </p>
       </div>
 
@@ -102,8 +104,8 @@ export default async function KesfetPage() {
                 {cat.emoji}
               </div>
               <div>
-                <h2 className="text-lg font-bold text-white">{cat.title}</h2>
-                <p className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>{cat.desc}</p>
+                <h2 className="text-lg font-bold text-white">{t(cat.titleKey)}</h2>
+                <p className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>{t(cat.descKey)}</p>
               </div>
             </div>
 
@@ -142,7 +144,7 @@ export default async function KesfetPage() {
                       {cat.key === 'gizli' && (
                         <div className="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded text-[9px] font-bold"
                           style={{ background: 'rgba(167,139,250,0.9)', color: '#fff' }}>
-                          {item.vote_count?.toLocaleString('tr-TR')} oy
+                          {t('discover.votes', { count: item.vote_count?.toLocaleString('tr-TR') ?? 0 })}
                         </div>
                       )}
                       {cat.key === 'hate' && item.popularity > 0 && (

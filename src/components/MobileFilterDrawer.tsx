@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { IconClose } from '@/components/icons'
+import { useLocale } from '@/context/LocaleContext'
 
 interface FilterItem {
   href: string
@@ -26,6 +27,7 @@ function IconFilter({ className }: { className?: string }) {
 
 export default function MobileFilterDrawer({ genres, countries, years, activeLabel }: Props) {
   const [open, setOpen] = useState(false)
+  const { t } = useLocale()
 
   return (
     <>
@@ -35,7 +37,7 @@ export default function MobileFilterDrawer({ genres, countries, years, activeLab
         className="lg:hidden flex items-center gap-2 px-3 py-1.5 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white hover:border-[--accent]/40 transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
       >
         <IconFilter className="h-4 w-4" />
-        Filtrele
+        {t('browse.filter')}
         {activeLabel && (
           <span className="px-1.5 py-0.5 rounded-full bg-[--accent]/20 text-[--accent] text-[10px] font-bold">
             {activeLabel}
@@ -55,7 +57,7 @@ export default function MobileFilterDrawer({ genres, countries, years, activeLab
       <div className={`fixed top-0 left-0 h-full w-72 max-w-[85vw] z-50 overflow-y-auto transition-transform duration-300 lg:hidden ${open ? 'translate-x-0' : '-translate-x-full'}`}
         style={{ background: 'rgba(10,15,28,0.99)', borderRight: '1px solid rgba(255,255,255,0.08)' }}>
         <div className="flex items-center justify-between px-4 py-4 border-b border-[--border]">
-          <span className="text-base font-bold text-white">Filtrele</span>
+          <span className="text-base font-bold text-white">{t('browse.filter')}</span>
           <button onClick={() => setOpen(false)} className="text-[--text-secondary] hover:text-white">
             <IconClose className="h-5 w-5" />
           </button>
@@ -64,7 +66,7 @@ export default function MobileFilterDrawer({ genres, countries, years, activeLab
         <div className="px-4 py-5 space-y-6">
           {/* Türler */}
           <div>
-            <h3 className="text-xs font-bold text-[--accent] uppercase tracking-widest mb-3 pb-1 border-b border-[--border]">Türler</h3>
+            <h3 className="text-xs font-bold text-[--accent] uppercase tracking-widest mb-3 pb-1 border-b border-[--border]">{t('browse.genres')}</h3>
             <ul className="space-y-0.5">
               {genres.map(g => (
                 <li key={g.href}>
@@ -82,7 +84,7 @@ export default function MobileFilterDrawer({ genres, countries, years, activeLab
 
           {/* Ülkeler */}
           <div>
-            <h3 className="text-xs font-bold text-[--accent] uppercase tracking-widest mb-3 pb-1 border-b border-[--border]">Ülkeler</h3>
+            <h3 className="text-xs font-bold text-[--accent] uppercase tracking-widest mb-3 pb-1 border-b border-[--border]">{t('browse.countries')}</h3>
             <ul className="space-y-0.5">
               {countries.map(c => (
                 <li key={c.href}>
@@ -100,7 +102,7 @@ export default function MobileFilterDrawer({ genres, countries, years, activeLab
 
           {/* Yıllar */}
           <div>
-            <h3 className="text-xs font-bold text-[--accent] uppercase tracking-widest mb-3 pb-1 border-b border-[--border]">Yıllar</h3>
+            <h3 className="text-xs font-bold text-[--accent] uppercase tracking-widest mb-3 pb-1 border-b border-[--border]">{t('browse.years')}</h3>
             <ul className="space-y-0.5 max-h-64 overflow-y-auto">
               {years.map(y => (
                 <li key={y.href}>

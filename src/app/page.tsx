@@ -14,10 +14,12 @@ import OnThisDayWidget from '@/components/OnThisDayWidget'
 import HomeTrailerSection from '@/components/HomeTrailerSection'
 import AdBanner from '@/components/AdBanner'
 import { createClient } from '@/lib/supabase/server'
+import { getTranslations } from '@/lib/i18n'
 import type { TMDbMovie } from '@/lib/types'
 
 export default async function HomePage() {
   const supabase = await createClient()
+  const { t } = await getTranslations()
 
   // ── Paralel veri çekme ──────────────────────────────────────────
   const sevenDaysAgo = new Date()
@@ -205,7 +207,7 @@ export default async function HomePage() {
               <div className="flex items-center gap-2 mb-3">
                 <IconTrendingUp className="h-4 w-4 text-[--accent]" />
                 <span className="text-xs font-semibold text-[--accent] uppercase tracking-wider">
-                  Bu Haftanın Trendi
+                  {t('home.heroBadge')}
                 </span>
               </div>
               <h1 className="text-2xl sm:text-4xl md:text-6xl font-bold text-white leading-tight mb-3 drop-shadow-lg">
@@ -226,7 +228,7 @@ export default async function HomePage() {
                 href={`/${heroType}/${hero.id}`}
                 className="inline-flex items-center gap-2 bg-[--accent] hover:bg-[--accent-hover] text-white font-semibold px-5 py-2.5 sm:px-8 sm:py-3.5 text-sm sm:text-base rounded-full transition-colors shadow-lg shadow-[--accent]/30"
               >
-                İncele <IconChevronRight className="h-4 w-4" />
+                {t('home.viewDetails')} <IconChevronRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
@@ -241,13 +243,13 @@ export default async function HomePage() {
               <div className="flex items-center gap-2">
                 <IconFilm className="h-4 w-4 text-[--accent]" />
                 <span className="text-white font-bold">{(filmCount ?? 0).toLocaleString('tr-TR')}</span>
-                <span className="text-[--text-secondary]">film</span>
+                <span className="text-[--text-secondary]">{t('home.filmsLabel')}</span>
               </div>
               <div className="w-px h-4 bg-[--border]" />
               <div className="flex items-center gap-2">
                 <IconTv className="h-4 w-4 text-[--accent]" />
                 <span className="text-white font-bold">{(diziCount ?? 0).toLocaleString('tr-TR')}</span>
-                <span className="text-[--text-secondary]">dizi</span>
+                <span className="text-[--text-secondary]">{t('home.seriesLabel')}</span>
               </div>
               {(reviewCount ?? 0) > 0 && (
                 <>
@@ -255,7 +257,7 @@ export default async function HomePage() {
                   <div className="flex items-center gap-2">
                     <IconMessageSquare className="h-4 w-4 text-[--gold]" />
                     <span className="text-white font-bold">{(reviewCount ?? 0).toLocaleString('tr-TR')}</span>
-                    <span className="text-[--text-secondary]">yorum</span>
+                    <span className="text-[--text-secondary]">{t('home.reviewsLabel')}</span>
                   </div>
                 </>
               )}
@@ -264,7 +266,7 @@ export default async function HomePage() {
                   <div className="w-px h-4 bg-[--border]" />
                   <div className="flex items-center gap-2">
                     <span className="text-white font-bold">{(userCount ?? 0).toLocaleString('tr-TR')}</span>
-                    <span className="text-[--text-secondary]">üye</span>
+                    <span className="text-[--text-secondary]">{t('home.membersLabel')}</span>
                   </div>
                 </>
               )}
@@ -285,17 +287,17 @@ export default async function HomePage() {
                     ))}
                   </div>
                   <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                    Bu hafta {activeReviewers.length} aktif
+                    {t('home.activeThisWeek', { count: activeReviewers.length })}
                   </span>
                 </div>
               )}
               <span className="text-[--border] hidden sm:inline">·</span>
               <Link href="/filmler?dil=tr" className="text-xs text-[--accent] hover:underline font-medium hidden sm:inline">
-                🇹🇷 Türk Filmleri
+                {t('home.turkishFilms')}
               </Link>
               <span className="text-[--border] hidden sm:inline">·</span>
               <Link href="/filmler?sirala=vote_average.desc" className="text-xs text-[--text-secondary] hover:text-white transition-colors hidden sm:inline">
-                En İyi Puanlı
+                {t('home.topRatedLink')}
               </Link>
             </div>
           </div>
@@ -308,15 +310,15 @@ export default async function HomePage() {
         {user && !userOnboarded && (
           <div className="rounded-2xl border border-[--accent]/40 bg-gradient-to-br from-[--accent]/15 via-[--bg-card] to-[--bg-card] p-6 sm:p-8 text-center">
             <p className="text-3xl mb-3">🎬</p>
-            <h2 className="text-xl font-bold text-white mb-2">Sinezon'u Kişiselleştir</h2>
+            <h2 className="text-xl font-bold text-white mb-2">{t('home.personalizeTitle')}</h2>
             <p className="text-sm text-[--text-secondary] max-w-md mx-auto mb-5">
-              Favori türlerini, platformlarını ve filmleri bize anlat — sana özel bir sinema deneyimi hazırlayalım.
+              {t('home.personalizeDesc')}
             </p>
             <Link
               href="/onboarding"
               className="inline-flex items-center gap-2 bg-[--accent] hover:bg-[--accent-hover] text-white font-semibold px-7 py-3 rounded-full text-sm transition-colors shadow-lg shadow-[--accent]/20"
             >
-              Başla → <span className="text-xs opacity-70">(~2 dk)</span>
+              {t('home.start')} <span className="text-xs opacity-70">{t('home.startDuration')}</span>
             </Link>
           </div>
         )}
@@ -325,7 +327,7 @@ export default async function HomePage() {
         {personalizedGenres.map(g => (
           <HomeCarousel
             key={g.slug}
-            title={`✨ Senin İçin: ${g.name}`}
+            title={t('home.forYou', { name: g.name })}
             href={`/tur/${g.slug}`}
             items={g.items}
             defaultType="film"
@@ -335,11 +337,11 @@ export default async function HomePage() {
         {userOnboarded && (
           <div className="flex items-center justify-between px-5 py-3.5 rounded-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <div>
-              <p className="text-sm font-medium text-white">Kişisel Öneri Sayfan</p>
-              <p className="text-xs text-[--text-secondary] mt-0.5">Zevklerine göre seçilmiş filmler ve diziler</p>
+              <p className="text-sm font-medium text-white">{t('home.personalRecsTitle')}</p>
+              <p className="text-xs text-[--text-secondary] mt-0.5">{t('home.personalRecsDesc')}</p>
             </div>
             <Link href="/oneriler" className="text-sm text-[--accent] hover:underline font-medium whitespace-nowrap">
-              Önerilere Git →
+              {t('home.goToRecs')}
             </Link>
           </div>
         )}
@@ -349,7 +351,7 @@ export default async function HomePage() {
 
         {/* ── 1. Bugün Trend ────────────────────────────────────── */}
         <HomeCarousel
-          title="Bugün Trend"
+          title={t('home.todayTrend')}
           icon={<IconFire className="h-5 w-5 text-[--accent]" />}
           href="/filmler"
           items={trendingRes.results.slice(0, 20)}
@@ -358,7 +360,7 @@ export default async function HomePage() {
 
         {/* ── 2. Bu Hafta Popüler ───────────────────────────────── */}
         <HomeCarousel
-          title="Bu Hafta Popüler"
+          title={t('home.weeklyPopular')}
           icon={<IconTrendingUp className="h-5 w-5 text-[--accent]" />}
           href="/filmler?sirala=popularity.desc"
           items={(popularRes.results ?? []).slice(0, 20)}
@@ -407,7 +409,7 @@ export default async function HomePage() {
                   href={`/${featuredMedia.type}/${featuredMedia.id}`}
                   className="inline-flex items-center gap-2 bg-[--accent] hover:bg-[--accent-hover] text-white font-semibold px-5 py-2.5 rounded-full text-sm transition-colors w-fit"
                 >
-                  İncele <IconChevronRight className="h-4 w-4" />
+                  {t('home.viewDetails')} <IconChevronRight className="h-4 w-4" />
                 </Link>
               </div>
             </div>
@@ -416,7 +418,7 @@ export default async function HomePage() {
 
         {/* ── 3. En Yüksek Puanlı Filmler ──────────────────────── */}
         <HomeCarousel
-          title="En Yüksek Puanlı Filmler"
+          title={t('home.topRatedFilms')}
           icon={<IconStar className="h-5 w-5 text-[--gold]" />}
           href="/filmler?sirala=vote_average.desc"
           items={(topMoviesRes.results ?? []).slice(0, 20)}
@@ -430,7 +432,7 @@ export default async function HomePage() {
 
         {/* ── 4. En Yüksek Puanlı Diziler ──────────────────────── */}
         <HomeCarousel
-          title="En Yüksek Puanlı Diziler"
+          title={t('home.topRatedSeries')}
           icon={
             <div className="flex items-center gap-1">
               <IconTv className="h-5 w-5 text-[--gold]" />
@@ -443,7 +445,7 @@ export default async function HomePage() {
 
         {/* ── 5. Yeni Eklenenler ────────────────────────────────── */}
         <HomeCarousel
-          title="Yeni Eklenenler"
+          title={t('home.newlyAdded')}
           icon={<IconFilm className="h-5 w-5 text-[--accent]" />}
           href="/filmler?sirala=release_date.desc"
           items={(newReleasesRes.results ?? []).slice(0, 20)}
@@ -452,7 +454,7 @@ export default async function HomePage() {
 
         {/* ── 6. Editör Seçimleri ───────────────────────────────── */}
         <HomeCarousel
-          title="Editör Seçimleri"
+          title={t('home.editorPicks')}
           icon={<IconStar className="h-5 w-5 text-[--accent]" />}
           href="/filmler?sirala=vote_count.desc"
           items={(editorPicksRes.results ?? []).slice(0, 20)}
@@ -467,7 +469,7 @@ export default async function HomePage() {
         {/* ── 7. Bu Hafta Trend (Watchlist) ────────────────────── */}
         {weeklyTrendItems.length > 0 && (
           <HomeCarousel
-            title="Bu Hafta Trend"
+            title={t('home.weeklyTrendWatchlist')}
             icon={<IconTrendingUp className="h-5 w-5 text-[--accent]" />}
             href="/filmler?sirala=popularity.desc"
             items={weeklyTrendItems}
@@ -507,8 +509,8 @@ export default async function HomePage() {
             style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.95), rgba(14,20,32,0.98))', border: '1px solid rgba(212,168,67,0.12)' }}>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
-              <h2 className="text-lg font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Bu Haftanın Yorumcuları</h2>
-              <Link href="/kullanicilar" className="ml-auto text-xs hover:underline" style={{ color: 'var(--accent)' }}>Tümü →</Link>
+              <h2 className="text-lg font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>{t('home.commentersTitle')}</h2>
+              <Link href="/kullanicilar" className="ml-auto text-xs hover:underline" style={{ color: 'var(--accent)' }}>{t('home.seeAllArrow')}</Link>
             </div>
             <div className="grid grid-cols-5 gap-3">
               {weeklyTop.map((u, i) => (
@@ -529,7 +531,7 @@ export default async function HomePage() {
                     )}
                   </div>
                   <p className="text-[11px] font-semibold truncate w-full group-hover:text-[--accent] transition-colors" style={{ color: 'var(--text-primary)' }}>{u.username}</p>
-                  <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.35)' }}>{u.count} yorum</p>
+                  <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.35)' }}>{t('home.reviewCount', { count: u.count })}</p>
                 </Link>
               ))}
             </div>
@@ -541,9 +543,9 @@ export default async function HomePage() {
           <div>
             <div className="flex items-center gap-3 mb-5">
               <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
-              <h2 className="text-xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Son Yorumlar</h2>
+              <h2 className="text-xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>{t('home.recentReviewsTitle')}</h2>
               <Link href="/en-cok-yorumlanan" className="ml-auto text-xs flex items-center gap-1 hover:underline" style={{ color: 'var(--accent)' }}>
-                Tümü <IconChevronRight className="h-3.5 w-3.5" />
+                {t('home.seeAll')} <IconChevronRight className="h-3.5 w-3.5" />
               </Link>
             </div>
             <div className="grid sm:grid-cols-3 gap-4">
@@ -564,7 +566,7 @@ export default async function HomePage() {
                       </Link>
                       <div className="flex-1 min-w-0">
                         <Link href={`/profil/${profile?.username ?? ''}`} className="text-[13px] font-semibold hover:opacity-80 transition-opacity" style={{ color: 'var(--text-primary)' }}>
-                          {profile?.username ?? 'Anonim'}
+                          {profile?.username ?? t('home.anonymous')}
                         </Link>
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
@@ -580,7 +582,7 @@ export default async function HomePage() {
                     <Link href={`/${review.media_type}/${review.media_id}`}
                       className="text-[11px] font-medium mt-auto hover:underline"
                       style={{ color: review.media_type === 'film' ? 'rgba(96,165,250,0.7)' : 'rgba(167,139,250,0.7)' }}>
-                      {review.media_type === 'film' ? '🎬 Film' : '📺 Dizi'} →
+                      {review.media_type === 'film' ? t('home.filmBadge') : t('home.seriesBadge')} →
                     </Link>
                   </div>
                 )

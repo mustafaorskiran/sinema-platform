@@ -1,5 +1,6 @@
 ﻿import { requireAdmin } from '@/lib/admin'
 import { createClient } from '@/lib/supabase/server'
+import { getTranslations } from '@/lib/i18n'
 import AdminDeleteButton from './AdminDeleteButton'
 import { IconStar } from '@/components/icons'
 import type { Metadata } from 'next'
@@ -14,6 +15,7 @@ const PAGE_SIZE = 25
 
 export default async function AdminYorumlarPage({ searchParams }: Props) {
   await requireAdmin()
+  const { t } = await getTranslations()
   const { sayfa } = await searchParams
   const page = Math.max(1, Number(sayfa) || 1)
   const offset = (page - 1) * PAGE_SIZE
@@ -31,8 +33,8 @@ export default async function AdminYorumlarPage({ searchParams }: Props) {
   return (
     <div>
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-        <h1 className="text-2xl font-bold text-white">Yorumlar</h1>
-        <span className="text-sm text-[--text-secondary]">{count ?? 0} yorum</span>
+        <h1 className="text-2xl font-bold text-white">{t('admin.reviews.title')}</h1>
+        <span className="text-sm text-[--text-secondary]">{t('admin.reviews.countLabel', { count: count ?? 0 })}</span>
       </div>
 
       <div className="space-y-3">
@@ -70,7 +72,7 @@ export default async function AdminYorumlarPage({ searchParams }: Props) {
             <a href={`/admin/yorumlar?sayfa=${page - 1}`}
               className="px-4 py-2 rounded-lg text-sm transition-all hover:text-white"
               style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
-              ← Önceki
+              {t('admin.users.prevPage')}
             </a>
           )}
           <span className="px-4 py-2 text-sm text-[--text-secondary] flex items-center">{page} / {totalPages}</span>
@@ -78,7 +80,7 @@ export default async function AdminYorumlarPage({ searchParams }: Props) {
             <a href={`/admin/yorumlar?sayfa=${page + 1}`}
               className="px-4 py-2 rounded-lg text-sm transition-all hover:text-white"
               style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
-              Sonraki →
+              {t('admin.users.nextPage')}
             </a>
           )}
         </div>

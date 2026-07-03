@@ -1,5 +1,6 @@
 import { requireAdmin } from '@/lib/admin'
 import { createClient } from '@/lib/supabase/server'
+import { getTranslations } from '@/lib/i18n'
 import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle } from '@/lib/tmdb'
 import FeaturedPickForm from './FeaturedPickForm'
 import type { Metadata } from 'next'
@@ -8,6 +9,7 @@ export const metadata: Metadata = { title: 'Özel Seçim — Admin' }
 
 export default async function OzelSecimPage() {
   await requireAdmin()
+  const { t } = await getTranslations()
   const supabase = await createClient()
 
   const { data: picks } = await supabase
@@ -35,16 +37,16 @@ export default async function OzelSecimPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-white mb-2">Özel Seçim</h1>
+      <h1 className="text-2xl font-bold text-white mb-2">{t('admin.featuredPick.title')}</h1>
       <p className="text-[--text-secondary] text-sm mb-8">
-        Ana sayfada gösterilecek haftanın filmi / dizisi seçimi
+        {t('admin.featuredPick.subtitle')}
       </p>
 
       <FeaturedPickForm />
 
       {enriched.length > 0 && (
         <div className="mt-10">
-          <h2 className="text-lg font-bold text-white mb-4">Geçmiş Seçimler</h2>
+          <h2 className="text-lg font-bold text-white mb-4">{t('admin.featuredPick.pastTitle')}</h2>
           <div className="space-y-3">
             {enriched.map((p: any) => (
               <div key={p.id} className="flex items-center gap-4 p-4 rounded-xl"
@@ -61,7 +63,7 @@ export default async function OzelSecimPage() {
                     {p.profiles?.username && ` · @${p.profiles.username}`}
                   </p>
                 </div>
-                <DeletePickButton id={p.id} />
+                <DeletePickButton id={p.id} label={t('admin.featuredPick.remove')} />
               </div>
             ))}
           </div>
@@ -71,7 +73,7 @@ export default async function OzelSecimPage() {
   )
 }
 
-function DeletePickButton({ id }: { id: number }) {
+function DeletePickButton({ id, label }: { id: number; label: string }) {
   return (
     <form action={`/api/featured-pick?id=${id}`} method="post">
       <input type="hidden" name="_method" value="DELETE" />
@@ -79,7 +81,7 @@ function DeletePickButton({ id }: { id: number }) {
         type="submit"
         className="text-xs text-red-400 hover:text-red-300 transition-colors px-3 py-1.5 rounded-lg border border-red-500/20 hover:border-red-500/40"
       >
-        Kaldır
+        {label}
       </button>
     </form>
   )

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -8,6 +9,7 @@ export const metadata: Metadata = {
 }
 
 export default async function DavetLeaderboardPage() {
+  const { t } = await getTranslations()
   const supabase = await createClient()
 
   // Referral kodu olan profilleri getir
@@ -39,10 +41,10 @@ export default async function DavetLeaderboardPage() {
   return (
     <div className="max-w-xl mx-auto px-4 py-10">
       <div className="flex items-center gap-3 mb-2">
-        <h1 className="text-2xl font-bold text-white">🔗 Davet Liderleri</h1>
+        <h1 className="text-2xl font-bold text-white">{t('invite.leaderboardTitle')}</h1>
       </div>
       <p className="text-sm text-[--text-secondary] mb-8">
-        Sinezon&apos;a en çok arkadaşını davet eden kullanıcılar
+        {t('invite.leaderboardSubtitle')}
       </p>
 
       {sortedLeaders.length === 0 ? (
@@ -51,7 +53,7 @@ export default async function DavetLeaderboardPage() {
           style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
         >
           <p className="text-3xl mb-3">👥</p>
-          <p className="text-sm">Henüz kimse davet etmemiş. İlk sen ol!</p>
+          <p className="text-sm">{t('invite.leaderboardEmpty')}</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -101,7 +103,7 @@ export default async function DavetLeaderboardPage() {
                 <span className="text-sm font-bold" style={{ color: index === 0 ? '#D4A843' : 'var(--text-primary)' }}>
                   {leader.inviteCount}
                 </span>
-                <p className="text-[10px] text-[--text-secondary]">davet</p>
+                <p className="text-[10px] text-[--text-secondary]">{t('invite.inviteCountSuffix')}</p>
               </div>
             </div>
           ))}
@@ -109,16 +111,16 @@ export default async function DavetLeaderboardPage() {
       )}
 
       <div className="mt-10 p-5 rounded-2xl text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-        <p className="text-sm font-semibold text-white mb-2">Sen de davet et!</p>
+        <p className="text-sm font-semibold text-white mb-2">{t('invite.ctaTitle')}</p>
         <p className="text-xs text-[--text-secondary] mb-4">
-          Profilinden özel davet linkini paylaş ve arkadaşlarını Sinezon&apos;a getir.
+          {t('invite.ctaDesc')}
         </p>
         <Link
           href="/profil"
           className="inline-block px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all"
           style={{ background: 'var(--accent)' }}
         >
-          Profilime Git
+          {t('invite.goToProfile')}
         </Link>
       </div>
     </div>

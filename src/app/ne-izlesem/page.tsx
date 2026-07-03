@@ -3,6 +3,7 @@ import { IconCalendar, IconClock, IconPlay, IconStar, IconTv } from '@/component
 import { discoverMovies, discoverSeries, getBackdropUrl, getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb'
 import BaskaOnerButton from './BaskaOnerButton'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 export const metadata: Metadata = { title: 'Ne İzlesem?' }
 
@@ -15,27 +16,28 @@ function pick(seed: number, offset: number, max: number): number {
   return Math.abs((seed * 1664525 + offset * 1013904223) & 0x7fffffff) % max
 }
 
-const FILM_GENRES: Record<string, { id: number; label: string }> = {
-  aksiyon:    { id: 28,    label: 'Aksiyon' },
-  komedi:     { id: 35,    label: 'Komedi' },
-  drama:      { id: 18,    label: 'Drama' },
-  korku:      { id: 27,    label: 'Korku' },
-  gerilim:    { id: 53,    label: 'Gerilim' },
-  romantik:   { id: 10749, label: 'Romantik' },
-  animasyon:  { id: 16,    label: 'Animasyon' },
-  belgesel:   { id: 99,    label: 'Belgesel' },
+const FILM_GENRES: Record<string, { id: number; labelKey: string }> = {
+  aksiyon:    { id: 28,    labelKey: 'recommend.genreAksiyon' },
+  komedi:     { id: 35,    labelKey: 'recommend.genreKomedi' },
+  drama:      { id: 18,    labelKey: 'recommend.genreDrama' },
+  korku:      { id: 27,    labelKey: 'recommend.genreKorku' },
+  gerilim:    { id: 53,    labelKey: 'recommend.genreGerilim' },
+  romantik:   { id: 10749, labelKey: 'recommend.genreRomantik' },
+  animasyon:  { id: 16,    labelKey: 'recommend.genreAnimasyon' },
+  belgesel:   { id: 99,    labelKey: 'recommend.genreBelgesel' },
 }
 
-const DIZI_GENRES: Record<string, { id: number; label: string }> = {
-  aksiyon:    { id: 10759, label: 'Aksiyon' },
-  komedi:     { id: 35,    label: 'Komedi' },
-  drama:      { id: 18,    label: 'Drama' },
-  korku:      { id: 9648,  label: 'Gerilim' },
-  belgesel:   { id: 99,    label: 'Belgesel' },
-  animasyon:  { id: 16,    label: 'Animasyon' },
+const DIZI_GENRES: Record<string, { id: number; labelKey: string }> = {
+  aksiyon:    { id: 10759, labelKey: 'recommend.genreAksiyon' },
+  komedi:     { id: 35,    labelKey: 'recommend.genreKomedi' },
+  drama:      { id: 18,    labelKey: 'recommend.genreDrama' },
+  korku:      { id: 9648,  labelKey: 'recommend.genreGerilim' },
+  belgesel:   { id: 99,    labelKey: 'recommend.genreBelgesel' },
+  animasyon:  { id: 16,    labelKey: 'recommend.genreAnimasyon' },
 }
 
 export default async function NeIzlesemPage({ searchParams }: Props) {
+  const { t } = await getTranslations()
   const { seed: seedStr, tip, tur, puan } = await searchParams
   const seed = Number(seedStr) || Math.floor(Math.random() * 1_000_000)
 
@@ -73,7 +75,7 @@ export default async function NeIzlesemPage({ searchParams }: Props) {
   if (!item) {
     return (
       <div className="min-h-[80vh] flex flex-col items-center justify-center gap-6 text-center px-4">
-        <p className="text-[--text-secondary]">Öneri yüklenemedi.</p>
+        <p className="text-[--text-secondary]">{t('recommend.loadFailed')}</p>
         <BaskaOnerButton />
       </div>
     )
@@ -104,12 +106,12 @@ export default async function NeIzlesemPage({ searchParams }: Props) {
         {/* Üst etiket */}
         <div className="flex items-center gap-2 mb-6">
           <span className="text-xs font-bold uppercase tracking-widest text-[--accent] bg-[--accent]/15 px-3 py-1 rounded-full border border-[--accent]/30">
-            Ne İzlesem?
+            {t('recommend.whatToWatch')}
           </span>
           <span className={`text-xs font-bold uppercase px-2 py-1 rounded-full ${
             type === 'film' ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-500/20 text-purple-400'
           }`}>
-            {type === 'film' ? 'Film' : 'Dizi'}
+            {type === 'film' ? t('recommend.filmBadge') : t('recommend.seriesBadge')}
           </span>
         </div>
 
@@ -147,13 +149,13 @@ export default async function NeIzlesemPage({ searchParams }: Props) {
               {'runtime' in item && item.runtime ? (
                 <span className="flex items-center gap-1.5">
                   <IconClock className="h-3.5 w-3.5" />
-                  {String(item.runtime)} dk
+                  {String(item.runtime)} {t('film.runtime')}
                 </span>
               ) : null}
               {'number_of_seasons' in item && item.number_of_seasons ? (
                 <span className="flex items-center gap-1.5">
                   <IconTv className="h-3.5 w-3.5" />
-                  {String(item.number_of_seasons)} sezon
+                  {String(item.number_of_seasons)} {t('series.seasons')}
                 </span>
               ) : null}
             </div>
@@ -172,7 +174,7 @@ export default async function NeIzlesemPage({ searchParams }: Props) {
                 className="flex items-center gap-2 px-6 py-3 rounded-full bg-[--accent] hover:bg-[--accent-hover] text-white font-semibold text-sm transition-all hover:scale-105 active:scale-95"
               >
                 <IconPlay className="h-4 w-4 fill-white" />
-                Sayfaya Git
+                {t('recommend.goToPage')}
               </Link>
 
               <BaskaOnerButton />
@@ -180,9 +182,9 @@ export default async function NeIzlesemPage({ searchParams }: Props) {
               {/* Tip + puan filtreleri */}
               <div className="flex flex-wrap gap-1 ml-auto">
                 <Link href={`/ne-izlesem?seed=${seed}&tip=film${tur ? `&tur=${tur}` : ''}${puan ? `&puan=${puan}` : ''}`}
-                  className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors border ${type === 'film' ? 'border-blue-400/60 text-blue-400 bg-blue-400/10' : 'border-white/20 text-white/50 hover:text-white hover:border-white/40'}`}>Film</Link>
+                  className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors border ${type === 'film' ? 'border-blue-400/60 text-blue-400 bg-blue-400/10' : 'border-white/20 text-white/50 hover:text-white hover:border-white/40'}`}>{t('recommend.filmBadge')}</Link>
                 <Link href={`/ne-izlesem?seed=${seed}&tip=dizi${tur ? `&tur=${tur}` : ''}${puan ? `&puan=${puan}` : ''}`}
-                  className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors border ${type === 'dizi' ? 'border-purple-400/60 text-purple-400 bg-purple-400/10' : 'border-white/20 text-white/50 hover:text-white hover:border-white/40'}`}>Dizi</Link>
+                  className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors border ${type === 'dizi' ? 'border-purple-400/60 text-purple-400 bg-purple-400/10' : 'border-white/20 text-white/50 hover:text-white hover:border-white/40'}`}>{t('recommend.seriesBadge')}</Link>
                 <Link href={`/ne-izlesem?seed=${seed}&tip=${tip ?? ''}&puan=${puan === '7' ? '' : '7'}${tur ? `&tur=${tur}` : ''}`}
                   className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors border ${puan === '7' ? 'border-[--gold]/60 text-[--gold] bg-[--gold]/10' : 'border-white/20 text-white/50 hover:text-white hover:border-white/40'}`}>7+</Link>
                 <Link href={`/ne-izlesem?seed=${seed}&tip=${tip ?? ''}&puan=${puan === '8' ? '' : '8'}${tur ? `&tur=${tur}` : ''}`}
@@ -202,7 +204,7 @@ export default async function NeIzlesemPage({ searchParams }: Props) {
                       : 'border-white/20 text-white/50 hover:text-white hover:border-white/40'
                   }`}
                 >
-                  {g.label}
+                  {t(g.labelKey)}
                 </Link>
               ))}
             </div>

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getPosterUrl, getMediaTitle, getMovieDetail, getSeriesDetail } from '@/lib/tmdb'
 import type { Metadata } from 'next'
+import { getTranslations, createT } from '@/lib/i18n'
 
 interface Props {
   params: Promise<{ username: string }>
@@ -19,12 +20,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 const PAGE_SIZE = 12
 
-function timeAgo(date: string) {
+function timeAgo(date: string, t: ReturnType<typeof createT>) {
   const diff = Math.floor((Date.now() - new Date(date).getTime()) / 1000)
-  if (diff < 60) return 'az önce'
-  if (diff < 3600) return `${Math.floor(diff / 60)} dk önce`
-  if (diff < 86400) return `${Math.floor(diff / 3600)} sa önce`
-  if (diff < 604800) return `${Math.floor(diff / 86400)} gün önce`
+  if (diff < 60) return t('profile.reviewsTab.justNow')
+  if (diff < 3600) return t('profile.reviewsTab.minutesAgo', { count: Math.floor(diff / 60) })
+  if (diff < 86400) return t('profile.reviewsTab.hoursAgo', { count: Math.floor(diff / 3600) })
+  if (diff < 604800) return t('profile.reviewsTab.daysAgo', { count: Math.floor(diff / 86400) })
   return new Date(date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
@@ -35,6 +36,7 @@ export default async function ProfilYorumlarPage({ params, searchParams }: Props
   const offset = (page - 1) * PAGE_SIZE
 
   const supabase = await createClient()
+  const { t } = await getTranslations()
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -96,18 +98,18 @@ export default async function ProfilYorumlarPage({ params, searchParams }: Props
         }
         <div>
           <h1 className="text-xl font-bold text-white">
-            {profile.full_name ? `${profile.full_name}'in` : `@${username}'in`} Yorumları
+            {t('profile.reviewsTab.title', { name: profile.full_name ? `${profile.full_name}'in` : `@${username}'in` })}
           </h1>
-          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>{count ?? 0} yorum</p>
+          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>{t('profile.reviewsTab.reviewCount', { count: count ?? 0 })}</p>
         </div>
       </div>
 
       {/* Filtreler */}
       <div className="flex flex-wrap gap-2 mb-4">
         {[
-          { id: 'hepsi', label: 'Tümü' },
-          { id: 'film', label: '🎬 Film' },
-          { id: 'dizi', label: '📺 Dizi' },
+          { id: 'hepsi', label: t('common.all') },
+          { id: 'film', label: `🎬 ${t('film.badge')}` },
+          { id: 'dizi', label: `📺 ${t('series.badge')}` },
         ].map(t => (
           <Link key={t.id} href={buildHref({ tip: t.id, sayfa: '1' })}
             className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
@@ -121,10 +123,10 @@ export default async function ProfilYorumlarPage({ params, searchParams }: Props
 
       <div className="flex flex-wrap gap-2 mb-6">
         {[
-          { id: 'yeni', label: 'En Yeni' },
-          { id: 'puan-yuksek', label: '★ Yüksek Puan' },
-          { id: 'puan-dusuk', label: '★ Düşük Puan' },
-          { id: 'begeni', label: '❤️ En Beğenilen' },
+          { id: 'yeni', label: t('list.sortNewest') },
+          { id: 'puan-yuksek', label: `★ ${t('profile.reviewsTab.highRating')}` },
+          { id: 'puan-dusuk', label: `★ ${t('profile.reviewsTab.lowRating')}` },
+          { id: 'begeni', label: `❤️ ${t('profile.reviewsTab.mostLiked')}` },
         ].map(s => (
           <Link key={s.id} href={buildHref({ sirala: s.id, sayfa: '1' })}
             className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
@@ -141,7 +143,7 @@ export default async function ProfilYorumlarPage({ params, searchParams }: Props
         <div className="text-center py-20 rounded-2xl"
           style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
           <p className="text-4xl mb-3">✍️</p>
-          <p style={{ color: 'rgba(255,255,255,0.4)' }}>Henüz yorum yok.</p>
+          <p style={{ color: 'rgba(255,255,255,0.4)' }}>{t('profile.reviewsTab.empty')}</p>
         </div>
       ) : (
         <>
@@ -172,16 +174,16 @@ export default async function ProfilYorumlarPage({ params, searchParams }: Props
                   </div>
                   <div className="flex items-center gap-2 mb-1.5">
                     <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${r.media_type === 'film' ? 'bg-blue-500/15 text-blue-400' : 'bg-purple-500/15 text-purple-400'}`}>
-                      {r.media_type === 'film' ? 'Film' : 'Dizi'}
+                      {r.media_type === 'film' ? t('film.badge') : t('series.badge')}
                     </span>
                     {r.has_spoiler && (
                       <span className="text-[10px] px-1.5 py-0.5 rounded font-medium"
                         style={{ background: 'rgba(248,113,113,0.1)', color: '#f87171' }}>
-                        ⚠️ Spoiler
+                        ⚠️ {t('profile.reviewsTab.spoiler')}
                       </span>
                     )}
                     <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.3)' }}>
-                      {timeAgo(r.created_at)}
+                      {timeAgo(r.created_at, t)}
                     </span>
                     {(r.likes_count ?? 0) > 0 && (
                       <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.3)' }}>
@@ -206,7 +208,7 @@ export default async function ProfilYorumlarPage({ params, searchParams }: Props
                 <Link href={buildHref({ sayfa: String(page - 1) })}
                   className="px-4 py-2 rounded-xl text-sm transition-colors hover:bg-white/5"
                   style={{ color: 'rgba(255,255,255,0.4)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  ← Önceki
+                  ← {t('common.prev')}
                 </Link>
               )}
               <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>{page} / {totalPages}</span>
@@ -214,7 +216,7 @@ export default async function ProfilYorumlarPage({ params, searchParams }: Props
                 <Link href={buildHref({ sayfa: String(page + 1) })}
                   className="px-4 py-2 rounded-xl text-sm transition-colors hover:bg-white/5"
                   style={{ color: 'rgba(255,255,255,0.4)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  Sonraki →
+                  {t('common.next')} →
                 </Link>
               )}
             </div>

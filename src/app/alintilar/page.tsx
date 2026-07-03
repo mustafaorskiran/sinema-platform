@@ -3,6 +3,7 @@ import Link from 'next/link'
 import UserHoverCard from '@/components/UserHoverCard'
 import QuoteLikeButton from '@/components/QuoteLikeButton'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 export const metadata: Metadata = {
   title: 'Film & Dizi Alıntıları | Sinezon',
@@ -21,6 +22,7 @@ interface Quote {
 }
 
 export default async function AlintilarPage() {
+  const { t } = await getTranslations()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -50,9 +52,9 @@ export default async function AlintilarPage() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
       {/* Başlık */}
       <div className="mb-10">
-        <h1 className="text-3xl font-bold text-white">Film &amp; Dizi Alıntıları</h1>
+        <h1 className="text-3xl font-bold text-white">{t('quotes.title')}</h1>
         <p className="text-[--text-secondary] text-sm mt-1">
-          Sinezon topluluğunun en sevdiği sahne diyalogları ve unutulmaz sözler
+          {t('quotes.subtitle')}
         </p>
       </div>
 
@@ -67,7 +69,7 @@ export default async function AlintilarPage() {
           }}
         >
           <p className="text-[9.5px] font-bold uppercase tracking-[0.2em] mb-5" style={{ color: 'rgba(212,168,67,0.6)' }}>
-            ✦ En Çok Beğenilen
+            ✦ {t('quotes.mostLiked')}
           </p>
           <span
             className="absolute top-2 right-5 text-[9rem] font-serif leading-none select-none pointer-events-none"
@@ -89,11 +91,11 @@ export default async function AlintilarPage() {
               href={`/${heroQuote.media_type === 'film' ? 'film' : 'dizi'}/${heroQuote.media_id}`}
               className="text-sm text-[--accent] hover:underline font-medium"
             >
-              {heroQuote.media_type === 'film' ? '🎬 Filme Git →' : '📺 Diziye Git →'}
+              {heroQuote.media_type === 'film' ? `🎬 ${t('quotes.goToMovie')}` : `📺 ${t('quotes.goToSeries')}`}
             </Link>
             {heroQuote.profiles?.username && (
               <span className="text-xs text-[--text-secondary]">
-                paylaşan:{' '}
+                {t('quotes.sharedBy')}{' '}
                 <UserHoverCard username={heroQuote.profiles.username}>
                   <Link href={`/profil/${heroQuote.profiles.username}`} className="hover:text-white transition-colors">
                     @{heroQuote.profiles.username}
@@ -111,7 +113,7 @@ export default async function AlintilarPage() {
       ) : (
         <div className="mb-10 rounded-2xl p-10 text-center text-[--text-secondary]"
           style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-          Henüz alıntı eklenmemiş.
+          {t('quotes.empty')}
         </div>
       )}
 
@@ -149,7 +151,7 @@ export default async function AlintilarPage() {
                     href={`/${quote.media_type === 'film' ? 'film' : 'dizi'}/${quote.media_id}`}
                     className="text-xs text-[--accent] hover:underline font-medium"
                   >
-                    {quote.media_type === 'film' ? '🎬 Film' : '📺 Dizi'} →
+                    {quote.media_type === 'film' ? `🎬 ${t('quotes.movie')}` : `📺 ${t('quotes.series')}`} →
                   </Link>
                   <QuoteLikeButton
                     quoteId={quote.id}
@@ -176,7 +178,7 @@ export default async function AlintilarPage() {
       {allQuotes.length === 0 && (
         <div className="rounded-2xl p-16 text-center text-[--text-secondary]"
           style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-          Henüz alıntı eklenmemiş.
+          {t('quotes.empty')}
         </div>
       )}
     </div>

@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import ListCard from './ListCard'
 import EditorialCard from './EditorialCard'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 export const metadata: Metadata = {
   title: 'Listeler',
@@ -29,6 +30,7 @@ export default async function ListerPage({ searchParams }: Props) {
   const page   = Math.max(1, Number(sayfa) || 1)
   const offset = (page - 1) * PAGE_SIZE
   const supabase = await createClient()
+  const { t } = await getTranslations()
   const { data: { user } } = await supabase.auth.getUser()
 
   const now = new Date().toISOString()
@@ -206,14 +208,14 @@ export default async function ListerPage({ searchParams }: Props) {
         <div>
           <div className="flex items-center gap-3 mb-1">
             <IconList className="h-7 w-7 text-[--accent]" />
-            <h1 className="text-2xl font-bold text-white">Listeler</h1>
+            <h1 className="text-2xl font-bold text-white">{t('list.lists')}</h1>
           </div>
-          <p className="text-sm text-[--text-secondary] ml-10">Editöryal seçkiler ve topluluk listeleri</p>
+          <p className="text-sm text-[--text-secondary] ml-10">{t('list.pageSubtitle')}</p>
         </div>
         {user && (
           <Link href="/liste/yeni"
             className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[--accent] hover:bg-[--accent-hover] text-white text-sm font-semibold transition-colors shadow-lg shadow-[--accent]/20">
-            <IconPlus className="h-4 w-4" /> Liste Oluştur
+            <IconPlus className="h-4 w-4" /> {t('list.new')}
           </Link>
         )}
       </div>
@@ -223,16 +225,16 @@ export default async function ListerPage({ searchParams }: Props) {
         <section className="mb-12">
           <div className="flex items-center gap-2 mb-5">
             <IconStar className="h-5 w-5 fill-[--gold] text-[--gold]" />
-            <h2 className="text-lg font-bold text-white">Haftanın Listeleri</h2>
+            <h2 className="text-lg font-bold text-white">{t('list.weeklyLists')}</h2>
             <span className="text-[10px] font-bold bg-[--gold]/20 text-[--gold] px-2 py-0.5 rounded-full ml-1">
-              Editör Seçimi
+              {t('list.editorChoice')}
             </span>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {featuredLists.map((list: any) => (
               <div key={list.id} className="relative">
                 <div className="absolute -top-2 -right-2 z-10 bg-[--gold] text-black text-[9px] font-black px-2 py-0.5 rounded-full shadow">
-                  ★ Seçildi
+                  ★ {t('list.selected')}
                 </div>
                 <ListCard
                   list={list}
@@ -251,8 +253,8 @@ export default async function ListerPage({ searchParams }: Props) {
       <section className="mb-14">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-lg font-bold text-white">✦ Editöryal Listeler</h2>
-            <p className="text-xs text-[--text-secondary] mt-0.5">Sinezon ekibi tarafından hazırlanan özel seçkiler</p>
+            <h2 className="text-lg font-bold text-white">✦ {t('list.editorialLists')}</h2>
+            <p className="text-xs text-[--text-secondary] mt-0.5">{t('list.editorialListsDesc')}</p>
           </div>
         </div>
 
@@ -282,7 +284,7 @@ export default async function ListerPage({ searchParams }: Props) {
           </div>
         ) : (
           <div className="py-12 text-center text-[--text-secondary] rounded-2xl rounded-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-            Bu kategoride editöryal liste bulunamadı.
+            {t('list.noEditorialInCategory')}
           </div>
         )}
       </section>
@@ -293,14 +295,14 @@ export default async function ListerPage({ searchParams }: Props) {
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">
               <IconFire className="h-5 w-5 text-[--accent]" />
-              <h2 className="text-lg font-bold text-white">Bu Hafta Trend</h2>
+              <h2 className="text-lg font-bold text-white">{t('list.trendThisWeek')}</h2>
             </div>
             <Link
               href="/listeler?sirala=trend"
               className="text-xs font-medium hover:underline"
               style={{ color: 'var(--accent)' }}
             >
-              Tümünü Gör →
+              {t('common.seeAll')} →
             </Link>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -321,7 +323,7 @@ export default async function ListerPage({ searchParams }: Props) {
       {/* ── Bölüm ayırıcı ── */}
       <div className="flex items-center gap-4 mb-8">
         <div className="flex-1 h-px bg-[--border]" />
-        <span className="text-xs text-[--text-secondary] uppercase tracking-widest font-semibold">Topluluk Listeleri</span>
+        <span className="text-xs text-[--text-secondary] uppercase tracking-widest font-semibold">{t('list.communityLists')}</span>
         <div className="flex-1 h-px bg-[--border]" />
       </div>
 
@@ -331,7 +333,7 @@ export default async function ListerPage({ searchParams }: Props) {
           <div className="relative">
             <IconSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[--text-secondary]" />
             <input name="q" type="search" defaultValue={q ?? ''}
-              placeholder="Liste ara..."
+              placeholder={t('list.searchPlaceholder')}
               className="w-full rounded-xl py-2.5 pl-10 pr-4 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
             />
             {kategori && <input type="hidden" name="kategori" value={kategori} />}
@@ -341,9 +343,9 @@ export default async function ListerPage({ searchParams }: Props) {
 
         <div className="flex items-center gap-1 rounded-xl p-1" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           {[
-            { key: 'yeni',    icon: IconClock,       label: 'En Yeni' },
-            { key: 'populer', icon: IconFire,         label: 'Popüler' },
-            { key: 'trend',   icon: IconTrendingUp,   label: 'Trend' },
+            { key: 'yeni',    icon: IconClock,       label: t('list.sortNewest') },
+            { key: 'populer', icon: IconFire,         label: t('list.sortPopular') },
+            { key: 'trend',   icon: IconTrendingUp,   label: t('list.sortTrend') },
           ].map(({ key, icon: Icon, label }) => (
             <Link key={key}
               href={`/listeler?${q ? `q=${encodeURIComponent(q)}&` : ''}sirala=${key}${kategori ? `&kategori=${encodeURIComponent(kategori)}` : ''}`}
@@ -355,7 +357,7 @@ export default async function ListerPage({ searchParams }: Props) {
 
         {count != null && sirala !== 'trend' && (
           <span className="text-sm text-[--text-secondary] self-center">
-            {count.toLocaleString('tr-TR')} liste
+            {t('list.countSuffix', { count: count.toLocaleString('tr-TR') })}
           </span>
         )}
       </div>
@@ -365,13 +367,13 @@ export default async function ListerPage({ searchParams }: Props) {
         <div className="text-center py-24 text-[--text-secondary] rounded-2xl rounded-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <IconList className="h-12 w-12 mx-auto mb-4 opacity-30" />
           {sirala === 'trend'
-            ? <p className="text-lg font-medium text-white mb-2">Bu hafta henüz trend liste yok</p>
-            : <p className="text-lg font-medium text-white mb-2">Henüz liste yok</p>
+            ? <p className="text-lg font-medium text-white mb-2">{t('list.noTrendThisWeek')}</p>
+            : <p className="text-lg font-medium text-white mb-2">{t('list.noListsYet')}</p>
           }
           {user && (
             <Link href="/liste/yeni"
               className="inline-block mt-4 bg-[--accent] text-white text-sm font-semibold px-6 py-2.5 rounded-full hover:bg-[--accent-hover] transition-colors">
-              İlk Listeyi Oluştur
+              {t('list.createFirstList')}
             </Link>
           )}
         </div>
@@ -396,7 +398,7 @@ export default async function ListerPage({ searchParams }: Props) {
           {page > 1 && (
             <Link href={`${baseUrl}&sayfa=${page - 1}`}
               className="px-4 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white hover:border-[--accent]/50 transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-              ← Önceki
+              ← {t('common.prev')}
             </Link>
           )}
           <span className="px-4 py-2 text-sm text-[--text-secondary] flex items-center gap-1">
@@ -405,7 +407,7 @@ export default async function ListerPage({ searchParams }: Props) {
           {page < totalPages && (
             <Link href={`${baseUrl}&sayfa=${page + 1}`}
               className="px-4 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white hover:border-[--accent]/50 transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-              Sonraki →
+              {t('common.next')} →
             </Link>
           )}
         </div>

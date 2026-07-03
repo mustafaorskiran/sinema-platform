@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getCollection } from '@/lib/tmdb'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -18,6 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function KoleksiyonPage({ params }: Props) {
+  const { t } = await getTranslations()
   const { id } = await params
   const colId = Number(id)
   if (!colId) notFound()
@@ -53,18 +55,18 @@ export default async function KoleksiyonPage({ params }: Props) {
       <div className="flex flex-wrap gap-4 mb-6">
         <div className="rounded-xl px-5 py-3 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(212,168,67,0.1)' }}>
           <p className="text-xl font-bold text-white">{sorted.length}</p>
-          <p className="text-xs text-[--text-secondary]">Film</p>
+          <p className="text-xs text-[--text-secondary]">{t('film.badge')}</p>
         </div>
         {avgVote > 0 && (
           <div className="rounded-xl px-5 py-3 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(212,168,67,0.1)' }}>
             <p className="text-xl font-bold text-[--gold]">★ {avgVote.toFixed(1)}</p>
-            <p className="text-xs text-[--text-secondary]">Ortalama Puan</p>
+            <p className="text-xs text-[--text-secondary]">{t('collection.avgRating')}</p>
           </div>
         )}
         {sorted[0]?.release_date && (
           <div className="rounded-xl px-5 py-3 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(212,168,67,0.1)' }}>
             <p className="text-xl font-bold text-white">{sorted[0].release_date.slice(0, 4)}</p>
-            <p className="text-xs text-[--text-secondary]">İlk Film</p>
+            <p className="text-xs text-[--text-secondary]">{t('collection.firstFilm')}</p>
           </div>
         )}
       </div>
@@ -74,7 +76,7 @@ export default async function KoleksiyonPage({ params }: Props) {
       )}
 
       {/* Film listesi */}
-      <h2 className="text-xl font-bold text-white mb-5">Filmler</h2>
+      <h2 className="text-xl font-bold text-white mb-5">{t('nav.films')}</h2>
       <div className="space-y-3">
         {sorted.map((part, idx) => (
           <Link key={part.id} href={`/film/${part.id}`}

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 export const metadata: Metadata = { title: 'Forum | Sinezon' }
 
@@ -23,6 +24,7 @@ export default async function ForumPage({ searchParams }: Props) {
   const kategoriFilter = kategori?.trim() ?? ''
 
   const supabase = await createClient()
+  const { t } = await getTranslations()
 
   // Kategoriler her zaman göster
   const categoriesPromise = supabase
@@ -60,14 +62,14 @@ export default async function ForumPage({ searchParams }: Props) {
       {/* Başlık */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-white">Forum</h1>
-          <p className="text-[--text-secondary] text-sm mt-1">Sinema hakkında konuş, tartış, keşfet</p>
+          <h1 className="text-3xl font-bold text-white">{t('forum.forumTitle')}</h1>
+          <p className="text-[--text-secondary] text-sm mt-1">{t('forum.forumSubtitle')}</p>
         </div>
         <Link
           href="/forum/yeni"
           className="bg-[--accent] hover:bg-[--accent-hover] text-white text-sm font-semibold px-5 py-2.5 rounded-full transition-colors shrink-0"
         >
-          + Konu Aç
+          + {t('forum.newThread')}
         </Link>
       </div>
 
@@ -81,7 +83,7 @@ export default async function ForumPage({ searchParams }: Props) {
             name="q"
             type="search"
             defaultValue={query}
-            placeholder="Başlık veya içerikte ara..."
+            placeholder={t('forum.searchPlaceholder')}
             className="w-full pl-9 pr-16 py-2.5 rounded-xl text-white placeholder-[--text-secondary] text-sm focus:outline-none transition-colors"
             style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.09)' }}
           />
@@ -91,13 +93,13 @@ export default async function ForumPage({ searchParams }: Props) {
             )}
             <button type="submit" className="text-xs font-medium px-2.5 py-1 rounded-lg transition-colors"
               style={{ background: 'var(--accent)', color: '#fff' }}>
-              Ara
+              {t('forum.search')}
             </button>
           </div>
         </div>
         {query && (
           <p className="text-xs mt-2" style={{ color: 'rgba(255,255,255,0.3)' }}>
-            <span style={{ color: 'var(--gold)' }}>{(recentThreads ?? []).length}</span> sonuç bulundu
+            <span style={{ color: 'var(--gold)' }}>{(recentThreads ?? []).length}</span> {t('forum.resultsFound')}
           </p>
         )}
       </form>
@@ -114,7 +116,7 @@ export default async function ForumPage({ searchParams }: Props) {
                 ? { background: 'var(--accent)', color: '#fff' }
                 : { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.08)' }}
             >
-              Tümü
+              {t('forum.allCategories')}
             </Link>
             {(categories ?? []).map((cat) => (
               <Link
@@ -148,7 +150,7 @@ export default async function ForumPage({ searchParams }: Props) {
                       <p className="font-semibold text-white group-hover:text-[--accent] transition-colors">{cat.name}</p>
                       <p className="text-xs text-[--text-secondary] mt-0.5 line-clamp-1">{cat.description}</p>
                     </div>
-                    <span className="text-xs text-[--text-secondary] shrink-0">{count} konu</span>
+                    <span className="text-xs text-[--text-secondary] shrink-0">{t('forum.threadCount', { count })}</span>
                   </Link>
                 )
               })}
@@ -162,15 +164,15 @@ export default async function ForumPage({ searchParams }: Props) {
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-xs font-semibold uppercase tracking-widest text-[--text-secondary]">
             {query
-              ? `"${query}" için sonuçlar`
+              ? t('forum.resultsForQuery', { query })
               : kategoriFilter
-              ? `${(categories ?? []).find(c => c.slug === kategoriFilter)?.name ?? kategoriFilter} Konuları`
-              : 'Son Konular'}
+              ? t('forum.categoryThreads', { name: (categories ?? []).find(c => c.slug === kategoriFilter)?.name ?? kategoriFilter })
+              : t('forum.recentThreads')}
           </h2>
           {!query && (
             <Link href="/forum/yeni" className="text-xs font-medium transition-colors hover:text-white"
               style={{ color: 'rgba(255,255,255,0.35)' }}>
-              + Konu Aç
+              + {t('forum.newThread')}
             </Link>
           )}
         </div>
@@ -178,7 +180,7 @@ export default async function ForumPage({ searchParams }: Props) {
           style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.04)' }}>
           {(recentThreads ?? []).length === 0 ? (
             <div className="py-12 text-center text-[--text-secondary] text-sm">
-              {query ? `"${query}" için sonuç bulunamadı.` : 'Henüz konu açılmamış.'}
+              {query ? t('forum.noResultsForQuery', { query }) : t('forum.noThreadsYet')}
             </div>
           ) : (
             (recentThreads ?? []).map((thread) => {
@@ -207,7 +209,7 @@ export default async function ForumPage({ searchParams }: Props) {
                       {timeAgo(thread.last_reply_at)}
                     </p>
                   </div>
-                  <span className="text-xs text-[--text-secondary] shrink-0">{thread.reply_count} yanıt</span>
+                  <span className="text-xs text-[--text-secondary] shrink-0">{t('forum.replyCount', { count: thread.reply_count })}</span>
                 </Link>
               )
             })

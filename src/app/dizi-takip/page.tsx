@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { getTranslations } from '@/lib/i18n'
 import { getSeriesDetail, getPosterUrl, getMediaTitle } from '@/lib/tmdb'
 import EpisodeUpdater from './EpisodeUpdater'
 import type { Metadata } from 'next'
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 
 export default async function DiziTakipPage() {
   const supabase = await createClient()
+  const { t } = await getTranslations()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/giris?next=/dizi-takip')
 
@@ -54,14 +56,14 @@ export default async function DiziTakipPage() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
         <p className="text-5xl mb-4">📺</p>
-        <h1 className="text-2xl font-bold text-white mb-2">Henüz dizi izlemiyorsun</h1>
+        <h1 className="text-2xl font-bold text-white mb-2">{t('seriesTracking.emptyTitle')}</h1>
         <p className="text-sm mb-6" style={{ color: 'rgba(255,255,255,0.4)' }}>
-          Dizi sayfalarında "İzliyorum" ekle veya bölüm işaretle.
+          {t('seriesTracking.emptyDesc')}
         </p>
         <Link href="/diziler"
           className="inline-block px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:scale-105"
           style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)' }}>
-          Dizileri Keşfet
+          {t('seriesTracking.discoverSeries')}
         </Link>
       </div>
     )
@@ -119,9 +121,9 @@ export default async function DiziTakipPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
       <div className="mb-8">
-        <h1 className="text-3xl font-black text-white mb-1">📺 Dizi Takip</h1>
+        <h1 className="text-3xl font-black text-white mb-1">{t('seriesTracking.title')}</h1>
         <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
-          {shows.length} dizi izliyorsun
+          {t('seriesTracking.watchingCount', { count: shows.length })}
         </p>
       </div>
 
@@ -142,15 +144,15 @@ export default async function DiziTakipPage() {
                 {show.title}
               </Link>
               <p className="text-[11px] mb-2" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                {show.totalSeasons} sezon · {show.totalEpisodes} bölüm
-                {show.status === 'Ended' && <span className="ml-1.5 px-1.5 py-0.5 rounded text-[9px] font-medium" style={{ background: 'rgba(74,222,128,0.1)', color: '#4ade80' }}>Final</span>}
-                {show.status === 'Returning Series' && <span className="ml-1.5 px-1.5 py-0.5 rounded text-[9px] font-medium" style={{ background: 'rgba(96,165,250,0.1)', color: '#60a5fa' }}>Devam ediyor</span>}
+                {t('seriesTracking.seasonsEpisodes', { seasons: show.totalSeasons, episodes: show.totalEpisodes })}
+                {show.status === 'Ended' && <span className="ml-1.5 px-1.5 py-0.5 rounded text-[9px] font-medium" style={{ background: 'rgba(74,222,128,0.1)', color: '#4ade80' }}>{t('seriesTracking.ended')}</span>}
+                {show.status === 'Returning Series' && <span className="ml-1.5 px-1.5 py-0.5 rounded text-[9px] font-medium" style={{ background: 'rgba(96,165,250,0.1)', color: '#60a5fa' }}>{t('seriesTracking.ongoing')}</span>}
               </p>
 
               {show.lastSeason && (
                 <div className="mb-1.5">
                   <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                    Son: <span className="text-white font-semibold">S{String(show.lastSeason).padStart(2,'0')}B{String(show.lastEpisode).padStart(2,'0')}</span>
+                    {t('seriesTracking.lastLabel')} <span className="text-white font-semibold">S{String(show.lastSeason).padStart(2,'0')}B{String(show.lastEpisode).padStart(2,'0')}</span>
                     {show.lastWatchedAt && (
                       <span className="ml-1.5" style={{ color: 'rgba(255,255,255,0.25)' }}>
                         · {new Date(show.lastWatchedAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' })}
@@ -170,7 +172,7 @@ export default async function DiziTakipPage() {
               />
 
               {!show.lastSeason && !show.nextSeason && (
-                <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>Henüz bölüm işaretlenmedi</p>
+                <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>{t('seriesTracking.noEpisodeMarked')}</p>
               )}
             </div>
           </div>

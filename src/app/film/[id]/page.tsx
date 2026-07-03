@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import { getTranslations } from '@/lib/i18n'
 import SinezonStats from '@/components/SinezonStats'
 import { getMovieDetail, getSimilarMovies, getBackdropUrl, getPosterUrl, getMediaTitle, getMediaYear, getMovieWatchProviders, getMovieImages, getMovieKeywords, getMovieCertification, getMovieVideos, getPersonCredits } from '@/lib/tmdb'
 import { movieGenreToSlug } from '@/lib/genres'
@@ -48,6 +49,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
+  const { t } = await getTranslations()
   try {
     const movie = await getMovieDetail(Number(id))
     const title = getMediaTitle(movie)
@@ -55,7 +57,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const genreNames = (movie.genres ?? []).slice(0, 2).map((g: { name: string }) => g.name).join(', ')
     const description = movie.overview
       ? movie.overview.slice(0, 155)
-      : `${title}${year ? ` (${year})` : ''}${genreNames ? ' — ' + genreNames : ''} · Sinezon'da puan ver ve yorum yap.`
+      : `${title}${year ? ` (${year})` : ''}${genreNames ? ' — ' + genreNames : ''} · ${t('film.metaDescriptionSuffix')}`
     const posterUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w300${movie.poster_path}` : ''
     const ogParams = new URLSearchParams({ title, type: 'film', ...(year && { year }), ...(posterUrl && { poster: posterUrl }) })
     const ogImage = `/api/og?${ogParams.toString()}`
@@ -78,12 +80,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     }
   } catch {
-    return { title: 'Film bulunamadı' }
+    return { title: t('film.notFound') }
   }
 }
 
 export default async function FilmPage({ params, searchParams }: Props) {
   const { id } = await params
+  const { t } = await getTranslations()
   const { siralama = 'yeni' } = (await searchParams) ?? {}
   const movieId = Number(id)
 
@@ -362,7 +365,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
     ...(trailer && {
       trailer: {
         '@type': 'VideoObject',
-        name: `${title} — Fragman`,
+        name: `${title} — ${t('film.trailer')}`,
         embedUrl: `https://www.youtube.com/embed/${trailer.key}`,
         thumbnailUrl: `https://img.youtube.com/vi/${trailer.key}/maxresdefault.jpg`,
       }
@@ -396,7 +399,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
                 <img src={poster} alt={title} className="w-full h-full object-cover" />
               ) : (
                 <div className="aspect-[2/3] bg-[--bg-card] flex items-center justify-center text-[--text-secondary] text-sm">
-                  Afiş yok
+                  {t('film.poster')}
                 </div>
               )}
             </div>
@@ -416,7 +419,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
             {anniversary && (
               <div className="mb-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold animate-pulse"
                 style={{ background: 'rgba(212,168,67,0.15)', border: '1px solid rgba(212,168,67,0.3)', color: '#D4A843' }}>
-                🎂 {anniversary.type === 'exact' ? `${anniversary.years}. yıl dönümü bugün!` : `${anniversary.years}. yıl dönümü bu hafta!`}
+                🎂 {anniversary.type === 'exact' ? t('film.anniversaryToday', { years: anniversary.years }) : t('film.anniversaryWeek', { years: anniversary.years })}
               </div>
             )}
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight tracking-tight">{title}</h1>
@@ -439,7 +442,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
               {movie.runtime && (
                 <>
                   <span className="opacity-40">·</span>
-                  <span>{movie.runtime} dk</span>
+                  <span>{movie.runtime} {t('film.runtime')}</span>
                 </>
               )}
               {certification && (
@@ -522,13 +525,13 @@ export default async function FilmPage({ params, searchParams }: Props) {
 
             {/* Paylaş + Karşılaştır */}
             <div className="mt-4 flex flex-wrap items-center gap-3">
-              <ShareButtons path={`/film/${movieId}`} title={`${title} — SineMa'da izle`} />
+              <ShareButtons path={`/film/${movieId}`} title={`${title} — ${t('film.shareSuffix')}`} />
               <a
                 href={`/karsilastir?a=${movieId}&ta=film`}
                 className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition-all hover:text-white hover:scale-105"
                 style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.55)' }}
               >
-                ⚖️ Karşılaştır
+                ⚖️ {t('film.compare')}
               </a>
               {user && (
                 <FilmOnerButton
@@ -588,34 +591,34 @@ export default async function FilmPage({ params, searchParams }: Props) {
                 style={{ borderColor: 'rgba(212,168,67,0.08)' }}>
                 {[
                   movie.release_date && {
-                    label: 'Yayın Tarihi',
+                    label: t('film.labelReleaseDate'),
                     value: new Date(movie.release_date).toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' }),
                     link: null,
                   },
                   movie.runtime && {
-                    label: 'Süre',
-                    value: movie.runtime >= 60 ? `${Math.floor(movie.runtime / 60)}s ${movie.runtime % 60}dk` : `${movie.runtime} dk`,
+                    label: t('film.labelRuntime'),
+                    value: movie.runtime >= 60 ? t('film.durationFormat', { h: Math.floor(movie.runtime / 60), m: movie.runtime % 60 }) : `${movie.runtime} ${t('film.runtime')}`,
                     link: null,
                   },
                   (movie as any).spoken_languages?.[0] && {
-                    label: 'Orijinal Dil',
+                    label: t('film.labelLanguage'),
                     value: ((movie as any).spoken_languages as Array<{ english_name?: string; name: string }>)
                       .slice(0, 2).map(l => l.english_name || l.name).join(', '),
                     link: null,
                   },
                   (movie as any).production_countries?.[0] && {
-                    label: 'Ülke',
+                    label: t('film.labelCountry'),
                     value: ((movie as any).production_countries as Array<{ name: string }>)
                       .slice(0, 2).map(c => c.name).join(', '),
                     link: null,
                   },
                   director && {
-                    label: 'Yönetmen',
+                    label: t('film.director'),
                     value: director.name,
                     link: `/oyuncu/${director.id}`,
                   },
                   (movie as any).production_companies?.[0] && {
-                    label: 'Yapımcı',
+                    label: t('film.producer'),
                     value: ((movie as any).production_companies as Array<{ name: string }>)
                       .slice(0, 2).map(c => c.name).join(', '),
                     link: null,
@@ -659,7 +662,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
             {/* Production Companies */}
             {movie.production_companies && movie.production_companies.length > 0 && (
               <div className="mt-4 flex flex-wrap items-center gap-2">
-                <span className="text-[10px] font-bold uppercase tracking-[0.12em]" style={{ color: 'rgba(212,168,67,0.4)' }}>Yapım:</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.12em]" style={{ color: 'rgba(212,168,67,0.4)' }}>{t('film.productionLabel')}</span>
                 {movie.production_companies.slice(0, 4).map((c, i) => (
                   <span key={c.id}>
                     {i > 0 && <span className="mx-1" style={{ color: 'rgba(255,255,255,0.15)' }}>·</span>}
@@ -689,7 +692,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
             {movie.production_countries && movie.production_countries.length > 0 && (
               <div className="mt-5">
                 <div className="flex items-center gap-3 mb-2.5">
-                  <p className="text-[9.5px] font-bold uppercase tracking-[0.18em]" style={{ color: 'rgba(212,168,67,0.5)' }}>Çekim Ülkeleri</p>
+                  <p className="text-[9.5px] font-bold uppercase tracking-[0.18em]" style={{ color: 'rgba(212,168,67,0.5)' }}>{t('film.filmingCountries')}</p>
                   <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, rgba(212,168,67,0.15) 0%, transparent 100%)' }} />
                 </div>
                 <div className="flex flex-wrap gap-1.5">
@@ -712,12 +715,12 @@ export default async function FilmPage({ params, searchParams }: Props) {
           <div className="mt-12">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
-              <h2 className="text-xl font-bold text-white tracking-tight">Fragman</h2>
+              <h2 className="text-xl font-bold text-white tracking-tight">{t('film.trailer')}</h2>
             </div>
             <div className="relative w-full rounded-2xl overflow-hidden" style={{ paddingBottom: '56.25%', background: 'var(--bg-card)' }}>
               <iframe
                 src={`https://www.youtube.com/embed/${trailer.key}?modestbranding=1&rel=0`}
-                title={`${title} — Fragman`}
+                title={`${title} — ${t('film.trailer')}`}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 className="absolute inset-0 w-full h-full border-0"
                 allowFullScreen
@@ -728,14 +731,14 @@ export default async function FilmPage({ params, searchParams }: Props) {
 
         {/* Sayfa içi navigasyon */}
         <PageNav sections={[
-          { id: 'oyuncular', label: '🎭 Oyuncular' },
-          { id: 'odüller', label: '🏆 Ödüller' },
-          { id: 'puan-dagilimi', label: '📊 Puanlar' },
-          ...(videos.length > 0 ? [{ id: 'videolar', label: '🎬 Videolar' }] : []),
-          ...(backdrops.length > 0 || posters.length > 0 ? [{ id: 'galeri', label: '🖼 Galeri' }] : []),
-          { id: 'trivia', label: '💡 Trivia' },
-          { id: 'yorumlar', label: '💬 Yorumlar' },
-          { id: 'benzer', label: '🎞 Benzer' },
+          { id: 'oyuncular', label: `🎭 ${t('film.cast')}` },
+          { id: 'odüller', label: `🏆 ${t('film.awardsNav')}` },
+          { id: 'puan-dagilimi', label: `📊 ${t('film.ratingsNav')}` },
+          ...(videos.length > 0 ? [{ id: 'videolar', label: `🎬 ${t('film.videosNav')}` }] : []),
+          ...(backdrops.length > 0 || posters.length > 0 ? [{ id: 'galeri', label: `🖼 ${t('film.galleryNav')}` }] : []),
+          { id: 'trivia', label: `💡 ${t('film.triviaNav')}` },
+          { id: 'yorumlar', label: `💬 ${t('film.reviewsNav')}` },
+          { id: 'benzer', label: `🎞 ${t('film.similarNav')}` },
         ]} />
 
         {/* Cast & Crew */}
@@ -747,15 +750,15 @@ export default async function FilmPage({ params, searchParams }: Props) {
             <div className="mt-6 rounded-2xl overflow-hidden"
               style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(212,168,67,0.1)' }}>
               <div className="px-4 py-3" style={{ borderBottom: '1px solid rgba(212,168,67,0.08)', background: 'rgba(212,168,67,0.02)' }}>
-                <p className="text-[9.5px] font-bold uppercase tracking-[0.18em]" style={{ color: 'rgba(212,168,67,0.5)' }}>Yapım Ekibi</p>
+                <p className="text-[9.5px] font-bold uppercase tracking-[0.18em]" style={{ color: 'rgba(212,168,67,0.5)' }}>{t('film.crew')}</p>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-px" style={{ background: 'rgba(212,168,67,0.06)' }}>
                 {[
-                  writers.length > 0 && { label: 'Senarist', people: writers },
-                  composers.length > 0 && { label: 'Müzik', people: composers },
-                  dops.length > 0 && { label: 'Görüntü Yönetmeni', people: dops },
-                  editors.length > 0 && { label: 'Editör', people: editors },
-                  producers.length > 0 && { label: 'Yapımcı', people: producers },
+                  writers.length > 0 && { label: t('film.writer'), people: writers },
+                  composers.length > 0 && { label: t('film.composer'), people: composers },
+                  dops.length > 0 && { label: t('film.cinematographer'), people: dops },
+                  editors.length > 0 && { label: t('film.editor'), people: editors },
+                  producers.length > 0 && { label: t('film.producer'), people: producers },
                 ].filter(Boolean).map((item: any) => (
                   <div key={item.label} className="px-4 py-3" style={{ background: 'rgba(14,20,32,0.95)' }}>
                     <p className="text-[9.5px] font-bold uppercase tracking-[0.14em] mb-2" style={{ color: 'rgba(212,168,67,0.4)' }}>{item.label}</p>
@@ -777,7 +780,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
               <a href={`https://www.imdb.com/title/${imdbId}`} target="_blank" rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[12px] font-semibold transition-all hover:scale-105"
                 style={{ background: 'rgba(212,168,67,0.1)', border: '1px solid rgba(212,168,67,0.25)', color: '#D4A843' }}>
-                ⭐ IMDb Sayfasını Aç →
+                ⭐ {t('film.imdbOpen')} →
               </a>
             </div>
           )}
@@ -793,20 +796,20 @@ export default async function FilmPage({ params, searchParams }: Props) {
           <div className="mt-12">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #D4A84380 100%)' }} />
-              <h2 className="text-xl font-bold text-white tracking-tight">Gişe & İstatistikler</h2>
+              <h2 className="text-xl font-bold text-white tracking-tight">{t('film.boxOffice')}</h2>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {(movie.budget ?? 0) > 0 && (
               <div className="relative overflow-hidden rounded-2xl p-5 text-center"
                 style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                <p className="text-[10px] font-bold uppercase tracking-[0.12em] mb-2" style={{ color: 'rgba(255,255,255,0.3)' }}>Bütçe</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.12em] mb-2" style={{ color: 'rgba(255,255,255,0.3)' }}>{t('film.budget')}</p>
                 <p className="text-xl font-black" style={{ color: 'rgba(255,255,255,0.7)' }}>${((movie.budget ?? 0) / 1_000_000).toFixed(1)}M</p>
               </div>
             )}
             {(movie.revenue ?? 0) > 0 && (
               <div className="relative overflow-hidden rounded-2xl p-5 text-center"
                 style={{ background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.2)' }}>
-                <p className="text-[10px] font-bold uppercase tracking-[0.12em] mb-2" style={{ color: 'rgba(74,222,128,0.5)' }}>Gişe</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.12em] mb-2" style={{ color: 'rgba(74,222,128,0.5)' }}>{t('film.revenue')}</p>
                 <p className="text-xl font-black" style={{ color: '#4ade80' }}>${((movie.revenue ?? 0) / 1_000_000).toFixed(1)}M</p>
               </div>
             )}
@@ -819,7 +822,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
                     background: isPos ? 'rgba(34,197,94,0.06)' : 'rgba(239,68,68,0.06)',
                     border: `1px solid ${isPos ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)'}`,
                   }}>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.12em] mb-2" style={{ color: 'rgba(255,255,255,0.3)' }}>Kâr/Zarar</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.12em] mb-2" style={{ color: 'rgba(255,255,255,0.3)' }}>{t('film.profitLoss')}</p>
                   <p className="text-xl font-black" style={{ color: isPos ? '#4ade80' : '#f87171' }}>
                     {isPos ? '+' : '-'}${Math.abs(profit / 1_000_000).toFixed(1)}M
                   </p>
@@ -831,7 +834,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
                 className="relative overflow-hidden rounded-2xl p-5 text-center transition-all hover:scale-[1.02]"
                 style={{ background: 'rgba(212,168,67,0.08)', border: '1px solid rgba(212,168,67,0.25)' }}>
                 <p className="text-[10px] font-bold uppercase tracking-[0.12em] mb-2" style={{ color: 'rgba(212,168,67,0.5)' }}>IMDb</p>
-                <p className="text-xl font-black" style={{ color: '#D4A843' }}>Sayfaya Git →</p>
+                <p className="text-xl font-black" style={{ color: '#D4A843' }}>{t('film.goToPage')} →</p>
               </a>
             )}
             </div>
@@ -857,7 +860,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
           <div className="mt-12">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%)' }} />
-              <h2 className="text-xl font-bold text-white tracking-tight">Takip Ettiklerinin Puanları</h2>
+              <h2 className="text-xl font-bold text-white tracking-tight">{t('film.friendsRatings')}</h2>
             </div>
             <div className="flex flex-wrap gap-2.5">
               {friendsRatings.map(fr => (
@@ -878,7 +881,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
             </div>
             {friendsRatings.length > 1 && (
               <p className="text-[11px] mt-3" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                Ortalama: <span className="font-bold" style={{ color: '#D4A843' }}>
+                {t('film.average')} <span className="font-bold" style={{ color: '#D4A843' }}>
                   {(friendsRatings.reduce((s, r) => s + r.rating, 0) / friendsRatings.length).toFixed(1)}/10
                 </span>
               </p>
@@ -903,10 +906,10 @@ export default async function FilmPage({ params, searchParams }: Props) {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
-                <h2 className="text-xl font-bold text-white tracking-tight">Unutulmaz Replikler</h2>
+                <h2 className="text-xl font-bold text-white tracking-tight">{t('film.memorableQuotes')}</h2>
               </div>
               <a href="/alintilar" className="text-xs hover:underline" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                Tümü →
+                {t('film.viewAll')} →
               </a>
             </div>
             <div className="space-y-3">
@@ -947,7 +950,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
             <div className="flex items-center gap-3 mb-5">
               <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #E11D48 0%, #E11D4880 100%)' }} />
               <h2 className="text-xl font-bold text-white tracking-tight">
-                {userReview ? 'Yorumunu Düzenle' : 'Yorum Yaz'}
+                {userReview ? t('review.editTitle') : t('review.write')}
               </h2>
             </div>
             {user && (
@@ -965,13 +968,13 @@ export default async function FilmPage({ params, searchParams }: Props) {
               <div className="rounded-lg p-6 text-center"
                 style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <p className="text-[--text-secondary] text-sm mb-4">
-                  Yorum yapmak için giriş yapman gerekiyor.
+                  {t('review.loginPrompt')}
                 </p>
                 <a
                   href="/auth/giris"
                   className="inline-block bg-[--accent] hover:bg-[--accent-hover] text-white font-semibold px-5 py-2 rounded-full text-sm transition-colors"
                 >
-                  Giriş Yap
+                  {t('review.loginBtn')}
                 </a>
               </div>
             )}
@@ -984,7 +987,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
               <div className="flex items-center gap-3">
                 <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #E11D48 0%, #E11D4880 100%)' }} />
                 <h2 className="text-xl font-bold text-white tracking-tight">
-                  Yorumlar <span className="font-normal text-base" style={{ color: 'rgba(255,255,255,0.35)' }}>({reviews?.length ?? 0})</span>
+                  {t('review.title')} <span className="font-normal text-base" style={{ color: 'rgba(255,255,255,0.35)' }}>({reviews?.length ?? 0})</span>
                 </h2>
               </div>
               <ReviewSortButton current={siralama as any} />
@@ -1002,10 +1005,10 @@ export default async function FilmPage({ params, searchParams }: Props) {
             <div className="flex items-center gap-3 mb-5">
               <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%)' }} />
               <h2 className="text-xl font-bold text-white tracking-tight">
-                {director.name} — Diğer Filmleri
+                {director.name} — {t('film.otherMoviesBy')}
               </h2>
               <a href={`/kisi/${director.id}`} className="ml-auto text-xs hover:underline" style={{ color: 'var(--accent)' }}>
-                Tüm Filmografi →
+                {t('film.fullFilmography')} →
               </a>
             </div>
             <div className="home-carousel-scroll flex gap-3 overflow-x-auto pb-3">
@@ -1036,7 +1039,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
           <div className="mt-12" id="benzer">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
-              <h2 className="text-xl font-bold text-white tracking-tight">Benzer Filmler</h2>
+              <h2 className="text-xl font-bold text-white tracking-tight">{t('film.similar')}</h2>
             </div>
             <div className="home-carousel-scroll flex gap-3 overflow-x-auto pb-3">
               {similar.map((item) => (
@@ -1084,7 +1087,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
           <div className="mt-10">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
-              <h2 className="text-xl font-bold text-white tracking-tight">Bu Filmi İçeren Listeler</h2>
+              <h2 className="text-xl font-bold text-white tracking-tight">{t('film.containingLists')}</h2>
             </div>
             <div className="flex flex-wrap gap-2">
               {(containingLists ?? []).map((l: any) => (

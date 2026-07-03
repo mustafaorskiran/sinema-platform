@@ -1,5 +1,6 @@
 import { requireAdmin } from '@/lib/admin'
 import { createClient } from '@/lib/supabase/server'
+import { getTranslations } from '@/lib/i18n'
 import EditorialListManager from './EditorialListManager'
 import FeaturedListManager from './FeaturedListManager'
 
@@ -7,6 +8,7 @@ export const metadata = { title: 'Listeler | Admin' }
 
 export default async function AdminListelerPage() {
   await requireAdmin()
+  const { t } = await getTranslations()
   const supabase = await createClient()
 
   const [{ data: editorialLists }, { data: topLists }] = await Promise.all([
@@ -34,8 +36,8 @@ export default async function AdminListelerPage() {
   return (
     <div>
       <div className="mb-10">
-        <h1 className="text-2xl font-bold text-white mb-1">Listeler</h1>
-        <p className="text-sm text-[--text-secondary]">Editöryal seçkiler ve haftanın listelerini yönet</p>
+        <h1 className="text-2xl font-bold text-white mb-1">{t('admin.lists.title')}</h1>
+        <p className="text-sm text-[--text-secondary]">{t('admin.lists.subtitle')}</p>
       </div>
 
       {/* Haftanın Listeleri */}
@@ -47,8 +49,8 @@ export default async function AdminListelerPage() {
       {/* Editöryal Listeler */}
       <div>
         <div className="mb-6">
-          <h2 className="text-lg font-bold text-white">✦ Editöryal Listeler</h2>
-          <p className="text-xs text-[--text-secondary] mt-0.5">Sinezon ekibi tarafından hazırlanan özel seçkiler</p>
+          <h2 className="text-lg font-bold text-white">{t('admin.lists.editorialTitle')}</h2>
+          <p className="text-xs text-[--text-secondary] mt-0.5">{t('admin.lists.editorialSubtitle')}</p>
         </div>
         <EditorialListManager lists={editorialLists ?? []} />
       </div>

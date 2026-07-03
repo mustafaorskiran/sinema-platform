@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props {
   mediaId: number
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export default async function WhoWatchedThis({ mediaId, mediaType }: Props) {
+  const { t } = await getTranslations()
   const supabase = await createClient()
 
   const { data } = await supabase
@@ -21,9 +23,9 @@ export default async function WhoWatchedThis({ mediaId, mediaType }: Props) {
   if (!data || data.length === 0) return null
 
   const statusGroups = {
-    'izledim': { label: 'İzledi', color: '#4ade80', emoji: '✓' },
-    'izliyorum': { label: 'İzliyor', color: '#38bdf8', emoji: '▶' },
-    'izlemek-istiyorum': { label: 'İzleyecek', color: '#a78bfa', emoji: '🔖' },
+    'izledim': { label: t('whoWatchedThis.watched'), color: '#4ade80', emoji: '✓' },
+    'izliyorum': { label: t('whoWatchedThis.watching'), color: '#38bdf8', emoji: '▶' },
+    'izlemek-istiyorum': { label: t('whoWatchedThis.willWatch'), color: '#a78bfa', emoji: '🔖' },
   }
 
   const groups: Record<string, { username: string; avatar_url: string | null }[]> = {
@@ -40,8 +42,8 @@ export default async function WhoWatchedThis({ mediaId, mediaType }: Props) {
   return (
     <div className="mt-6 p-4 rounded-2xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-bold text-white">Sinezon'da Kim İzledi?</h3>
-        <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>{totalCount} kullanıcı</span>
+        <h3 className="text-sm font-bold text-white">{t('whoWatchedThis.title')}</h3>
+        <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>{t('whoWatchedThis.userCount', { count: totalCount })}</span>
       </div>
 
       <div className="space-y-3">
@@ -76,7 +78,7 @@ export default async function WhoWatchedThis({ mediaId, mediaType }: Props) {
                   {users.length > 12 && (
                     <span className="flex items-center px-2 py-1 rounded-lg text-[11px]"
                       style={{ background: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.35)' }}>
-                      +{users.length - 12} daha
+                      {t('whoWatchedThis.andMore', { count: users.length - 12 })}
                     </span>
                   )}
                 </div>

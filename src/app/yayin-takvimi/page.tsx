@@ -6,10 +6,14 @@ import {
 import type { TMDbMovie } from '@/lib/types'
 import type { Metadata } from 'next'
 import YayinTakvimiClient from './YayinTakvimiClient'
+import { getTranslations } from '@/lib/i18n'
 
-export const metadata: Metadata = {
-  title: 'Yayın Takvimi — Yakında & Bu Hafta',
-  description: 'Yakında çıkacak filmler ve diziler, bu hafta yayındakiler.',
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getTranslations()
+  return {
+    title: t('schedule.metaTitle'),
+    description: t('schedule.metaDescription'),
+  }
 }
 
 export const revalidate = 3600

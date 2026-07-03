@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props {
   mediaId: number
@@ -27,6 +28,7 @@ function calcAvg(rows: RatingRow[]): number | null {
 }
 
 export default async function DemoRatings({ mediaId, mediaType }: Props) {
+  const { t } = await getTranslations()
   const supabase = await createClient()
 
   const { data: rawRows } = await supabase
@@ -70,8 +72,8 @@ export default async function DemoRatings({ mediaId, mediaType }: Props) {
     { label: '18–25', avg: calcAvg(group1825), count: group1825.length },
     { label: '26–40', avg: calcAvg(group2640), count: group2640.length },
     { label: '40+', avg: calcAvg(group40plus), count: group40plus.length },
-    { label: 'Türkiye', avg: calcAvg(groupTR), count: groupTR.length },
-    { label: 'Dünya', avg: calcAvg(groupWorld), count: groupWorld.length },
+    { label: t('demoRatings.turkey'), avg: calcAvg(groupTR), count: groupTR.length },
+    { label: t('demoRatings.world'), avg: calcAvg(groupWorld), count: groupWorld.length },
   ]
 
   // En az bir grubun verisi varsa göster
@@ -84,7 +86,7 @@ export default async function DemoRatings({ mediaId, mediaType }: Props) {
         className="text-lg font-bold text-white mb-4"
         style={{ borderLeft: '3px solid var(--accent)', paddingLeft: '10px' }}
       >
-        Demografiye Göre Puan
+        {t('demoRatings.title')}
       </h2>
 
       <div className="space-y-3">
@@ -109,7 +111,7 @@ export default async function DemoRatings({ mediaId, mediaType }: Props) {
                 ? `${group.avg.toFixed(1)} / 10`
                 : (
                   <span className="text-xs text-[--text-secondary] font-normal">
-                    Yeterli veri yok
+                    {t('demoRatings.notEnoughData')}
                   </span>
                 )}
             </span>
@@ -118,7 +120,7 @@ export default async function DemoRatings({ mediaId, mediaType }: Props) {
       </div>
 
       <p className="text-[10px] text-[--text-secondary] mt-3 opacity-60">
-        * Her grup için minimum {MIN_VOTES} oy gereklidir.
+        {t('demoRatings.minVotesNote', { min: MIN_VOTES })}
       </p>
     </div>
   )

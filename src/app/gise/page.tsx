@@ -3,6 +3,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { IconStarFilled, IconTrendingUp, IconGlobe, IconMapPin } from '@/components/icons'
 import { getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb'
+import { getTranslations } from '@/lib/i18n'
 import type { TMDbMovie, TMDbSearchResult } from '@/lib/types'
 
 export const revalidate = 21600
@@ -41,6 +42,7 @@ interface PageProps {
 export default async function GisePage({ searchParams }: PageProps) {
   const params = await searchParams
   const tab = params.tab === 'dunya' ? 'dunya' : 'turkiye'
+  const { t } = await getTranslations()
 
   const [turkiyeMovies, dunyaMovies] = await Promise.all([
     fetchGise('/movie/now_playing?region=TR'),
@@ -54,16 +56,16 @@ export default async function GisePage({ searchParams }: PageProps) {
       {/* Hero başlık */}
       <div className="mb-8">
         <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: 'rgba(225,29,72,0.7)' }}>
-          ✦ Canlı Güncelleme
+          {t('boxOffice.liveUpdate')}
         </p>
         <div className="flex items-center gap-2.5 mb-2">
           <IconTrendingUp className="h-7 w-7" style={{ color: 'var(--accent)' }} />
           <h1 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
-            Gişe Sıralaması
+            {t('boxOffice.title')}
           </h1>
         </div>
         <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-          Şu an vizyonda olan ve en çok izlenen filmler
+          {t('boxOffice.subtitle')}
         </p>
       </div>
 
@@ -79,7 +81,7 @@ export default async function GisePage({ searchParams }: PageProps) {
           }
         >
           <IconMapPin className="h-4 w-4" />
-          Türkiye
+          {t('boxOffice.turkey')}
         </Link>
         <Link
           href="/gise?tab=dunya"
@@ -91,7 +93,7 @@ export default async function GisePage({ searchParams }: PageProps) {
           }
         >
           <IconGlobe className="h-4 w-4" />
-          Dünya
+          {t('boxOffice.world')}
         </Link>
       </div>
 
@@ -156,8 +158,8 @@ export default async function GisePage({ searchParams }: PageProps) {
                   </div>
                   <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.25)' }}>
                     {movie.vote_count >= 1000
-                      ? `${(movie.vote_count / 1000).toFixed(1)}k oy`
-                      : `${movie.vote_count} oy`}
+                      ? t('boxOffice.voteCountK', { count: (movie.vote_count / 1000).toFixed(1) })
+                      : t('boxOffice.voteCount', { count: movie.vote_count })}
                   </span>
                 </div>
               </Link>
@@ -171,7 +173,7 @@ export default async function GisePage({ searchParams }: PageProps) {
         >
           <IconTrendingUp className="h-12 w-12 mb-4" style={{ color: 'rgba(255,255,255,0.15)' }} />
           <p className="text-base font-medium" style={{ color: 'rgba(255,255,255,0.3)' }}>
-            Gişe verisi yüklenemedi.
+            {t('boxOffice.loadError')}
           </p>
         </div>
       )}

@@ -2,28 +2,31 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { IconBell, IconHeart, IconUserPlus, IconReply, IconMail } from '@/components/icons'
 import { createClient } from '@/lib/supabase/server'
+import { getTranslations } from '@/lib/i18n'
 import BildirimlerClient from './BildirimlerClient'
 import PushSubscribeButton from '@/components/PushSubscribeButton'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Bildirimler | Sinezon' }
 
-function timeAgo(date: string) {
+type TFunc = (key: string, params?: Record<string, string | number>) => string
+
+function timeAgo(date: string, t: TFunc) {
   const diff = Math.floor((Date.now() - new Date(date).getTime()) / 1000)
-  if (diff < 60)       return 'az önce'
-  if (diff < 3600)     return `${Math.floor(diff / 60)} dk önce`
-  if (diff < 86400)    return `${Math.floor(diff / 3600)} sa önce`
-  if (diff < 604800)   return `${Math.floor(diff / 86400)} gün önce`
+  if (diff < 60)       return t('common.timeAgo.justNow')
+  if (diff < 3600)     return t('common.timeAgo.minutesAgo', { n: Math.floor(diff / 60) })
+  if (diff < 86400)    return t('common.timeAgo.hoursAgo', { n: Math.floor(diff / 3600) })
+  if (diff < 604800)   return t('common.timeAgo.daysAgo', { n: Math.floor(diff / 86400) })
   return new Date(date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })
 }
 
-function getDetails(n: any) {
-  const username = n.actor?.username ?? 'Biri'
-  if (n.type === 'like')         return { label: 'yorumunu beğendi',           href: n.review ? `/${n.review.media_type}/${n.review.media_id}` : '#', badgeColor: '#f87171',     Icon: IconHeart   }
-  if (n.type === 'follow')       return { label: 'seni takip etmeye başladı',  href: `/profil/${username}`,                                           badgeColor: 'var(--accent)', Icon: IconUserPlus }
-  if (n.type === 'reply')        return { label: 'yorumuna yanıt verdi',        href: n.review ? `/${n.review.media_type}/${n.review.media_id}` : '#', badgeColor: '#60a5fa',    Icon: IconReply   }
-  if (n.type === 'forum_reply')  return { label: n.content ?? 'Konuna yanıt geldi', href: n.link ?? '/forum',   badgeColor: '#a78bfa',             Icon: IconReply }
-  if (n.type === 'message')      return { label: n.content ?? 'Sana mesaj gönderdi', href: n.link ?? '/mesajlar', badgeColor: '#34d399',            Icon: IconMail  }
+function getDetails(n: any, t: TFunc) {
+  const username = n.actor?.username ?? t('notifications.someone')
+  if (n.type === 'like')         return { label: t('notifications.likedReview'),      href: n.review ? `/${n.review.media_type}/${n.review.media_id}` : '#', badgeColor: '#f87171',     Icon: IconHeart   }
+  if (n.type === 'follow')       return { label: t('notifications.startedFollowing'), href: `/profil/${username}`,                                           badgeColor: 'var(--accent)', Icon: IconUserPlus }
+  if (n.type === 'reply')        return { label: t('notifications.repliedToReview'),  href: n.review ? `/${n.review.media_type}/${n.review.media_id}` : '#', badgeColor: '#60a5fa',    Icon: IconReply   }
+  if (n.type === 'forum_reply')  return { label: n.content ?? t('notifications.forumReply'), href: n.link ?? '/forum',   badgeColor: '#a78bfa',             Icon: IconReply }
+  if (n.type === 'message')      return { label: n.content ?? t('notifications.sentMessage'), href: n.link ?? '/mesajlar', badgeColor: '#34d399',            Icon: IconMail  }
   return                                { label: n.content ?? '',               href: n.link ?? '#',                                                   badgeColor: 'rgba(212,168,67,0.7)', Icon: IconBell }
 }
 
@@ -33,6 +36,7 @@ interface BildirimProps {
 
 export default async function BildirimlerPage({ searchParams }: BildirimProps) {
   const { tip = 'hepsi' } = await searchParams
+  const { t } = await getTranslations()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/giris')
@@ -66,11 +70,11 @@ export default async function BildirimlerPage({ searchParams }: BildirimProps) {
   }
 
   const FILTER_TABS = [
-    { id: 'hepsi', label: 'Tümü', count: (allNotifs ?? []).length },
-    { id: 'like', label: '❤️ Beğeni', count: typeCounts.like },
-    { id: 'follow', label: '👤 Takip', count: typeCounts.follow },
-    { id: 'reply', label: '💬 Yanıt', count: typeCounts.reply },
-    { id: 'message', label: '✉️ Mesaj', count: typeCounts.message },
+    { id: 'hepsi', label: t('notifications.tabAll'), count: (allNotifs ?? []).length },
+    { id: 'like', label: t('notifications.tabLike'), count: typeCounts.like },
+    { id: 'follow', label: t('notifications.tabFollow'), count: typeCounts.follow },
+    { id: 'reply', label: t('notifications.tabReply'), count: typeCounts.reply },
+    { id: 'message', label: t('notifications.tabMessage'), count: typeCounts.message },
   ]
 
   return (
@@ -86,9 +90,9 @@ export default async function BildirimlerPage({ searchParams }: BildirimProps) {
             <IconBell className="h-5 w-5" style={{ color: 'var(--accent)' }} />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white">Bildirimler</h1>
+            <h1 className="text-2xl font-bold text-white">{t('notifications.title')}</h1>
             <p className="text-sm mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-              {unreadCount > 0 ? `${unreadCount} okunmamış` : 'Hepsi okundu'}
+              {unreadCount > 0 ? t('notifications.unreadCount', { count: unreadCount }) : t('notifications.allRead')}
             </p>
           </div>
         </div>
@@ -118,15 +122,15 @@ export default async function BildirimlerPage({ searchParams }: BildirimProps) {
           style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
         >
           <IconBell className="h-10 w-10 mx-auto mb-3 text-white opacity-20" />
-          <p className="text-white font-medium mb-1">Henüz bildirim yok</p>
+          <p className="text-white font-medium mb-1">{t('notifications.emptyTitle')}</p>
           <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-            Yorumunuz beğenildiğinde veya biri sizi takip ettiğinde buraya düşer.
+            {t('notifications.emptyDesc')}
           </p>
         </div>
       ) : (
         <div className="space-y-1">
           {items.map(n => {
-            const { label, href, badgeColor, Icon } = getDetails(n)
+            const { label, href, badgeColor, Icon } = getDetails(n, t)
 
             return (
               <Link
@@ -160,11 +164,11 @@ export default async function BildirimlerPage({ searchParams }: BildirimProps) {
                 {/* İçerik */}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-white leading-snug">
-                    <span className="font-semibold">{n.actor?.username ?? 'Biri'}</span>{' '}
+                    <span className="font-semibold">{n.actor?.username ?? t('notifications.someone')}</span>{' '}
                     <span style={{ color: 'var(--text-secondary)' }}>{label}</span>
                   </p>
                   <p className="text-[11px] mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-                    {timeAgo(n.created_at)}
+                    {timeAgo(n.created_at, t)}
                   </p>
                 </div>
 

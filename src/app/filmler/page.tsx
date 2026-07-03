@@ -11,6 +11,7 @@ import {
 } from '@/lib/tmdb'
 import { OSCAR_WINNER_IDS } from '@/lib/oscar-winners'
 import { KULT_FILM_IDS } from '@/lib/kult-filmler'
+import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -20,17 +21,17 @@ export const metadata: Metadata = {
 }
 
 const KATEGORI_TABS = [
-  { key: 'populer',        label: 'Popüler'             },
-  { key: 'vizyonda',       label: 'Şu Anda Vizyonda'    },
-  { key: 'yakinda',        label: 'Yakında'             },
-  { key: 'en-iyi',         label: 'En Fazla Oy Alan'    },
+  { key: 'populer',        labelKey: 'browse.tabs.populer'  },
+  { key: 'vizyonda',       labelKey: 'browse.tabs.vizyonda' },
+  { key: 'yakinda',        labelKey: 'browse.tabs.yakinda'  },
+  { key: 'en-iyi',         labelKey: 'browse.tabs.enIyi'    },
 ]
 
-const KATEGORI_TITLES: Record<string, string> = {
-  populer:  'Popüler Filmler',
-  vizyonda: 'Şu Anda Vizyonda',
-  yakinda:  'Yakında Çıkacak Filmler',
-  'en-iyi': 'En Fazla Oy Alan Filmler',
+const KATEGORI_TITLE_KEYS: Record<string, string> = {
+  populer:  'browse.titles.populerFilmler',
+  vizyonda: 'browse.tabs.vizyonda',
+  yakinda:  'browse.titles.yakindaCikacakFilmler',
+  'en-iyi': 'browse.titles.enFazlaOyAlanFilmler',
 }
 
 const PAGE_SIZE = 40
@@ -47,6 +48,7 @@ interface Props {
 }
 
 export default async function FilmlerPage({ searchParams }: Props) {
+  const { t } = await getTranslations()
   const {
     sayfa, genre, sirala, platform, ozel,
     kategori = 'populer', tarihten, tarihe, min_puan, min_oy,
@@ -269,17 +271,17 @@ export default async function FilmlerPage({ searchParams }: Props) {
   // Active genre/kategori label for page title
   const activeGenreName = genre
     ? (genre.includes(',')
-      ? 'Seçili Türler'
+      ? t('browse.selectedGenres')
       : FILM_GENRES.find(g => String(g.id) === genre)?.name ?? null)
     : null
   const pageTitle = goster === 'gorduklerim'
-    ? 'İzlediğim Filmler'
+    ? t('browse.titles.izlediklerim')
     : goster === 'gormediklerim'
-    ? 'İzlemediğim Popüler Filmler'
+    ? t('browse.titles.izlemedigimPopuler')
     : isEnCokPuan
-    ? 'Sinezon\'da En Çok Puanlanan Filmler'
+    ? t('browse.titles.enCokPuanlanan')
     : ozelKat?.label
-      ?? (activeGenreName ? `${activeGenreName} Filmleri` : KATEGORI_TITLES[kategori] ?? 'Popüler Filmler')
+      ?? (activeGenreName ? t('browse.titles.genreFilmleri', { genre: activeGenreName }) : t(KATEGORI_TITLE_KEYS[kategori] ?? 'browse.titles.populerFilmler'))
 
   // Build tab href (preserves genre/platform/filters, changes kategori)
   function tabHref(kat: string) {
@@ -328,7 +330,7 @@ export default async function FilmlerPage({ searchParams }: Props) {
             {pageTitle}
             {totalCount > 0 && (
               <span className="ml-3 text-sm font-normal text-[--text-secondary]">
-                {totalCount.toLocaleString('tr-TR')} sonuç
+                {t('browse.resultCount', { count: totalCount.toLocaleString('tr-TR') })}
               </span>
             )}
           </h1>
@@ -346,7 +348,7 @@ export default async function FilmlerPage({ searchParams }: Props) {
                       : 'border-transparent text-[--text-secondary] hover:text-white'
                   }`}
                 >
-                  {tab.label}
+                  {t(tab.labelKey)}
                 </Link>
               ))}
             </div>
@@ -357,7 +359,7 @@ export default async function FilmlerPage({ searchParams }: Props) {
           {results.length === 0 ? (
             <div className="text-center py-24 text-[--text-secondary]">
               <p className="text-4xl mb-4">🎬</p>
-              <p>Bu filtrelerle eşleşen film bulunamadı.</p>
+              <p>{t('browse.noResultsFilm')}</p>
             </div>
           ) : (
             <InfiniteGrid

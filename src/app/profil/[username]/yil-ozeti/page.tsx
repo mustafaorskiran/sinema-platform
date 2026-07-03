@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle } from '@/lib/tmdb'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props {
   params: Promise<{ username: string }>
@@ -17,6 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 const MONTHS_TR = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara']
 
 export default async function YilOzetiPage({ params, searchParams }: Props) {
+  const { t } = await getTranslations()
   const { username } = await params
   const { yil } = await searchParams
   const currentYear = new Date().getFullYear()
@@ -96,7 +98,7 @@ export default async function YilOzetiPage({ params, searchParams }: Props) {
 
       {/* Başlık */}
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-white">{year} Yılı Özeti</h1>
+        <h1 className="text-3xl font-bold text-white">{t('profile.yearSummaryTitle', { year })}</h1>
         <p className="text-[--text-secondary] text-sm mt-1">@{username}</p>
         {/* Yıl seçici */}
         <div className="flex justify-center gap-2 mt-4 flex-wrap">
@@ -119,7 +121,7 @@ export default async function YilOzetiPage({ params, searchParams }: Props) {
       {entries.length === 0 && totalReviews === 0 ? (
         <div className="text-center py-16 text-[--text-secondary]">
           <p className="text-4xl mb-4">🎬</p>
-          <p>{year} yılında günlük girişi bulunamadı.</p>
+          <p>{t('profile.yearNoEntries', { year })}</p>
         </div>
       ) : (
         <div className="space-y-6">
@@ -127,15 +129,15 @@ export default async function YilOzetiPage({ params, searchParams }: Props) {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div className="rounded-xl p-4 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               <p className="text-3xl font-bold text-white">{entries.length}</p>
-              <p className="text-xs text-[--text-secondary] mt-0.5">İzleme</p>
+              <p className="text-xs text-[--text-secondary] mt-0.5">{t('profile.watchCount')}</p>
             </div>
             <div className="rounded-xl p-4 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               <p className="text-3xl font-bold text-[--gold]">{avgRating ?? '—'}</p>
-              <p className="text-xs text-[--text-secondary] mt-0.5">Ort. Puan</p>
+              <p className="text-xs text-[--text-secondary] mt-0.5">{t('profile.avgRating')}</p>
             </div>
             <div className="rounded-xl p-4 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               <p className="text-3xl font-bold text-white">{totalReviews}</p>
-              <p className="text-xs text-[--text-secondary] mt-0.5">Yorum</p>
+              <p className="text-xs text-[--text-secondary] mt-0.5">{t('profile.reviewCount')}</p>
             </div>
             <div className="rounded-xl p-4 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               <p className="text-3xl font-bold text-white">{rewatchCount}</p>
@@ -146,7 +148,7 @@ export default async function YilOzetiPage({ params, searchParams }: Props) {
           {/* Film vs Dizi */}
           {entries.length > 0 && (
             <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <p className="text-sm font-semibold text-white mb-3">Film vs Dizi</p>
+              <p className="text-sm font-semibold text-white mb-3">{t('profile.filmVsSeries')}</p>
               <div className="flex gap-4 items-center">
                 <div className="flex-1">
                   <div className="flex h-4 rounded-full overflow-hidden">
@@ -156,8 +158,8 @@ export default async function YilOzetiPage({ params, searchParams }: Props) {
                 </div>
               </div>
               <div className="flex gap-6 mt-3">
-                <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-blue-500 inline-block" /><span className="text-sm text-white font-semibold">{filmCount}</span><span className="text-xs text-[--text-secondary]">Film</span></div>
-                <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-purple-500 inline-block" /><span className="text-sm text-white font-semibold">{diziCount}</span><span className="text-xs text-[--text-secondary]">Dizi</span></div>
+                <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-blue-500 inline-block" /><span className="text-sm text-white font-semibold">{filmCount}</span><span className="text-xs text-[--text-secondary]">{t('film.badge')}</span></div>
+                <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-purple-500 inline-block" /><span className="text-sm text-white font-semibold">{diziCount}</span><span className="text-xs text-[--text-secondary]">{t('series.badge')}</span></div>
               </div>
             </div>
           )}
@@ -165,14 +167,14 @@ export default async function YilOzetiPage({ params, searchParams }: Props) {
           {/* Aylık aktivite */}
           {entries.length > 0 && (
             <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <p className="text-sm font-semibold text-white mb-4">Aylık Aktivite</p>
+              <p className="text-sm font-semibold text-white mb-4">{t('profile.monthlyActivitySimple')}</p>
               <div className="flex items-end gap-1.5 h-28">
                 {monthCounts.map((count, i) => (
                   <div key={i} className="flex-1 flex flex-col items-center gap-1">
                     <div
                       className="w-full rounded-t-sm bg-[--accent]/70 hover:bg-[--accent] transition-colors"
                       style={{ height: `${(count / maxMonthCount) * 80}px`, minHeight: count > 0 ? '4px' : '0' }}
-                      title={`${MONTHS_TR[i]}: ${count} izleme`}
+                      title={t('profile.monthWatchTooltip', { month: MONTHS_TR[i], count })}
                     />
                     <span className="text-[9px] text-[--text-secondary]">{MONTHS_TR[i]}</span>
                   </div>
@@ -184,7 +186,7 @@ export default async function YilOzetiPage({ params, searchParams }: Props) {
           {/* En yüksek puan verilen */}
           {bestEntry && bestTitle && (
             <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <p className="text-sm font-semibold text-white mb-3">⭐ 10 Puan Verdiğin</p>
+              <p className="text-sm font-semibold text-white mb-3">⭐ {t('profile.topRatedTitle')}</p>
               <Link href={`/${bestEntry.media_type}/${bestEntry.media_id}`} className="flex items-center gap-3 hover:opacity-90 transition-opacity">
                 {bestPoster && (
                   <img src={bestPoster} alt={bestTitle} className="w-12 h-18 rounded-lg object-cover" />
@@ -196,7 +198,7 @@ export default async function YilOzetiPage({ params, searchParams }: Props) {
                 </div>
               </Link>
               {entries.filter(e => e.rating === 10).length > 1 && (
-                <p className="text-xs text-[--text-secondary] mt-2">+{entries.filter(e => e.rating === 10).length - 1} daha</p>
+                <p className="text-xs text-[--text-secondary] mt-2">{t('profile.moreCount', { count: entries.filter(e => e.rating === 10).length - 1 })}</p>
               )}
             </div>
           )}

@@ -1,67 +1,69 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
+import { useLocale } from '@/context/LocaleContext'
 
 const QUESTIONS = [
   {
-    q: 'Film izlerken en çok ne istersin?',
+    qKey: 'sinezonTurum.q1',
     options: [
-      { label: 'Duygusal derinlik', types: ['Drama Kaşifi', 'Sinefil'] },
-      { label: 'Heyecan ve gerilim', types: ['Aksiyon Tutkunu', 'Thriller Uzmanı'] },
-      { label: 'Güldürü ve hafiflik', types: ['Komedi Sever', 'Genel İzleyici'] },
-      { label: 'Düşündürücü sorular', types: ['Sinefil', 'Arthouse Sevdalısı'] },
+      { labelKey: 'sinezonTurum.q1o1', types: ['drama', 'sinefil'] },
+      { labelKey: 'sinezonTurum.q1o2', types: ['aksiyon', 'thriller'] },
+      { labelKey: 'sinezonTurum.q1o3', types: ['komedi', 'genel'] },
+      { labelKey: 'sinezonTurum.q1o4', types: ['sinefil', 'arthouse'] },
     ]
   },
   {
-    q: 'Hangi dönemi tercih edersin?',
+    qKey: 'sinezonTurum.q2',
     options: [
-      { label: '2000 sonrası', types: ['Aksiyon Tutkunu', 'Genel İzleyici'] },
-      { label: '1980-2000 arası', types: ['Nostalji Gurmesi', 'Drama Kaşifi'] },
-      { label: 'Altın çağ (1950-1980)', types: ['Sinefil', 'Arthouse Sevdalısı'] },
-      { label: 'Fark etmez, yılı önemli değil', types: ['Genel İzleyici', 'Drama Kaşifi'] },
+      { labelKey: 'sinezonTurum.q2o1', types: ['aksiyon', 'genel'] },
+      { labelKey: 'sinezonTurum.q2o2', types: ['nostalji', 'drama'] },
+      { labelKey: 'sinezonTurum.q2o3', types: ['sinefil', 'arthouse'] },
+      { labelKey: 'sinezonTurum.q2o4', types: ['genel', 'drama'] },
     ]
   },
   {
-    q: 'Film seçerken ilk baktığın şey?',
+    qKey: 'sinezonTurum.q3',
     options: [
-      { label: 'Yönetmen', types: ['Sinefil', 'Arthouse Sevdalısı'] },
-      { label: 'Oyuncu kadrosu', types: ['Drama Kaşifi', 'Komedi Sever'] },
-      { label: 'Fragman / görsel', types: ['Aksiyon Tutkunu', 'Genel İzleyici'] },
-      { label: 'IMDb/RT puanı', types: ['Nostalji Gurmesi', 'Genel İzleyici'] },
+      { labelKey: 'sinezonTurum.q3o1', types: ['sinefil', 'arthouse'] },
+      { labelKey: 'sinezonTurum.q3o2', types: ['drama', 'komedi'] },
+      { labelKey: 'sinezonTurum.q3o3', types: ['aksiyon', 'genel'] },
+      { labelKey: 'sinezonTurum.q3o4', types: ['nostalji', 'genel'] },
     ]
   },
   {
-    q: 'Hangi film seni en çok etkiler?',
+    qKey: 'sinezonTurum.q4',
     options: [
-      { label: 'Ağlatan bir drama', types: ['Drama Kaşifi', 'Sinefil'] },
-      { label: 'Sürükleyici aksiyon', types: ['Aksiyon Tutkunu'] },
-      { label: 'Kafayı karıştıran senaryo', types: ['Thriller Uzmanı', 'Sinefil'] },
-      { label: 'Güldürüp düşündüren', types: ['Komedi Sever', 'Arthouse Sevdalısı'] },
+      { labelKey: 'sinezonTurum.q4o1', types: ['drama', 'sinefil'] },
+      { labelKey: 'sinezonTurum.q4o2', types: ['aksiyon'] },
+      { labelKey: 'sinezonTurum.q4o3', types: ['thriller', 'sinefil'] },
+      { labelKey: 'sinezonTurum.q4o4', types: ['komedi', 'arthouse'] },
     ]
   },
   {
-    q: 'Yabancı film (altyazılı) hakkında?',
+    qKey: 'sinezonTurum.q5',
     options: [
-      { label: 'Bayılırım, ülke fark etmez', types: ['Sinefil', 'Arthouse Sevdalısı'] },
-      { label: 'Arasıra izlerim', types: ['Drama Kaşifi', 'Nostalji Gurmesi'] },
-      { label: 'Pek tercih etmem', types: ['Aksiyon Tutkunu', 'Genel İzleyici'] },
-      { label: 'Sadece popüler olanları', types: ['Genel İzleyici', 'Komedi Sever'] },
+      { labelKey: 'sinezonTurum.q5o1', types: ['sinefil', 'arthouse'] },
+      { labelKey: 'sinezonTurum.q5o2', types: ['drama', 'nostalji'] },
+      { labelKey: 'sinezonTurum.q5o3', types: ['aksiyon', 'genel'] },
+      { labelKey: 'sinezonTurum.q5o4', types: ['genel', 'komedi'] },
     ]
   },
 ]
 
-const TYPE_DESCRIPTIONS: Record<string, { emoji: string; desc: string; color: string }> = {
-  'Sinefil': { emoji: '🎭', desc: 'Sinemayı bir sanat olarak görüyorsun. Yönetmen vizyonu ve sinematografi senin için her şey.', color: '#a78bfa' },
-  'Drama Kaşifi': { emoji: '😢', desc: 'Derinlikli karakterler ve duygusal yolculuklar seni büyülüyor. Gerçekçi hikayelere bayılırsın.', color: '#60a5fa' },
-  'Aksiyon Tutkunu': { emoji: '💥', desc: 'Hız, enerji ve adrenalin istiyorsun. Süper kahraman filmleri senkronize izleme deneyimlerin.', color: '#f87171' },
-  'Thriller Uzmanı': { emoji: '🔍', desc: 'Bükülmüş senaryolar ve beklenmedik finallerden keyif alıyorsun. Dedektif gibi izliyorsun.', color: '#34d399' },
-  'Komedi Sever': { emoji: '😂', desc: 'Her şeyde hafif tarafını arıyorsun. Gülmek ve eğlenmek senin için birinci öncelik.', color: '#fbbf24' },
-  'Arthouse Sevdalısı': { emoji: '🎨', desc: 'Alışılmışın dışına çıkan, sınırları zorlayan filmler seni büyülüyor. Bağımsız sinemayı seviyorsun.', color: '#f472b6' },
-  'Nostalji Gurmesi': { emoji: '📽️', desc: 'Klasikler ve altın çağ filmleri senin için benzersiz. Geçmişin büyüsünü yaşatıyorsun.', color: '#D4A843' },
-  'Genel İzleyici': { emoji: '🍿', desc: 'Her türden zevk alan, esnek ve açık fikirli bir izleyicisin. Film sevgin saf ve içten.', color: '#94a3b8' },
+const TYPE_DESCRIPTIONS: Record<string, { emoji: string; nameKey: string; descKey: string; color: string }> = {
+  'sinefil':  { emoji: '🎭',  nameKey: 'sinezonTurum.typeSinefilName',  descKey: 'sinezonTurum.typeSinefilDesc',  color: '#a78bfa' },
+  'drama':    { emoji: '😢',  nameKey: 'sinezonTurum.typeDramaName',    descKey: 'sinezonTurum.typeDramaDesc',    color: '#60a5fa' },
+  'aksiyon':  { emoji: '💥',  nameKey: 'sinezonTurum.typeAksiyonName',  descKey: 'sinezonTurum.typeAksiyonDesc',  color: '#f87171' },
+  'thriller': { emoji: '🔍',  nameKey: 'sinezonTurum.typeThrillerName', descKey: 'sinezonTurum.typeThrillerDesc', color: '#34d399' },
+  'komedi':   { emoji: '😂',  nameKey: 'sinezonTurum.typeKomediName',   descKey: 'sinezonTurum.typeKomediDesc',   color: '#fbbf24' },
+  'arthouse': { emoji: '🎨',  nameKey: 'sinezonTurum.typeArthouseName', descKey: 'sinezonTurum.typeArthouseDesc', color: '#f472b6' },
+  'nostalji': { emoji: '📽️', nameKey: 'sinezonTurum.typeNostaljiName', descKey: 'sinezonTurum.typeNostaljiDesc', color: '#D4A843' },
+  'genel':    { emoji: '🍿',  nameKey: 'sinezonTurum.typeGenelName',    descKey: 'sinezonTurum.typeGenelDesc',    color: '#94a3b8' },
 }
 
 export default function SinezonTurumPage() {
+  const { t } = useLocale()
   const [current, setCurrent] = useState(0)
   const [answers, setAnswers] = useState<string[][]>([])
   const [result, setResult] = useState<string | null>(null)
@@ -71,7 +73,7 @@ export default function SinezonTurumPage() {
     if (current + 1 >= QUESTIONS.length) {
       // Sonuç hesapla
       const freq: Record<string, number> = {}
-      for (const a of newAnswers) for (const t of a) freq[t] = (freq[t] ?? 0) + 1
+      for (const a of newAnswers) for (const type of a) freq[type] = (freq[type] ?? 0) + 1
       const winner = Object.entries(freq).sort((a, b) => b[1] - a[1])[0][0]
       setResult(winner)
     } else {
@@ -83,30 +85,30 @@ export default function SinezonTurumPage() {
   function reset() { setCurrent(0); setAnswers([]); setResult(null) }
 
   const q = QUESTIONS[current]
-  const info = result ? TYPE_DESCRIPTIONS[result] ?? TYPE_DESCRIPTIONS['Genel İzleyici'] : null
+  const info = result ? TYPE_DESCRIPTIONS[result] ?? TYPE_DESCRIPTIONS['genel'] : null
 
   return (
     <div className="max-w-xl mx-auto px-4 py-12">
       <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold text-white mb-2">🎬 Sinezon Türün Nedir?</h1>
-        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>5 soruda sinema kişiliğini keşfet</p>
+        <h1 className="text-2xl font-bold text-white mb-2">{t('sinezonTurum.title')}</h1>
+        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>{t('sinezonTurum.subtitle')}</p>
       </div>
 
       {result && info ? (
         <div className="rounded-2xl p-8 text-center" style={{ background: 'linear-gradient(160deg,rgba(20,28,47,0.9),rgba(14,20,32,0.95))', border: `1px solid ${info.color}33` }}>
           <div className="text-5xl mb-4">{info.emoji}</div>
-          <h2 className="text-2xl font-bold mb-3" style={{ color: info.color }}>{result}</h2>
-          <p className="text-sm leading-relaxed mb-6" style={{ color: 'rgba(255,255,255,0.6)' }}>{info.desc}</p>
+          <h2 className="text-2xl font-bold mb-3" style={{ color: info.color }}>{t(info.nameKey)}</h2>
+          <p className="text-sm leading-relaxed mb-6" style={{ color: 'rgba(255,255,255,0.6)' }}>{t(info.descKey)}</p>
           <div className="flex gap-3 justify-center flex-wrap">
             <button onClick={reset}
               className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-105"
               style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)' }}>
-              🔄 Tekrar Dene
+              {t('sinezonTurum.retry')}
             </button>
             <Link href="/filmler"
               className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:scale-105"
               style={{ background: 'linear-gradient(135deg,#E11D48,#be123c)', boxShadow: '0 4px 14px rgba(225,29,72,0.25)' }}>
-              Film Keşfet →
+              {t('sinezonTurum.exploreFilms')}
             </Link>
           </div>
         </div>
@@ -120,15 +122,15 @@ export default function SinezonTurumPage() {
             ))}
           </div>
           <p className="text-xs mb-3 font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.3)' }}>
-            Soru {current + 1} / {QUESTIONS.length}
+            {t('sinezonTurum.progress', { current: current + 1, total: QUESTIONS.length })}
           </p>
-          <h2 className="text-lg font-bold text-white mb-5">{q.q}</h2>
+          <h2 className="text-lg font-bold text-white mb-5">{t(q.qKey)}</h2>
           <div className="space-y-3">
             {q.options.map((opt, i) => (
               <button key={i} onClick={() => answer(opt.types)}
                 className="w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all hover:scale-[1.01] hover:border-[--accent]"
                 style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.7)' }}>
-                {opt.label}
+                {t(opt.labelKey)}
               </button>
             ))}
           </div>

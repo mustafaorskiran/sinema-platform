@@ -4,8 +4,10 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { IconArrowLeft, IconFilm, IconMail } from '@/components/icons'
 import { createClient } from '@/lib/supabase/client'
+import { useLocale } from '@/context/LocaleContext'
 
 export default function SifremiUnuttumPage() {
+  const { t } = useLocale()
   const [email, setEmail]   = useState('')
   const [loading, setLoading] = useState(false)
   const [sent, setSent]     = useState(false)
@@ -20,7 +22,7 @@ export default function SifremiUnuttumPage() {
       redirectTo: `${window.location.origin}/auth/callback?type=recovery`,
     })
     if (authError) {
-      setError('Bir hata oluştu. Lütfen tekrar deneyin.')
+      setError(t('auth.genericError'))
       setLoading(false)
       return
     }
@@ -49,8 +51,8 @@ export default function SifremiUnuttumPage() {
               Sine<span style={{ color: 'var(--accent)' }}>zon</span>
             </span>
           </Link>
-          <h1 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>Şifremi Unuttum</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>E-postana sıfırlama bağlantısı gönderelim</p>
+          <h1 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>{t('auth.forgotPassword')}</h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>{t('auth.forgotPasswordSubtitle')}</p>
         </div>
 
         <div className="rounded-2xl p-7" style={{
@@ -65,28 +67,28 @@ export default function SifremiUnuttumPage() {
                 <IconMail className="h-7 w-7" style={{ color: '#4ade80' }} />
               </div>
               <p className="text-[9.5px] font-bold uppercase tracking-[0.18em] mb-2" style={{ color: 'rgba(212,168,67,0.5)' }}>
-                E-posta Gönderildi
+                {t('auth.emailSent')}
               </p>
-              <h2 className="text-lg font-bold mb-3" style={{ color: 'var(--text-primary)' }}>Gelen Kutunu Kontrol Et</h2>
+              <h2 className="text-lg font-bold mb-3" style={{ color: 'var(--text-primary)' }}>{t('auth.checkInbox')}</h2>
               <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{email}</span> adresine şifre sıfırlama bağlantısı gönderdik.
+                <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{email}</span> {t('auth.resetLinkSentInfo')}
               </p>
-              <p className="mt-2 text-[11px]" style={{ color: 'rgba(255,255,255,0.2)' }}>Mail gelmediyse spam klasörünü kontrol et.</p>
+              <p className="mt-2 text-[11px]" style={{ color: 'rgba(255,255,255,0.2)' }}>{t('auth.checkSpam')}</p>
               <Link href="/auth/giris"
                 className="inline-flex items-center gap-2 mt-6 text-sm font-medium hover:underline"
                 style={{ color: 'var(--accent)' }}>
                 <IconArrowLeft className="h-4 w-4" />
-                Giriş sayfasına dön
+                {t('auth.backToLogin')}
               </Link>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label className="block text-[10px] font-bold mb-1.5 uppercase tracking-[0.12em]" style={{ color: 'rgba(212,168,67,0.5)' }}>
-                  E-posta
+                  {t('auth.email')}
                 </label>
                 <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-                  required placeholder="ornek@email.com"
+                  required placeholder={t('auth.emailPlaceholder')}
                   className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-all" style={inputBase}
                   onFocus={e => (e.target.style.borderColor = 'rgba(212,168,67,0.4)')}
                   onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.09)')}
@@ -102,7 +104,7 @@ export default function SifremiUnuttumPage() {
               <button type="submit" disabled={loading}
                 className="w-full py-2.5 rounded-xl font-bold text-sm transition-all disabled:opacity-50 hover:opacity-90"
                 style={{ background: 'linear-gradient(135deg, var(--accent) 0%, #be1a3e 100%)', color: '#fff', boxShadow: '0 4px 16px rgba(225,29,72,0.3)' }}>
-                {loading ? 'Gönderiliyor...' : 'Sıfırlama Bağlantısı Gönder'}
+                {loading ? t('auth.sending') : t('auth.sendResetLink')}
               </button>
 
               <div className="text-center">
@@ -110,7 +112,7 @@ export default function SifremiUnuttumPage() {
                   className="inline-flex items-center gap-1.5 text-[12px] hover:underline"
                   style={{ color: 'var(--text-secondary)' }}>
                   <IconArrowLeft className="h-3.5 w-3.5" />
-                  Giriş sayfasına dön
+                  {t('auth.backToLogin')}
                 </Link>
               </div>
             </form>

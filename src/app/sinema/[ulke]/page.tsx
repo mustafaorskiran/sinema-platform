@@ -3,25 +3,26 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import MovieCard from '@/components/MovieCard'
 import Pagination from '@/components/Pagination'
+import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
 
-const ULKELER: Record<string, { bayrak: string; ad: string; dil: string }> = {
-  kore:       { bayrak: '🇰🇷', ad: 'Kore',       dil: 'ko' },
-  japonya:    { bayrak: '🇯🇵', ad: 'Japonya',     dil: 'ja' },
-  fransa:     { bayrak: '🇫🇷', ad: 'Fransa',      dil: 'fr' },
-  italya:     { bayrak: '🇮🇹', ad: 'İtalya',      dil: 'it' },
-  ispanya:    { bayrak: '🇪🇸', ad: 'İspanya',     dil: 'es' },
-  almanya:    { bayrak: '🇩🇪', ad: 'Almanya',     dil: 'de' },
-  hindistan:  { bayrak: '🇮🇳', ad: 'Hindistan',   dil: 'hi' },
-  cin:        { bayrak: '🇨🇳', ad: 'Çin',         dil: 'zh' },
-  turkiye:    { bayrak: '🇹🇷', ad: 'Türkiye',     dil: 'tr' },
-  ingiltere:  { bayrak: '🇬🇧', ad: 'İngiltere',   dil: 'en' },
-  brezilya:   { bayrak: '🇧🇷', ad: 'Brezilya',    dil: 'pt' },
-  meksika:    { bayrak: '🇲🇽', ad: 'Meksika',     dil: 'es' },
-  iran:       { bayrak: '🇮🇷', ad: 'İran',        dil: 'fa' },
-  rusya:      { bayrak: '🇷🇺', ad: 'Rusya',       dil: 'ru' },
-  tayland:    { bayrak: '🇹🇭', ad: 'Tayland',     dil: 'th' },
-  avustralya: { bayrak: '🇦🇺', ad: 'Avustralya',  dil: 'en' },
+const ULKELER: Record<string, { bayrak: string; ad: string; nameKey: string; dil: string }> = {
+  kore:       { bayrak: '🇰🇷', ad: 'Kore',       nameKey: 'country.names.kore',       dil: 'ko' },
+  japonya:    { bayrak: '🇯🇵', ad: 'Japonya',     nameKey: 'country.names.japonya',    dil: 'ja' },
+  fransa:     { bayrak: '🇫🇷', ad: 'Fransa',      nameKey: 'country.names.fransa',     dil: 'fr' },
+  italya:     { bayrak: '🇮🇹', ad: 'İtalya',      nameKey: 'country.names.italya',     dil: 'it' },
+  ispanya:    { bayrak: '🇪🇸', ad: 'İspanya',     nameKey: 'country.names.ispanya',    dil: 'es' },
+  almanya:    { bayrak: '🇩🇪', ad: 'Almanya',     nameKey: 'country.names.almanya',    dil: 'de' },
+  hindistan:  { bayrak: '🇮🇳', ad: 'Hindistan',   nameKey: 'country.names.hindistan',  dil: 'hi' },
+  cin:        { bayrak: '🇨🇳', ad: 'Çin',         nameKey: 'country.names.cin',        dil: 'zh' },
+  turkiye:    { bayrak: '🇹🇷', ad: 'Türkiye',     nameKey: 'country.names.turkiye',    dil: 'tr' },
+  ingiltere:  { bayrak: '🇬🇧', ad: 'İngiltere',   nameKey: 'country.names.ingiltere',  dil: 'en' },
+  brezilya:   { bayrak: '🇧🇷', ad: 'Brezilya',    nameKey: 'country.names.brezilya',   dil: 'pt' },
+  meksika:    { bayrak: '🇲🇽', ad: 'Meksika',     nameKey: 'country.names.meksika',    dil: 'es' },
+  iran:       { bayrak: '🇮🇷', ad: 'İran',        nameKey: 'country.names.iran',       dil: 'fa' },
+  rusya:      { bayrak: '🇷🇺', ad: 'Rusya',       nameKey: 'country.names.rusya',      dil: 'ru' },
+  tayland:    { bayrak: '🇹🇭', ad: 'Tayland',     nameKey: 'country.names.tayland',    dil: 'th' },
+  avustralya: { bayrak: '🇦🇺', ad: 'Avustralya',  nameKey: 'country.names.avustralya', dil: 'en' },
 }
 
 interface Props {
@@ -38,6 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 const PAGE_SIZE = 40
 
 export default async function UlkeSinemasPage({ params, searchParams }: Props) {
+  const { t } = await getTranslations()
   const { ulke } = await params
   const { tab = 'filmler', sayfa } = await searchParams
   const page   = Math.max(1, Number(sayfa) || 1)
@@ -76,15 +78,15 @@ export default async function UlkeSinemasPage({ params, searchParams }: Props) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="mb-2 text-sm text-[--text-secondary]">
-        <Link href="/sinema" className="hover:text-white transition-colors">← Dünya Sineması</Link>
+        <Link href="/sinema" className="hover:text-white transition-colors">← {t('country.worldCinema')}</Link>
       </div>
 
       <div className="flex items-center gap-4 mb-8">
         <span className="text-5xl">{info.bayrak}</span>
         <div>
-          <h1 className="text-3xl font-bold text-white">{info.ad} Sineması</h1>
+          <h1 className="text-3xl font-bold text-white">{t('country.countrySinemasi', { country: t(info.nameKey) })}</h1>
           <p className="text-sm text-[--text-secondary] mt-1">
-            {(filmCount ?? 0).toLocaleString('tr-TR')} film · {(seriesCount ?? 0).toLocaleString('tr-TR')} dizi
+            {t('country.filmCount', { count: (filmCount ?? 0).toLocaleString('tr-TR') })} · {t('country.dizCount', { count: (seriesCount ?? 0).toLocaleString('tr-TR') })}
           </p>
         </div>
       </div>
@@ -92,24 +94,24 @@ export default async function UlkeSinemasPage({ params, searchParams }: Props) {
       {/* Sekmeler */}
       <div className="flex gap-2 mb-6">
         {[
-          { key: 'filmler', label: `🎬 Filmler (${(filmCount ?? 0).toLocaleString()})` },
-          { key: 'diziler', label: `📺 Diziler (${(seriesCount ?? 0).toLocaleString()})` },
-        ].map(t => (
-          <Link key={t.key} href={`/sinema/${ulke}?tab=${t.key}`}
+          { key: 'filmler', label: `🎬 ${t('genre.film')} (${(filmCount ?? 0).toLocaleString()})` },
+          { key: 'diziler', label: `📺 ${t('genre.dizi')} (${(seriesCount ?? 0).toLocaleString()})` },
+        ].map(tab_ => (
+          <Link key={tab_.key} href={`/sinema/${ulke}?tab=${tab_.key}`}
             className="px-5 py-2 rounded-full text-sm font-medium transition-all hover:scale-105"
-            style={tab === t.key
+            style={tab === tab_.key
               ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff', boxShadow: '0 2px 8px rgba(225,29,72,0.3)' }
               : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }
             }>
-            {t.label}
+            {tab_.label}
           </Link>
         ))}
       </div>
 
       {items.length === 0 ? (
         <div className="text-center py-20 text-[--text-secondary]">
-          <p>Bu ülke için içerik bulunamadı.</p>
-          <p className="text-sm mt-2">Katalog yüklenirken lütfen bekleyin.</p>
+          <p>{t('country.noResults')}</p>
+          <p className="text-sm mt-2">{t('country.catalogLoadingHint')}</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-8 gap-3">

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useLocale } from '@/context/LocaleContext'
 
 const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? ''
 
@@ -14,6 +15,7 @@ function urlBase64ToUint8Array(base64String: string) {
 }
 
 export default function PushSubscribeButton() {
+  const { t } = useLocale()
   const [status, setStatus] = useState<'loading' | 'unsupported' | 'denied' | 'subscribed' | 'unsubscribed'>('loading')
   const [busy, setBusy] = useState(false)
 
@@ -76,7 +78,7 @@ export default function PushSubscribeButton() {
   if (status === 'denied') {
     return (
       <div className="text-xs px-3 py-2 rounded-lg" style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', color: '#f87171' }}>
-        🔕 Bildirimler tarayıcı tarafından engellenmiş. Adres çubuğundan izin ver.
+        🔕 {t('settings.pushBlocked')}
       </div>
     )
   }
@@ -86,7 +88,7 @@ export default function PushSubscribeButton() {
       <button onClick={unsubscribe} disabled={busy}
         className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all disabled:opacity-50 hover:brightness-110"
         style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.25)', color: '#4ade80' }}>
-        🔔 Bildirimler Aktif — Kapat
+        🔔 {t('settings.pushActive')}
       </button>
     )
   }
@@ -95,7 +97,7 @@ export default function PushSubscribeButton() {
     <button onClick={subscribe} disabled={busy}
       className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all disabled:opacity-50 hover:scale-[1.02] active:scale-[0.98]"
       style={{ background: 'linear-gradient(135deg, rgba(212,168,67,0.15), rgba(212,168,67,0.08))', border: '1px solid rgba(212,168,67,0.3)', color: '#D4A843' }}>
-      🔔 {busy ? 'Etkinleştiriliyor...' : 'Anlık Bildirimleri Aç'}
+      🔔 {busy ? t('settings.pushEnabling') : t('settings.pushEnable')}
     </button>
   )
 }

@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { IconChevronLeft, IconChevronRight } from '@/components/icons'
 import { getPosterUrl } from '@/lib/tmdb-utils'
 import type { TMDbMovie } from '@/lib/types'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Props {
   title: string
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export default function HomeCarousel({ title, icon, href, items, defaultType = 'film' }: Props) {
+  const { t } = useLocale()
   const ref = useRef<HTMLDivElement>(null)
 
   if (!items.length) return null
@@ -41,7 +43,7 @@ export default function HomeCarousel({ title, icon, href, items, defaultType = '
           className="flex items-center gap-1 text-sm font-medium transition-colors hover:text-white"
           style={{ color: 'var(--accent)' }}
         >
-          Tümünü Gör
+          {t('common.seeAll')}
           <IconChevronRight className="h-4 w-4" />
         </Link>
       </div>
@@ -51,7 +53,7 @@ export default function HomeCarousel({ title, icon, href, items, defaultType = '
         {/* Left button */}
         <button
           onClick={() => scroll('left')}
-          aria-label="Sola kaydır"
+          aria-label={t('homeCarousel.scrollLeft')}
           className="absolute left-0 top-[40%] z-10 -translate-x-4 w-9 h-9 rounded-full flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-all duration-200 hover:scale-110"
           style={{
             background: 'rgba(11,15,25,0.95)',
@@ -141,7 +143,7 @@ export default function HomeCarousel({ title, icon, href, items, defaultType = '
         {/* Right button */}
         <button
           onClick={() => scroll('right')}
-          aria-label="Sağa kaydır"
+          aria-label={t('homeCarousel.scrollRight')}
           className="absolute right-0 top-[40%] z-10 translate-x-4 w-9 h-9 rounded-full flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-all duration-200 hover:scale-110"
           style={{
             background: 'rgba(11,15,25,0.95)',

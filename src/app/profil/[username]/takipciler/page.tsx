@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props { params: Promise<{ username: string }> }
 
@@ -13,6 +14,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function TakipcilerPage({ params }: Props) {
   const { username } = await params
   const supabase = await createClient()
+  const { t } = await getTranslations()
 
   const { data: profile } = await supabase.from('profiles').select('id, username').eq('username', username).single()
   if (!profile) notFound()
@@ -30,13 +32,13 @@ export default async function TakipcilerPage({ params }: Props) {
     <div className="max-w-2xl mx-auto px-4 py-10">
       <div className="flex items-center gap-3 mb-6">
         <Link href={`/profil/${username}`} className="text-sm hover:underline" style={{ color: 'rgba(255,255,255,0.4)' }}>← {username}</Link>
-        <h1 className="text-xl font-bold text-white">Takipçiler <span className="text-sm font-normal" style={{ color: 'rgba(255,255,255,0.35)' }}>({followers.length})</span></h1>
+        <h1 className="text-xl font-bold text-white">{t('profile.followersPageTitle')} <span className="text-sm font-normal" style={{ color: 'rgba(255,255,255,0.35)' }}>({followers.length})</span></h1>
       </div>
 
       {followers.length === 0 ? (
         <div className="rounded-2xl p-12 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <p className="text-2xl mb-2">👥</p>
-          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>Henüz takipçi yok.</p>
+          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>{t('profile.noFollowers')}</p>
         </div>
       ) : (
         <div className="space-y-2">

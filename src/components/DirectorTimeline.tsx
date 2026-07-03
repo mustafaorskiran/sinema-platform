@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { getTranslations } from '@/lib/i18n'
 
 interface Credit {
   id: number
@@ -19,7 +20,8 @@ interface Props {
   personName: string
 }
 
-export default function DirectorTimeline({ credits, personName }: Props) {
+export default async function DirectorTimeline({ credits, personName }: Props) {
+  const { t } = await getTranslations()
   // Yönetmen/yapımcı rollerini filtrele, tarihe göre sırala
   const directorCredits = credits
     .filter(c => c.release_date || c.first_air_date)
@@ -44,7 +46,7 @@ export default function DirectorTimeline({ credits, personName }: Props) {
   return (
     <div className="mt-8">
       <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-        🎬 Kariyer Zaman Çizelgesi
+        🎬 {t('person.timeline.title')}
       </h2>
 
       <div className="relative pl-4" style={{ borderLeft: '2px solid rgba(255,255,255,0.08)' }}>

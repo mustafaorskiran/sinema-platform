@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
 import PollWidget from '@/components/PollWidget'
 import CreatePollForm from './CreatePollForm'
+import { getTranslations } from '@/lib/i18n'
 
 export const metadata: Metadata = {
   title: 'Anketler | Sinezon',
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 export default async function AnketlerPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+  const { t } = await getTranslations()
 
   const { data: polls } = await supabase
     .from('polls')
@@ -22,8 +24,8 @@ export default async function AnketlerPage() {
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-white">Anketler</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>Film ve dizi hakkında ne düşünüyorsun?</p>
+          <h1 className="text-2xl font-bold text-white">{t('community.pollsTitle')}</h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>{t('community.pollsSubtitle')}</p>
         </div>
         {user && <CreatePollForm />}
       </div>
@@ -32,7 +34,7 @@ export default async function AnketlerPage() {
         {(polls ?? []).length === 0 ? (
           <div className="text-center py-20" style={{ color: 'var(--text-secondary)' }}>
             <div className="text-4xl mb-3">🗳️</div>
-            <p>Henüz anket yok. İlk anketi sen oluştur!</p>
+            <p>{t('community.noPolls')}</p>
           </div>
         ) : (
           (polls ?? []).map((poll: any) => (

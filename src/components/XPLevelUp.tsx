@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Props {
   level: number
@@ -48,6 +49,7 @@ function Confetti() {
 const XP_PER_LEVEL = 50
 
 export default function XPLevelUp({ level, xp }: Props) {
+  const { t } = useLocale()
   const [prevLevel, setPrevLevel] = useState(level)
   const [showCelebration, setShowCelebration] = useState(false)
 
@@ -71,8 +73,8 @@ export default function XPLevelUp({ level, xp }: Props) {
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] text-center pointer-events-none"
             style={{ animation: 'popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275) forwards' }}>
             <div className="text-6xl mb-2">🎉</div>
-            <p className="text-2xl font-black text-white">Seviye {level}!</p>
-            <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.6)' }}>Tebrikler!</p>
+            <p className="text-2xl font-black text-white">{t('community.levelUp', { level })}</p>
+            <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.6)' }}>{t('community.congrats')}</p>
             <style>{`
               @keyframes popIn {
                 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
@@ -91,7 +93,7 @@ export default function XPLevelUp({ level, xp }: Props) {
         </div>
         <div className="flex-1">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-[10px] font-semibold text-white">Seviye {level}</span>
+            <span className="text-[10px] font-semibold text-white">{t('community.level', { level })}</span>
             <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.35)' }}>{xp} / {nextLevelXP} XP</span>
           </div>
           <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Film {
   id: number
@@ -35,6 +36,7 @@ const TOTAL_QUESTIONS = 10
 const COUNTDOWN_SECONDS = 3
 
 export default function QuizClient({ films }: Props) {
+  const { t } = useLocale()
   const [questions] = useState<Film[]>(() => shuffleArray(films).slice(0, TOTAL_QUESTIONS))
   const [current, setCurrent] = useState(0)
   const [choices, setChoices] = useState<string[]>([])
@@ -109,27 +111,27 @@ export default function QuizClient({ films }: Props) {
             {pct >= 80 ? '🏆' : pct >= 50 ? '🎬' : '🎭'}
           </div>
           <h2 className="text-2xl font-extrabold mb-2 text-white">
-            Quiz Bitti!
+            {t('quiz.finishedTitle')}
           </h2>
           <p className="text-5xl font-black my-4" style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             {score / 10}/{TOTAL_QUESTIONS}
           </p>
           <p className="text-sm mb-2" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            doğru cevap · {score} puan
+            {t('quiz.correctAnswerCount', { score })}
           </p>
           <p className="text-sm mb-8" style={{ color: 'rgba(255,255,255,0.4)' }}>
             {pct >= 80
-              ? 'Harika! Gerçek bir sinema tutkunu!'
+              ? t('quiz.resultGreat')
               : pct >= 50
-              ? 'Fena değil, biraz daha pratik yapabilirsin.'
-              : 'Daha fazla film izleme vakti!'}
+              ? t('quiz.resultOk')
+              : t('quiz.resultBad')}
           </p>
           <button
             onClick={restart}
             className="w-full py-3 rounded-xl font-bold text-sm transition-all hover:scale-105"
             style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff', boxShadow: '0 4px 16px rgba(225,29,72,0.3)' }}
           >
-            Yeniden Oyna
+            {t('quiz.playAgain')}
           </button>
         </div>
       </div>
@@ -151,10 +153,10 @@ export default function QuizClient({ films }: Props) {
       <div className="w-full max-w-lg mb-6">
         <div className="flex justify-between items-center mb-2">
           <span className="text-sm font-semibold" style={{ color: 'var(--text-secondary)' }}>
-            Soru {current + 1} / {TOTAL_QUESTIONS}
+            {t('quiz.questionCounter', { current: current + 1, total: TOTAL_QUESTIONS })}
           </span>
           <span className="text-sm font-bold" style={{ color: 'var(--accent)' }}>
-            {score} puan
+            {t('quiz.pointsValue', { score })}
           </span>
         </div>
         <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
@@ -207,7 +209,7 @@ export default function QuizClient({ films }: Props) {
         {/* Title hint when revealed */}
         <div className="px-5 pt-4">
           <p className="text-xs font-semibold uppercase tracking-wider mb-4 text-center" style={{ color: 'var(--text-secondary)' }}>
-            {revealed ? 'Bu filmin adı ne?' : 'Geri sayım başladı — hazır mısın?'}
+            {revealed ? t('quiz.revealedQuestion') : t('quiz.countdownQuestion')}
           </p>
         </div>
 
@@ -267,7 +269,7 @@ export default function QuizClient({ films }: Props) {
               className="w-full py-3 rounded-xl font-bold text-sm transition-all hover:scale-105"
               style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff', boxShadow: '0 4px 16px rgba(225,29,72,0.3)' }}
             >
-              {current + 1 >= TOTAL_QUESTIONS ? 'Sonucu Gör' : 'Sonraki Soru →'}
+              {current + 1 >= TOTAL_QUESTIONS ? t('quiz.seeResult') : t('quiz.nextQuestion')}
             </button>
           </div>
         )}

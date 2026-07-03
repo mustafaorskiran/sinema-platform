@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getPosterUrl, getMediaTitle, getMediaYear, getMovieDetail, getSeriesDetail } from '@/lib/tmdb'
+import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
 
 export const revalidate = 3600
@@ -43,6 +44,7 @@ async function fetchTrendingWeek(apiKey: string) {
 export default async function HaftalikPage() {
   const { start, label } = weekRange()
   const supabase = await createClient()
+  const { t } = await getTranslations()
   const apiKey = process.env.TMDB_API_KEY ?? ''
 
   const [

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Props {
   mediaId: number
@@ -9,14 +10,14 @@ interface Props {
   initialFormat?: string
 }
 
-const FORMAT_LABELS: Record<string, string> = {
-  dijital: '💻 Dijital',
-  bluray: '💿 Blu-ray',
-  dvd: '📀 DVD',
-  vhs: '📼 VHS',
-}
-
 export default function CollectionButton({ mediaId, mediaType, inCollection: init, initialFormat = 'dijital' }: Props) {
+  const { t } = useLocale()
+  const FORMAT_LABELS: Record<string, string> = {
+    dijital: t('collection.formatDigital'),
+    bluray: t('collection.formatBluray'),
+    dvd: t('collection.formatDvd'),
+    vhs: t('collection.formatVhs'),
+  }
   const [inCol, setInCol] = useState(init)
   const [format, setFormat] = useState(initialFormat)
   const [open, setOpen] = useState(false)
@@ -47,10 +48,10 @@ export default function CollectionButton({ mediaId, mediaType, inCollection: ini
       <button
         onClick={removeFromCollection}
         disabled={loading}
-        title="Koleksiyonumdan çıkar"
+        title={t('collection.removeFromCollection')}
         className="flex items-center gap-2 px-4 py-2 rounded-full border border-amber-500/50 bg-amber-500/10 text-amber-400 text-sm font-medium hover:bg-amber-500/20 transition-colors disabled:opacity-50"
       >
-        📦 Koleksiyonumda ({FORMAT_LABELS[format] ?? format})
+        {t('collection.inCollection', { format: FORMAT_LABELS[format] ?? format })}
       </button>
     )
   }
@@ -61,12 +62,12 @@ export default function CollectionButton({ mediaId, mediaType, inCollection: ini
         onClick={() => setOpen(v => !v)}
         className="flex items-center gap-2 px-4 py-2 rounded-full border border-[--border] bg-[--bg-card] text-[--text-secondary] text-sm font-medium hover:text-white hover:border-white/30 transition-colors"
       >
-        📦 Koleksiyona Ekle
+        {t('collection.addToCollection')}
       </button>
 
       {open && (
         <div className="absolute top-full left-0 mt-2 z-20 w-44 rounded-xl shadow-xl p-2" style={{ background: 'rgba(14,20,32,0.98)', border: '1px solid rgba(255,255,255,0.09)' }}>
-          <p className="text-[10px] text-[--text-secondary] uppercase font-semibold px-2 mb-1">Format seç</p>
+          <p className="text-[10px] text-[--text-secondary] uppercase font-semibold px-2 mb-1">{t('collection.selectFormat')}</p>
           {Object.entries(FORMAT_LABELS).map(([key, label]) => (
             <button
               key={key}

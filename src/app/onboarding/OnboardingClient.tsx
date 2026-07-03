@@ -1,30 +1,31 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import type { RatingItem } from './page'
+import { useLocale } from '@/context/LocaleContext'
 
 // ─── Sabit veriler ───────────────────────────────────────────────────────────
 
-const GENRES = [
-  { id: 28,    slug: 'aksiyon',    name: 'Aksiyon',     emoji: '💥' },
-  { id: 35,    slug: 'komedi',     name: 'Komedi',      emoji: '😂' },
-  { id: 18,    slug: 'drama',      name: 'Drama',       emoji: '🎭' },
-  { id: 27,    slug: 'korku',      name: 'Korku',       emoji: '👻' },
-  { id: 878,   slug: 'bilim-kurgu', name: 'Bilim Kurgu', emoji: '🚀' },
-  { id: 10749, slug: 'romantik',   name: 'Romantik',    emoji: '❤️' },
-  { id: 53,    slug: 'gerilim',    name: 'Gerilim',     emoji: '😱' },
-  { id: 16,    slug: 'animasyon',  name: 'Animasyon',   emoji: '🎨' },
-  { id: 99,    slug: 'belgesel',   name: 'Belgesel',    emoji: '📷' },
-  { id: 14,    slug: 'fantezi',    name: 'Fantezi',     emoji: '🧙' },
-  { id: 80,    slug: 'suc',        name: 'Suç',         emoji: '🔫' },
-  { id: 12,    slug: 'macera',     name: 'Macera',      emoji: '🗺️' },
-  { id: 36,    slug: 'tarih',      name: 'Tarih',       emoji: '📜' },
-  { id: 10402, slug: 'muzik',      name: 'Müzik',       emoji: '🎵' },
-  { id: 10751, slug: 'aile',       name: 'Aile',        emoji: '👨‍👩‍👧' },
-  { id: 9648,  slug: 'gizem',      name: 'Gizem',       emoji: '🔍' },
-  { id: 10752, slug: 'savas',      name: 'Savaş',       emoji: '⚔️' },
-  { id: 37,    slug: 'western',    name: 'Western',     emoji: '🤠' },
+const GENRE_META = [
+  { id: 28,    slug: 'aksiyon',    tKey: 'aksiyon',    emoji: '💥' },
+  { id: 35,    slug: 'komedi',     tKey: 'komedi',     emoji: '😂' },
+  { id: 18,    slug: 'drama',      tKey: 'drama',      emoji: '🎭' },
+  { id: 27,    slug: 'korku',      tKey: 'korku',      emoji: '👻' },
+  { id: 878,   slug: 'bilim-kurgu', tKey: 'bilimKurgu', emoji: '🚀' },
+  { id: 10749, slug: 'romantik',   tKey: 'romantik',   emoji: '❤️' },
+  { id: 53,    slug: 'gerilim',    tKey: 'gerilim',    emoji: '😱' },
+  { id: 16,    slug: 'animasyon',  tKey: 'animasyon',  emoji: '🎨' },
+  { id: 99,    slug: 'belgesel',   tKey: 'belgesel',   emoji: '📷' },
+  { id: 14,    slug: 'fantezi',    tKey: 'fantezi',    emoji: '🧙' },
+  { id: 80,    slug: 'suc',        tKey: 'suc',        emoji: '🔫' },
+  { id: 12,    slug: 'macera',     tKey: 'macera',     emoji: '🗺️' },
+  { id: 36,    slug: 'tarih',      tKey: 'tarih',      emoji: '📜' },
+  { id: 10402, slug: 'muzik',      tKey: 'muzik',      emoji: '🎵' },
+  { id: 10751, slug: 'aile',       tKey: 'aile',       emoji: '👨‍👩‍👧' },
+  { id: 9648,  slug: 'gizem',      tKey: 'gizem',      emoji: '🔍' },
+  { id: 10752, slug: 'savas',      tKey: 'savas',      emoji: '⚔️' },
+  { id: 37,    slug: 'western',    tKey: 'western',    emoji: '🤠' },
 ]
 
 const PLATFORMS = [
@@ -40,7 +41,6 @@ const PLATFORMS = [
   { id: 188,  name: 'YouTube Premium',   bg: 'bg-rose-900/60',   border: 'border-rose-500/60',  text: 'text-rose-300' },
 ]
 
-const STEP_LABELS = ['Türler', 'Platformlar', 'Puanlar', 'Oyuncular', 'Hakkında']
 const MIN_GENRES = 5
 const MIN_RATINGS = 10
 
@@ -57,7 +57,18 @@ interface Actor {
 
 export default function OnboardingClient({ ratingItems }: { ratingItems: RatingItem[] }) {
   const router = useRouter()
+  const { t } = useLocale()
   const [step, setStep] = useState(1)
+
+  const STEP_LABELS = useMemo(() => [
+    t('onboarding.stepGenres'),
+    t('onboarding.stepPlatforms'),
+    t('onboarding.stepRatings'),
+    t('onboarding.stepActors'),
+    t('onboarding.stepAbout'),
+  ], [t])
+
+  const GENRES = useMemo(() => GENRE_META.map(g => ({ ...g, name: t(`onboarding.genre.${g.tKey}`) })), [t])
 
   // Step 1
   const [selectedGenres, setSelectedGenres] = useState<number[]>([])
@@ -153,7 +164,7 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
       router.push('/?welcome=1')
       router.refresh()
     } catch {
-      setError('Bir hata oluştu. Lütfen tekrar dene.')
+      setError(t('onboarding.genericError'))
       setSaving(false)
     }
   }
@@ -167,7 +178,7 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
         <div className="max-w-3xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs text-[--text-secondary] font-medium">
-              Adım {step} / {STEP_LABELS.length}
+              {t('onboarding.stepProgress', { step, total: STEP_LABELS.length })}
             </span>
             <span className="text-xs text-[--text-secondary]">{STEP_LABELS[step - 1]}</span>
           </div>
@@ -190,9 +201,9 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
         {step === 1 && (
           <div>
             <div className="mb-8">
-              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Hangi türleri seversin?</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">{t('onboarding.genresTitle')}</h1>
               <p className="text-[--text-secondary] text-sm">
-                En az <span className="text-white font-semibold">{MIN_GENRES} tür</span> seç — öneriler buna göre kişiselleşir.
+                {t('onboarding.minGenresPrefix')} <span className="text-white font-semibold">{t('onboarding.minGenresCount', { min: MIN_GENRES })}</span> {t('onboarding.minGenresSuffix')}
               </p>
             </div>
 
@@ -225,9 +236,9 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
         {step === 2 && (
           <div>
             <div className="mb-8">
-              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Hangi platformlara üyesin?</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">{t('onboarding.platformsTitle')}</h1>
               <p className="text-[--text-secondary] text-sm">
-                Seçtiğin platformlardaki içerikleri öncelikli göstereceğiz. <span className="text-[--text-secondary]/70">(İsteğe bağlı)</span>
+                {t('onboarding.platformsInfo')} <span className="text-[--text-secondary]/70">({t('common.optional')})</span>
               </p>
             </div>
 
@@ -256,7 +267,7 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
             </div>
 
             <p className="text-xs text-[--text-secondary] mt-5 text-center">
-              Üyeliğin olmayan platformları da seçebilirsin. Dilediğin zaman değiştirebilirsin.
+              {t('onboarding.platformsHint')}
             </p>
           </div>
         )}
@@ -265,9 +276,9 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
         {step === 3 && (
           <div>
             <div className="mb-6">
-              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Bunları izledin mi?</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">{t('onboarding.ratingsTitle')}</h1>
               <p className="text-[--text-secondary] text-sm mb-3">
-                Tanıdığın filmlere ve dizilere puan ver. En az <span className="text-white font-semibold">{MIN_RATINGS}</span> puan gerekiyor.
+                {t('onboarding.ratingsInfoPrefix')} <span className="text-white font-semibold">{MIN_RATINGS}</span> {t('onboarding.ratingsInfoSuffix')}
               </p>
               {/* İlerleme */}
               <div className="flex items-center gap-3">
@@ -281,7 +292,7 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
                   {ratedCount}/{MIN_RATINGS}
                 </span>
                 {ratedCount >= MIN_RATINGS && (
-                  <span className="text-green-400 text-xs font-medium">✓ Hazır!</span>
+                  <span className="text-green-400 text-xs font-medium">{t('onboarding.ready')}</span>
                 )}
               </div>
             </div>
@@ -305,7 +316,7 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
                       <div className={`absolute top-1 left-1 text-[9px] px-1 py-0.5 rounded font-medium ${
                         item.type === 'film' ? 'bg-[--accent]/80 text-white' : 'bg-blue-600/80 text-white'
                       }`}>
-                        {item.type === 'film' ? 'F' : 'D'}
+                        {item.type === 'film' ? t('onboarding.filmBadge') : t('onboarding.seriesBadge')}
                       </div>
                     </div>
 
@@ -341,9 +352,9 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
         {step === 4 && (
           <div>
             <div className="mb-6">
-              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Favori oyuncuların kimler?</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">{t('onboarding.actorsTitle')}</h1>
               <p className="text-[--text-secondary] text-sm">
-                Bu adım isteğe bağlı. İstersen atlayabilirsin.
+                {t('onboarding.actorsSubtitle')}
               </p>
             </div>
 
@@ -399,7 +410,7 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
 
             {selectedActors.length > 0 && (
               <p className="text-xs text-center text-[--accent] mt-4 font-medium">
-                {selectedActors.length} oyuncu seçildi
+                {t('onboarding.actorsSelectedCount', { n: selectedActors.length })}
               </p>
             )}
           </div>
@@ -410,46 +421,46 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
           <div className="max-w-sm mx-auto">
             <div className="mb-8 text-center">
               <div className="text-5xl mb-4">🎂</div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Seni biraz tanıyalım</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">{t('onboarding.aboutTitle')}</h1>
               <p className="text-[--text-secondary] text-sm">
-                Bu bilgiler film puanlarında yaş grubu istatistiklerini göstermek için kullanılır. Kimseyle paylaşılmaz.
-                <br /><span className="text-[--text-secondary]/60 text-xs mt-1 block">İsteğe bağlı — atlayabilirsin.</span>
+                {t('onboarding.aboutInfo')}
+                <br /><span className="text-[--text-secondary]/60 text-xs mt-1 block">{t('onboarding.aboutOptionalHint')}</span>
               </p>
             </div>
 
             <div className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-[--text-secondary] mb-2">Doğum Yılın</label>
+                <label className="block text-sm font-medium text-[--text-secondary] mb-2">{t('onboarding.birthYearLabel')}</label>
                 <input
                   type="number"
                   value={birthYear}
                   onChange={e => setBirthYear(e.target.value)}
                   min={1920}
                   max={new Date().getFullYear() - 13}
-                  placeholder="örn. 1995"
+                  placeholder={t('onboarding.birthYearPlaceholder')}
                   className="w-full rounded-xl px-4 py-3.5 text-white text-sm placeholder:text-white/25 outline-none transition-colors"
                   style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[--text-secondary] mb-2">Ülken</label>
+                <label className="block text-sm font-medium text-[--text-secondary] mb-2">{t('onboarding.countryLabel')}</label>
                 <select
                   value={country}
                   onChange={e => setCountry(e.target.value)}
                   className="w-full rounded-xl px-4 py-3.5 text-white text-sm outline-none transition-colors"
                   style={{ background: 'rgba(20,28,47,0.95)', border: '1px solid rgba(255,255,255,0.1)' }}
                 >
-                  <option value="">Seç (isteğe bağlı)</option>
-                  <option value="TR">🇹🇷 Türkiye</option>
-                  <option value="DE">🇩🇪 Almanya</option>
-                  <option value="US">🇺🇸 Amerika</option>
-                  <option value="GB">🇬🇧 İngiltere</option>
-                  <option value="FR">🇫🇷 Fransa</option>
-                  <option value="NL">🇳🇱 Hollanda</option>
-                  <option value="BE">🇧🇪 Belçika</option>
-                  <option value="AT">🇦🇹 Avusturya</option>
-                  <option value="CH">🇨🇭 İsviçre</option>
-                  <option value="OTHER">Diğer</option>
+                  <option value="">{t('onboarding.countrySelectPlaceholder')}</option>
+                  <option value="TR">{t('onboarding.country.tr')}</option>
+                  <option value="DE">{t('onboarding.country.de')}</option>
+                  <option value="US">{t('onboarding.country.us')}</option>
+                  <option value="GB">{t('onboarding.country.gb')}</option>
+                  <option value="FR">{t('onboarding.country.fr')}</option>
+                  <option value="NL">{t('onboarding.country.nl')}</option>
+                  <option value="BE">{t('onboarding.country.be')}</option>
+                  <option value="AT">{t('onboarding.country.at')}</option>
+                  <option value="CH">{t('onboarding.country.ch')}</option>
+                  <option value="OTHER">{t('onboarding.country.other')}</option>
                 </select>
               </div>
             </div>
@@ -466,7 +477,7 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
               onClick={() => setStep(s => (s - 1) as typeof step)}
               className="px-5 py-2.5 rounded-xl border border-[--border] text-[--text-secondary] hover:text-white hover:border-white/30 text-sm font-medium transition-colors"
             >
-              ← Geri
+              {t('onboarding.backButton')}
             </button>
           ) : (
             <div />
@@ -476,12 +487,12 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
             {/* Step bilgisi */}
             {step === 1 && (
               <span className={`text-xs font-medium ${selectedGenres.length >= MIN_GENRES ? 'text-green-400' : 'text-[--text-secondary]'}`}>
-                {selectedGenres.length}/{MIN_GENRES} seçildi
+                {selectedGenres.length}/{MIN_GENRES} {t('onboarding.selected')}
               </span>
             )}
             {step === 3 && (
               <span className={`text-xs font-medium ${ratedCount >= MIN_RATINGS ? 'text-green-400' : 'text-[--text-secondary]'}`}>
-                {ratedCount}/{MIN_RATINGS} puan
+                {ratedCount}/{MIN_RATINGS} {t('onboarding.ratingsCountLabel')}
               </span>
             )}
 
@@ -494,7 +505,7 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
                 }}
                 className="text-sm text-[--text-secondary] hover:text-white transition-colors"
               >
-                {step === 5 ? 'Atla ve Tamamla' : 'Atla'}
+                {step === 5 ? t('onboarding.skipAndComplete') : t('onboarding.skip')}
               </button>
             )}
 
@@ -508,7 +519,7 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
                 }
                 className="px-6 py-2.5 rounded-xl bg-[--accent] hover:bg-[--accent-hover] text-white font-semibold text-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                Devam →
+                {t('onboarding.continueButton')}
               </button>
             ) : (
               <button
@@ -516,7 +527,7 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
                 disabled={saving}
                 className="px-6 py-2.5 rounded-xl bg-[--accent] hover:bg-[--accent-hover] text-white font-semibold text-sm transition-colors disabled:opacity-40"
               >
-                {saving ? 'Kaydediliyor…' : '🎉 Tamamla'}
+                {saving ? t('onboarding.saving') : t('onboarding.complete')}
               </button>
             )}
           </div>

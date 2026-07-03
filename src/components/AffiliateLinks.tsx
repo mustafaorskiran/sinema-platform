@@ -1,25 +1,30 @@
+'use client'
+
+import { useLocale } from '@/context/LocaleContext'
+
 interface Props {
   title: string
   year?: string | number
 }
 
 export default function AffiliateLinks({ title, year }: Props) {
+  const { t } = useLocale()
   const q = encodeURIComponent(`${title}${year ? ` ${year}` : ''}`)
   const links = [
     {
       label: '🛒 Amazon',
       href: `https://www.amazon.com.tr/s?k=${q}`,
-      title: "Amazon'da ara",
+      title: t('affiliateLinks.searchOnAmazon'),
     },
     {
       label: '🎬 MUBI',
       href: `https://mubi.com/tr/search?query=${q}`,
-      title: "MUBI'de ara",
+      title: t('affiliateLinks.searchOnMubi'),
     },
     {
       label: '🎟 Biletix',
       href: `https://www.biletix.com/arama?searchTerm=${q}`,
-      title: "Biletix'te ara",
+      title: t('affiliateLinks.searchOnBiletix'),
     },
   ]
 

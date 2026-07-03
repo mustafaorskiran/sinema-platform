@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props {
   mediaId: number
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export default async function AlsoWatched({ mediaId, mediaType }: Props) {
+  const { t } = await getTranslations()
   const supabase = await createClient()
 
   // Bu filmi değerlendirmiş kullanıcılar
@@ -67,7 +69,7 @@ export default async function AlsoWatched({ mediaId, mediaType }: Props) {
 
   return (
     <div className="mt-10">
-      <h2 className="text-lg font-bold text-white mb-4">Bu izleyenler şunu da izledi</h2>
+      <h2 className="text-lg font-bold text-white mb-4">{t('alsoWatched.title')}</h2>
       <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
         {valid.map(item => (
           <Link key={`${item.media_type}-${item.media_id}`} href={`/${item.media_type}/${item.media_id}`}

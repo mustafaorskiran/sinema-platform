@@ -6,6 +6,7 @@ import { DIZI_GENRES } from '@/lib/dizi-genres'
 import { OZEL_KATEGORILER } from '@/lib/ozel-kategoriler'
 import { createClient } from '@/lib/supabase/server'
 import { discoverSeries, getTVProviderList } from '@/lib/tmdb'
+import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -31,6 +32,7 @@ interface Props {
 }
 
 export default async function DizilerPage({ searchParams }: Props) {
+  const { t } = await getTranslations()
   const {
     sayfa, genre, sirala, platform, ozel,
     tarihten, tarihe, puan, min_oy, dil,
@@ -151,9 +153,9 @@ export default async function DizilerPage({ searchParams }: Props) {
   if (ulke && ulke !== 'TR') gridParams.ulke = ulke
 
   const activeGenreName = genre
-    ? (genre.includes(',') ? 'Seçili Türler' : DIZI_GENRES.find(g => String(g.id) === genre)?.name ?? null)
+    ? (genre.includes(',') ? t('browse.selectedGenres') : DIZI_GENRES.find(g => String(g.id) === genre)?.name ?? null)
     : null
-  const pageTitle = ozelKat?.label ?? (activeGenreName ? `${activeGenreName} Dizileri` : 'Popüler Diziler')
+  const pageTitle = ozelKat?.label ?? (activeGenreName ? t('browse.titles.genreDizileri', { genre: activeGenreName }) : t('browse.titles.populerDiziler'))
 
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -180,7 +182,7 @@ export default async function DizilerPage({ searchParams }: Props) {
             {pageTitle}
             {totalCount > 0 && (
               <span className="ml-3 text-sm font-normal text-[--text-secondary]">
-                {totalCount.toLocaleString('tr-TR')} sonuç
+                {t('browse.resultCount', { count: totalCount.toLocaleString('tr-TR') })}
               </span>
             )}
           </h1>
@@ -190,7 +192,7 @@ export default async function DizilerPage({ searchParams }: Props) {
           {results.length === 0 ? (
             <div className="text-center py-24 text-[--text-secondary]">
               <p className="text-4xl mb-4">📺</p>
-              <p>Bu filtrelerle eşleşen dizi bulunamadı.</p>
+              <p>{t('browse.noResultsDizi')}</p>
             </div>
           ) : viewMode === 'liste' ? (
             <>

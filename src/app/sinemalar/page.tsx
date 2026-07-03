@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { getNowPlayingMovies, getUpcomingMovies, getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb'
+import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
 import SinemalarClient from './SinemalarClient'
 
@@ -22,17 +23,18 @@ function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
-function daysUntil(dateStr: string) {
+function daysUntil(dateStr: string, t: (key: string, params?: Record<string, string | number>) => string) {
   if (!dateStr) return null
   const diff = Math.ceil((new Date(dateStr).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
   if (diff <= 0) return null
-  if (diff === 1) return '1 gün kaldı'
-  if (diff < 7) return `${diff} gün kaldı`
-  if (diff < 30) return `${Math.ceil(diff / 7)} hafta kaldı`
-  return `${Math.ceil(diff / 30)} ay kaldı`
+  if (diff === 1) return t('country.oneDayLeft')
+  if (diff < 7) return t('country.daysLeft', { count: diff })
+  if (diff < 30) return t('country.weeksLeft', { count: Math.ceil(diff / 7) })
+  return t('country.monthsLeft', { count: Math.ceil(diff / 30) })
 }
 
 export default async function SinemalarPage() {
+  const { t } = await getTranslations()
   const [nowData, upcomingData] = await Promise.all([
     getNowPlayingMovies(1, 'TR').catch(() => ({ results: [] })),
     getUpcomingMovies(1).catch(() => ({ results: [] })),
@@ -47,8 +49,8 @@ export default async function SinemalarPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white">Sinemalar & Vizyonda</h1>
-        <p className="text-[--text-secondary] text-sm mt-1">Türkiye'de vizyondaki ve yakında çıkacak filmler</p>
+        <h1 className="text-3xl font-bold text-white">{t('country.sinemalarVizyonda')}</h1>
+        <p className="text-[--text-secondary] text-sm mt-1">{t('country.sinemalarSubtitle')}</p>
       </div>
 
       <SinemalarClient
@@ -67,7 +69,7 @@ export default async function SinemalarPage() {
           poster: getPosterUrl(m.poster_path, 'w342'),
           rating: m.vote_average,
           release_date: m.release_date ?? '',
-          daysUntil: daysUntil(m.release_date ?? ''),
+          daysUntil: daysUntil(m.release_date ?? '', t),
           formattedDate: formatDate(m.release_date ?? ''),
         }))}
         zincirleri={SINEMA_ZINCIRLERI}

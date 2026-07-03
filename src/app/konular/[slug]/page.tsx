@@ -4,6 +4,7 @@ import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle, getMediaY
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import TopicVoteClient from './TopicVoteClient'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -19,6 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function KonuDetayPage({ params }: Props) {
   const { slug } = await params
   const supabase = await createClient()
+  const { t } = await getTranslations()
 
   const { data: topic } = await supabase
     .from('topics')
@@ -73,7 +75,7 @@ export default async function KonuDetayPage({ params }: Props) {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
       <div className="flex items-center gap-2 text-sm text-[--text-secondary] mb-6">
-        <Link href="/konular" className="hover:text-white transition-colors">← Konular</Link>
+        <Link href="/konular" className="hover:text-white transition-colors">← {t('community.topicsTitle')}</Link>
       </div>
 
       {/* Başlık */}
@@ -81,7 +83,7 @@ export default async function KonuDetayPage({ params }: Props) {
         <span className="text-5xl">{topic.emoji}</span>
         <div>
           {topic.is_featured && (
-            <span className="text-xs font-bold uppercase tracking-widest text-[--accent] block mb-1">Bu Haftanın Konusu</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-[--accent] block mb-1">{t('community.topicOfTheWeek')}</span>
           )}
           <h1 className="text-3xl font-bold text-white">{topic.name}</h1>
           <p className="text-[--text-secondary] text-sm mt-1">{topic.description}</p>
@@ -90,8 +92,8 @@ export default async function KonuDetayPage({ params }: Props) {
 
       <p className="text-sm text-[--text-secondary] mb-8">
         {sorted.length > 0
-          ? `Topluluk tarafından ${sorted.reduce((s, i) => s + i.count, 0)} kez etiketlendi`
-          : 'Henüz hiç film/dizi etiketlenmemiş. İlk sen ekle!'}
+          ? t('community.taggedByCommunity', { count: sorted.reduce((s, i) => s + i.count, 0) })
+          : t('community.noTopicTags')}
       </p>
 
       {/* İçerik ızgarası */}
@@ -116,7 +118,7 @@ export default async function KonuDetayPage({ params }: Props) {
                   <p className="text-xs text-[--text-secondary]">{year}</p>
                 </Link>
                 <div className="flex items-center justify-between mt-1">
-                  <span className="text-xs text-[--text-secondary]">{count} oy</span>
+                  <span className="text-xs text-[--text-secondary]">{t('community.voteCount', { count })}</span>
                   {user && (
                     <TopicVoteClient
                       topicId={topic.id}
@@ -134,10 +136,10 @@ export default async function KonuDetayPage({ params }: Props) {
         <div className="rounded-xl py-16 text-center" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <p className="text-4xl mb-4">{topic.emoji}</p>
           <p className="text-[--text-secondary] text-sm">
-            Bu konuya henüz film/dizi eklenmemiş.
+            {t('community.topicEmpty')}
           </p>
           <p className="text-xs text-[--text-secondary] mt-2">
-            Film veya dizi sayfasında bu etiketi ekleyebilirsin.
+            {t('community.topicEmptyHint')}
           </p>
         </div>
       )}

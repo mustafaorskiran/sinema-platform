@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getPosterUrl, getMediaTitle, getMediaYear, getMovieDetail, getSeriesDetail } from '@/lib/tmdb'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props {
   params: Promise<{ username: string }>
@@ -22,6 +23,7 @@ export default async function ProfilIzmeListesiPage({ params, searchParams }: Pr
   const { tip = 'hepsi' } = await searchParams
 
   const supabase = await createClient()
+  const { t } = await getTranslations()
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -86,10 +88,10 @@ export default async function ProfilIzmeListesiPage({ params, searchParams }: Pr
         }
         <div>
           <h1 className="text-xl font-bold text-white">
-            {profile.full_name ? `${profile.full_name}'in` : `@${username}'in`} İzleme Listesi
+            {t('profile.watchlistTab.title', { name: profile.full_name ? `${profile.full_name}'in` : `@${username}'in` })}
           </h1>
           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
-            {filmCount} film · {diziCount} dizi
+            {t('profile.watchlistTab.counts', { films: filmCount, series: diziCount })}
           </p>
         </div>
       </div>
@@ -97,9 +99,9 @@ export default async function ProfilIzmeListesiPage({ params, searchParams }: Pr
       {/* Filtre */}
       <div className="flex gap-2 mb-6">
         {[
-          { id: 'hepsi', label: 'Tümü', count: filmCount + diziCount },
-          { id: 'film', label: '🎬 Filmler', count: filmCount },
-          { id: 'dizi', label: '📺 Diziler', count: diziCount },
+          { id: 'hepsi', label: t('common.all'), count: filmCount + diziCount },
+          { id: 'film', label: `🎬 ${t('profile.watchlistTab.films')}`, count: filmCount },
+          { id: 'dizi', label: `📺 ${t('profile.watchlistTab.series')}`, count: diziCount },
         ].map(t => (
           <Link key={t.id} href={`/profil/${username}/izleme-listesi?tip=${t.id}`}
             className="px-4 py-1.5 rounded-full text-sm font-medium transition-all"
@@ -117,7 +119,7 @@ export default async function ProfilIzmeListesiPage({ params, searchParams }: Pr
           style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
           <p className="text-4xl mb-3">📭</p>
           <p style={{ color: 'rgba(255,255,255,0.4)' }}>
-            {tip !== 'hepsi' ? 'Bu kategoride içerik yok.' : 'İzleme listesi boş.'}
+            {tip !== 'hepsi' ? t('profile.watchlistTab.noContentInCategory') : t('profile.watchlistTab.empty')}
           </p>
         </div>
       ) : (
@@ -138,7 +140,7 @@ export default async function ProfilIzmeListesiPage({ params, searchParams }: Pr
                 {item.priority === 'high' && (
                   <div className="absolute top-1.5 left-1.5 text-[9px] font-bold px-1.5 py-0.5 rounded"
                     style={{ background: 'rgba(225,29,72,0.8)', color: 'white' }}>
-                    Öncelikli
+                    {t('profile.watchlistTab.priority')}
                   </div>
                 )}
                 {item.rating && (

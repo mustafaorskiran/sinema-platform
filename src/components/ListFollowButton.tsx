@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { IconRss } from '@/components/icons'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Props {
   listId: string
@@ -13,6 +14,7 @@ interface Props {
 
 export default function ListFollowButton({ listId, isLoggedIn, initialFollowing, initialCount }: Props) {
   const router = useRouter()
+  const { t } = useLocale()
   const [following, setFollowing] = useState(initialFollowing)
   const [count, setCount] = useState(initialCount)
   const [loading, setLoading] = useState(false)
@@ -40,7 +42,7 @@ export default function ListFollowButton({ listId, isLoggedIn, initialFollowing,
       }`}
     >
       <IconRss className="h-4 w-4" />
-      {following ? 'Takiptesin' : 'Takip Et'}
+      {following ? t('list.following') : t('list.follow')}
       {count > 0 && (
         <span className={`text-xs font-medium px-1.5 py-0.5 rounded-full ${following ? 'bg-[--accent]/20 text-[--accent]' : 'bg-white/10 text-[--text-secondary]'}`}>
           {count}

@@ -1,5 +1,6 @@
 import { requireAdmin } from '@/lib/admin'
 import { createClient } from '@/lib/supabase/server'
+import { getTranslations } from '@/lib/i18n'
 import AdminUserActions from './AdminUserActions'
 import type { Metadata } from 'next'
 
@@ -13,6 +14,7 @@ const PAGE_SIZE = 20
 
 export default async function AdminKullanicilarPage({ searchParams }: Props) {
   await requireAdmin()
+  const { t } = await getTranslations()
   const { sayfa, q } = await searchParams
   const page = Math.max(1, Number(sayfa) || 1)
   const offset = (page - 1) * PAGE_SIZE
@@ -33,8 +35,8 @@ export default async function AdminKullanicilarPage({ searchParams }: Props) {
   return (
     <div>
       <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
-        <h1 className="text-2xl font-bold text-white">Kullanıcılar</h1>
-        <span className="text-sm text-[--text-secondary]">{count ?? 0} kullanıcı</span>
+        <h1 className="text-2xl font-bold text-white">{t('admin.users.title')}</h1>
+        <span className="text-sm text-[--text-secondary]">{t('admin.users.countLabel', { count: count ?? 0 })}</span>
       </div>
 
       {/* Arama */}
@@ -42,7 +44,7 @@ export default async function AdminKullanicilarPage({ searchParams }: Props) {
         <input
           name="q"
           defaultValue={q ?? ''}
-          placeholder="Kullanıcı adı ara..."
+          placeholder={t('admin.users.searchPlaceholder')}
           className="w-full max-w-sm rounded-lg px-4 py-2.5 text-sm text-white placeholder-[--text-secondary] outline-none transition-colors"
           style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
         />
@@ -53,10 +55,10 @@ export default async function AdminKullanicilarPage({ searchParams }: Props) {
         <table className="w-full min-w-[560px] text-sm">
           <thead>
             <tr className="border-b border-[--border] text-[--text-secondary]">
-              <th className="px-4 py-3 text-left font-medium">Kullanıcı</th>
-              <th className="px-4 py-3 text-left font-medium">Kayıt Tarihi</th>
-              <th className="px-4 py-3 text-left font-medium">Durum</th>
-              <th className="px-4 py-3 text-right font-medium">İşlemler</th>
+              <th className="px-4 py-3 text-left font-medium">{t('admin.users.colUser')}</th>
+              <th className="px-4 py-3 text-left font-medium">{t('admin.users.colJoined')}</th>
+              <th className="px-4 py-3 text-left font-medium">{t('admin.users.colStatus')}</th>
+              <th className="px-4 py-3 text-right font-medium">{t('admin.users.colActions')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[--border]">
@@ -81,13 +83,13 @@ export default async function AdminKullanicilarPage({ searchParams }: Props) {
                 <td className="px-4 py-3">
                   <div className="flex gap-1 flex-wrap">
                     {user.is_admin && (
-                      <span className="text-[10px] bg-[--accent]/20 text-[--accent] px-2 py-0.5 rounded-full font-bold">ADMİN</span>
+                      <span className="text-[10px] bg-[--accent]/20 text-[--accent] px-2 py-0.5 rounded-full font-bold">{t('admin.users.badgeAdmin')}</span>
                     )}
                     {user.banned && (
-                      <span className="text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full font-bold">BANLANDI</span>
+                      <span className="text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full font-bold">{t('admin.users.badgeBanned')}</span>
                     )}
                     {!user.is_admin && !user.banned && (
-                      <span className="text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full font-bold">AKTİF</span>
+                      <span className="text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full font-bold">{t('admin.users.badgeActive')}</span>
                     )}
                   </div>
                 </td>
@@ -112,7 +114,7 @@ export default async function AdminKullanicilarPage({ searchParams }: Props) {
             <a href={`/admin/kullanicilar?sayfa=${page - 1}${q ? `&q=${q}` : ''}`}
               className="px-4 py-2 rounded-lg text-sm transition-all hover:text-white"
               style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
-              ← Önceki
+              {t('admin.users.prevPage')}
             </a>
           )}
           <span className="px-4 py-2 text-sm text-[--text-secondary] flex items-center">{page} / {totalPages}</span>
@@ -120,7 +122,7 @@ export default async function AdminKullanicilarPage({ searchParams }: Props) {
             <a href={`/admin/kullanicilar?sayfa=${page + 1}${q ? `&q=${q}` : ''}`}
               className="px-4 py-2 rounded-lg text-sm transition-all hover:text-white"
               style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
-              Sonraki →
+              {t('admin.users.nextPage')}
             </a>
           )}
         </div>

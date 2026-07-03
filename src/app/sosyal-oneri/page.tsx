@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getPosterUrl, getMediaTitle, getMovieDetail, getSeriesDetail } from '@/lib/tmdb'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 export const metadata: Metadata = {
   title: 'Arkadaşlarım Ne Beğendi? | Sinezon',
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 }
 
 export default async function SosyalOneriPage() {
+  const { t } = await getTranslations()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/giris?next=/sosyal-oneri')
@@ -28,14 +30,14 @@ export default async function SosyalOneriPage() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
         <p className="text-4xl mb-4">👥</p>
-        <h1 className="text-2xl font-bold text-white mb-2">Henüz kimseyi takip etmiyorsun</h1>
+        <h1 className="text-2xl font-bold text-white mb-2">{t('social.noFollowingTitle')}</h1>
         <p className="text-sm mb-6" style={{ color: 'rgba(255,255,255,0.4)' }}>
-          Kullanıcıları takip ederek onların önerilerini burada görebilirsin.
+          {t('social.noFollowingDesc')}
         </p>
         <Link href="/benzer-kullanicilar"
           className="inline-block px-6 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:scale-105"
           style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)' }}>
-          Kullanıcı Bul
+          {t('social.findUsers')}
         </Link>
       </div>
     )
@@ -116,9 +118,9 @@ export default async function SosyalOneriPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="mb-8">
-        <h1 className="text-3xl font-black text-white mb-1">👥 Arkadaşlarım Ne Beğendi?</h1>
+        <h1 className="text-3xl font-black text-white mb-1">👥 {t('social.pageTitle')}</h1>
         <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
-          Takip ettiklerinin son 30 günde 8+ puan verdiği içerikler — henüz izlemediklerin
+          {t('social.pageDesc')}
         </p>
       </div>
 
@@ -126,9 +128,9 @@ export default async function SosyalOneriPage() {
         <div className="text-center py-20 rounded-2xl"
           style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
           <p className="text-4xl mb-3">🎬</p>
-          <p className="text-white font-medium mb-1">Yeni öneri yok</p>
+          <p className="text-white font-medium mb-1">{t('social.noRecsTitle')}</p>
           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
-            Takip ettiklerin son 30 günde henüz yüksek puan vermemiş, ya da hepsini izledin!
+            {t('social.noRecsDesc')}
           </p>
         </div>
       ) : (
@@ -155,8 +157,8 @@ export default async function SosyalOneriPage() {
                   </span>
                 </div>
                 <p className="text-[11px] mb-2" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                  {item.media_type === 'film' ? '🎬 Film' : '📺 Dizi'}
-                  {item.ratings.length > 1 && ` · ${item.ratings.length} kişi beğendi`}
+                  {item.media_type === 'film' ? `🎬 ${t('film.badge')}` : `📺 ${t('series.badge')}`}
+                  {item.ratings.length > 1 && ` ${t('social.likedByCount', { count: item.ratings.length })}`}
                 </p>
                 {/* Öneren avatarlar */}
                 <div className="flex items-center gap-1.5 flex-wrap">

@@ -1,18 +1,19 @@
 import { requireAdmin } from '@/lib/admin'
 import { createClient } from '@/lib/supabase/server'
+import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Admin — Loglar' }
 
-const ACTION_LABEL: Record<string, { label: string; color: string }> = {
-  review_delete:      { label: 'Yorum Silindi',      color: 'text-red-400' },
-  review_hide:        { label: 'Yorum Gizlendi',     color: 'text-yellow-400' },
-  review_unhide:      { label: 'Yorum Gösterildi',   color: 'text-green-400' },
-  review_note:        { label: 'Not Eklendi',         color: 'text-blue-400' },
-  user_ban:           { label: 'Kullanıcı Banlandı', color: 'text-red-400' },
-  user_unban:         { label: 'Ban Kaldırıldı',     color: 'text-green-400' },
-  user_make_admin:    { label: 'Admin Yapıldı',       color: 'text-purple-400' },
-  user_remove_admin:  { label: 'Admin Alındı',        color: 'text-orange-400' },
+const ACTION_META: Record<string, { key: string; color: string }> = {
+  review_delete:      { key: 'reviewDelete',     color: 'text-red-400' },
+  review_hide:        { key: 'reviewHide',       color: 'text-yellow-400' },
+  review_unhide:      { key: 'reviewUnhide',     color: 'text-green-400' },
+  review_note:        { key: 'reviewNote',       color: 'text-blue-400' },
+  user_ban:           { key: 'userBan',          color: 'text-red-400' },
+  user_unban:         { key: 'userUnban',        color: 'text-green-400' },
+  user_make_admin:    { key: 'userMakeAdmin',    color: 'text-purple-400' },
+  user_remove_admin:  { key: 'userRemoveAdmin',  color: 'text-orange-400' },
 }
 
 interface Props {
@@ -23,6 +24,7 @@ const PAGE_SIZE = 50
 
 export default async function AdminLoglarPage({ searchParams }: Props) {
   await requireAdmin()
+  const { t } = await getTranslations()
   const { sayfa } = await searchParams
   const page = Math.max(1, Number(sayfa) || 1)
   const offset = (page - 1) * PAGE_SIZE
@@ -40,30 +42,31 @@ export default async function AdminLoglarPage({ searchParams }: Props) {
   return (
     <div>
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-        <h1 className="text-2xl font-bold text-white">Admin Logları</h1>
-        <span className="text-sm text-[--text-secondary]">{count ?? 0} kayıt</span>
+        <h1 className="text-2xl font-bold text-white">{t('admin.logs.title')}</h1>
+        <span className="text-sm text-[--text-secondary]">{t('admin.logs.countLabel', { count: count ?? 0 })}</span>
       </div>
 
       {!logs || logs.length === 0 ? (
         <p className="text-[--text-secondary] rounded-xl p-8 text-center"
           style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-          Henüz log kaydı yok.
+          {t('admin.logs.empty')}
         </p>
       ) : (
         <div className="overflow-x-auto rounded-xl" style={{ border: '1px solid rgba(255,255,255,0.06)' }}>
           <table className="w-full text-sm">
             <thead className="text-left" style={{ background: 'rgba(255,255,255,0.04)' }}>
               <tr>
-                <th className="px-4 py-3 text-xs font-semibold text-[--text-secondary] uppercase tracking-wider">Zaman</th>
-                <th className="px-4 py-3 text-xs font-semibold text-[--text-secondary] uppercase tracking-wider">Admin</th>
-                <th className="px-4 py-3 text-xs font-semibold text-[--text-secondary] uppercase tracking-wider">İşlem</th>
-                <th className="px-4 py-3 text-xs font-semibold text-[--text-secondary] uppercase tracking-wider">Hedef</th>
-                <th className="px-4 py-3 text-xs font-semibold text-[--text-secondary] uppercase tracking-wider">Detay</th>
+                <th className="px-4 py-3 text-xs font-semibold text-[--text-secondary] uppercase tracking-wider">{t('admin.logs.colTime')}</th>
+                <th className="px-4 py-3 text-xs font-semibold text-[--text-secondary] uppercase tracking-wider">{t('admin.logs.colAdmin')}</th>
+                <th className="px-4 py-3 text-xs font-semibold text-[--text-secondary] uppercase tracking-wider">{t('admin.logs.colAction')}</th>
+                <th className="px-4 py-3 text-xs font-semibold text-[--text-secondary] uppercase tracking-wider">{t('admin.logs.colTarget')}</th>
+                <th className="px-4 py-3 text-xs font-semibold text-[--text-secondary] uppercase tracking-wider">{t('admin.logs.colDetail')}</th>
               </tr>
             </thead>
             <tbody style={{ background: 'rgba(14,20,32,0.95)', borderTop: '1px solid rgba(255,255,255,0.04)' }}>
               {logs.map((log: any) => {
-                const meta = ACTION_LABEL[log.action]
+                const meta = ACTION_META[log.action]
+                const label = meta ? t(`admin.logs.action.${meta.key}`) : log.action
                 return (
                   <tr key={log.id} className="hover:bg-white/2 transition-colors">
                     <td className="px-4 py-3 text-[10px] text-[--text-secondary] whitespace-nowrap font-mono">
@@ -74,7 +77,7 @@ export default async function AdminLoglarPage({ searchParams }: Props) {
                     </td>
                     <td className="px-4 py-3">
                       <span className={`text-xs font-semibold ${meta?.color ?? 'text-[--text-secondary]'}`}>
-                        {meta?.label ?? log.action}
+                        {label}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-[10px] text-[--text-secondary] font-mono">

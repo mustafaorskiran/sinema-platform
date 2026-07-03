@@ -2,10 +2,12 @@ import { createClient } from '@/lib/supabase/server'
 import { getMovieDetail, getPosterUrl, getMediaTitle } from '@/lib/tmdb'
 import TurnuvaClient from './TurnuvaClient'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 export const metadata: Metadata = { title: 'Film Turnuvası | Sinezon' }
 
 export default async function TurnuvaPage() {
+  const { t } = await getTranslations()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -20,14 +22,14 @@ export default async function TurnuvaPage() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
         <p className="text-5xl mb-5">🏆</p>
-        <h1 className="text-2xl font-bold text-white mb-3">Film Turnuvası</h1>
+        <h1 className="text-2xl font-bold text-white mb-3">{t('versus.tournamentTitle')}</h1>
         <p className="text-sm mb-8" style={{ color: 'rgba(255,255,255,0.4)' }}>
-          Şu an aktif bir turnuva yok. Yakında yeni bir turnuva başlayacak!
+          {t('versus.noActiveTournament')}
         </p>
         <a href="/versus"
           className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white transition-all hover:scale-105"
           style={{ background: 'linear-gradient(135deg,#E11D48,#be123c)', boxShadow: '0 4px 14px rgba(225,29,72,0.25)' }}>
-          ← Karşılaştırmalara Dön
+          ← {t('versus.backToComparisons')}
         </a>
       </div>
     )

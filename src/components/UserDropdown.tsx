@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { IconChevronDown, IconShield } from '@/components/icons'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Props {
   user: {
@@ -18,6 +19,7 @@ export default function UserDropdown({ user }: Props) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
+  const { t } = useLocale()
 
   useEffect(() => { setOpen(false) }, [pathname])
 
@@ -30,7 +32,7 @@ export default function UserDropdown({ user }: Props) {
   }, [])
 
   const initial = (user.username || user.email || 'U')[0].toUpperCase()
-  const displayName = user.username ?? user.email?.split('@')[0] ?? 'Kullanıcı'
+  const displayName = user.username ?? user.email?.split('@')[0] ?? t('nav.userFallback')
 
   return (
     <div ref={ref} className="relative" style={{ overflow: 'visible' }}>
@@ -38,7 +40,7 @@ export default function UserDropdown({ user }: Props) {
       <button
         onClick={() => setOpen(!open)}
         className="flex items-center gap-1.5 group"
-        aria-label="Kullanıcı menüsü"
+        aria-label={t('nav.userMenuAria')}
       >
         <div
           className="h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold text-white transition-all duration-200 group-hover:ring-2 group-hover:ring-[--accent]/40"
@@ -99,29 +101,29 @@ export default function UserDropdown({ user }: Props) {
 
           {/* Linkler — kaydırılabilir alan */}
           <div className="py-1.5 overflow-y-auto flex-1" style={{ scrollbarWidth: 'none' }}>
-            <DropLink href={`/profil/${user.username ?? ''}`} label="Profilim" />
-            <DropLink href="/izleme-listem" label="Listem" />
-            <DropLink href="/mesajlar" label="Mesajlar" />
-            <DropLink href="/akis" label="Akış" />
-            <DropLink href="/oneriler" label="Öneriler" />
-            <DropLink href="/oneri" label="🤖 AI Öneri" />
-            <DropLink href="/film-gecesi" label="Film Gecesi" />
-            <DropLink href="/quiz" label="🎬 Film Quiz" />
-            <DropLink href="/versus/turnuva" label="🏆 Turnuva" />
-            <DropLink href="/gorevler" label="🎯 Günlük Görevler" />
-            <DropLink href="/meydan-okumalar" label="⚔️ Meydan Okumalar" />
-            <DropLink href="/sinezon-turum" label="🎭 Sinezon Türüm" />
-            <DropLink href="/import" label="📥 İçe Aktar (LB/IMDb)" />
-            <DropLink href="/katki" label="➕ Film/Dizi Ekle" />
+            <DropLink href={`/profil/${user.username ?? ''}`} label={t('nav.myProfile')} />
+            <DropLink href="/izleme-listem" label={t('nav.myList')} />
+            <DropLink href="/mesajlar" label={t('nav.messages')} />
+            <DropLink href="/akis" label={t('nav.feedShort')} />
+            <DropLink href="/oneriler" label={t('nav.recommendationsShort')} />
+            <DropLink href="/oneri" label={t('nav.aiRecommendationShort')} />
+            <DropLink href="/film-gecesi" label={t('nav.movieNight')} />
+            <DropLink href="/quiz" label={t('nav.filmQuiz')} />
+            <DropLink href="/versus/turnuva" label={t('nav.tournamentShort')} />
+            <DropLink href="/gorevler" label={t('nav.dailyTasks')} />
+            <DropLink href="/meydan-okumalar" label={t('nav.challenges')} />
+            <DropLink href="/sinezon-turum" label={t('nav.megaMenu.explore.sinezonType')} />
+            <DropLink href="/import" label={t('nav.importData')} />
+            <DropLink href="/katki" label={t('nav.megaMenu.explore.addContent')} />
 
             <div className="my-1.5 mx-3" style={{ borderTop: '1px solid var(--border)' }} />
 
-            <DropLink href="/profil/duzenle" label="Ayarlar" />
+            <DropLink href="/profil/duzenle" label={t('nav.settings')} />
 
             {user.is_admin && (
               <DropLink
                 href="/admin"
-                label="Admin Paneli"
+                label={t('nav.adminPanelLink')}
                 icon={<IconShield className="h-3.5 w-3.5 shrink-0" style={{ color: 'var(--accent)' }} />}
                 accent
               />
@@ -139,7 +141,7 @@ export default function UserDropdown({ user }: Props) {
                 <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
-                Çıkış Yap
+                {t('nav.logout')}
               </button>
             </form>
           </div>

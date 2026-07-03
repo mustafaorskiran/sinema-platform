@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import { useLocale } from '@/context/LocaleContext'
 
 interface ImportResult {
   total: number
@@ -13,6 +14,7 @@ interface ImportResult {
 type Mode = 'letterboxd' | 'imdb'
 
 export default function ImportClient() {
+  const { t } = useLocale()
   const [mode, setMode] = useState<Mode>('letterboxd')
   const [file, setFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
@@ -23,8 +25,8 @@ export default function ImportClient() {
 
   function handleFile(f: File | null) {
     if (!f) return
-    if (!f.name.endsWith('.csv')) { setError('Sadece .csv dosyası yükleyebilirsin.'); return }
-    if (f.size > 5 * 1024 * 1024) { setError('Dosya boyutu 5MB\'dan büyük olamaz.'); return }
+    if (!f.name.endsWith('.csv')) { setError(t('importPage.onlyCsv')); return }
+    if (f.size > 5 * 1024 * 1024) { setError(t('importPage.fileTooLarge')); return }
     setFile(f)
     setError('')
     setResult(null)
@@ -46,7 +48,7 @@ export default function ImportClient() {
     try {
       const text = await file.text()
       const lines = text.split('\n').filter(Boolean)
-      if (lines.length < 2) { setError('CSV dosyası geçerli değil veya boş.'); setLoading(false); return }
+      if (lines.length < 2) { setError(t('importPage.csvInvalid')); setLoading(false); return }
 
       const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, '').toLowerCase())
 
@@ -54,7 +56,7 @@ export default function ImportClient() {
         const nameIdx  = headers.indexOf('name')
         const yearIdx  = headers.indexOf('year')
         const ratingIdx = headers.indexOf('rating')
-        if (nameIdx === -1) { setError('CSV formatı tanınamadı. "Name" sütunu bulunamadı.'); setLoading(false); return }
+        if (nameIdx === -1) { setError(t('importPage.letterboxdColumnMissing')); setLoading(false); return }
 
         const entries = lines.slice(1).map(line => {
           const cols = line.match(/(".*?"|[^,]+|(?<=,)(?=,))/g) ?? line.split(',')
@@ -95,7 +97,7 @@ export default function ImportClient() {
         const typeIdx   = headers.indexOf('title type')
         const dateIdx   = headers.indexOf('date rated')
 
-        if (constIdx === -1) { setError('IMDb CSV formatı tanınamadı. "Const" sütunu bulunamadı.'); setLoading(false); return }
+        if (constIdx === -1) { setError(t('importPage.imdbColumnMissing')); setLoading(false); return }
 
         const entries = lines.slice(1).map(line => {
           const cols = line.match(/(".*?"|[^,]+|(?<=,)(?=,))/g) ?? line.split(',')
@@ -132,7 +134,7 @@ export default function ImportClient() {
         setResult({ total: entries.length, added, skipped, notFound, errors: errors.slice(0, 5) })
       }
     } catch {
-      setError('Dosya işlenemedi. Lütfen tekrar dene.')
+      setError(t('importPage.fileProcessFailed'))
     } finally {
       setLoading(false)
       setProgress(0)
@@ -173,17 +175,17 @@ export default function ImportClient() {
             <div className="text-2xl mb-2">📄</div>
             <p className="font-semibold text-sm" style={{ color: '#D4A843' }}>{file.name}</p>
             <p className="text-[11px] mt-1" style={{ color: 'rgba(255,255,255,0.3)' }}>
-              {(file.size / 1024).toFixed(1)} KB — başka dosya seçmek için tıkla
+              {t('importPage.fileSizeInfo', { size: (file.size / 1024).toFixed(1) })}
             </p>
           </div>
         ) : (
           <div>
             <div className="text-3xl mb-2">📂</div>
             <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
-              CSV dosyasını sürükle & bırak veya tıkla
+              {t('importPage.dragDrop')}
             </p>
             <p className="text-[11px] mt-1" style={{ color: 'rgba(255,255,255,0.2)' }}>
-              {mode === 'letterboxd' ? 'Letterboxd "watched.csv" dosyası' : 'IMDb "ratings.csv" dosyası'} — maks 5MB
+              {mode === 'letterboxd' ? t('importPage.letterboxdFileHint') : t('importPage.imdbFileHint')} {t('importPage.maxSizeSuffix')}
             </p>
           </div>
         )}
@@ -192,11 +194,11 @@ export default function ImportClient() {
       {/* IMDb talimatları */}
       {mode === 'imdb' && (
         <div className="rounded-xl px-4 py-3" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-          <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(212,168,67,0.5)' }}>IMDb Nasıl İndirilir?</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(212,168,67,0.5)' }}>{t('importPage.imdbHowToTitle')}</p>
           <ol className="space-y-1 text-[12px]" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            <li>1. IMDb&apos;ye giriş yap → <strong style={{ color: 'rgba(255,255,255,0.7)' }}>Profil → Your ratings</strong></li>
-            <li>2. Sayfanın altında <strong style={{ color: 'rgba(255,255,255,0.7)' }}>Export → Download CSV</strong> butonuna tıkla</li>
-            <li>3. İndirilen &quot;ratings.csv&quot; dosyasını buraya yükle</li>
+            <li>1. {t('importPage.imdbStep1Prefix')} <strong style={{ color: 'rgba(255,255,255,0.7)' }}>{t('importPage.imdbStep1Bold')}</strong></li>
+            <li>2. {t('importPage.imdbStep2Prefix')} <strong style={{ color: 'rgba(255,255,255,0.7)' }}>{t('importPage.imdbStep2Bold')}</strong> {t('importPage.imdbStep2Suffix')}</li>
+            <li>3. {t('importPage.imdbStep3')}</li>
           </ol>
         </div>
       )}
@@ -211,7 +213,7 @@ export default function ImportClient() {
       {loading && (
         <div>
           <div className="flex justify-between text-[11px] mb-1" style={{ color: 'rgba(255,255,255,0.3)' }}>
-            <span>İşleniyor...</span>
+            <span>{t('importPage.processing')}</span>
             <span>{progress}%</span>
           </div>
           <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
@@ -227,15 +229,15 @@ export default function ImportClient() {
           style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(212,168,67,0.1)' }}>
           <div className="px-5 py-3" style={{ borderBottom: '1px solid rgba(212,168,67,0.08)', background: 'rgba(212,168,67,0.02)' }}>
             <p className="text-[9.5px] font-bold uppercase tracking-[0.16em]" style={{ color: 'rgba(212,168,67,0.5)' }}>
-              İçe Aktarma Sonucu
+              {t('importPage.resultTitle')}
             </p>
           </div>
           <div className="grid grid-cols-4 divide-x divide-white/5">
             {[
-              { label: 'Toplam', value: result.total, color: 'var(--text-primary)' },
-              { label: 'Eklendi', value: result.added, color: '#4ade80' },
-              { label: 'Zaten Var', value: result.skipped, color: 'rgba(255,255,255,0.4)' },
-              { label: 'Bulunamadı', value: result.notFound, color: '#f87171' },
+              { label: t('importPage.total'), value: result.total, color: 'var(--text-primary)' },
+              { label: t('importPage.added'), value: result.added, color: '#4ade80' },
+              { label: t('importPage.alreadyExists'), value: result.skipped, color: 'rgba(255,255,255,0.4)' },
+              { label: t('importPage.notFound'), value: result.notFound, color: '#f87171' },
             ].map(s => (
               <div key={s.label} className="text-center px-4 py-4">
                 <p className="text-2xl font-black" style={{ color: s.color }}>{s.value}</p>
@@ -245,7 +247,7 @@ export default function ImportClient() {
           </div>
           {result.errors.length > 0 && (
             <div className="px-5 py-3" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
-              <p className="text-[10px] font-bold uppercase mb-1" style={{ color: 'rgba(248,113,113,0.5)' }}>Hatalar</p>
+              <p className="text-[10px] font-bold uppercase mb-1" style={{ color: 'rgba(248,113,113,0.5)' }}>{t('importPage.errorsTitle')}</p>
               {result.errors.map((e, i) => (
                 <p key={i} className="text-[11px]" style={{ color: '#f87171' }}>• {e}</p>
               ))}
@@ -254,7 +256,7 @@ export default function ImportClient() {
           {result.added > 0 && (
             <div className="px-5 py-3" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
               <a href="/profil" className="text-[12px] font-semibold" style={{ color: '#D4A843' }}>
-                Profilini görüntüle →
+                {t('importPage.viewProfile')}
               </a>
             </div>
           )}
@@ -264,7 +266,7 @@ export default function ImportClient() {
       <button onClick={handleImport} disabled={!file || loading}
         className="w-full py-3 rounded-xl font-bold text-sm transition-all disabled:opacity-40 hover:opacity-90"
         style={{ background: 'linear-gradient(135deg, var(--accent) 0%, #be1a3e 100%)', color: '#fff', boxShadow: '0 4px 16px rgba(225,29,72,0.25)' }}>
-        {loading ? 'İçe Aktarılıyor...' : '📥 İçe Aktar'}
+        {loading ? t('importPage.importing') : t('importPage.importButton')}
       </button>
     </div>
   )

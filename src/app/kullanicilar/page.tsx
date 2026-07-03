@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { IconSearch, IconUsers } from '@/components/icons'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props {
   searchParams: Promise<{ q?: string; sayfa?: string }>
@@ -16,6 +17,7 @@ export default async function KullanicilarPage({ searchParams }: Props) {
   const page = Math.max(1, Number(sayfa) || 1)
   const offset = (page - 1) * PAGE_SIZE
   const supabase = await createClient()
+  const { t } = await getTranslations()
 
   let query = supabase
     .from('profiles')
@@ -45,8 +47,8 @@ export default async function KullanicilarPage({ searchParams }: Props) {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="flex items-center gap-3 mb-6">
         <IconUsers className="h-7 w-7 text-[--accent]" />
-        <h1 className="text-2xl font-bold text-white">Kullanıcılar</h1>
-        {count != null && <span className="text-sm text-[--text-secondary]">{count} üye</span>}
+        <h1 className="text-2xl font-bold text-white">{t('social.usersTitle')}</h1>
+        {count != null && <span className="text-sm text-[--text-secondary]">{t('social.memberCount', { count })}</span>}
       </div>
 
       {/* Arama */}
@@ -57,7 +59,7 @@ export default async function KullanicilarPage({ searchParams }: Props) {
             name="q"
             type="text"
             defaultValue={q ?? ''}
-            placeholder="Kullanıcı adı ara..."
+            placeholder={t('social.searchUsernamePlaceholder')}
             className="w-full rounded-xl py-3 pl-10 pr-4 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
           />
         </div>
@@ -66,8 +68,8 @@ export default async function KullanicilarPage({ searchParams }: Props) {
       {(!users || users.length === 0) ? (
         <div className="text-center py-20 text-[--text-secondary]">
           <IconUsers className="h-12 w-12 mx-auto mb-4 opacity-30" />
-          <p className="text-lg font-medium text-white mb-1">Kullanıcı bulunamadı</p>
-          {q && <p className="text-sm">"{q}" için sonuç yok</p>}
+          <p className="text-lg font-medium text-white mb-1">{t('social.noUsersFound')}</p>
+          {q && <p className="text-sm">{t('social.noResultsFor', { query: q })}</p>}
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
@@ -88,7 +90,7 @@ export default async function KullanicilarPage({ searchParams }: Props) {
                 </p>
                 {user.bio
                   ? <p className="text-[11px] line-clamp-1" style={{ color: 'rgba(255,255,255,0.3)' }}>{user.bio}</p>
-                  : <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.2)' }}>{countMap[user.id] ?? 0} yorum</p>
+                  : <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.2)' }}>{t('social.reviewCountLabel', { count: countMap[user.id] ?? 0 })}</p>
                 }
               </div>
             </Link>
@@ -98,9 +100,9 @@ export default async function KullanicilarPage({ searchParams }: Props) {
 
       {totalPages > 1 && (
         <div className="flex justify-center gap-3 mt-10">
-          {page > 1 && <Link href={`/kullanicilar?${q ? `q=${encodeURIComponent(q)}&` : ''}sayfa=${page - 1}`} className="px-5 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>← Önceki</Link>}
+          {page > 1 && <Link href={`/kullanicilar?${q ? `q=${encodeURIComponent(q)}&` : ''}sayfa=${page - 1}`} className="px-5 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>← {t('social.previous')}</Link>}
           <span className="px-4 py-2 text-sm text-[--text-secondary] flex items-center">{page} / {totalPages}</span>
-          {page < totalPages && <Link href={`/kullanicilar?${q ? `q=${encodeURIComponent(q)}&` : ''}sayfa=${page + 1}`} className="px-5 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>Sonraki →</Link>}
+          {page < totalPages && <Link href={`/kullanicilar?${q ? `q=${encodeURIComponent(q)}&` : ''}sayfa=${page + 1}`} className="px-5 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>{t('social.next')} →</Link>}
         </div>
       )}
     </div>

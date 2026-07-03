@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { IconBookmarkFilled, IconBookmark, IconCheck, IconLoader } from '@/components/icons'
 import type { MediaType } from '@/lib/types'
+import { useLocale } from '@/context/LocaleContext'
 
 interface WatchlistButtonProps {
   mediaId: number
@@ -12,6 +13,7 @@ interface WatchlistButtonProps {
 }
 
 export default function WatchlistButton({ mediaId, mediaType, initialStatus, isLoggedIn }: WatchlistButtonProps) {
+  const { t } = useLocale()
   const [status, setStatus] = useState(initialStatus)
   const [loading, setLoading] = useState(false)
 
@@ -48,7 +50,7 @@ export default function WatchlistButton({ mediaId, mediaType, initialStatus, isL
             ? <IconBookmarkFilled className="h-4 w-4" />
             : <IconBookmark className="h-4 w-4" />
         }
-        İzlemek İstiyorum
+        {t('watchlist.wantToWatch')}
       </button>
 
       <button
@@ -64,7 +66,7 @@ export default function WatchlistButton({ mediaId, mediaType, initialStatus, isL
           ? <IconLoader className="h-4 w-4 animate-spin" />
           : <IconCheck className="h-4 w-4" />
         }
-        İzledim
+        {t('watchlist.watched')}
       </button>
     </div>
   )

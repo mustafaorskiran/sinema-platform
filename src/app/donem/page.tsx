@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import MovieCard from '@/components/MovieCard'
 import Pagination from '@/components/Pagination'
+import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Dönemlere Göre Filmler | SineMa' }
@@ -25,6 +26,7 @@ interface Props {
 const PAGE_SIZE = 40
 
 export default async function DonemPage({ searchParams }: Props) {
+  const { t } = await getTranslations()
   const { donem, sayfa } = await searchParams
   const page   = Math.max(1, Number(sayfa) || 1)
   const offset = (page - 1) * PAGE_SIZE
@@ -59,8 +61,8 @@ export default async function DonemPage({ searchParams }: Props) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">📅 Dönemlere Göre Filmler</h1>
-        <p className="text-[--text-secondary]">Her dönemin en iyi filmlerini keşfet</p>
+        <h1 className="text-3xl font-bold text-white mb-2">📅 {t('browse.donem.title')}</h1>
+        <p className="text-[--text-secondary]">{t('browse.donem.subtitle')}</p>
       </div>
 
       {/* Dönem seçici */}
@@ -84,12 +86,12 @@ export default async function DonemPage({ searchParams }: Props) {
           <div className="flex items-center gap-3 mb-5">
             <span className="text-2xl">{selected.emoji}</span>
             <h2 className="text-xl font-bold text-white">{selected.label} ({selected.start}–{selected.end})</h2>
-            <span className="text-sm text-[--text-secondary]">· {totalCount.toLocaleString('tr-TR')} film</span>
+            <span className="text-sm text-[--text-secondary]">· {t('browse.donem.filmCount', { count: totalCount.toLocaleString('tr-TR') })}</span>
           </div>
 
           {items.length === 0 ? (
             <div className="text-center py-20 text-[--text-secondary]">
-              Bu dönem için yeterli katalog verisi yok.
+              {t('browse.donem.noData')}
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-8 gap-3">
@@ -103,7 +105,7 @@ export default async function DonemPage({ searchParams }: Props) {
 
       {!donem && (
         <div className="text-center py-8 text-[--text-secondary] text-sm">
-          Bir dönem seç ve o yılların en iyi filmlerini gör ✨
+          {t('browse.donem.selectPrompt')} ✨
         </div>
       )}
     </div>

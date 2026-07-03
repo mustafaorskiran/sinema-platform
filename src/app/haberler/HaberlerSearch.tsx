@@ -2,8 +2,10 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useState } from 'react'
+import { useLocale } from '@/context/LocaleContext'
 
 export default function HaberlerSearch() {
+  const { t } = useLocale()
   const router = useRouter()
   const searchParams = useSearchParams()
   const [value, setValue] = useState(searchParams.get('q') ?? '')
@@ -33,7 +35,7 @@ export default function HaberlerSearch() {
           type="text"
           value={value}
           onChange={e => setValue(e.target.value)}
-          placeholder="Haberlerde ara..."
+          placeholder={t('news.searchPlaceholder')}
           className="w-full px-4 py-2 rounded-xl text-sm text-white outline-none"
           style={{
             background: 'rgba(255,255,255,0.05)',
@@ -51,7 +53,7 @@ export default function HaberlerSearch() {
       <button type="submit"
         className="px-4 py-2 rounded-xl text-sm font-medium text-white transition-all hover:scale-105"
         style={{ background: 'var(--accent)' }}>
-        Ara
+        {t('news.searchButton')}
       </button>
     </form>
   )

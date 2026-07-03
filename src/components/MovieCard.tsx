@@ -1,9 +1,12 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
 import { IconStarFilled } from '@/components/icons'
 import { getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb-utils'
 import type { TMDbMovie } from '@/lib/types'
 import QuickActions from './QuickActions'
+import { useLocale } from '@/context/LocaleContext'
 
 interface MovieCardProps {
   media: TMDbMovie
@@ -19,6 +22,7 @@ function formatReleaseDate(media: TMDbMovie): string {
 }
 
 export default function MovieCard({ media, type }: MovieCardProps) {
+  const { t }       = useLocale()
   const title       = getMediaTitle(media)
   const displayDate = formatReleaseDate(media)
   const poster      = getPosterUrl(media.poster_path, 'w342')
@@ -43,7 +47,7 @@ export default function MovieCard({ media, type }: MovieCardProps) {
               />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center text-xs" style={{ color: 'var(--text-secondary)' }}>
-                Afiş yok
+                {t('common.posterUnavailable')}
               </div>
             )}
 

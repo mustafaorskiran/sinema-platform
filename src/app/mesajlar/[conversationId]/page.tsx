@@ -1,10 +1,12 @@
 import { redirect, notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import ChatWindow from './ChatWindow'
+import { getTranslations } from '@/lib/i18n'
 
 export default async function ConversationPage({ params }: { params: Promise<{ conversationId: string }> }) {
   const { conversationId } = await params
   const supabase = await createClient()
+  const { t } = await getTranslations()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/giris')
 
@@ -39,7 +41,7 @@ export default async function ConversationPage({ params }: { params: Promise<{ c
     <div className="flex flex-col" style={{ height: 'calc(100vh - 112px)' }}>
       {/* Header */}
       <div className="flex items-center gap-3 mb-4 pb-4 border-b border-[--border]">
-        <a href="/mesajlar" className="md:hidden text-[--text-secondary] hover:text-white text-sm transition-colors">← Geri</a>
+        <a href="/mesajlar" className="md:hidden text-[--text-secondary] hover:text-white text-sm transition-colors">← {t('common.back')}</a>
         {other.avatar_url
           ? <img src={other.avatar_url} alt="" className="h-9 w-9 rounded-full object-cover" />
           : <div className="h-9 w-9 rounded-full flex items-center justify-center text-white font-semibold" style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)' }}>{other.username[0]?.toUpperCase()}</div>}

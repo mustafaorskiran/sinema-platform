@@ -4,8 +4,10 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { IconGlobe, IconList, IconLoader, IconLock } from '@/components/icons'
+import { useLocale } from '@/context/LocaleContext'
 
 export default function YeniListePage() {
+  const { t } = useLocale()
   const router = useRouter()
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -15,7 +17,7 @@ export default function YeniListePage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!title.trim()) { setError('Başlık gerekli.'); return }
+    if (!title.trim()) { setError(t('list.titleRequired')); return }
     setLoading(true)
     setError('')
 
@@ -29,7 +31,7 @@ export default function YeniListePage() {
       const list = await res.json()
       router.push(`/liste/${list.id}`)
     } else {
-      setError('Liste oluşturulamadı.')
+      setError(t('list.createFailed'))
       setLoading(false)
     }
   }
@@ -39,18 +41,18 @@ export default function YeniListePage() {
       <div className="w-full max-w-lg">
         <div className="flex items-center gap-3 mb-8 justify-center">
           <IconList className="h-6 w-6 text-[--accent]" />
-          <h1 className="text-2xl font-bold text-white">Yeni Liste Oluştur</h1>
+          <h1 className="text-2xl font-bold text-white">{t('list.createTitle')}</h1>
         </div>
 
         <div className="rounded-xl rounded-2xl p-8" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-[--text-secondary] mb-2">Liste Başlığı *</label>
+              <label className="block text-sm font-medium text-[--text-secondary] mb-2">{t('list.titleFieldLabel')}</label>
               <input
                 value={title}
                 onChange={e => setTitle(e.target.value)}
                 required maxLength={100}
-                placeholder="En iyi 2024 filmleri"
+                placeholder={t('list.titlePlaceholder')}
                 className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/25 outline-none transition-colors"
                 style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
               />
@@ -58,12 +60,12 @@ export default function YeniListePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[--text-secondary] mb-2">Açıklama</label>
+              <label className="block text-sm font-medium text-[--text-secondary] mb-2">{t('list.descriptionLabel')}</label>
               <textarea
                 value={description}
                 onChange={e => setDescription(e.target.value)}
                 maxLength={500} rows={3}
-                placeholder="Bu liste hakkında kısa bir açıklama..."
+                placeholder={t('list.descriptionPlaceholder')}
                 className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/25 outline-none transition-colors resize-none"
                 style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
               />
@@ -72,15 +74,15 @@ export default function YeniListePage() {
 
             {/* Gizlilik */}
             <div>
-              <label className="block text-sm font-medium text-[--text-secondary] mb-2">Gizlilik</label>
+              <label className="block text-sm font-medium text-[--text-secondary] mb-2">{t('list.visibilityLabel')}</label>
               <div className="flex gap-2">
                 <button type="button" onClick={() => setIsPublic(true)}
                   className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg border text-sm font-medium transition-colors ${isPublic ? 'border-[--accent] bg-[--accent]/10 text-white' : 'border-[--border] text-[--text-secondary] hover:border-white/30'}`}>
-                  <IconGlobe className="h-4 w-4" /> Herkese Açık
+                  <IconGlobe className="h-4 w-4" /> {t('list.public')}
                 </button>
                 <button type="button" onClick={() => setIsPublic(false)}
                   className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg border text-sm font-medium transition-colors ${!isPublic ? 'border-[--accent] bg-[--accent]/10 text-white' : 'border-[--border] text-[--text-secondary] hover:border-white/30'}`}>
-                  <IconLock className="h-4 w-4" /> Gizli
+                  <IconLock className="h-4 w-4" /> {t('list.private')}
                 </button>
               </div>
             </div>
@@ -89,12 +91,12 @@ export default function YeniListePage() {
 
             <div className="flex gap-3">
               <Link href="/listeler" className="flex-1 py-3 rounded-lg border border-[--border] text-[--text-secondary] hover:text-white text-sm font-medium text-center transition-colors">
-                Vazgeç
+                {t('common.cancel')}
               </Link>
               <button type="submit" disabled={loading}
                 className="flex-1 py-3 rounded-lg bg-[--accent] hover:bg-[--accent-hover] text-white font-semibold text-sm transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
                 {loading && <IconLoader className="h-4 w-4 animate-spin" />}
-                {loading ? 'Oluşturuluyor...' : 'Oluştur'}
+                {loading ? t('list.creating') : t('list.create')}
               </button>
             </div>
           </form>

@@ -1,11 +1,13 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 export const metadata: Metadata = { title: 'Tematik Konular' }
 
 export default async function KonularPage() {
   const supabase = await createClient()
+  const { t } = await getTranslations()
 
   const { data: topics } = await supabase
     .from('topics')
@@ -18,9 +20,9 @@ export default async function KonularPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white">Tematik Konular</h1>
+        <h1 className="text-3xl font-bold text-white">{t('community.topicsTitle')}</h1>
         <p className="text-[--text-secondary] text-sm mt-1">
-          Filmler ve dizilerin işlediği temalar — topluluk oylarıyla şekilleniyor
+          {t('community.topicsSubtitle')}
         </p>
       </div>
 
@@ -31,7 +33,7 @@ export default async function KonularPage() {
           className="block rounded-2xl bg-gradient-to-r from-[--accent]/20 to-[--bg-card] border border-[--accent]/40 p-6 mb-8 hover:border-[--accent]/70 transition-colors group"
         >
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-xs font-bold uppercase tracking-widest text-[--accent]">Bu Haftanın Konusu</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-[--accent]">{t('community.topicOfTheWeek')}</span>
           </div>
           <div className="flex items-center gap-4">
             <span className="text-5xl">{featured.emoji}</span>
@@ -41,7 +43,7 @@ export default async function KonularPage() {
               </h2>
               <p className="text-[--text-secondary] text-sm mt-1">{featured.description}</p>
               <p className="text-xs text-[--text-secondary] mt-2">
-                {(featured.topic_votes as unknown as { count: number }[])?.[0]?.count ?? 0} etiket
+                {t('community.tagCount', { count: (featured.topic_votes as unknown as { count: number }[])?.[0]?.count ?? 0 })}
               </p>
             </div>
           </div>
@@ -49,7 +51,7 @@ export default async function KonularPage() {
       )}
 
       {/* Tüm Konular */}
-      <h2 className="text-xs font-semibold uppercase tracking-widest text-[--text-secondary] mb-4">Tüm Konular</h2>
+      <h2 className="text-xs font-semibold uppercase tracking-widest text-[--text-secondary] mb-4">{t('community.allTopics')}</h2>
       <div className="grid sm:grid-cols-2 gap-3">
         {rest.map(topic => {
           const count = (topic.topic_votes as unknown as { count: number }[])?.[0]?.count ?? 0
@@ -64,7 +66,7 @@ export default async function KonularPage() {
                 <p className="font-semibold text-white group-hover:text-[--accent] transition-colors">{topic.name}</p>
                 <p className="text-xs text-[--text-secondary] mt-0.5 line-clamp-1">{topic.description}</p>
               </div>
-              <span className="text-xs text-[--text-secondary] shrink-0">{count} etiket</span>
+              <span className="text-xs text-[--text-secondary] shrink-0">{t('community.tagCount', { count })}</span>
             </Link>
           )
         })}

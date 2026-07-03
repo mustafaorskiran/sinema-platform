@@ -4,8 +4,9 @@ import { useState, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { IconCamera, IconCheckCircle, IconLoader, IconEye, IconEyeOff } from '@/components/icons'
 import { createClient } from '@/lib/supabase/client'
+import { useLocale } from '@/context/LocaleContext'
 
-function getPasswordStrength(pw: string): { score: number; label: string; color: string } {
+function getPasswordStrength(pw: string, t: (key: string) => string): { score: number; label: string; color: string } {
   if (!pw) return { score: 0, label: '', color: '' }
   let s = 0
   if (pw.length >= 6) s++
@@ -13,22 +14,22 @@ function getPasswordStrength(pw: string): { score: number; label: string; color:
   if (/[A-Z]/.test(pw)) s++
   if (/[0-9]/.test(pw)) s++
   if (/[^A-Za-z0-9]/.test(pw)) s++
-  if (s <= 1) return { score: s, label: 'Çok Zayıf', color: '#f87171' }
-  if (s === 2) return { score: s, label: 'Zayıf', color: '#fb923c' }
-  if (s === 3) return { score: s, label: 'Orta', color: '#facc15' }
-  if (s === 4) return { score: s, label: 'Güçlü', color: '#4ade80' }
-  return { score: s, label: 'Çok Güçlü', color: '#22c55e' }
+  if (s <= 1) return { score: s, label: t('auth.strengthVeryWeak'), color: '#f87171' }
+  if (s === 2) return { score: s, label: t('auth.strengthWeak'), color: '#fb923c' }
+  if (s === 3) return { score: s, label: t('auth.strengthMedium'), color: '#facc15' }
+  if (s === 4) return { score: s, label: t('auth.strengthStrong'), color: '#4ade80' }
+  return { score: s, label: t('auth.strengthVeryStrong'), color: '#22c55e' }
 }
 
-const THEME_COLORS = [
-  { value: '#e50914', label: 'Sinema Kırmızısı' },
-  { value: '#f59e0b', label: 'Altın Sarısı' },
-  { value: '#3b82f6', label: 'Okyanus Mavisi' },
-  { value: '#10b981', label: 'Zümrüt Yeşili' },
-  { value: '#a855f7', label: 'Galaksi Moru' },
-  { value: '#ec4899', label: 'Pembe' },
-  { value: '#f97316', label: 'Turuncu' },
-  { value: '#06b6d4', label: 'Camgöbeği' },
+const THEME_COLOR_VALUES = [
+  { value: '#e50914', key: 'cinemaRed' },
+  { value: '#f59e0b', key: 'goldenYellow' },
+  { value: '#3b82f6', key: 'oceanBlue' },
+  { value: '#10b981', key: 'emeraldGreen' },
+  { value: '#a855f7', key: 'galaxyPurple' },
+  { value: '#ec4899', key: 'pink' },
+  { value: '#f97316', key: 'orange' },
+  { value: '#06b6d4', key: 'cyan' },
 ]
 
 interface Props {
@@ -53,8 +54,11 @@ interface Props {
 
 export default function ProfilDuzenleForm({ userId, initialUsername, initialAvatarUrl, initialBannerUrl, initialBio, initialLocation, initialWebsite, initialThemeColor, initialEmailNotifications = true, initialEmailOnFollow = true, initialEmailOnLike = false, initialEmailOnReply = true, initialTwitterUrl, initialLetterboxdUrl, initialImdbUrl, initialBirthYear, initialCountry }: Props) {
   const router = useRouter()
+  const { t } = useLocale()
   const fileRef = useRef<HTMLInputElement>(null)
   const bannerFileRef = useRef<HTMLInputElement>(null)
+
+  const THEME_COLORS = useMemo(() => THEME_COLOR_VALUES.map(c => ({ ...c, label: t(`settings.themeColor.${c.key}`) })), [t])
 
   // Security section state
   const [newEmail, setNewEmail]       = useState('')
@@ -75,7 +79,7 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
   const [deleteErr, setDeleteErr]     = useState('')
   const [secOpen, setSecOpen]         = useState(false)
 
-  const strength = useMemo(() => getPasswordStrength(newPass), [newPass])
+  const strength = useMemo(() => getPasswordStrength(newPass, t), [newPass, t])
 
   async function handleEmailChange(e: React.FormEvent) {
     e.preventDefault()
@@ -83,25 +87,25 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
     setEmailLoading(true); setEmailErr(''); setEmailMsg('')
     const supabase = createClient()
     const { error } = await supabase.auth.updateUser({ email: newEmail })
-    if (error) { setEmailErr('E-posta değiştirilemedi. Lütfen tekrar deneyin.'); setEmailLoading(false); return }
-    setEmailMsg('Doğrulama e-postası gönderildi. Yeni adresinizi onaylayın.')
+    if (error) { setEmailErr(t('settings.emailChangeFailed')); setEmailLoading(false); return }
+    setEmailMsg(t('settings.emailChangeSuccess'))
     setNewEmail(''); setEmailLoading(false)
   }
 
   async function handlePassChange(e: React.FormEvent) {
     e.preventDefault()
-    if (newPass.length < 6) { setPassErr('Yeni şifre en az 6 karakter olmalıdır.'); return }
-    if (newPass !== confPass) { setPassErr('Yeni şifreler eşleşmiyor.'); return }
+    if (newPass.length < 6) { setPassErr(t('settings.newPasswordMinLength')); return }
+    if (newPass !== confPass) { setPassErr(t('settings.newPasswordsMismatch')); return }
     setPassLoading(true); setPassErr(''); setPassMsg('')
     const supabase = createClient()
     const { error } = await supabase.auth.updateUser({ password: newPass })
-    if (error) { setPassErr('Şifre değiştirilemedi. Mevcut şifrenizi kontrol edin.'); setPassLoading(false); return }
-    setPassMsg('Şifreniz başarıyla güncellendi.')
+    if (error) { setPassErr(t('settings.passwordChangeFailed')); setPassLoading(false); return }
+    setPassMsg(t('settings.passwordChangeSuccess'))
     setCurPass(''); setNewPass(''); setConfPass(''); setPassLoading(false)
   }
 
   async function handleDeleteAccount() {
-    if (deleteInput !== initialUsername) { setDeleteErr('Kullanıcı adını doğru girmediniz.'); return }
+    if (deleteInput !== initialUsername) { setDeleteErr(t('settings.deleteUsernameMismatch')); return }
     setDeleteLoading(true); setDeleteErr('')
     try {
       const res = await fetch('/api/account/delete', { method: 'DELETE' })
@@ -109,7 +113,7 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
       const supabase = createClient()
       await supabase.auth.signOut()
       window.location.href = '/'
-    } catch { setDeleteErr('Hesap silinirken hata oluştu.'); setDeleteLoading(false) }
+    } catch { setDeleteErr(t('settings.deleteAccountFailed')); setDeleteLoading(false) }
   }
 
   const [username, setUsername] = useState(initialUsername)
@@ -158,11 +162,11 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
 
     const trimmed = username.trim()
     if (trimmed.length < 3) {
-      setError('Kullanıcı adı en az 3 karakter olmalıdır.')
+      setError(t('settings.usernameMinLength'))
       return
     }
     if (!/^[a-zA-Z0-9_]+$/.test(trimmed)) {
-      setError('Kullanıcı adı yalnızca harf, rakam ve alt çizgi içerebilir.')
+      setError(t('settings.usernameInvalidChars'))
       return
     }
 

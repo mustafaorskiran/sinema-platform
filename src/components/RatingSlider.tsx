@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Props {
   mediaId: number
@@ -24,6 +25,7 @@ export default function RatingSlider({
   mediaId, mediaType, siteAvg, siteVoteCount, imdbAvg, imdbVoteCount, userRating, isLoggedIn,
 }: Props) {
   const router = useRouter()
+  const { t } = useLocale()
   const [value, setValue]       = useState<number>(userRating ?? 5)
   const [saved, setSaved]       = useState<number | null>(userRating)
   const [saving, setSaving]     = useState(false)
@@ -118,13 +120,13 @@ export default function RatingSlider({
           <>
             <span className="text-3xl font-black text-white leading-none">{siteAvg.toFixed(1)}</span>
             <span className="text-[10px] text-white/70 mt-1 font-medium uppercase tracking-wide">
-              {formatVote(siteVoteCount)} OY
+              {t('review.votesUnit', { n: formatVote(siteVoteCount) })}
             </span>
           </>
         ) : (
           <>
             <span className="text-2xl font-black text-[--text-secondary]">—</span>
-            <span className="text-[10px] text-[--text-secondary] mt-1">Henüz oy yok</span>
+            <span className="text-[10px] text-[--text-secondary] mt-1">{t('review.noVotesYet')}</span>
           </>
         )}
       </div>
@@ -133,7 +135,7 @@ export default function RatingSlider({
       <div className="flex-1 bg-[--bg-card] px-5 py-4">
         <div className="flex items-center justify-between mb-3">
           <span className="text-[11px] font-bold text-[--text-secondary] tracking-widest uppercase">
-            {saved != null ? 'Puanın' : 'Puan Ver'}
+            {saved != null ? t('review.ratingLabel') : t('review.giveRating')}
           </span>
           <div className="flex items-center gap-2">
             <span className="text-xl font-black"
@@ -143,7 +145,7 @@ export default function RatingSlider({
             {saved != null && !saving && (
               <button onClick={clearRating}
                 className="text-[10px] text-[--text-secondary] hover:text-red-400 transition-colors border border-[--border] rounded px-1.5 py-0.5">
-                Sil
+                {t('review.delete')}
               </button>
             )}
           </div>
@@ -180,16 +182,16 @@ export default function RatingSlider({
           <div className="mt-2 pt-2 border-t border-[--border]/50">
             <span className="text-[11px] text-[--text-secondary]">
               <span className="text-[--gold] font-semibold">IMDb: {imdbAvg.toFixed(1)}</span>
-              {imdbVoteCount > 0 && <span className="ml-1">({formatVote(imdbVoteCount)} oy)</span>}
+              {imdbVoteCount > 0 && <span className="ml-1">{t('review.votesParenthetical', { n: formatVote(imdbVoteCount) })}</span>}
             </span>
           </div>
         )}
 
         {saving && (
-          <p className="text-[10px] text-[--text-secondary] mt-1 animate-pulse">Kaydediliyor...</p>
+          <p className="text-[10px] text-[--text-secondary] mt-1 animate-pulse">{t('review.savingRating')}</p>
         )}
         {!isLoggedIn && (
-          <p className="text-[10px] text-[--text-secondary] mt-1">Puan vermek için giriş yap</p>
+          <p className="text-[10px] text-[--text-secondary] mt-1">{t('review.loginToRate')}</p>
         )}
       </div>
     </div>

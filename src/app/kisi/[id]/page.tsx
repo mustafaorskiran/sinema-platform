@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getPersonDetail, getPersonCredits, getPosterUrl, getPersonExternalIds, getMediaTitle, getMediaYear } from '@/lib/tmdb'
+import { getTranslations } from '@/lib/i18n'
 import DirectorTimeline from '@/components/DirectorTimeline'
 import type { Metadata } from 'next'
 
@@ -10,6 +11,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
+  const { t } = await getTranslations()
   try {
     const person = await getPersonDetail(Number(id))
     return {
@@ -17,25 +19,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: person.biography?.slice(0, 160),
     }
   } catch {
-    return { title: 'Kişi | SineMa' }
+    return { title: t('person.metaTitle') }
   }
-}
-
-const DEPT_LABELS: Record<string, string> = {
-  Acting: 'Oyunculuk',
-  Directing: 'Yönetmenlik',
-  Writing: 'Senaryo',
-  Production: 'Yapım',
-  Camera: 'Kamera',
-  Editing: 'Kurgu',
-  Sound: 'Ses',
-  Crew: 'Ekip',
-  Art: 'Sanat',
-  Costume: 'Kostüm',
 }
 
 export default async function KisiPage({ params }: Props) {
   const { id } = await params
+  const { t } = await getTranslations()
+  const DEPT_LABELS: Record<string, string> = {
+    Acting: t('person.deptActing'),
+    Directing: t('person.deptDirecting'),
+    Writing: t('person.deptWriting'),
+    Production: t('person.deptProduction'),
+    Camera: t('person.deptCamera'),
+    Editing: t('person.deptEditing'),
+    Sound: t('person.deptSound'),
+    Crew: t('person.deptCrew'),
+    Art: t('person.deptArt'),
+    Costume: t('person.deptCostume'),
+  }
   const personId = Number(id)
   if (!personId) notFound()
 
@@ -102,7 +104,7 @@ export default async function KisiPage({ params }: Props) {
             {person.birthday && (
               <span>
                 🎂 {new Date(person.birthday).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}
-                {!person.deathday && age && ` (${age} yaşında)`}
+                {!person.deathday && age && ` ${t('person.ageAt', { age })}`}
               </span>
             )}
             {person.deathday && (
@@ -157,8 +159,8 @@ export default async function KisiPage({ params }: Props) {
           <section className="mb-10 rounded-2xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <div className="flex items-center gap-2 mb-5">
               <div className="w-1 h-5 rounded-full" style={{ background: 'linear-gradient(180deg, var(--accent), #be123c)' }} />
-              <h2 className="text-lg font-bold text-white">Son 2 Yıldaki Projeleri</h2>
-              <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: 'rgba(225,29,72,0.1)', color: 'var(--accent)', border: '1px solid rgba(225,29,72,0.2)' }}>Güncel</span>
+              <h2 className="text-lg font-bold text-white">{t('person.recentProjects')}</h2>
+              <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: 'rgba(225,29,72,0.1)', color: 'var(--accent)', border: '1px solid rgba(225,29,72,0.2)' }}>{t('person.current')}</span>
             </div>
             <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-8 gap-3">
               {uniqueRecent.map(credit => {
@@ -187,7 +189,7 @@ export default async function KisiPage({ params }: Props) {
       {mainCredits.length > 0 && (
         <section className="mb-10">
           <h2 className="text-xl font-bold text-white mb-5">
-            {isActor ? 'Oynadığı Yapımlar' : 'Yönettiği Yapımlar'}
+            {isActor ? t('person.actedIn') : t('person.directed')}
           </h2>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
             {mainCredits.map(credit => {
@@ -233,7 +235,7 @@ export default async function KisiPage({ params }: Props) {
       {secondaryCredits.length > 0 && (
         <section>
           <h2 className="text-xl font-bold text-white mb-5">
-            {isActor ? 'Yönetmenlik / Yapım' : 'Oynadığı Yapımlar'}
+            {isActor ? t('person.directingProduction') : t('person.actedIn')}
           </h2>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
             {secondaryCredits.map(credit => {

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { getTranslations } from '@/lib/i18n'
 
 const BASE = 'https://api.themoviedb.org/3'
 
@@ -38,6 +39,7 @@ async function fetchOnThisDay() {
 }
 
 export default async function OnThisDayWidget() {
+  const { t } = await getTranslations()
   const items = await fetchOnThisDay()
   if (items.length === 0) return null
 
@@ -49,10 +51,10 @@ export default async function OnThisDayWidget() {
       <div className="flex items-center justify-between mb-5">
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            🗓️ {dateLabel}'de Geçmişte
+            🗓️ {t('home.onThisDayTitle', { date: dateLabel })}
           </h2>
           <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>
-            Bu gün vizyona giren unutulmaz filmler
+            {t('home.onThisDaySubtitle')}
           </p>
         </div>
       </div>
@@ -78,7 +80,7 @@ export default async function OnThisDayWidget() {
                 {/* Yıl badge */}
                 <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[10px] font-black"
                   style={{ background: 'rgba(225,29,72,0.9)', color: '#fff' }}>
-                  {item.yearsAgo} yıl önce
+                  {t('home.yearsAgo', { years: item.yearsAgo })}
                 </div>
 
                 {/* Gradient overlay */}

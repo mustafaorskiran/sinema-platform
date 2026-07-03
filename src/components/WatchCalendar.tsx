@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Entry {
   date: string
@@ -14,10 +15,17 @@ interface Props {
   entries: Entry[]
 }
 
-const DAYS_TR = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
-const MONTHS_TR = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık']
-
 export default function WatchCalendar({ entries }: Props) {
+  const { t } = useLocale()
+  const DAYS_TR = [
+    t('calendar.dayMon'), t('calendar.dayTue'), t('calendar.dayWed'), t('calendar.dayThu'),
+    t('calendar.dayFri'), t('calendar.daySat'), t('calendar.daySun'),
+  ]
+  const MONTHS_TR = [
+    t('calendar.monthJan'), t('calendar.monthFeb'), t('calendar.monthMar'), t('calendar.monthApr'),
+    t('calendar.monthMay'), t('calendar.monthJun'), t('calendar.monthJul'), t('calendar.monthAug'),
+    t('calendar.monthSep'), t('calendar.monthOct'), t('calendar.monthNov'), t('calendar.monthDec'),
+  ]
   const now = new Date()
   const [year, setYear] = useState(now.getFullYear())
   const [month, setMonth] = useState(now.getMonth())
@@ -65,7 +73,7 @@ export default function WatchCalendar({ entries }: Props) {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <div className="w-1 h-4 rounded-full" style={{ background: 'linear-gradient(180deg, #E11D48, #D4A843)' }} />
-          <p className="text-sm font-semibold text-white">İzleme Takvimi</p>
+          <p className="text-sm font-semibold text-white">{t('calendar.title')}</p>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={prev} className="p-1.5 rounded-lg transition-colors hover:bg-white/10 text-white/50 hover:text-white text-xs">‹</button>
@@ -119,11 +127,11 @@ export default function WatchCalendar({ entries }: Props) {
       {/* Ay özeti */}
       {Object.keys(dayMap).filter(d => d.startsWith(`${year}-${String(month + 1).padStart(2, '0')}`)).length > 0 && (
         <div className="mt-3 pt-3 flex items-center gap-3" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-          <span className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>Bu ay:</span>
+          <span className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>{t('calendar.thisMonth')}</span>
           <span className="text-xs font-bold" style={{ color: 'rgba(225,29,72,0.8)' }}>
-            {Object.entries(dayMap)
+            {t('calendar.watchCount', { n: Object.entries(dayMap)
               .filter(([d]) => d.startsWith(`${year}-${String(month + 1).padStart(2, '0')}`))
-              .reduce((s, [, v]) => s + v.length, 0)} izleme
+              .reduce((s, [, v]) => s + v.length, 0) })}
           </span>
         </div>
       )}

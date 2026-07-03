@@ -24,8 +24,6 @@ interface SearchResult {
   poster: string | null
 }
 
-const SEARCH_PLACEHOLDER = 'Film, dizi, oyuncu veya liste ara...'
-
 const SEARCH_HISTORY_KEY = 'sinezon_search_history'
 const MAX_HISTORY = 5
 
@@ -163,7 +161,7 @@ export default function Navbar({ user }: NavbarProps) {
       style={{ background: 'rgba(11,15,25,0.97)' }}
     >
       <div className="px-4 pt-3 pb-1">
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-[--text-secondary]">Sonuçlar</p>
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-[--text-secondary]">{t('nav.searchResultsHeading')}</p>
       </div>
       {suggestions.map(item => (
         <a
@@ -189,7 +187,7 @@ export default function Navbar({ user }: NavbarProps) {
               <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
                 item.type === 'film' ? 'bg-[--accent]/15 text-[--accent]' : 'bg-blue-500/15 text-blue-400'
               }`}>
-                {item.type === 'film' ? 'Film' : 'Dizi'}
+                {item.type === 'film' ? t('nav.badgeFilm') : t('nav.badgeSeries')}
               </span>
               {item.year && <span className="text-[10px] text-[--text-secondary]">{item.year}</span>}
             </div>
@@ -203,7 +201,7 @@ export default function Navbar({ user }: NavbarProps) {
         onClick={handleSuggestionClick}
         className="flex items-center justify-between px-4 py-3 text-xs text-[--text-secondary] hover:text-[--accent] transition-colors group"
       >
-        <span>&ldquo;{query}&rdquo; için tüm sonuçlar</span>
+        <span>{t('nav.allResultsFor', { query })}</span>
         <IconChevronRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
       </a>
     </div>
@@ -213,7 +211,7 @@ export default function Navbar({ user }: NavbarProps) {
     <div className="absolute top-full left-0 right-0 mt-2 rounded-2xl border border-[--border] shadow-2xl z-[9999] overflow-hidden backdrop-blur-xl"
       style={{ background: 'rgba(11,15,25,0.97)' }}>
       <div className="px-4 pt-3 pb-1">
-        <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: 'var(--text-secondary)' }}>Popüler</p>
+        <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: 'var(--text-secondary)' }}>{t('nav.popular')}</p>
       </div>
       {popularItems.map(item => (
         <a
@@ -236,7 +234,7 @@ export default function Navbar({ user }: NavbarProps) {
               <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
                 item.type === 'film' ? 'bg-[--accent]/15 text-[--accent]' : 'bg-blue-500/15 text-blue-400'
               }`}>
-                {item.type === 'film' ? 'Film' : 'Dizi'}
+                {item.type === 'film' ? t('nav.badgeFilm') : t('nav.badgeSeries')}
               </span>
               {item.year && <span className="text-[10px] text-[--text-secondary]">{item.year}</span>}
             </div>
@@ -273,16 +271,16 @@ export default function Navbar({ user }: NavbarProps) {
                 href="/filmler"
                 columns={2}
                 items={[
-                  { label: 'Tüm Filmler',             href: '/filmler',                              description: 'Filtrele ve keşfet' },
-                  { label: 'En İyi Puanlı',           href: '/filmler?sirala=vote_average.desc',     description: 'Puana göre sıralı' },
-                  { label: 'Yeni Çıkanlar',           href: '/filmler?sirala=release_date.desc',     description: 'En son yayınlananlar' },
-                  { label: 'Yerli Filmler',           href: '/filmler?ozel=yerli-yapimlar',          description: 'Türk yapımı filmler' },
-                  { label: 'Oscar Kazananlar',        href: '/filmler?ozel=oscar-kazananlar',        description: 'Ödüllü yapımlar' },
-                  { label: 'Kült Filmler',            href: '/filmler?ozel=kult-filmler',            description: 'Efsaneleşmiş filmler' },
-                  { label: '🎟️ Türkiye Gişe',          href: '/kutu-ofis',                            description: 'Şu an vizyondaki filmler' },
-                  { label: 'Platforma Yeni Gelenler', href: '/yeni-gelenler',                        description: 'Netflix, Disney+ ve diğerleri' },
-                  { label: 'Sinema Haberleri',        href: '/haberler',                             description: 'Beyazperde, HR, Variety' },
-                  { label: '🔥 Top 10',              href: '/top10',                                description: 'Haftanın en çok izlenenleri' },
+                  { label: t('nav.megaMenu.films.allMovies'),        href: '/filmler',                              description: t('nav.megaMenu.films.allMoviesDesc') },
+                  { label: t('nav.megaMenu.films.topRated'),         href: '/filmler?sirala=vote_average.desc',     description: t('nav.megaMenu.films.topRatedDesc') },
+                  { label: t('nav.megaMenu.films.newest'),           href: '/filmler?sirala=release_date.desc',     description: t('nav.megaMenu.films.newestDesc') },
+                  { label: t('nav.megaMenu.films.domestic'),         href: '/filmler?ozel=yerli-yapimlar',          description: t('nav.megaMenu.films.domesticDesc') },
+                  { label: t('nav.megaMenu.films.oscarWinners'),     href: '/filmler?ozel=oscar-kazananlar',        description: t('nav.megaMenu.films.oscarWinnersDesc') },
+                  { label: t('nav.megaMenu.films.cult'),             href: '/filmler?ozel=kult-filmler',            description: t('nav.megaMenu.films.cultDesc') },
+                  { label: t('nav.megaMenu.films.boxOffice'),        href: '/kutu-ofis',                            description: t('nav.megaMenu.films.boxOfficeDesc') },
+                  { label: t('nav.megaMenu.films.newOnPlatforms'),   href: '/yeni-gelenler',                        description: t('nav.megaMenu.films.newOnPlatformsDesc') },
+                  { label: t('nav.megaMenu.films.news'),             href: '/haberler',                             description: t('nav.megaMenu.films.newsDesc') },
+                  { label: t('nav.megaMenu.films.top10'),            href: '/top10',                                description: t('nav.megaMenu.films.top10Desc') },
                 ]}
               />
               <NavDropdown
@@ -290,48 +288,48 @@ export default function Navbar({ user }: NavbarProps) {
                 href="/diziler"
                 columns={2}
                 items={[
-                  { label: 'Tüm Diziler',    href: '/diziler',                              description: 'Filtrele ve keşfet' },
-                  { label: 'En İyi Diziler', href: '/diziler?sirala=vote_average.desc',     description: 'Puana göre sıralı' },
-                  { label: 'Yeni Diziler',   href: '/diziler?sirala=first_air_date.desc',   description: 'En güncel diziler' },
-                  { label: 'Yerli Diziler',  href: '/diziler?ozel=yerli-diziler',           description: 'Türk yapımı diziler' },
-                  { label: 'Anime',          href: '/diziler?ozel=anime',                   description: 'Japon animasyon dizileri' },
-                  { label: 'Polisiye',       href: '/diziler?ozel=polisiye',                description: 'Dedektif ve suç dizileri' },
+                  { label: t('nav.megaMenu.series.allSeries'), href: '/diziler',                              description: t('nav.megaMenu.series.allSeriesDesc') },
+                  { label: t('nav.megaMenu.series.topRated'),  href: '/diziler?sirala=vote_average.desc',     description: t('nav.megaMenu.series.topRatedDesc') },
+                  { label: t('nav.megaMenu.series.newest'),    href: '/diziler?sirala=first_air_date.desc',   description: t('nav.megaMenu.series.newestDesc') },
+                  { label: t('nav.megaMenu.series.domestic'),  href: '/diziler?ozel=yerli-diziler',           description: t('nav.megaMenu.series.domesticDesc') },
+                  { label: t('nav.megaMenu.series.anime'),     href: '/diziler?ozel=anime',                   description: t('nav.megaMenu.series.animeDesc') },
+                  { label: t('nav.megaMenu.series.crime'),     href: '/diziler?ozel=polisiye',                description: t('nav.megaMenu.series.crimeDesc') },
                 ]}
               />
               <NavDropdown
-                label="Keşfet"
+                label={t('nav.explore')}
                 href="/en-cok-yorumlanan"
                 columns={2}
                 items={[
-                  { label: 'En Çok Yorumlanan',   href: '/en-cok-yorumlanan',    description: 'Platform sıralamaları' },
-                  { label: 'Ne İzlesem?',          href: '/ne-izlesem',           description: 'Ruh haline göre öner' },
-                  { label: '🎭 Ruh Haline Göre',   href: '/mood',                 description: 'Duyguna uygun film seç' },
-                  { label: 'Benzer Kullanıcılar',  href: '/benzer-kullanicilar',  description: 'Zevkine yakın kişiler' },
-                  { label: '👥 Arkadaş Önerileri', href: '/sosyal-oneri',          description: 'Takip ettiğin kişiler ne beğendi' },
-                  { label: '⚔️ Film vs Film',      href: '/versus',               description: 'Hangisi daha iyi? Oy ver' },
-                  { label: '🏆 Film Turnuvası',    href: '/versus/turnuva',       description: '8 film bracket yarışması' },
-                  { label: 'Quiz',                 href: '/quiz',                 description: 'Sinema bilgi yarışması' },
-                  { label: '🎭 Sinezon Türüm',     href: '/sinezon-turum',        description: 'Sinema kişiliğini keşfet' },
-                  { label: 'Özel Listeler',        href: '/ozel-listeler',        description: 'Editöryal seçkiler' },
-                  { label: '🌌 Sinema Evrenler',   href: '/evren',                description: 'MCU, DC, Star Wars ve daha fazlası' },
-                  { label: '➕ Film/Dizi Ekle',    href: '/katki',                description: 'Eksik içerikleri siteye ekle' },
-                  { label: 'Yayın Takvimi',        href: '/yayin-takvimi',        description: 'Çıkış tarihleri' },
-                  { label: '🔥 En Beklenen',         href: '/en-beklenen',          description: 'Çıkmadan önce hype\'ı yüksek' },
-                  { label: '🎯 Koleksiyon Tamamla',  href: '/koleksiyonlar',        description: 'Nolan, Ghibli, Oscar ve daha fazlası' },
-                  { label: '📅 Yakında Çıkacaklar', href: '/yakinda',             description: 'Gelecek 6 ay içinde' },
-                  { label: '💎 Gizli Mücevherler',  href: '/kesfet',               description: 'Niche, hate watch, sürpriz yapımlar' },
-                  { label: '🎟️ Türkiye Gişe',    href: '/kutu-ofis',            description: 'Şu an vizyondaki filmler' },
-                  { label: 'Alıntılar',            href: '/alintilar',            description: 'Unutulmaz replikler' },
-                  { label: '🏆 Liderlik Tablosu', href: '/liderlik',             description: 'En aktif yorumcular' },
-                  { label: '🤖 AI Film Önerisi',  href: '/oneri',                description: 'Yapay zeka destekli öneri' },
-                  { label: '📰 Haftanın Özeti',   href: '/haftalik',             description: 'Trend, yorumlar, aktif üyeler' },
+                  { label: t('nav.megaMenu.explore.mostCommented'),    href: '/en-cok-yorumlanan',    description: t('nav.megaMenu.explore.mostCommentedDesc') },
+                  { label: t('nav.whatToWatch'),                        href: '/ne-izlesem',           description: t('nav.megaMenu.explore.whatToWatchDesc') },
+                  { label: t('nav.megaMenu.explore.moodPick'),          href: '/mood',                 description: t('nav.megaMenu.explore.moodPickDesc') },
+                  { label: t('nav.megaMenu.explore.similarUsers'),      href: '/benzer-kullanicilar',  description: t('nav.megaMenu.explore.similarUsersDesc') },
+                  { label: t('nav.megaMenu.explore.friendSuggestions'), href: '/sosyal-oneri',          description: t('nav.megaMenu.explore.friendSuggestionsDesc') },
+                  { label: t('nav.megaMenu.explore.filmVsFilm'),        href: '/versus',               description: t('nav.megaMenu.explore.filmVsFilmDesc') },
+                  { label: t('nav.megaMenu.explore.tournament'),        href: '/versus/turnuva',       description: t('nav.megaMenu.explore.tournamentDesc') },
+                  { label: t('nav.megaMenu.explore.quiz'),              href: '/quiz',                 description: t('nav.megaMenu.explore.quizDesc') },
+                  { label: t('nav.megaMenu.explore.sinezonType'),       href: '/sinezon-turum',        description: t('nav.megaMenu.explore.sinezonTypeDesc') },
+                  { label: t('nav.megaMenu.explore.curatedLists'),      href: '/ozel-listeler',        description: t('nav.megaMenu.explore.curatedListsDesc') },
+                  { label: t('nav.megaMenu.explore.cinemaUniverses'),   href: '/evren',                description: t('nav.megaMenu.explore.cinemaUniversesDesc') },
+                  { label: t('nav.megaMenu.explore.addContent'),        href: '/katki',                description: t('nav.megaMenu.explore.addContentDesc') },
+                  { label: t('nav.megaMenu.explore.releaseCalendar'),   href: '/yayin-takvimi',        description: t('nav.megaMenu.explore.releaseCalendarDesc') },
+                  { label: t('nav.megaMenu.explore.mostAnticipated'),   href: '/en-beklenen',          description: t('nav.megaMenu.explore.mostAnticipatedDesc') },
+                  { label: t('nav.megaMenu.explore.completeCollection'), href: '/koleksiyonlar',       description: t('nav.megaMenu.explore.completeCollectionDesc') },
+                  { label: t('nav.megaMenu.explore.upcoming'),          href: '/yakinda',              description: t('nav.megaMenu.explore.upcomingDesc') },
+                  { label: t('nav.megaMenu.explore.hiddenGems'),        href: '/kesfet',               description: t('nav.megaMenu.explore.hiddenGemsDesc') },
+                  { label: t('nav.megaMenu.films.boxOffice'),           href: '/kutu-ofis',            description: t('nav.megaMenu.films.boxOfficeDesc') },
+                  { label: t('nav.megaMenu.explore.quotes'),            href: '/alintilar',            description: t('nav.megaMenu.explore.quotesDesc') },
+                  { label: t('nav.megaMenu.explore.leaderboard'),       href: '/liderlik',             description: t('nav.megaMenu.explore.leaderboardDesc') },
+                  { label: t('nav.megaMenu.explore.aiRecommendation'),  href: '/oneri',                description: t('nav.megaMenu.explore.aiRecommendationDesc') },
+                  { label: t('nav.megaMenu.explore.weeklyDigest'),      href: '/haftalik',             description: t('nav.megaMenu.explore.weeklyDigestDesc') },
                 ]}
               />
               <Link href="/listeler" className="self-stretch flex items-center px-2.5 transition-colors text-[--text-secondary] hover:text-[--text-primary]">
                 {t('nav.lists')}
               </Link>
               <Link href="/kisiler" className="self-stretch flex items-center px-2.5 transition-colors text-[--text-secondary] hover:text-[--text-primary]">
-                Kişiler
+                {t('nav.people')}
               </Link>
             </div>
           </div>
@@ -350,7 +348,7 @@ export default function Navbar({ user }: NavbarProps) {
                       if (suggestions.length > 0) setShowDropdown(true)
                       else handleSearchFocus()
                     }}
-                    placeholder={SEARCH_PLACEHOLDER}
+                    placeholder={t('nav.searchPlaceholder')}
                     className="w-full rounded-full rounded-xl py-2 pl-9 pr-4 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent] transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
                   />
                   {searching && (
@@ -396,14 +394,14 @@ export default function Navbar({ user }: NavbarProps) {
             <button
               className="p-2 text-[--text-secondary] hover:text-white transition-colors"
               onClick={() => { setMobileSearchOpen(!mobileSearchOpen); setMenuOpen(false) }}
-              aria-label="Ara"
+              aria-label={t('nav.ariaSearch')}
             >
               {mobileSearchOpen ? <IconClose className="h-5 w-5" /> : <IconSearch className="h-5 w-5" />}
             </button>
             <button
               className="p-2 text-[--text-secondary] hover:text-white transition-colors"
               onClick={() => { setMenuOpen(!menuOpen); setMobileSearchOpen(false) }}
-              aria-label="Menü"
+              aria-label={t('nav.ariaMenu')}
             >
               {menuOpen ? <IconClose className="h-5 w-5" /> : <IconMenu className="h-5 w-5" />}
             </button>
@@ -423,7 +421,7 @@ export default function Navbar({ user }: NavbarProps) {
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder={SEARCH_PLACEHOLDER}
+                  placeholder={t('nav.searchPlaceholder')}
                   className="w-full rounded-full rounded-xl py-2.5 pl-9 pr-4 text-sm text-white placeholder-[--text-secondary] outline-none focus:border-[--accent]" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
                 />
                 {searching && (
@@ -434,7 +432,7 @@ export default function Navbar({ user }: NavbarProps) {
             {showDropdown && suggestions.length > 0 && (
               <div className="mt-2 rounded-2xl border border-[--border] shadow-2xl overflow-hidden backdrop-blur-xl" style={{ background: 'rgba(11,15,25,0.97)' }}>
                 <div className="px-4 pt-3 pb-1">
-                  <p className="text-[10px] font-semibold uppercase tracking-widest text-[--text-secondary]">Sonuçlar</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-[--text-secondary]">{t('nav.searchResultsHeading')}</p>
                 </div>
                 {suggestions.map(item => (
                   <a
@@ -460,7 +458,7 @@ export default function Navbar({ user }: NavbarProps) {
                         <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
                           item.type === 'film' ? 'bg-[--accent]/15 text-[--accent]' : 'bg-blue-500/15 text-blue-400'
                         }`}>
-                          {item.type === 'film' ? 'Film' : 'Dizi'}
+                          {item.type === 'film' ? t('nav.badgeFilm') : t('nav.badgeSeries')}
                         </span>
                         {item.year && <span className="text-[10px] text-[--text-secondary]">{item.year}</span>}
                       </div>
@@ -473,7 +471,7 @@ export default function Navbar({ user }: NavbarProps) {
                   onClick={() => { setMobileSearchOpen(false); setShowDropdown(false); setQuery('') }}
                   className="flex items-center justify-between px-4 py-3 text-xs text-[--text-secondary] hover:text-[--accent] transition-colors"
                 >
-                  <span>&ldquo;{query}&rdquo; için tüm sonuçlar</span>
+                  <span>{t('nav.allResultsFor', { query })}</span>
                   <IconChevronRight className="h-3 w-3" />
                 </a>
               </div>
@@ -491,84 +489,84 @@ export default function Navbar({ user }: NavbarProps) {
               <Link href="/" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.home')}</Link>
               <Link href="/filmler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.films')}</Link>
               <Link href="/diziler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.series')}</Link>
-              <Link href="/top10" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Top 10</Link>
+              <Link href="/top10" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.top10Short')}</Link>
               <Link href="/en-cok-yorumlanan" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.popular')}</Link>
-              <Link href="/ne-izlesem" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Ne İzlesem?</Link>
+              <Link href="/ne-izlesem" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.whatToWatch')}</Link>
               <Link href="/listeler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.lists')}</Link>
-              <Link href="/kisiler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Kişiler</Link>
-              <Link href="/forum" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Forum</Link>
+              <Link href="/kisiler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.people')}</Link>
+              <Link href="/forum" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.forum')}</Link>
             </div>
 
             {/* Filmler */}
             <div className="pt-3 pb-1 mt-1 border-t border-[--border]">
-              <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)' }}>Filmler</p>
+              <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)' }}>{t('nav.films')}</p>
             </div>
             <div className="grid grid-cols-2 gap-x-4">
-              <Link href="/filmler?sirala=vote_average.desc" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>En İyi Puanlı</Link>
-              <Link href="/filmler?sirala=release_date.desc" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Yeni Çıkanlar</Link>
-              <Link href="/filmler?ozel=yerli-yapimlar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Yerli Filmler</Link>
-              <Link href="/filmler?ozel=oscar-kazananlar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Oscar Kazananlar</Link>
-              <Link href="/filmler?ozel=kult-filmler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Kült Filmler</Link>
-              <Link href="/yeni-gelenler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Yeni Gelenler</Link>
+              <Link href="/filmler?sirala=vote_average.desc" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.films.topRated')}</Link>
+              <Link href="/filmler?sirala=release_date.desc" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.films.newest')}</Link>
+              <Link href="/filmler?ozel=yerli-yapimlar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.films.domestic')}</Link>
+              <Link href="/filmler?ozel=oscar-kazananlar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.films.oscarWinners')}</Link>
+              <Link href="/filmler?ozel=kult-filmler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.films.cult')}</Link>
+              <Link href="/yeni-gelenler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.newArrivalsMobile')}</Link>
             </div>
 
             {/* Diziler */}
             <div className="pt-3 pb-1 mt-1 border-t border-[--border]">
-              <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)' }}>Diziler</p>
+              <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)' }}>{t('nav.series')}</p>
             </div>
             <div className="grid grid-cols-2 gap-x-4">
-              <Link href="/diziler?sirala=vote_average.desc" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>En İyi Diziler</Link>
-              <Link href="/diziler?sirala=first_air_date.desc" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Yeni Diziler</Link>
-              <Link href="/diziler?ozel=yerli-diziler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Yerli Diziler</Link>
-              <Link href="/diziler?ozel=anime" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Anime</Link>
-              <Link href="/diziler?ozel=polisiye" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Polisiye</Link>
+              <Link href="/diziler?sirala=vote_average.desc" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.series.topRated')}</Link>
+              <Link href="/diziler?sirala=first_air_date.desc" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.series.newest')}</Link>
+              <Link href="/diziler?ozel=yerli-diziler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.series.domestic')}</Link>
+              <Link href="/diziler?ozel=anime" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.series.anime')}</Link>
+              <Link href="/diziler?ozel=polisiye" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.series.crime')}</Link>
             </div>
 
             {/* Keşfet */}
             <div className="pt-3 pb-1 mt-1 border-t border-[--border]">
-              <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)' }}>Keşfet</p>
+              <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)' }}>{t('nav.explore')}</p>
             </div>
             <div className="grid grid-cols-2 gap-x-4">
-              <Link href="/fragmanlar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Fragmanlar</Link>
-              <Link href="/yayin-takvimi" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Yayın Takvimi</Link>
-              <Link href="/kutu-ofis" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🎟️ Türkiye Gişe</Link>
-              <Link href="/haberler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Haberler</Link>
-              <Link href="/evren" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🌌 Sinema Evrenler</Link>
-              <Link href="/versus" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>⚔️ Film vs Film</Link>
-              <Link href="/sinema" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🌍 Dünya Sineması</Link>
-              <Link href="/ruh-hali" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>✨ Ruh Haline Göre</Link>
-              <Link href="/benzer-kullanicilar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Benzer Kullanıcılar</Link>
-              <Link href="/sosyal-oneri" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>👥 Arkadaş Önerileri</Link>
-              <Link href="/versus/turnuva" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🏆 Film Turnuvası</Link>
-              <Link href="/quiz" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Quiz</Link>
-              <Link href="/sinezon-turum" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🎭 Sinezon Türüm</Link>
-              <Link href="/ozel-listeler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Özel Listeler</Link>
-              <Link href="/katki" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>➕ Film/Dizi Ekle</Link>
-              <Link href="/en-beklenen" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🔥 En Beklenen</Link>
-              <Link href="/koleksiyonlar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🎯 Koleksiyonlar</Link>
-              <Link href="/yakinda" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>📅 Yakında</Link>
-              <Link href="/kesfet" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>💎 Gizli Mücevherler</Link>
-              <Link href="/alintilar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Alıntılar</Link>
-              <Link href="/liderlik" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🏆 Liderlik Tablosu</Link>
-              <Link href="/oneri" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>🤖 AI Film Önerisi</Link>
-              <Link href="/haftalik" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>📰 Haftanın Özeti</Link>
+              <Link href="/fragmanlar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.trailers')}</Link>
+              <Link href="/yayin-takvimi" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.explore.releaseCalendar')}</Link>
+              <Link href="/kutu-ofis" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.films.boxOffice')}</Link>
+              <Link href="/haberler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.newsShort')}</Link>
+              <Link href="/evren" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.explore.cinemaUniverses')}</Link>
+              <Link href="/versus" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.explore.filmVsFilm')}</Link>
+              <Link href="/sinema" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.worldCinema')}</Link>
+              <Link href="/ruh-hali" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.moodAlt')}</Link>
+              <Link href="/benzer-kullanicilar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.explore.similarUsers')}</Link>
+              <Link href="/sosyal-oneri" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.explore.friendSuggestions')}</Link>
+              <Link href="/versus/turnuva" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.explore.tournament')}</Link>
+              <Link href="/quiz" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.explore.quiz')}</Link>
+              <Link href="/sinezon-turum" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.explore.sinezonType')}</Link>
+              <Link href="/ozel-listeler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.explore.curatedLists')}</Link>
+              <Link href="/katki" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.explore.addContent')}</Link>
+              <Link href="/en-beklenen" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.explore.mostAnticipated')}</Link>
+              <Link href="/koleksiyonlar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.collectionsMobile')}</Link>
+              <Link href="/yakinda" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.upcomingMobile')}</Link>
+              <Link href="/kesfet" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.explore.hiddenGems')}</Link>
+              <Link href="/alintilar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.explore.quotes')}</Link>
+              <Link href="/liderlik" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.explore.leaderboard')}</Link>
+              <Link href="/oneri" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.explore.aiRecommendation')}</Link>
+              <Link href="/haftalik" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.explore.weeklyDigest')}</Link>
             </div>
 
             {/* Authenticated section */}
             {user && (
               <>
                 <div className="pt-3 pb-1 mt-1 border-t border-[--border]">
-                  <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)' }}>Hesabım</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)' }}>{t('nav.accountHeading')}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-x-4">
-                  <Link href={`/profil/${user.username ?? ''}`} className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Profilim</Link>
-                  <Link href="/akis" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Akış</Link>
-                  <Link href="/izleme-listem" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>İzleme Listem</Link>
-                  <Link href="/dizi-takip" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>📺 Dizi Takip</Link>
-                  <Link href="/oneriler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Öneriler</Link>
-                  <Link href="/film-gecesi" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Film Gecesi</Link>
-                  <Link href="/mesajlar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Mesajlar</Link>
-                  <Link href="/bildirimler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Bildirimler</Link>
+                  <Link href={`/profil/${user.username ?? ''}`} className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.myProfile')}</Link>
+                  <Link href="/akis" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.feedShort')}</Link>
+                  <Link href="/izleme-listem" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.myWatchlist')}</Link>
+                  <Link href="/dizi-takip" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.seriesTracker')}</Link>
+                  <Link href="/oneriler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.recommendationsShort')}</Link>
+                  <Link href="/film-gecesi" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.movieNight')}</Link>
+                  <Link href="/mesajlar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.messages')}</Link>
+                  <Link href="/bildirimler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.notifications')}</Link>
                 </div>
               </>
             )}
@@ -586,7 +584,7 @@ export default function Navbar({ user }: NavbarProps) {
               <div className="pt-3 mt-1 border-t border-[--border]">
                 <form action="/auth/signout" method="post">
                   <button type="submit" className="py-2 text-[--accent] hover:text-white text-sm font-medium transition-colors">
-                    Çıkış Yap
+                    {t('nav.logout')}
                   </button>
                 </form>
               </div>

@@ -20,6 +20,7 @@ import AffiniteSkoru from '@/components/AffiniteSkoru'
 import XPLevelUp from '@/components/XPLevelUp'
 import type { Metadata } from 'next'
 import type { Review } from '@/lib/types'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props {
   params: Promise<{ username: string }>
@@ -59,6 +60,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProfilPage({ params }: Props) {
   const { username } = await params
   const supabase = await createClient()
+  const { t } = await getTranslations()
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -280,21 +282,21 @@ export default async function ProfilPage({ params }: Props) {
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[--border] text-sm text-[--text-secondary] hover:text-white hover:border-white/30 transition-colors"
                 >
                   <IconPencil className="h-3.5 w-3.5" />
-                  Düzenle
+                  {t('profile.editProfile')}
                 </Link>
                 <Link
                   href={`/profil/${username}/istatistikler`}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[--border] text-sm text-[--text-secondary] hover:text-white hover:border-white/30 transition-colors"
                 >
                   <IconTrendingUp className="h-3.5 w-3.5" />
-                  İstatistikler
+                  {t('profile.statsTab.title')}
                 </Link>
                 <Link
                   href={`/ozet/${new Date().getFullYear()}`}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[--border] text-sm text-[--text-secondary] hover:text-white hover:border-white/30 transition-colors"
                 >
                   <IconClapperboard className="h-3.5 w-3.5" />
-                  Yıl Özeti
+                  {t('profile.yearInReviewTab.title')}
                 </Link>
               </div>
             ) : (
@@ -316,14 +318,14 @@ export default async function ProfilPage({ params }: Props) {
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[--border] text-sm text-[--text-secondary] hover:text-white hover:border-white/30 transition-colors"
                   >
                     <IconTrendingUp className="h-3.5 w-3.5" />
-                    İstatistikler
+                    {t('profile.statsTab.title')}
                   </Link>
                   <Link
                     href={`/ozet/${new Date().getFullYear()}`}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[--border] text-sm text-[--text-secondary] hover:text-white hover:border-white/30 transition-colors"
                   >
                     <IconClapperboard className="h-3.5 w-3.5" />
-                    Yıl Özeti
+                    {t('profile.yearInReviewTab.title')}
                   </Link>
                 </div>
                 {user && <AffiniteSkoru username={username} />}
@@ -332,18 +334,18 @@ export default async function ProfilPage({ params }: Props) {
           </div>
           <div className="flex items-center gap-1.5 mt-1 text-sm text-[--text-secondary]">
             <IconCalendarDays className="h-3.5 w-3.5" />
-            <span>{joinDate} tarihinde katıldı</span>
+            <span>{joinDate} {t('profile.joinedAt')}</span>
           </div>
 
           {/* Takipçi / Takip sayıları + ortalama puan */}
           <div className="flex flex-wrap gap-4 mt-3 items-center">
             <Link href={`/profil/${profile.username}/takipciler`} className="text-sm hover:underline">
               <span className="font-bold text-white">{followerCount ?? 0}</span>
-              <span className="text-[--text-secondary] ml-1">Takipçi</span>
+              <span className="text-[--text-secondary] ml-1">{t('profile.followers')}</span>
             </Link>
             <Link href={`/profil/${profile.username}/takip-edilenler`} className="text-sm hover:underline">
               <span className="font-bold text-white">{followingCount ?? 0}</span>
-              <span className="text-[--text-secondary] ml-1">Takip</span>
+              <span className="text-[--text-secondary] ml-1">{t('profile.following')}</span>
             </Link>
             {(reviews?.length ?? 0) > 0 && (() => {
               const avg = reviews!.reduce((s, r) => s + r.rating, 0) / reviews!.length
@@ -351,7 +353,7 @@ export default async function ProfilPage({ params }: Props) {
                 <span className="flex items-center gap-1 px-2 py-0.5 rounded-lg text-sm font-semibold"
                   style={{ background: 'rgba(212,168,67,0.1)', border: '1px solid rgba(212,168,67,0.2)', color: '#D4A843' }}>
                   ★ {avg.toFixed(1)}
-                  <span className="font-normal text-xs" style={{ color: 'rgba(212,168,67,0.5)' }}>ort.</span>
+                  <span className="font-normal text-xs" style={{ color: 'rgba(212,168,67,0.5)' }}>{t('profile.avgSuffix')}</span>
                 </span>
               )
             })()}
@@ -364,12 +366,12 @@ export default async function ProfilPage({ params }: Props) {
               {streak > 0 && (
                 <span className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg"
                   style={{ background: 'rgba(251,146,60,0.1)', border: '1px solid rgba(251,146,60,0.2)', color: '#fb923c' }}>
-                  🔥 {streak} gün seri
+                  🔥 {t('profile.streakDays', { count: streak })}
                 </span>
               )}
               {isOwnProfile && viewCount != null && viewCount > 0 && (
                 <span className="text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>
-                  👁 Bu ay {viewCount} görüntülenme
+                  👁 {t('profile.viewsThisMonth', { count: viewCount })}
                 </span>
               )}
             </div>
@@ -420,8 +422,8 @@ export default async function ProfilPage({ params }: Props) {
       {/* 4 Favori */}
       <div className="mb-10">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold text-[--text-secondary] uppercase tracking-wider">Favoriler</h2>
-          {isOwnProfile && <span className="text-xs text-[--text-secondary]">Düzenlemek için posteri tıkla</span>}
+          <h2 className="text-sm font-semibold text-[--text-secondary] uppercase tracking-wider">{t('profile.favorites')}</h2>
+          {isOwnProfile && <span className="text-xs text-[--text-secondary]">{t('profile.editFavoritesHint')}</span>}
         </div>
         <FavoritesEditor
           favorites={favoritesWithMedia}
@@ -433,7 +435,7 @@ export default async function ProfilPage({ params }: Props) {
       {pinnedReviewWithMedia && (
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-xs font-semibold text-[--accent] uppercase tracking-wider">📌 Sabitlenmiş Yorum</span>
+            <span className="text-xs font-semibold text-[--accent] uppercase tracking-wider">📌 {t('profile.pinnedReview')}</span>
           </div>
           <div className="flex gap-4 rounded-xl bg-gradient-to-br from-[--accent]/10 via-[--bg-card] to-[--bg-card] border border-[--accent]/25 p-4">
             <Link href={`/${pinnedReviewWithMedia.media_type}/${pinnedReviewWithMedia.media_id}`} className="shrink-0">
@@ -456,7 +458,7 @@ export default async function ProfilPage({ params }: Props) {
               </div>
               <div className="flex items-center gap-2 mt-1">
                 <span className={`text-[10px] font-bold uppercase px-1.5 py-0.5 rounded ${pinnedReviewWithMedia.media_type === 'film' ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-500/20 text-purple-400'}`}>
-                  {pinnedReviewWithMedia.media_type === 'film' ? 'Film' : 'Dizi'}
+                  {pinnedReviewWithMedia.media_type === 'film' ? t('film.badge') : t('series.badge')}
                 </span>
                 <span className="text-xs text-[--text-secondary]">{new Date(pinnedReviewWithMedia.created_at).toLocaleDateString('tr-TR')}</span>
               </div>
@@ -484,13 +486,13 @@ export default async function ProfilPage({ params }: Props) {
       {/* Veri dışa aktarma (sadece kendi profilinde) */}
       {isOwnProfile && (
         <div className="mb-8 p-4 rounded-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <p className="text-xs font-semibold text-[--text-secondary] uppercase tracking-wider mb-3">Verilerimi İndir</p>
+          <p className="text-xs font-semibold text-[--text-secondary] uppercase tracking-wider mb-3">{t('profile.downloadData')}</p>
           <div className="flex flex-wrap gap-2">
             {[
-              { type: 'watchlist', label: '📋 İzleme Listesi' },
-              { type: 'diary', label: '📅 Günlük' },
-              { type: 'reviews', label: '💬 Yorumlar' },
-              { type: 'collection', label: '📦 Koleksiyon' },
+              { type: 'watchlist', label: `📋 ${t('profile.watchlistLabel')}` },
+              { type: 'diary', label: `📅 ${t('profile.diaryShort')}` },
+              { type: 'reviews', label: `💬 ${t('review.title')}` },
+              { type: 'collection', label: `📦 ${t('profile.collectionTab.title')}` },
             ].map(({ type, label }) => (
               <a
                 key={type}
@@ -515,12 +517,12 @@ export default async function ProfilPage({ params }: Props) {
 
       {/* İstatistikler */}
       <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 mb-10">
-        <StatCard label="Film" value={filmCount} icon={<IconFilm className="h-4 w-4" />} accentColor="#60a5fa" />
-        <StatCard label="Dizi" value={diziCount} icon={<IconTv className="h-4 w-4" />} accentColor="#a78bfa" />
-        <StatCard label="Bölüm" value={episodeCount ?? 0} icon={<IconTv className="h-3.5 w-3.5" />} accentColor="#34d399" />
-        <StatCard label="Yorum" value={totalReviews} icon={<IconMessageSquare className="h-4 w-4" />} accentColor="var(--accent)" />
-        <StatCard label="Ort. Puan" value={avgRating ?? '—'} gold={!!avgRating} icon={<IconStar className="h-4 w-4" />} accentColor="var(--gold)" />
-        <StatCard label="Günlük" value={diaryCount ?? 0} icon={<IconCalendarDays className="h-4 w-4" />} accentColor="#38bdf8" />
+        <StatCard label={t('profile.films')} value={filmCount} icon={<IconFilm className="h-4 w-4" />} accentColor="#60a5fa" />
+        <StatCard label={t('profile.series')} value={diziCount} icon={<IconTv className="h-4 w-4" />} accentColor="#a78bfa" />
+        <StatCard label={t('profile.episodes')} value={episodeCount ?? 0} icon={<IconTv className="h-3.5 w-3.5" />} accentColor="#34d399" />
+        <StatCard label={t('profile.reviewsShort')} value={totalReviews} icon={<IconMessageSquare className="h-4 w-4" />} accentColor="var(--accent)" />
+        <StatCard label={t('profile.avgRating')} value={avgRating ?? '—'} gold={!!avgRating} icon={<IconStar className="h-4 w-4" />} accentColor="var(--gold)" />
+        <StatCard label={t('profile.diaryShort')} value={diaryCount ?? 0} icon={<IconCalendarDays className="h-4 w-4" />} accentColor="#38bdf8" />
       </div>
 
       {/* İzleme Listeleri */}
@@ -529,12 +531,12 @@ export default async function ProfilPage({ params }: Props) {
           <div className="flex justify-end -mt-4 mb-2">
             <Link href={`/profil/${username}/izleme-listesi`}
               className="text-xs hover:underline" style={{ color: 'rgba(255,255,255,0.35)' }}>
-              Tümünü gör →
+              {t('common.seeAll')} →
             </Link>
           </div>
           {izlemekIstiyorum.length > 0 && (
             <WatchlistSection
-              title="İzlemek İstiyorum"
+              title={t('profile.wantToWatch')}
               icon={<IconBookmark className="h-5 w-5 text-blue-400" />}
               items={izlemekIstiyorum}
               hoverColor="border-blue-500/50"
@@ -542,7 +544,7 @@ export default async function ProfilPage({ params }: Props) {
           )}
           {izledim.length > 0 && (
             <WatchlistSection
-              title="İzledim"
+              title={t('profile.watched')}
               icon={<IconCheck className="h-5 w-5 text-green-400" />}
               items={izledim}
               hoverColor="border-green-500/50"

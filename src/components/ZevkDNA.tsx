@@ -1,5 +1,7 @@
 'use client'
 
+import { useLocale } from '@/context/LocaleContext'
+
 interface GenreData { genre: string; count: number; avgRating: number }
 
 interface Props {
@@ -7,13 +9,14 @@ interface Props {
 }
 
 export default function ZevkDNA({ genreData }: Props) {
+  const { t } = useLocale()
   if (!genreData.length) return null
   const maxCount = Math.max(...genreData.map(g => g.count))
 
   return (
     <div className="rounded-2xl p-6" style={{ background: 'linear-gradient(160deg,rgba(20,28,47,0.9),rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
-      <h3 className="text-base font-bold text-white mb-1">🧬 Zevk DNA&apos;sı</h3>
-      <p className="text-xs mb-5" style={{ color: 'rgba(255,255,255,0.35)' }}>İzleme alışkanlığına göre tür profili</p>
+      <h3 className="text-base font-bold text-white mb-1">🧬 {t('zevkDna.title')}</h3>
+      <p className="text-xs mb-5" style={{ color: 'rgba(255,255,255,0.35)' }}>{t('zevkDna.subtitle')}</p>
       <div className="space-y-3">
         {genreData.slice(0, 10).map(g => (
           <div key={g.genre} className="flex items-center gap-3">

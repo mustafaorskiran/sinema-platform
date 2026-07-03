@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import type { Metadata } from 'next'
 import AdBanner from '@/components/AdBanner'
+import { getTranslations } from '@/lib/i18n'
 
 export const revalidate = 3600
 
@@ -45,6 +46,7 @@ interface Props {
 export default async function EnBeklenenPage({ searchParams }: Props) {
   const { tip = 'film' } = await searchParams
   const isMovie = tip !== 'dizi'
+  const { t } = await getTranslations()
 
   const items = await fetchMostAnticipated(isMovie ? 'movie' : 'tv')
 
@@ -55,27 +57,27 @@ export default async function EnBeklenenPage({ searchParams }: Props) {
         <div className="flex items-center gap-2.5 mb-2">
           <span className="text-2xl">🔥</span>
           <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
-            En Beklenen
+            {t('upcoming.title')}
           </h1>
         </div>
         <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-          Henüz çıkmamış ama en çok merak uyandıran yapımlar
+          {t('upcoming.subtitle')}
         </p>
       </div>
 
       {/* Film / Dizi sekme */}
       <div className="flex gap-2 mb-8">
-        {[{ key: 'film', label: '🎬 Filmler' }, { key: 'dizi', label: '📺 Diziler' }].map(t => (
+        {[{ key: 'film', label: t('upcoming.tabFilms') }, { key: 'dizi', label: t('upcoming.tabSeries') }].map(tab => (
           <Link
-            key={t.key}
-            href={`/en-beklenen?tip=${t.key}`}
+            key={tab.key}
+            href={`/en-beklenen?tip=${tab.key}`}
             className="px-4 py-2 rounded-full text-sm font-semibold transition-all"
-            style={tip === t.key
+            style={tip === tab.key
               ? { background: 'var(--accent)', color: '#fff', boxShadow: '0 2px 12px rgba(225,29,72,0.3)' }
               : { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.08)' }
             }
           >
-            {t.label}
+            {tab.label}
           </Link>
         ))}
       </div>
@@ -137,7 +139,7 @@ export default async function EnBeklenenPage({ searchParams }: Props) {
                 <p className="text-xs font-bold" style={{ color: 'var(--gold)' }}>
                   🔥 {Math.round(item.popularity).toLocaleString('tr-TR')}
                 </p>
-                <p className="text-[10px] mt-0.5" style={{ color: 'rgba(255,255,255,0.25)' }}>popülerlik</p>
+                <p className="text-[10px] mt-0.5" style={{ color: 'rgba(255,255,255,0.25)' }}>{t('upcoming.popularityLabel')}</p>
               </div>
             </Link>
           )
@@ -147,7 +149,7 @@ export default async function EnBeklenenPage({ searchParams }: Props) {
       {items.length === 0 && (
         <div className="text-center py-20" style={{ color: 'var(--text-secondary)' }}>
           <div className="text-4xl mb-3">🎬</div>
-          <p>Veri alınamadı.</p>
+          <p>{t('upcoming.fetchError')}</p>
         </div>
       )}
     </div>

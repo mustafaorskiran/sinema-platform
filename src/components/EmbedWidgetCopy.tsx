@@ -1,8 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import { useLocale } from '@/context/LocaleContext'
 
 export default function EmbedWidgetCopy({ username }: { username: string }) {
+  const { t } = useLocale()
   const [copied, setCopied] = useState(false)
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://sinema-platform.vercel.app'
   const code = `<iframe src="${baseUrl}/embed/profil/${username}" width="336" height="260" frameborder="0" style="border-radius:16px;overflow:hidden;" loading="lazy"></iframe>`
@@ -17,7 +19,7 @@ export default function EmbedWidgetCopy({ username }: { username: string }) {
   return (
     <div className="rounded-xl p-4" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
       <div className="flex items-center justify-between gap-3 mb-3">
-        <p className="text-xs font-semibold text-white">📎 Profil Widget</p>
+        <p className="text-xs font-semibold text-white">📎 {t('profile.widgetTitle')}</p>
         <button
           onClick={copy}
           className="px-3 py-1 rounded-lg text-xs font-semibold transition-all hover:scale-105"
@@ -26,7 +28,7 @@ export default function EmbedWidgetCopy({ username }: { username: string }) {
             : { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: '#fff', boxShadow: '0 2px 8px rgba(225,29,72,0.3)' }
           }
         >
-          {copied ? '✓ Kopyalandı' : 'Kodu Kopyala'}
+          {copied ? `✓ ${t('profile.copied')}` : t('profile.copyCode')}
         </button>
       </div>
       <code className="block text-[10px] rounded-lg p-2.5 break-all"

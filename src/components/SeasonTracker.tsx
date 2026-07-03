@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Episode {
   episode_number: number
@@ -23,6 +24,7 @@ interface Props {
 }
 
 export default function SeasonTracker({ seriesId, seasons, isLoggedIn }: Props) {
+  const { t } = useLocale()
   const [watched, setWatched] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
   const [activeSeason, setActiveSeason] = useState(seasons[0]?.season_number ?? 1)
@@ -113,10 +115,10 @@ export default function SeasonTracker({ seriesId, seasons, isLoggedIn }: Props) 
     <div className="mt-10" id="bolumler">
       <div className="flex items-center gap-3 mb-5">
         <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
-        <h2 className="text-xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Bölüm Takibi</h2>
+        <h2 className="text-xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>{t('season.title')}</h2>
         {isLoggedIn && !loading && (
           <span className="text-xs px-2.5 py-1 rounded-full font-semibold" style={{ background: 'rgba(212,168,67,0.1)', color: 'var(--gold)', border: '1px solid rgba(212,168,67,0.2)' }}>
-            {totalWatched}/{totalEpisodes} izlendi
+            {t('season.watchedCount', { watched: totalWatched, total: totalEpisodes })}
           </span>
         )}
       </div>
@@ -136,7 +138,7 @@ export default function SeasonTracker({ seriesId, seasons, isLoggedIn }: Props) 
                 : { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.08)' }
               }
             >
-              {s.name ?? `Sezon ${s.season_number}`}
+              {s.name ?? t('season.seasonN', { n: s.season_number })}
               {isLoggedIn && count > 0 && <span className="ml-1.5 opacity-70">({count}/{s.episode_count})</span>}
             </button>
           )
@@ -157,7 +159,7 @@ export default function SeasonTracker({ seriesId, seasons, isLoggedIn }: Props) 
             className="shrink-0 text-xs px-3 py-1.5 rounded-full font-semibold transition-all"
             style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}
           >
-            {allWatched ? 'Tümünü Kaldır' : 'Tümünü İzlendi'}
+            {allWatched ? t('season.unmarkAll') : t('season.markAllWatched')}
           </button>
         </div>
       )}
@@ -196,7 +198,7 @@ export default function SeasonTracker({ seriesId, seasons, isLoggedIn }: Props) 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline gap-1.5">
                     <span className="text-[10px] font-bold shrink-0" style={{ color: 'rgba(255,255,255,0.3)' }}>
-                      B{ep.episode_number}
+                      {t('season.episodeAbbr', { n: ep.episode_number })}
                     </span>
                     <span className="text-xs font-medium truncate" style={{ color: isWatched ? '#4ade80' : 'rgba(255,255,255,0.7)' }}>
                       {ep.name}
@@ -216,7 +218,7 @@ export default function SeasonTracker({ seriesId, seasons, isLoggedIn }: Props) 
 
       {!isLoggedIn && (
         <p className="text-xs text-center mt-4" style={{ color: 'rgba(255,255,255,0.3)' }}>
-          Bölümleri işaretlemek için <a href="/auth/giris" className="underline" style={{ color: 'var(--accent)' }}>giriş yap</a>
+          {t('season.loginPromptPrefix')} <a href="/auth/giris" className="underline" style={{ color: 'var(--accent)' }}>{t('season.loginPromptLink')}</a>
         </p>
       )}
     </div>

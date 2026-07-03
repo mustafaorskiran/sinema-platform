@@ -1,4 +1,5 @@
 import { IconPlay } from '@/components/icons'
+import { getTranslations } from '@/lib/i18n'
 import {
   getTrendingMovies,
   getTrendingTV,
@@ -27,6 +28,7 @@ function mergeUnique(...lists: TMDbMovie[][]): TMDbMovie[] {
 }
 
 export default async function FragmanlarPage() {
+  const { t } = await getTranslations()
   // Tüm kaynaklardan paralel veri çek
   const [
     trending,
@@ -112,10 +114,10 @@ export default async function FragmanlarPage() {
           <div className="p-2 rounded-xl bg-[--accent]/15">
             <IconPlay className="h-5 w-5 text-[--accent]" />
           </div>
-          <h1 className="text-3xl font-bold text-white">Fragmanlar</h1>
+          <h1 className="text-3xl font-bold text-white">{t('trailer.title')}</h1>
         </div>
         <p className="text-[--text-secondary] ml-14">
-          {trailers.length} fragman · Güncel film & dizi fragmanları, ön izlemeler ve yakında vizyona girecek yapıtlar
+          {trailers.length} {t('trailer.count')} · {t('trailer.description')}
         </p>
       </div>
 

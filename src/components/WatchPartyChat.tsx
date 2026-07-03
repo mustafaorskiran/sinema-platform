@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Image from 'next/image'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Message {
   id: string
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export default function WatchPartyChat({ partyId, currentUserId, isMember }: Props) {
+  const { t } = useLocale()
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
@@ -76,13 +78,13 @@ export default function WatchPartyChat({ partyId, currentUserId, isMember }: Pro
       {/* Başlık */}
       <div className="px-4 py-3 flex items-center gap-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-        <p className="text-sm font-semibold text-white">Canlı Sohbet</p>
+        <p className="text-sm font-semibold text-white">{t('watchParty.liveChat')}</p>
       </div>
 
       {/* Mesajlar */}
       <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
         {messages.length === 0 && (
-          <p className="text-center text-xs text-[--text-secondary] mt-8">Henüz mesaj yok. İlk sen yaz!</p>
+          <p className="text-center text-xs text-[--text-secondary] mt-8">{t('watchParty.emptyChat')}</p>
         )}
         {messages.map(m => {
           const isMe = m.user_id === currentUserId
@@ -117,7 +119,7 @@ export default function WatchPartyChat({ partyId, currentUserId, isMember }: Pro
             value={input}
             onChange={e => setInput(e.target.value)}
             maxLength={500}
-            placeholder="Mesaj yaz..."
+            placeholder={t('watchParty.messagePlaceholder')}
             className="flex-1 bg-white/5 text-white text-sm px-3 py-2 rounded-xl outline-none placeholder-[--text-secondary]"
             style={{ border: '1px solid rgba(255,255,255,0.08)' }}
           />
@@ -127,12 +129,12 @@ export default function WatchPartyChat({ partyId, currentUserId, isMember }: Pro
             className="px-4 py-2 rounded-xl text-sm font-semibold text-white transition-opacity disabled:opacity-40"
             style={{ background: 'var(--accent)' }}
           >
-            Gönder
+            {t('common.submit')}
           </button>
         </form>
       ) : (
         <div className="px-4 py-3 text-center text-xs text-[--text-secondary]" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-          {currentUserId ? 'Sohbete katılmak için etkinliğe katıl.' : 'Sohbet için giriş yap.'}
+          {currentUserId ? t('watchParty.joinToChat') : t('watchParty.loginToChat')}
         </div>
       )}
     </div>

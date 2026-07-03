@@ -5,8 +5,9 @@ import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { IconEye, IconEyeOff, IconFilm } from '@/components/icons'
 import { createClient } from '@/lib/supabase/client'
+import { useLocale } from '@/context/LocaleContext'
 
-function getPasswordStrength(pw: string): { score: number; label: string; color: string } {
+function getPasswordStrength(pw: string, t: (key: string) => string): { score: number; label: string; color: string } {
   if (pw.length === 0) return { score: 0, label: '', color: '' }
   let score = 0
   if (pw.length >= 6)  score++
@@ -14,15 +15,16 @@ function getPasswordStrength(pw: string): { score: number; label: string; color:
   if (/[A-Z]/.test(pw)) score++
   if (/[0-9]/.test(pw)) score++
   if (/[^A-Za-z0-9]/.test(pw)) score++
-  if (score <= 1) return { score, label: 'Çok Zayıf', color: '#f87171' }
-  if (score === 2) return { score, label: 'Zayıf', color: '#fb923c' }
-  if (score === 3) return { score, label: 'Orta', color: '#facc15' }
-  if (score === 4) return { score, label: 'Güçlü', color: '#4ade80' }
-  return { score, label: 'Çok Güçlü', color: '#22c55e' }
+  if (score <= 1) return { score, label: t('auth.strengthVeryWeak'), color: '#f87171' }
+  if (score === 2) return { score, label: t('auth.strengthWeak'), color: '#fb923c' }
+  if (score === 3) return { score, label: t('auth.strengthMedium'), color: '#facc15' }
+  if (score === 4) return { score, label: t('auth.strengthStrong'), color: '#4ade80' }
+  return { score, label: t('auth.strengthVeryStrong'), color: '#22c55e' }
 }
 
 export default function SifreSifirlaPage() {
   const router = useRouter()
+  const { t } = useLocale()
   const [password, setPassword]         = useState('')
   const [confirm, setConfirm]           = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -30,18 +32,18 @@ export default function SifreSifirlaPage() {
   const [done, setDone]                 = useState(false)
   const [error, setError]               = useState('')
 
-  const strength = useMemo(() => getPasswordStrength(password), [password])
+  const strength = useMemo(() => getPasswordStrength(password, t), [password, t])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
-    if (password.length < 6) { setError('Şifre en az 6 karakter olmalıdır.'); return }
-    if (password !== confirm) { setError('Şifreler eşleşmiyor.'); return }
+    if (password.length < 6) { setError(t('auth.passwordMinLengthLong')); return }
+    if (password !== confirm) { setError(t('auth.passwordsDontMatch')); return }
     setLoading(true)
     const supabase = createClient()
     const { error: authError } = await supabase.auth.updateUser({ password })
     if (authError) {
-      setError('Şifre güncellenemedi. Lütfen tekrar deneyin.')
+      setError(t('auth.passwordUpdateFailed'))
       setLoading(false); return
     }
     setDone(true)
@@ -68,8 +70,8 @@ export default function SifreSifirlaPage() {
               Sine<span style={{ color: 'var(--accent)' }}>zon</span>
             </span>
           </Link>
-          <h1 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>Yeni Şifre Belirle</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>Hesabın için yeni bir şifre oluştur</p>
+          <h1 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>{t('auth.newPasswordTitle')}</h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>{t('auth.newPasswordSubtitle')}</p>
         </div>
 
         <div className="rounded-2xl p-7" style={{
@@ -85,19 +87,19 @@ export default function SifreSifirlaPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
                 </svg>
               </div>
-              <p className="text-[9.5px] font-bold uppercase tracking-[0.18em] mb-2" style={{ color: 'rgba(212,168,67,0.5)' }}>Başarılı</p>
-              <h2 className="text-lg font-bold mb-2" style={{ color: 'var(--text-primary)' }}>Şifren Güncellendi</h2>
-              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Ana sayfaya yönlendiriliyorsun...</p>
+              <p className="text-[9.5px] font-bold uppercase tracking-[0.18em] mb-2" style={{ color: 'rgba(212,168,67,0.5)' }}>{t('common.success')}</p>
+              <h2 className="text-lg font-bold mb-2" style={{ color: 'var(--text-primary)' }}>{t('auth.passwordUpdated')}</h2>
+              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{t('auth.redirectingHome')}</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-[10px] font-bold mb-1.5 uppercase tracking-[0.12em]" style={{ color: 'rgba(212,168,67,0.5)' }}>
-                  Yeni Şifre
+                  {t('auth.newPassword')}
                 </label>
                 <div className="relative">
                   <input type={showPassword ? 'text' : 'password'} value={password}
-                    onChange={e => setPassword(e.target.value)} required placeholder="En az 6 karakter"
+                    onChange={e => setPassword(e.target.value)} required placeholder={t('auth.passwordMinPlaceholder')}
                     className="w-full rounded-xl px-4 py-2.5 pr-10 text-sm outline-none transition-all" style={inputBase}
                     onFocus={e => (e.target.style.borderColor = 'rgba(212,168,67,0.4)')}
                     onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.09)')}
@@ -123,10 +125,10 @@ export default function SifreSifirlaPage() {
 
               <div>
                 <label className="block text-[10px] font-bold mb-1.5 uppercase tracking-[0.12em]" style={{ color: 'rgba(212,168,67,0.5)' }}>
-                  Şifre Tekrar
+                  {t('auth.passwordConfirm')}
                 </label>
                 <input type={showPassword ? 'text' : 'password'} value={confirm}
-                  onChange={e => setConfirm(e.target.value)} required placeholder="Şifreni tekrar gir"
+                  onChange={e => setConfirm(e.target.value)} required placeholder={t('auth.passwordConfirmPlaceholder')}
                   className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-all"
                   style={{
                     ...inputBase,
@@ -139,7 +141,7 @@ export default function SifreSifirlaPage() {
                 />
                 {confirm.length > 0 && (
                   <p className="mt-1 text-[11px]" style={{ color: confirm === password ? '#4ade80' : '#f87171' }}>
-                    {confirm === password ? '✓ Şifreler eşleşiyor' : '✗ Şifreler eşleşmiyor'}
+                    {confirm === password ? t('auth.passwordsMatchInline') : t('auth.passwordsMismatchInline')}
                   </p>
                 )}
               </div>
@@ -153,7 +155,7 @@ export default function SifreSifirlaPage() {
               <button type="submit" disabled={loading}
                 className="w-full py-2.5 rounded-xl font-bold text-sm transition-all disabled:opacity-50 hover:opacity-90"
                 style={{ background: 'linear-gradient(135deg, var(--accent) 0%, #be1a3e 100%)', color: '#fff', boxShadow: '0 4px 16px rgba(225,29,72,0.3)' }}>
-                {loading ? 'Güncelleniyor...' : 'Şifremi Güncelle'}
+                {loading ? t('auth.updating') : t('auth.updatePasswordButton')}
               </button>
             </form>
           )}

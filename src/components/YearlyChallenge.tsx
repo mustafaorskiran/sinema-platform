@@ -1,6 +1,7 @@
 ﻿"use client"
 
 import { useEffect, useState } from "react"
+import { useLocale } from "@/context/LocaleContext"
 
 interface Data {
   challenge: { film_goal: number; series_goal: number } | null
@@ -46,6 +47,7 @@ function MilestoneBadge({ pct, threshold, label }: { pct: number; threshold: num
 }
 
 export default function YearlyChallenge() {
+  const { t } = useLocale()
   const [data, setData] = useState<Data | null>(null)
   const [editing, setEditing] = useState(false)
   const [filmGoal, setFilmGoal] = useState(0)
@@ -79,12 +81,12 @@ export default function YearlyChallenge() {
     if (!data) return
     const filmPct = filmGoalVal > 0 ? Math.min(100, Math.round((filmWatched / filmGoalVal) * 100)) : 0
     const seriesPct = seriesGoalVal > 0 ? Math.min(100, Math.round((seriesWatched / seriesGoalVal) * 100)) : 0
-    const text = `🎬 ${data.year} Yıl Meydan Okuma\n` +
-      (filmGoalVal > 0 ? `Film: ${filmWatched}/${filmGoalVal} (%${filmPct})\n` : "") +
-      (seriesGoalVal > 0 ? `Dizi: ${seriesWatched}/${seriesGoalVal} (%${seriesPct})\n` : "") +
-      `\n#Sinezon #FilmMeydan`
+    const text = `🎬 ${t('yearlyChallenge.challengeTitle', { year: data.year })}\n` +
+      (filmGoalVal > 0 ? `${t('yearlyChallenge.shareFilmLine', { watched: filmWatched, goal: filmGoalVal, pct: filmPct })}\n` : "") +
+      (seriesGoalVal > 0 ? `${t('yearlyChallenge.shareSeriesLine', { watched: seriesWatched, goal: seriesGoalVal, pct: seriesPct })}\n` : "") +
+      `\n${t('yearlyChallenge.shareHashtags')}`
     if (navigator.share) {
-      navigator.share({ title: "Yıllık Film Hedefim", text }).catch(() => {})
+      navigator.share({ title: t('yearlyChallenge.shareTitle'), text }).catch(() => {})
     } else {
       navigator.clipboard.writeText(text).then(() => {
         setShared(true)
@@ -111,13 +113,13 @@ export default function YearlyChallenge() {
     return (
       <div className="rounded-2xl p-6 text-center" style={goldBorder}>
         <p className="text-3xl mb-3">🏆</p>
-        <p className="text-sm font-bold text-white mb-1">{year} Yıl Meydan Okuma</p>
-        <p className="text-xs mb-4" style={{ color: "rgba(255,255,255,0.4)" }}>Bu yıl kaç film ve dizi izleyeceksin?</p>
+        <p className="text-sm font-bold text-white mb-1">{t('yearlyChallenge.challengeTitle', { year })}</p>
+        <p className="text-xs mb-4" style={{ color: "rgba(255,255,255,0.4)" }}>{t('yearlyChallenge.askGoal')}</p>
         <button
           onClick={() => setEditing(true)}
           className="inline-block px-5 py-2 rounded-full text-sm font-semibold text-white transition-all hover:scale-105 active:scale-95"
           style={{ background: "linear-gradient(135deg, #D4A843, #b8922a)", color: "#000", boxShadow: "0 4px 16px rgba(212,168,67,0.25)" }}>
-          Hedef Belirle
+          {t('yearlyChallenge.setGoal')}
         </button>
       </div>
     )
@@ -128,12 +130,12 @@ export default function YearlyChallenge() {
       <div className="rounded-2xl p-5" style={glassCard}>
         <div className="flex items-center gap-2 mb-5">
           <div className="w-1 h-5 rounded-full" style={{ background: "linear-gradient(180deg, #D4A843, #E11D48)" }} />
-          <p className="text-sm font-bold text-white">🏆 {year} Hedefini Belirle</p>
+          <p className="text-sm font-bold text-white">🏆 {t('yearlyChallenge.setGoalTitle', { year })}</p>
         </div>
         <div className="space-y-4">
           {[
-            { label: "🎬 Film hedefi", value: filmGoal, set: setFilmGoal, max: 1000 },
-            { label: "📺 Dizi hedefi", value: seriesGoal, set: setSeriesGoal, max: 500 },
+            { label: `🎬 ${t('yearlyChallenge.filmGoalLabel')}`, value: filmGoal, set: setFilmGoal, max: 1000 },
+            { label: `📺 ${t('yearlyChallenge.seriesGoalLabel')}`, value: seriesGoal, set: setSeriesGoal, max: 500 },
           ].map(({ label, value, set, max }) => (
             <div key={label}>
               <label className="text-xs mb-2 block" style={{ color: "rgba(255,255,255,0.4)" }}>{label}</label>
@@ -165,12 +167,12 @@ export default function YearlyChallenge() {
             <button onClick={() => setEditing(false)}
               className="flex-1 py-2 rounded-xl text-sm transition-colors"
               style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.5)" }}>
-              İptal
+              {t('common.cancel')}
             </button>
             <button onClick={save} disabled={saving}
               className="flex-1 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:scale-[1.02] disabled:opacity-50"
               style={{ background: "linear-gradient(135deg, #E11D48, #be123c)", boxShadow: "0 4px 14px rgba(225,29,72,0.25)" }}>
-              {saving ? "Kaydediliyor..." : "Kaydet"}
+              {saving ? t('yearlyChallenge.saving') : t('common.save')}
             </button>
           </div>
         </div>
@@ -183,18 +185,18 @@ export default function YearlyChallenge() {
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
           <div className="w-1 h-5 rounded-full" style={{ background: "linear-gradient(180deg, #D4A843, #E11D48)" }} />
-          <p className="text-sm font-bold text-white">🏆 {year} Meydan Okuma</p>
+          <p className="text-sm font-bold text-white">🏆 {t('yearlyChallenge.mainTitle', { year })}</p>
         </div>
         <div className="flex gap-2">
           <button onClick={share}
             className="text-[11px] px-3 py-1.5 rounded-lg transition-all hover:scale-105"
             style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: shared ? "#4ade80" : "rgba(255,255,255,0.4)" }}>
-            {shared ? "✓ Kopyalandı" : "Paylaş"}
+            {shared ? `✓ ${t('yearlyChallenge.copied')}` : t('yearlyChallenge.share')}
           </button>
           <button onClick={() => setEditing(true)}
             className="text-[11px] px-3 py-1.5 rounded-lg transition-all hover:scale-105"
             style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.4)" }}>
-            Düzenle
+            {t('common.edit')}
           </button>
         </div>
       </div>
@@ -210,8 +212,8 @@ export default function YearlyChallenge() {
             </div>
             <div className="text-center">
               <p className="text-lg font-black text-white leading-none">{filmWatched}<span className="text-xs font-normal text-white/30">/{filmGoalVal}</span></p>
-              <p className="text-[10px] mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>🎬 Film</p>
-              {filmPct >= 100 && <p className="text-[10px] text-green-400 font-bold mt-0.5">Tamamlandı ✓</p>}
+              <p className="text-[10px] mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>🎬 {t('yearlyChallenge.film')}</p>
+              {filmPct >= 100 && <p className="text-[10px] text-green-400 font-bold mt-0.5">{t('yearlyChallenge.completed')} ✓</p>}
             </div>
           </div>
         )}
@@ -230,8 +232,8 @@ export default function YearlyChallenge() {
             </div>
             <div className="text-center">
               <p className="text-lg font-black text-white leading-none">{seriesWatched}<span className="text-xs font-normal text-white/30">/{seriesGoalVal}</span></p>
-              <p className="text-[10px] mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>📺 Dizi</p>
-              {seriesPct >= 100 && <p className="text-[10px] text-green-400 font-bold mt-0.5">Tamamlandı ✓</p>}
+              <p className="text-[10px] mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>📺 {t('yearlyChallenge.series')}</p>
+              {seriesPct >= 100 && <p className="text-[10px] text-green-400 font-bold mt-0.5">{t('yearlyChallenge.completed')} ✓</p>}
             </div>
           </div>
         )}
@@ -241,7 +243,7 @@ export default function YearlyChallenge() {
       {(filmGoalVal > 0 || seriesGoalVal > 0) && (
         <div className="mt-5 pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
           <p className="text-[9px] text-center mb-3 uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.2)" }}>
-            Kilometre Taşları
+            {t('yearlyChallenge.milestones')}
           </p>
           <div className="flex justify-around">
             <MilestoneBadge pct={combinedPct} threshold={25} label="🥉" />
@@ -254,7 +256,7 @@ export default function YearlyChallenge() {
 
       {(filmGoalVal > 0 || seriesGoalVal > 0) && (
         <p className="text-[10px] text-center mt-3" style={{ color: "rgba(255,255,255,0.2)" }}>
-          {new Date().toLocaleDateString("tr-TR", { day: "numeric", month: "long" })} itibarıyla
+          {t('yearlyChallenge.asOfDate', { date: new Date().toLocaleDateString("tr-TR", { day: "numeric", month: "long" }) })}
         </p>
       )}
     </div>

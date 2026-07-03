@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { IconChevronLeft, IconChevronRight } from '@/components/icons'
+import { getTranslations } from '@/lib/i18n'
 
 interface PaginationProps {
   currentPage: number
@@ -10,7 +11,8 @@ interface PaginationProps {
 const glass = { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }
 const glassHover = 'hover:bg-white/8 hover:border-white/15 transition-all'
 
-export default function Pagination({ currentPage, totalPages, baseUrl }: PaginationProps) {
+export default async function Pagination({ currentPage, totalPages, baseUrl }: PaginationProps) {
+  const { t } = await getTranslations()
   const maxPage = Math.min(totalPages, 500)
 
   function pageUrl(p: number) {
@@ -27,12 +29,12 @@ export default function Pagination({ currentPage, totalPages, baseUrl }: Paginat
         <Link href={pageUrl(currentPage - 1)}
           className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm transition-all hover:scale-105`}
           style={{ ...glass, color: 'rgba(255,255,255,0.5)' }}>
-          <IconChevronLeft className="h-4 w-4" /> Önceki
+          <IconChevronLeft className="h-4 w-4" /> {t('common.prev')}
         </Link>
       ) : (
         <span className="flex items-center gap-1 px-3 py-2 rounded-lg text-sm cursor-not-allowed"
           style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.2)' }}>
-          <IconChevronLeft className="h-4 w-4" /> Önceki
+          <IconChevronLeft className="h-4 w-4" /> {t('common.prev')}
         </span>
       )}
 
@@ -57,12 +59,12 @@ export default function Pagination({ currentPage, totalPages, baseUrl }: Paginat
         <Link href={pageUrl(currentPage + 1)}
           className="flex items-center gap-1 px-3 py-2 rounded-lg text-sm transition-all hover:scale-105"
           style={{ ...glass, color: 'rgba(255,255,255,0.5)' }}>
-          Sonraki <IconChevronRight className="h-4 w-4" />
+          {t('common.next')} <IconChevronRight className="h-4 w-4" />
         </Link>
       ) : (
         <span className="flex items-center gap-1 px-3 py-2 rounded-lg text-sm cursor-not-allowed"
           style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.2)' }}>
-          Sonraki <IconChevronRight className="h-4 w-4" />
+          {t('common.next')} <IconChevronRight className="h-4 w-4" />
         </span>
       )}
     </div>

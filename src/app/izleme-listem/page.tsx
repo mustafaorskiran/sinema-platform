@@ -7,6 +7,7 @@ import PriorityButton from './PriorityButton'
 import RandomPickButton from './RandomPickButton'
 import WatchlistNoteButton from './WatchlistNoteButton'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 export const metadata: Metadata = { title: 'İzleme Listem | SineMa' }
 
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export default async function IzlemeLisTemPage({ searchParams }: Props) {
+  const { t } = await getTranslations()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/giris')
@@ -54,9 +56,9 @@ export default async function IzlemeLisTemPage({ searchParams }: Props) {
   )
 
   const tabs = [
-    { key: 'hepsi', label: 'Tümü' },
-    { key: 'film', label: 'Filmler' },
-    { key: 'dizi', label: 'Diziler' },
+    { key: 'hepsi', label: t('common.all') },
+    { key: 'film', label: t('watchlist.filmsTab') },
+    { key: 'dizi', label: t('watchlist.seriesTab') },
   ]
 
   return (
@@ -64,8 +66,8 @@ export default async function IzlemeLisTemPage({ searchParams }: Props) {
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <div className="flex items-center gap-3">
           <IconBookmark className="h-7 w-7 text-[--accent]" />
-          <h1 className="text-2xl font-bold text-white">İzlemek İstiyorum</h1>
-          <span className="text-sm text-[--text-secondary]">{withMedia.length} içerik</span>
+          <h1 className="text-2xl font-bold text-white">{t('watchlist.wantToWatch')}</h1>
+          <span className="text-sm text-[--text-secondary]">{withMedia.length} {t('list.items')}</span>
         </div>
         {withMedia.length > 0 && (
           <RandomPickButton items={withMedia.map(i => ({ id: i.media_id, type: i.media_type, title: i.title, poster: i.poster }))} />
@@ -84,7 +86,7 @@ export default async function IzlemeLisTemPage({ searchParams }: Props) {
         </div>
         <div className="ml-auto flex items-center gap-1 rounded-lg overflow-hidden"
           style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-          {[{ key: 'eklenme', label: 'En Yeni' }, { key: 'oncelik', label: '⭐ Öncelik' }].map(s => (
+          {[{ key: 'eklenme', label: t('watchlist.newest') }, { key: 'oncelik', label: `⭐ ${t('watchlist.priority')}` }].map(s => (
             <Link key={s.key} href={`/izleme-listem?tip=${tip}&sirala=${s.key}`}
               className={`px-3 py-1.5 text-xs font-medium transition-colors ${sirala === s.key ? 'bg-[--accent] text-white' : 'text-[--text-secondary] hover:text-white'}`}>
               {s.label}
@@ -97,10 +99,10 @@ export default async function IzlemeLisTemPage({ searchParams }: Props) {
         <div className="text-center py-20 rounded-2xl"
           style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <IconBookmark className="h-12 w-12 mx-auto mb-4 text-[--text-secondary] opacity-30" />
-          <p className="font-medium text-white mb-2">Listeniz boş</p>
-          <p className="text-sm text-[--text-secondary] mb-5">Film ve dizi sayfalarından "İzlemek İstiyorum" ekleyebilirsin.</p>
+          <p className="font-medium text-white mb-2">{t('watchlist.emptyTitle')}</p>
+          <p className="text-sm text-[--text-secondary] mb-5">{t('watchlist.emptyDesc')}</p>
           <Link href="/filmler" className="inline-block bg-[--accent] hover:bg-[--accent-hover] text-white text-sm font-semibold px-6 py-2.5 rounded-full transition-colors">
-            Film Keşfet
+            {t('watchlist.exploreFilms')}
           </Link>
         </div>
       ) : (
@@ -129,7 +131,7 @@ export default async function IzlemeLisTemPage({ searchParams }: Props) {
                 <div className="flex items-center gap-2 mt-0.5">
                   <span className="text-[10px] text-[--text-secondary]">{item.year}</span>
                   <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${item.media_type === 'film' ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-500/20 text-purple-400'}`}>
-                    {item.media_type === 'film' ? 'Film' : 'Dizi'}
+                    {item.media_type === 'film' ? t('film.badge') : t('series.badge')}
                   </span>
                   {item.rating > 0 && (
                     <span className="flex items-center gap-0.5 text-[10px] text-[--gold]">

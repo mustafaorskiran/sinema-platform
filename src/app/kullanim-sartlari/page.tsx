@@ -1,171 +1,107 @@
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 export const metadata: Metadata = {
   title: 'Kullanım Şartları | Sinezon',
   description: 'Sinezon kullanım şartları ve koşulları — platforma kayıt olarak kabul ettiğiniz kurallar.',
 }
 
-const sections = [
-  {
-    title: '1. Hizmetin Kapsamı',
-    content: [
-      {
-        subtitle: '',
-        text: 'Sinezon; film ve dizi puanlama, yorum yapma, izleme listesi oluşturma, alıntı ekleme, liste paylaşma, forum tartışmaları ve sosyal etkileşim gibi özellikler sunan bir sinema topluluğu platformudur. Platforma erişerek bu şartları kabul etmiş sayılırsınız.',
-      },
-    ],
-  },
-  {
-    title: '2. Hesap Oluşturma',
-    content: [
-      {
-        subtitle: 'Kayıt Şartları',
-        text: 'Sinezon\'a kayıt olmak için 13 yaşını doldurmuş olmanız gerekmektedir. Hesap bilgilerinizin doğru ve güncel olmasından siz sorumlusunuz. Bir e-posta adresiyle yalnızca bir hesap açılabilir.',
-      },
-      {
-        subtitle: 'Hesap Güvenliği',
-        text: 'Şifrenizin gizliliğini korumak sizin sorumluluğunuzdadır. Hesabınızda gerçekleşen tüm aktivitelerden siz sorumlusunuz. Hesabınızın yetkisiz kullanıldığını fark ederseniz derhal sinezon@iletisim.com adresine bildirin.',
-      },
-      {
-        subtitle: 'Kullanıcı Adı',
-        text: 'Kullanıcı adınız başkalarına ait olmamalı, yanıltıcı içermemeli ve topluluk kurallarına aykırı olmamalıdır. Uygunsuz kullanıcı adları moderatörler tarafından değiştirilebilir.',
-      },
-    ],
-  },
-  {
-    title: '3. İçerik Kuralları',
-    content: [
-      {
-        subtitle: 'İzin Verilen İçerik',
-        text: 'Film ve diziler hakkında dürüst yorum ve değerlendirmeler, kişisel izleme deneyimleri, yapıcı eleştiriler, öneriler ve tartışmalar paylaşabilirsiniz.',
-      },
-      {
-        subtitle: 'Yasak İçerik',
-        text: 'Hakaret, nefret söylemi, ayrımcılık, şiddet çağrısı, kişisel saldırı, spam, yanlış bilgi, telif hakkı ihlali ve yasadışı içerik kesinlikle yasaktır. Bu tür içerikler moderatörler tarafından kaldırılır ve hesabınız askıya alınabilir.',
-      },
-      {
-        subtitle: 'Spoiler Kuralı',
-        text: 'Film veya dizilere ait önemli olay örgüsü detaylarını paylaşırken spoiler uyarısı yapmanız zorunludur. Spoiler uyarısı yapılmadan paylaşılan içerikler kaldırılabilir.',
-      },
-      {
-        subtitle: 'Telif Hakkı',
-        text: 'Başkalarına ait metinleri, görselleri veya diğer içerikleri telif hakkı sahibinin izni olmadan paylaşamazsınız. Film fragmanları ve afişler resmi kaynaklardan (TMDb) çekilmektedir.',
-      },
-    ],
-  },
-  {
-    title: '4. Platform Kullanımı',
-    content: [
-      {
-        subtitle: 'Adil Kullanım',
-        text: 'Platformu yalnızca meşru amaçlar için kullanabilirsiniz. Otomatik botlar, scraper\'lar veya API\'yi aşmaya yönelik araçlar kullanmak yasaktır. Sistemin güvenliğini tehdit eden her türlü girişim derhal yasal işleme tabi tutulacaktır.',
-      },
-      {
-        subtitle: 'Sahte Değerlendirme',
-        text: 'Bir filmi veya diziyi manipüle etmek amacıyla sahte hesaplar kullanarak puan vermek, yorum yazmak veya oy kullanmak yasaktır. Bu tür manipülasyonlar tespit edildiğinde ilgili hesaplar kalıcı olarak kapatılır.',
-      },
-      {
-        subtitle: 'Ticari Kullanım',
-        text: 'Sinezon içeriklerini veya altyapısını ticari amaçla kullanmak, kopyalamak veya başka bir platformda yayınlamak yasaktır.',
-      },
-    ],
-  },
-  {
-    title: '5. Fikri Mülkiyet',
-    content: [
-      {
-        subtitle: 'Sinezon Mülkiyeti',
-        text: 'Sinezon logosu, tasarımı, kodu ve özgün içerikleri telif hakkıyla korunmaktadır. Bu materyaller yazılı izin olmaksızın kullanılamaz.',
-      },
-      {
-        subtitle: 'Kullanıcı İçerikleri',
-        text: 'Platforma yüklediğiniz yorum, alıntı, liste ve diğer içeriklerin telif hakkı size aittir. Ancak bu içerikleri Sinezon\'da yayınlayarak, Sinezon\'un bu içerikleri platform dahilinde görüntüleme, işleme ve tanıtım amacıyla kullanma hakkı verdiğinizi kabul edersiniz.',
-      },
-    ],
-  },
-  {
-    title: '6. Moderasyon ve Yaptırımlar',
-    content: [
-      {
-        subtitle: 'İçerik Moderasyonu',
-        text: 'Sinezon moderatörleri bu şartlara aykırı içerikleri önceden bildirim yapmaksızın kaldırma hakkını saklı tutar. Kaldırılan içerikler için itiraz hakkı saklıdır.',
-      },
-      {
-        subtitle: 'Hesap Yaptırımları',
-        text: 'Kural ihlallerine bağlı olarak uyarı, geçici askıya alma veya kalıcı hesap kapatma yaptırımları uygulanabilir. Ciddi ihlallerde (yasadışı içerik, sisteme zarar verme) doğrudan kalıcı kapatma uygulanır.',
-      },
-      {
-        subtitle: 'Bildirim',
-        text: 'Uygunsuz içerik gördüğünüzde "Şikayet Et" butonunu kullanabilir veya sinezon@iletisim.com adresine e-posta gönderebilirsiniz.',
-      },
-    ],
-  },
-  {
-    title: '7. Hizmet Değişiklikleri ve Kesintiler',
-    content: [
-      {
-        subtitle: '',
-        text: 'Sinezon; özelliklerini değiştirme, kaldırma veya ekleme hakkını önceden bildirim yaparak veya yapmaksızın saklı tutar. Bakım, güncelleme veya teknik sorunlar nedeniyle hizmet geçici olarak kesintiye uğrayabilir. Bu kesintilerden Sinezon sorumlu tutulamaz.',
-      },
-    ],
-  },
-  {
-    title: '8. Sorumluluk Reddi',
-    content: [
-      {
-        subtitle: 'Kullanıcı İçeriği',
-        text: 'Sinezon, kullanıcılar tarafından oluşturulan içeriklerin doğruluğundan veya güvenilirliğinden sorumlu değildir. Yorumlar ve puanlamalar kullanıcıların kişisel görüşlerini yansıtmaktadır.',
-      },
-      {
-        subtitle: 'Üçüncü Taraf Bağlantılar',
-        text: 'Platformda yer alan dış bağlantılar (streaming hizmetleri, haber kaynakları vb.) Sinezon\'a ait değildir. Bu sitelerdeki içerik ve gizlilik politikalarından Sinezon sorumlu değildir.',
-      },
-    ],
-  },
-  {
-    title: '9. Uygulanacak Hukuk',
-    content: [
-      {
-        subtitle: '',
-        text: 'Bu şartlar Türkiye Cumhuriyeti hukukuna tabidir. Anlaşmazlık halinde Türkiye mahkemeleri yetkilidir. 6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) kapsamındaki haklarınız için Gizlilik Politikamızı inceleyebilirsiniz.',
-      },
-    ],
-  },
-  {
-    title: '10. Şartların Güncellenmesi',
-    content: [
-      {
-        subtitle: '',
-        text: 'Bu kullanım şartlarını zaman zaman güncelleyebiliriz. Önemli değişiklikler öncesinde platforma giriş yaptığınızda bildirim gösterilecektir. Güncelleme sonrası platformu kullanmaya devam etmeniz yeni şartları kabul ettiğiniz anlamına gelir.',
-      },
-    ],
-  },
-  {
-    title: '11. İletişim',
-    content: [
-      {
-        subtitle: '',
-        text: 'Kullanım şartlarına ilişkin sorularınız için sinezon@iletisim.com adresine yazabilirsiniz. İletişim talebinizi en geç 5 iş günü içinde yanıtlamaya çalışıyoruz.',
-      },
-    ],
-  },
-]
+export default async function KullanimSartlariPage() {
+  const { t } = await getTranslations()
 
-export default function KullanimSartlariPage() {
+  const sections = [
+    {
+      title: t('terms.scope.title'),
+      content: [
+        { subtitle: '', text: t('terms.scope.text') },
+      ],
+    },
+    {
+      title: t('terms.account.title'),
+      content: [
+        { subtitle: t('terms.account.regTitle'), text: t('terms.account.regText') },
+        { subtitle: t('terms.account.securityTitle'), text: t('terms.account.securityText') },
+        { subtitle: t('terms.account.usernameTitle'), text: t('terms.account.usernameText') },
+      ],
+    },
+    {
+      title: t('terms.content.title'),
+      content: [
+        { subtitle: t('terms.content.allowedTitle'), text: t('terms.content.allowedText') },
+        { subtitle: t('terms.content.forbiddenTitle'), text: t('terms.content.forbiddenText') },
+        { subtitle: t('terms.content.spoilerTitle'), text: t('terms.content.spoilerText') },
+        { subtitle: t('terms.content.copyrightTitle'), text: t('terms.content.copyrightText') },
+      ],
+    },
+    {
+      title: t('terms.usage.title'),
+      content: [
+        { subtitle: t('terms.usage.fairTitle'), text: t('terms.usage.fairText') },
+        { subtitle: t('terms.usage.fakeTitle'), text: t('terms.usage.fakeText') },
+        { subtitle: t('terms.usage.commercialTitle'), text: t('terms.usage.commercialText') },
+      ],
+    },
+    {
+      title: t('terms.ip.title'),
+      content: [
+        { subtitle: t('terms.ip.ownershipTitle'), text: t('terms.ip.ownershipText') },
+        { subtitle: t('terms.ip.userContentTitle'), text: t('terms.ip.userContentText') },
+      ],
+    },
+    {
+      title: t('terms.moderation.title'),
+      content: [
+        { subtitle: t('terms.moderation.contentTitle'), text: t('terms.moderation.contentText') },
+        { subtitle: t('terms.moderation.sanctionsTitle'), text: t('terms.moderation.sanctionsText') },
+        { subtitle: t('terms.moderation.reportTitle'), text: t('terms.moderation.reportText') },
+      ],
+    },
+    {
+      title: t('terms.changes.title'),
+      content: [
+        { subtitle: '', text: t('terms.changes.text') },
+      ],
+    },
+    {
+      title: t('terms.disclaimer.title'),
+      content: [
+        { subtitle: t('terms.disclaimer.userContentTitle'), text: t('terms.disclaimer.userContentText') },
+        { subtitle: t('terms.disclaimer.thirdPartyTitle'), text: t('terms.disclaimer.thirdPartyText') },
+      ],
+    },
+    {
+      title: t('terms.law.title'),
+      content: [
+        { subtitle: '', text: t('terms.law.text') },
+      ],
+    },
+    {
+      title: t('terms.updates.title'),
+      content: [
+        { subtitle: '', text: t('terms.updates.text') },
+      ],
+    },
+    {
+      title: t('terms.contact.title'),
+      content: [
+        { subtitle: '', text: t('terms.contact.text') },
+      ],
+    },
+  ]
+
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
       {/* Başlık */}
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-1 h-8 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #E11D48 0%, #be123c 100%)' }} />
-          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">Kullanım Şartları</h1>
+          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">{t('terms.pageTitle')}</h1>
         </div>
         <p className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>
-          Son güncelleme: 28 Haziran 2026
+          {t('terms.lastUpdated')}
         </p>
         <p className="mt-4 text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>
-          Sinezon'a üye olarak veya platformumuzu kullanarak aşağıdaki şart ve koşulları kabul etmiş sayılırsınız.
-          Lütfen dikkatlice okuyun.
+          {t('terms.intro')}
         </p>
       </div>
 
@@ -202,10 +138,10 @@ export default function KullanimSartlariPage() {
       {/* Alt bağlantılar */}
       <div className="mt-10 pt-6 flex flex-wrap gap-4 text-sm" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <a href="/gizlilik" className="hover:text-white transition-colors" style={{ color: 'rgba(255,255,255,0.35)' }}>
-          Gizlilik Politikası →
+          {t('terms.privacyLink')}
         </a>
         <a href="/hakkimizda" className="hover:text-white transition-colors" style={{ color: 'rgba(255,255,255,0.35)' }}>
-          Hakkımızda →
+          {t('terms.aboutLink')}
         </a>
       </div>
     </div>

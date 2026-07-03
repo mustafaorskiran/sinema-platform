@@ -1,4 +1,5 @@
 import { IconStar, IconMessageSquare, IconEye, IconBookmark } from '@/components/icons'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props {
   sinezonRating: number | null
@@ -43,7 +44,7 @@ function StatChip({ icon, value, label, iconColor }: {
   )
 }
 
-export default function SinezonStats({
+export default async function SinezonStats({
   sinezonRating,
   ratingCount,
   reviewCount,
@@ -52,6 +53,7 @@ export default function SinezonStats({
   tmdbRating,
   tmdbVoteCount,
 }: Props) {
+  const { t } = await getTranslations()
   const isPrimary = ratingCount >= 5
 
   if (isPrimary && sinezonRating !== null) {
@@ -74,7 +76,7 @@ export default function SinezonStats({
               letterSpacing: '0.12em',
             }}
           >
-            Sinezon Topluluğu
+            {t('sinezonStats.communityBadge')}
           </span>
         </div>
 
@@ -94,7 +96,7 @@ export default function SinezonStats({
             <span className="text-xl font-medium" style={{ color: 'var(--text-secondary)' }}>/10</span>
           </div>
           <span className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>
-            {fmt(ratingCount)} oy
+            {t('sinezonStats.votes', { count: fmt(ratingCount) })}
           </span>
         </div>
 
@@ -108,19 +110,19 @@ export default function SinezonStats({
           {watchedCount > 0 && (
             <StatChip
               icon={<IconEye className="h-4 w-4" />}
-              value={fmt(watchedCount)} label="izledi"
+              value={fmt(watchedCount)} label={t('sinezonStats.watched')}
               iconColor="#4ade80"
             />
           )}
           <StatChip
             icon={<IconMessageSquare className="h-4 w-4" />}
-            value={fmt(reviewCount)} label="yorum"
+            value={fmt(reviewCount)} label={t('sinezonStats.reviews')}
             iconColor="#60a5fa"
           />
           {wantCount > 0 && (
             <StatChip
               icon={<IconBookmark className="h-4 w-4" />}
-              value={fmt(wantCount)} label="izleyecek"
+              value={fmt(wantCount)} label={t('sinezonStats.wantToWatch')}
               iconColor="var(--accent)"
             />
           )}
@@ -185,7 +187,7 @@ export default function SinezonStats({
               {sinezonRating.toFixed(1)}
             </span>
             <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
-              Sinezon · {ratingCount} oy
+              {t('sinezonStats.sinezonVotes', { count: ratingCount })}
             </span>
           </div>
         )}
@@ -201,18 +203,18 @@ export default function SinezonStats({
           }}
         >
           {watchedCount > 0 && (
-            <StatChip icon={<IconEye className="h-3.5 w-3.5" />} value={fmt(watchedCount)} label="izledi" iconColor="#4ade80" />
+            <StatChip icon={<IconEye className="h-3.5 w-3.5" />} value={fmt(watchedCount)} label={t('sinezonStats.watched')} iconColor="#4ade80" />
           )}
-          <StatChip icon={<IconMessageSquare className="h-3.5 w-3.5" />} value={fmt(reviewCount)} label="yorum" iconColor="#60a5fa" />
+          <StatChip icon={<IconMessageSquare className="h-3.5 w-3.5" />} value={fmt(reviewCount)} label={t('sinezonStats.reviews')} iconColor="#60a5fa" />
           {wantCount > 0 && (
-            <StatChip icon={<IconBookmark className="h-3.5 w-3.5" />} value={fmt(wantCount)} label="izleyecek" iconColor="var(--accent)" />
+            <StatChip icon={<IconBookmark className="h-3.5 w-3.5" />} value={fmt(wantCount)} label={t('sinezonStats.wantToWatch')} iconColor="var(--accent)" />
           )}
         </div>
       )}
 
       {ratingCount === 0 && (
         <p className="text-xs italic" style={{ color: 'var(--text-secondary)' }}>
-          İlk puanı ver — topluluğu oluşturmaya sen başla!
+          {t('sinezonStats.emptyCta')}
         </p>
       )}
     </div>

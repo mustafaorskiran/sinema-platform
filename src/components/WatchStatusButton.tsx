@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useLocale } from '@/context/LocaleContext'
 
 type Status = 'watching' | 'completed' | 'dropped' | 'plan_to_watch' | 'on_hold'
 
@@ -12,12 +13,12 @@ interface Props {
   initialStatus?: string | null
 }
 
-const STATUS_OPTIONS: { value: Status; label: string; color: string; dot: string }[] = [
-  { value: 'watching',      label: 'İzliyorum',    color: 'text-blue-400',   dot: 'bg-blue-400' },
-  { value: 'completed',     label: 'Tamamladım ✓', color: 'text-green-400',  dot: 'bg-green-400' },
-  { value: 'dropped',       label: 'Bıraktım',     color: 'text-red-400',    dot: 'bg-red-400' },
-  { value: 'plan_to_watch', label: 'İzleyeceğim',  color: 'text-purple-400', dot: 'bg-purple-400' },
-  { value: 'on_hold',       label: 'Askıda',       color: 'text-yellow-400', dot: 'bg-yellow-400' },
+const STATUS_OPTIONS: { value: Status; labelKey: string; color: string; dot: string }[] = [
+  { value: 'watching',      labelKey: 'watching',    color: 'text-blue-400',   dot: 'bg-blue-400' },
+  { value: 'completed',     labelKey: 'completed',   color: 'text-green-400',  dot: 'bg-green-400' },
+  { value: 'dropped',       labelKey: 'dropped',     color: 'text-red-400',    dot: 'bg-red-400' },
+  { value: 'plan_to_watch', labelKey: 'planToWatch', color: 'text-purple-400', dot: 'bg-purple-400' },
+  { value: 'on_hold',       labelKey: 'onHold',      color: 'text-yellow-400', dot: 'bg-yellow-400' },
 ]
 
 function getOption(status: string | null | undefined) {
@@ -25,6 +26,7 @@ function getOption(status: string | null | undefined) {
 }
 
 export default function WatchStatusButton({ mediaId, mediaType, isLoggedIn, initialStatus }: Props) {
+  const { t } = useLocale()
   const router = useRouter()
   const [status, setStatus] = useState<Status | null>(
     STATUS_OPTIONS.find(o => o.value === initialStatus) ? (initialStatus as Status) : null
@@ -93,6 +95,10 @@ export default function WatchStatusButton({ mediaId, mediaType, isLoggedIn, init
 
   const current = getOption(status)
 
+  function statusLabel(opt: { value: Status; labelKey: string }) {
+    return t(`watchStatus.${opt.labelKey}`) + (opt.value === 'completed' ? ' ✓' : '')
+  }
+
   return (
     <div className="relative" ref={ref}>
       <button
@@ -107,10 +113,10 @@ export default function WatchStatusButton({ mediaId, mediaType, isLoggedIn, init
         {current ? (
           <>
             <span className={`w-2 h-2 rounded-full shrink-0 ${current.dot}`} />
-            <span className={current.color}>{current.label}</span>
+            <span className={current.color}>{statusLabel(current)}</span>
           </>
         ) : (
-          <span>İzleme Durumu</span>
+          <span>{t('watchStatus.selectStatus')}</span>
         )}
         <span className="text-[--text-secondary] text-xs ml-0.5">▾</span>
       </button>
@@ -121,7 +127,7 @@ export default function WatchStatusButton({ mediaId, mediaType, isLoggedIn, init
           style={{ background: 'rgba(11,15,25,0.97)', backdropFilter: 'blur(16px)' }}
         >
           <div className="px-3 pt-3 pb-1">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-[--text-secondary]">Durum Seç</p>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-[--text-secondary]">{t('watchStatus.chooseStatus')}</p>
           </div>
           {STATUS_OPTIONS.map(opt => (
             <button
@@ -132,7 +138,7 @@ export default function WatchStatusButton({ mediaId, mediaType, isLoggedIn, init
               }`}
             >
               <span className={`w-2 h-2 rounded-full shrink-0 ${opt.dot}`} />
-              {opt.label}
+              {statusLabel(opt)}
             </button>
           ))}
           {status && (
@@ -143,7 +149,7 @@ export default function WatchStatusButton({ mediaId, mediaType, isLoggedIn, init
                 className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[--text-secondary] hover:text-red-400 hover:bg-white/5 transition-colors"
               >
                 <span className="w-2 h-2 rounded-full shrink-0 bg-[--text-secondary]/30" />
-                Kaldır
+                {t('watchStatus.remove')}
               </button>
             </>
           )}

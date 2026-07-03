@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { getPosterUrl } from '@/lib/tmdb'
+import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
 
 interface Props {
@@ -17,6 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function EmbedProfilPage({ params }: Props) {
   const { username } = await params
+  const { t } = await getTranslations()
   const supabase = await createClient()
 
   const { data: profile } = await supabase
@@ -123,8 +125,8 @@ export default async function EmbedProfilPage({ params }: Props) {
             {/* Stats */}
             <div style={{ display: 'flex', gap: '12px', marginBottom: '14px' }}>
               {[
-                { label: 'Yorum', value: reviewCount },
-                { label: 'İzledi', value: watchedCount },
+                { label: t('profile.embedReviewLabel'), value: reviewCount },
+                { label: t('profile.embedWatchedLabel'), value: watchedCount },
               ].map(({ label, value }) => (
                 <div key={label} style={{
                   flex: 1, textAlign: 'center', padding: '8px',
@@ -141,7 +143,7 @@ export default async function EmbedProfilPage({ params }: Props) {
             {recent.length > 0 && (
               <div>
                 <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.3)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>
-                  Son İzledikler
+                  {t('profile.embedRecentTitle')}
                 </div>
                 <div style={{ display: 'flex', gap: '6px' }}>
                   {recent.map(r => {
@@ -174,7 +176,7 @@ export default async function EmbedProfilPage({ params }: Props) {
             {/* Footer */}
             <div style={{ marginTop: '12px', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.2)' }}>sinema-platform.vercel.app</span>
-              <span style={{ fontSize: '10px', color: '#E11D48', fontWeight: 600 }}>Profili Görüntüle →</span>
+              <span style={{ fontSize: '10px', color: '#E11D48', fontWeight: 600 }}>{t('profile.embedViewProfile')}</span>
             </div>
           </div>
         </a>

@@ -3,29 +3,30 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { IconChevronDown, IconSlidersHorizontal, IconClose, IconFilm, IconTv } from '@/components/icons'
+import { useLocale } from '@/context/LocaleContext'
 
 const GOLD   = '#D4A843'
 const GOLD_B = '#F0C060'
 const RED    = '#E11D48'
 
 const SORT_OPTIONS = [
-  { value: 'popularity.desc',  label: 'En Popüler'       },
-  { value: 'vote_average.desc', label: 'En Yüksek Puan' },
-  { value: 'vote_average.asc',  label: 'En Düşük Puan'  },
-  { value: 'release_date.desc', label: 'En Yeni'         },
-  { value: 'release_date.asc',  label: 'En Eski'         },
+  { value: 'popularity.desc',  labelKey: 'mostPopular' },
+  { value: 'vote_average.desc', labelKey: 'highestRated' },
+  { value: 'vote_average.asc',  labelKey: 'lowestRated' },
+  { value: 'release_date.desc', labelKey: 'newest' },
+  { value: 'release_date.asc',  labelKey: 'oldest' },
 ]
 
 const CURRENT_YEAR = new Date().getFullYear()
 const YEAR_PRESETS = [
-  { label: 'Tümü',  value: '' },
-  { label: '2024',  value: '2024' },
-  { label: '2023',  value: '2023' },
-  { label: '2020s', value: '2020' },
-  { label: '2010s', value: '2010' },
-  { label: '2000s', value: '2000' },
-  { label: '90lar',  value: '1990' },
-  { label: '80ler',  value: '1980' },
+  { labelKey: 'all',      value: '' },
+  { label: '2024',        value: '2024' },
+  { label: '2023',        value: '2023' },
+  { label: '2020s',       value: '2020' },
+  { label: '2010s',       value: '2010' },
+  { label: '2000s',       value: '2000' },
+  { labelKey: 'nineties', value: '1990' },
+  { labelKey: 'eighties', value: '1980' },
 ]
 
 interface Props {
@@ -61,6 +62,7 @@ export default function TurSidebar({
   initialTab, initialSirala = 'popularity.desc', initialYil = '', initialMinPuan = '0',
 }: Props) {
   const router = useRouter()
+  const { t } = useLocale()
   const [tab,     setTab]     = useState<'film' | 'dizi'>(initialTab)
   const [sirala,  setSirala]  = useState(initialSirala)
   const [yil,     setYil]     = useState(initialYil)
@@ -111,12 +113,12 @@ export default function TurSidebar({
         <>
           <div className="px-5 pt-5 pb-4">
             <p className="text-[9.5px] font-bold uppercase tracking-[0.18em] mb-3"
-               style={{ color: 'rgba(212,168,67,0.5)' }}>İçerik Türü</p>
+               style={{ color: 'rgba(212,168,67,0.5)' }}>{t('turSidebar.contentType')}</p>
             <div className="flex rounded-xl overflow-hidden"
                  style={{ border: '1px solid rgba(212,168,67,0.12)' }}>
               {[
-                { key: 'film', label: 'Filmler', icon: <IconFilm className="h-3.5 w-3.5" /> },
-                { key: 'dizi', label: 'Diziler', icon: <IconTv className="h-3.5 w-3.5" /> },
+                { key: 'film', label: t('nav.films'), icon: <IconFilm className="h-3.5 w-3.5" /> },
+                { key: 'dizi', label: t('nav.series'), icon: <IconTv className="h-3.5 w-3.5" /> },
               ].map(v => (
                 <button
                   key={v.key}
@@ -140,13 +142,13 @@ export default function TurSidebar({
       {/* ── Sırala ── */}
       <div className="px-5 pt-4 pb-4">
         <p className="text-[9.5px] font-bold uppercase tracking-[0.18em] mb-3"
-           style={{ color: 'rgba(212,168,67,0.5)' }}>Sırala</p>
+           style={{ color: 'rgba(212,168,67,0.5)' }}>{t('turSidebar.sortBy')}</p>
         <div className="relative">
           <select value={sirala} onChange={e => setSirala(e.target.value)}
             className={selectCls}
             style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(212,168,67,0.12)' }}>
             {SORT_OPTIONS.map(o => (
-              <option key={o.value} value={o.value} className="bg-[#141c2f] text-white">{o.label}</option>
+              <option key={o.value} value={o.value} className="bg-[#141c2f] text-white">{t(`turSidebar.${o.labelKey}`)}</option>
             ))}
           </select>
           <IconChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-3 w-3"
@@ -158,7 +160,7 @@ export default function TurSidebar({
             background: `linear-gradient(135deg, ${RED} 0%, #be123c 100%)`,
             boxShadow: `0 4px 18px rgba(225,29,72,0.32)`,
           }}>
-          Ara
+          {t('turSidebar.search')}
         </button>
       </div>
 
@@ -166,7 +168,7 @@ export default function TurSidebar({
 
       {/* ── Yıl ── */}
       <div className="px-5 py-4">
-        <FilterLabel>Yıl</FilterLabel>
+        <FilterLabel>{t('common.year')}</FilterLabel>
         <div className="flex flex-wrap gap-1.5">
           {YEAR_PRESETS.map(y => (
             <button key={y.value}
@@ -181,7 +183,7 @@ export default function TurSidebar({
                 border: '1px solid rgba(255,255,255,0.07)',
                 color: 'rgba(255,255,255,0.35)',
               }}>
-              {y.label}
+              {y.labelKey === 'all' ? t('common.all') : y.labelKey ? t(`turSidebar.${y.labelKey}`) : y.label}
             </button>
           ))}
         </div>
@@ -192,9 +194,9 @@ export default function TurSidebar({
       {/* ── Min Puan ── */}
       <div className="px-5 py-4">
         <div className="flex items-center justify-between mb-3">
-          <FilterLabel>Min Puan</FilterLabel>
+          <FilterLabel>{t('turSidebar.minRating')}</FilterLabel>
           <span className="text-[13px] font-bold tabular-nums" style={{ color: GOLD_B }}>
-            {minPuan > 0 ? minPuan.toFixed(1) : 'Hepsi'}
+            {minPuan > 0 ? minPuan.toFixed(1) : t('turSidebar.allRatings')}
           </span>
         </div>
         <input type="range" min={0} max={9} step={0.5} value={minPuan}
@@ -214,7 +216,7 @@ export default function TurSidebar({
         <button onClick={ara}
           className="w-full py-2.5 rounded-xl font-semibold text-[13px] text-white tracking-wide transition-all hover:opacity-90 active:scale-[0.98]"
           style={{ background: `linear-gradient(135deg, ${RED} 0%, #be123c 100%)`, boxShadow: `0 4px 18px rgba(225,29,72,0.30)` }}>
-          Ara
+          {t('turSidebar.search')}
         </button>
         {hasFilters && (
           <button onClick={reset}
@@ -222,7 +224,7 @@ export default function TurSidebar({
             style={{ border: '1px solid rgba(212,168,67,0.1)', color: 'rgba(212,168,67,0.35)' }}
             onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(212,168,67,0.65)' }}
             onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(212,168,67,0.35)' }}>
-            Filtreleri Temizle
+            {t('turSidebar.clearFilters')}
           </button>
         )}
       </div>
@@ -267,7 +269,7 @@ export default function TurSidebar({
         onClick={() => setDrawerOpen(true)}
       >
         <IconSlidersHorizontal className="h-4 w-4" />
-        Filtrele
+        {t('browse.filter')}
         {hasFilters && <span className="w-1.5 h-1.5 rounded-full bg-[#F0C060]" />}
       </button>
 
@@ -283,7 +285,7 @@ export default function TurSidebar({
         {drawerOpen && (
           <div className="lg:hidden flex justify-between items-center px-1 pb-2">
             <span className="text-[11px] font-bold uppercase tracking-[0.15em]"
-                  style={{ color: 'rgba(212,168,67,0.5)' }}>Filtrele</span>
+                  style={{ color: 'rgba(212,168,67,0.5)' }}>{t('browse.filter')}</span>
             <button onClick={() => setDrawerOpen(false)}
               className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
               style={{ color: 'rgba(255,255,255,0.5)' }}>

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 export const revalidate = 3600
 
@@ -16,6 +17,7 @@ interface Props {
 export default async function LiderlikPage({ searchParams }: Props) {
   const { kategori = 'yorum' } = await searchParams
   const supabase = await createClient()
+  const { t } = await getTranslations()
 
   const monthAgo = new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString()
 
@@ -52,7 +54,7 @@ export default async function LiderlikPage({ searchParams }: Props) {
         full_name: profile.full_name,
         is_premium: profile.is_premium ?? false,
         score: count,
-        detail: `${count} yorum`,
+        detail: t('community.leaderDetailReviews'),
       }))
   } else if (kategori === 'begeni') {
     // Most liked reviews
@@ -80,7 +82,7 @@ export default async function LiderlikPage({ searchParams }: Props) {
         full_name: profile.full_name,
         is_premium: profile.is_premium ?? false,
         score: total,
-        detail: `${total} toplam beğeni`,
+        detail: t('community.leaderDetailLikes'),
       }))
   } else if (kategori === 'takipci') {
     // Most followers
@@ -96,7 +98,7 @@ export default async function LiderlikPage({ searchParams }: Props) {
       full_name: p.full_name,
       is_premium: p.is_premium ?? false,
       score: p.follower_count ?? 0,
-      detail: `${p.follower_count ?? 0} takipçi`,
+      detail: t('community.leaderDetailFollowers'),
     }))
   } else if (kategori === 'izleme') {
     // Most diary entries
@@ -122,15 +124,15 @@ export default async function LiderlikPage({ searchParams }: Props) {
         full_name: profile.full_name,
         is_premium: profile.is_premium ?? false,
         score: count,
-        detail: `${count} film/dizi bu yıl`,
+        detail: t('community.leaderDetailWatched'),
       }))
   }
 
   const TABS = [
-    { id: 'yorum', label: '✍️ En Çok Yorum', desc: 'Son 30 günde' },
-    { id: 'begeni', label: '❤️ En Çok Beğeni', desc: 'Toplam alınan' },
-    { id: 'takipci', label: '👥 En Çok Takipçi', desc: 'Tüm zamanlar' },
-    { id: 'izleme', label: '🎬 En Çok İzleyen', desc: `${new Date().getFullYear()} yılında` },
+    { id: 'yorum', label: `✍️ ${t('community.leaderTabReviewsLabel')}`, desc: t('community.leaderTabReviewsDesc') },
+    { id: 'begeni', label: `❤️ ${t('community.leaderTabLikesLabel')}`, desc: t('community.leaderTabLikesDesc') },
+    { id: 'takipci', label: `👥 ${t('community.leaderTabFollowersLabel')}`, desc: t('community.leaderTabFollowersDesc') },
+    { id: 'izleme', label: `🎬 ${t('community.leaderTabWatchedLabel')}`, desc: t('community.leaderTabWatchedDesc', { year: new Date().getFullYear() }) },
   ]
 
   const RANK_EMOJIS = ['🥇', '🥈', '🥉']
@@ -138,8 +140,8 @@ export default async function LiderlikPage({ searchParams }: Props) {
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
       <div className="mb-8">
-        <h1 className="text-3xl font-black text-white mb-1">🏆 Liderlik Tablosu</h1>
-        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>Sinezon'un en aktif üyeleri</p>
+        <h1 className="text-3xl font-black text-white mb-1">🏆 {t('community.leaderboardTitle')}</h1>
+        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>{t('community.leaderboardSubtitle')}</p>
       </div>
 
       {/* Tabs */}
@@ -167,7 +169,7 @@ export default async function LiderlikPage({ searchParams }: Props) {
         <div className="text-center py-16 rounded-2xl"
           style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
           <p className="text-4xl mb-3">📊</p>
-          <p style={{ color: 'rgba(255,255,255,0.4)' }}>Henüz yeterli veri yok.</p>
+          <p style={{ color: 'rgba(255,255,255,0.4)' }}>{t('community.notEnoughData')}</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -210,7 +212,7 @@ export default async function LiderlikPage({ searchParams }: Props) {
               {/* Puan */}
               <div className="text-right shrink-0">
                 <p className="text-lg font-black text-white tabular-nums">{user.score.toLocaleString('tr-TR')}</p>
-                <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>{user.detail.split(' ').slice(1).join(' ')}</p>
+                <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>{user.detail}</p>
               </div>
             </Link>
           ))}
@@ -218,7 +220,7 @@ export default async function LiderlikPage({ searchParams }: Props) {
       )}
 
       <p className="text-center text-xs mt-8" style={{ color: 'rgba(255,255,255,0.2)' }}>
-        Saatlik güncellenir
+        {t('community.hourlyUpdate')}
       </p>
     </div>
   )

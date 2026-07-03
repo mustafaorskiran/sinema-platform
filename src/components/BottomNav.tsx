@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { IconHome, IconFilm, IconSearch, IconBell, IconUser } from '@/components/icons'
+import { useLocale } from '@/context/LocaleContext'
 
 interface BottomNavProps {
   user?: { id?: string; email?: string; username?: string; is_admin?: boolean } | null
@@ -10,6 +11,7 @@ interface BottomNavProps {
 
 export default function BottomNav({ user }: BottomNavProps) {
   const pathname = usePathname()
+  const { t } = useLocale()
 
   const profileHref   = user?.username ? `/profil/${user.username}` : '/auth/giris'
   const profileActive = pathname.startsWith('/profil')
@@ -20,10 +22,10 @@ export default function BottomNav({ user }: BottomNavProps) {
   }
 
   const tabs = [
-    { href: '/',              label: 'Ana Sayfa',    Icon: IconHome },
-    { href: '/filmler',       label: 'Keşfet',       Icon: IconFilm },
-    { href: '/arama',         label: 'Ara',          Icon: IconSearch },
-    { href: '/bildirimler',   label: 'Bildirimler',  Icon: IconBell },
+    { href: '/',              label: t('nav.home'),         Icon: IconHome },
+    { href: '/filmler',       label: t('nav.explore'),      Icon: IconFilm },
+    { href: '/arama',         label: t('nav.ariaSearch'),   Icon: IconSearch },
+    { href: '/bildirimler',   label: t('nav.notifications'), Icon: IconBell },
   ]
 
   return (
@@ -79,7 +81,7 @@ export default function BottomNav({ user }: BottomNavProps) {
           )}
           <span className="text-[9.5px] font-bold tracking-wide transition-all duration-200"
             style={{ color: profileActive ? 'rgba(225,29,72,0.9)' : 'rgba(255,255,255,0.22)' }}>
-            Profil
+            {t('nav.profileShort')}
           </span>
         </Link>
       </div>

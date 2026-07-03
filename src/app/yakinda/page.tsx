@@ -1,12 +1,16 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getPosterUrl } from '@/lib/tmdb'
+import { getTranslations } from '@/lib/i18n'
 
 export const revalidate = 3600
 
-export const metadata: Metadata = {
-  title: 'Yakında Çıkacaklar | Sinezon',
-  description: "Sinemaya ve platformlara yakında gelecek filmler ve diziler.",
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getTranslations()
+  return {
+    title: t('upcoming.metaTitle'),
+    description: t('upcoming.metaDescription'),
+  }
 }
 
 interface Props {
@@ -58,6 +62,7 @@ function daysUntil(dateStr: string): number {
 }
 
 export default async function YakindaPage({ searchParams }: Props) {
+  const { t } = await getTranslations()
   const { tip = 'film' } = await searchParams
   const apiKey = process.env.TMDB_API_KEY ?? ''
 
@@ -81,22 +86,22 @@ export default async function YakindaPage({ searchParams }: Props) {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Başlık */}
       <div className="mb-8">
-        <h1 className="text-3xl font-black text-white mb-1">📅 Yakında Çıkacaklar</h1>
-        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>Önümüzdeki 6 ay içinde gelen filmler ve diziler</p>
+        <h1 className="text-3xl font-black text-white mb-1">📅 {t('comingSoon.title')}</h1>
+        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>{t('comingSoon.subtitle')}</p>
       </div>
 
       {/* Tabs */}
       <div className="flex gap-2 mb-8">
         {[
-          { id: 'film', label: '🎬 Filmler', count: films.length },
-          { id: 'dizi', label: '📺 Diziler', count: diziler.length },
-        ].map(t => (
-          <Link key={t.id} href={`/yakinda?tip=${t.id}`}
+          { id: 'film', label: `🎬 ${t('upcoming.tabs.movies')}`, count: films.length },
+          { id: 'dizi', label: `📺 ${t('upcoming.tabs.series')}`, count: diziler.length },
+        ].map(tab => (
+          <Link key={tab.id} href={`/yakinda?tip=${tab.id}`}
             className="px-5 py-2 rounded-full text-sm font-semibold transition-all"
-            style={t.id === tip
+            style={tab.id === tip
               ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: 'white' }
               : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
-            {t.label} <span className="ml-1 opacity-60">{t.count}</span>
+            {tab.label} <span className="ml-1 opacity-60">{tab.count}</span>
           </Link>
         ))}
       </div>
@@ -106,14 +111,14 @@ export default async function YakindaPage({ searchParams }: Props) {
         <div className="text-center py-20 rounded-2xl"
           style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
           <p className="text-4xl mb-3">📽️</p>
-          <p style={{ color: 'rgba(255,255,255,0.4)' }}>Henüz veri yok.</p>
+          <p style={{ color: 'rgba(255,255,255,0.4)' }}>{t('upcoming.empty')}</p>
         </div>
       ) : (
         <div className="grid sm:grid-cols-2 gap-4">
           {items.map((item: any) => {
             const releaseDate = tip === 'film' ? item.release_date : item.first_air_date
             const days = daysUntil(releaseDate)
-            const title = item.title ?? item.name ?? 'Bilinmiyor'
+            const title = item.title ?? item.name ?? t('upcoming.unknown')
             const href = `/${tip}/${item.id}`
             const genres = ((item.genre_ids ?? []) as number[]).slice(0, 2).map(id => GENRE_MAP[id]).filter(Boolean)
             const isVeryClose = days >= 0 && days <= 7
@@ -150,13 +155,13 @@ export default async function YakindaPage({ searchParams }: Props) {
                     {isVeryClose && (
                       <span className="text-[10px] px-2 py-0.5 rounded-full font-bold animate-pulse"
                         style={{ background: 'rgba(225,29,72,0.2)', color: '#f87171', border: '1px solid rgba(225,29,72,0.3)' }}>
-                        🔥 Bu hafta!
+                        🔥 {t('upcoming.thisWeek')}
                       </span>
                     )}
                     {!isVeryClose && isThisMonth && (
                       <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold"
                         style={{ background: 'rgba(212,168,67,0.15)', color: '#D4A843', border: '1px solid rgba(212,168,67,0.2)' }}>
-                        Bu ay
+                        {t('upcoming.thisMonth')}
                       </span>
                     )}
                   </div>
@@ -164,7 +169,7 @@ export default async function YakindaPage({ searchParams }: Props) {
                   <p className="text-xs mb-2" style={{ color: 'rgba(255,255,255,0.5)' }}>
                     📅 {releaseDate ? formatDate(releaseDate) : '?'}
                     {days >= 0 && days !== Infinity && (
-                      <span style={{ color: 'rgba(255,255,255,0.3)' }}> · {days} gün sonra</span>
+                      <span style={{ color: 'rgba(255,255,255,0.3)' }}> · {t('upcoming.daysLater', { days })}</span>
                     )}
                   </p>
 

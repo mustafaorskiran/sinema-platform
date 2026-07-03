@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { IconUserPlus, IconUserCheck, IconLoader } from '@/components/icons'
+import { useLocale } from '@/context/LocaleContext'
 
 interface FollowButtonProps {
   targetUserId: string
@@ -10,6 +11,7 @@ interface FollowButtonProps {
 }
 
 export default function FollowButton({ targetUserId, initialFollowing, isLoggedIn }: FollowButtonProps) {
+  const { t } = useLocale()
   const [following, setFollowing] = useState(initialFollowing)
   const [loading, setLoading] = useState(false)
 
@@ -45,7 +47,7 @@ export default function FollowButton({ targetUserId, initialFollowing, isLoggedI
           ? <IconUserCheck className="h-4 w-4" />
           : <IconUserPlus className="h-4 w-4" />
       }
-      {following ? 'Takip Ediliyor' : 'Takip Et'}
+      {following ? t('social.followingState') : t('profile.follow')}
     </button>
   )
 }

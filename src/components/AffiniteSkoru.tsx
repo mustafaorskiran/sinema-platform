@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Props {
   username: string
@@ -23,6 +24,7 @@ const LABEL_COLORS: Record<string, string> = {
 }
 
 export default function AffiniteSkoru({ username }: Props) {
+  const { t } = useLocale()
   const [data, setData] = useState<AffiniteData | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -47,7 +49,7 @@ export default function AffiniteSkoru({ username }: Props) {
   if (!data || data.shared === 0) return (
     <div className="rounded-xl px-4 py-3 text-xs"
       style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.3)' }}>
-      🎬 Affinite skoru: Henüz ortak film/dizi yok
+      🎬 {t('affiniteSkoru.noShared')}
     </div>
   )
 
@@ -62,9 +64,9 @@ export default function AffiniteSkoru({ username }: Props) {
         <div className="flex items-center gap-2">
           <span className="text-base">🎭</span>
           <div>
-            <p className="text-xs font-semibold text-white">Sinema Uyumu</p>
+            <p className="text-xs font-semibold text-white">{t('affiniteSkoru.title')}</p>
             <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.35)' }}>
-              {data.shared} ortak yapım üzerinden
+              {t('affiniteSkoru.sharedCount', { count: data.shared })}
             </p>
           </div>
         </div>

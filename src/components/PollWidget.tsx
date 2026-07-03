@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Poll {
   id: string
@@ -18,6 +19,7 @@ interface Props {
 }
 
 export default function PollWidget({ poll, currentUserId }: Props) {
+  const { t } = useLocale()
   const totalVotes = poll.poll_votes.length
   const userVote = currentUserId
     ? poll.poll_votes.find(v => v.user_id === currentUserId)?.option_idx ?? null
@@ -65,8 +67,8 @@ export default function PollWidget({ poll, currentUserId }: Props) {
     <div className="rounded-2xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
       <div className="flex items-center gap-2 mb-4">
         <span className="text-base">🗳️</span>
-        <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.3)' }}>Anket</p>
-        {isExpired && <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold ml-auto" style={{ background: 'rgba(248,113,113,0.1)', color: '#f87171', border: '1px solid rgba(248,113,113,0.2)' }}>Sona Erdi</span>}
+        <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.3)' }}>{t('community.pollLabel')}</p>
+        {isExpired && <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold ml-auto" style={{ background: 'rgba(248,113,113,0.1)', color: '#f87171', border: '1px solid rgba(248,113,113,0.2)' }}>{t('community.pollEnded')}</span>}
       </div>
 
       <p className="text-sm font-semibold text-white mb-4 leading-snug">{poll.question}</p>
@@ -121,9 +123,9 @@ export default function PollWidget({ poll, currentUserId }: Props) {
       </div>
 
       <p className="text-[11px] mt-3" style={{ color: 'rgba(255,255,255,0.25)' }}>
-        {currentTotal} oy
+        {t('community.voteCount', { count: currentTotal })}
         {poll.ends_at && !isExpired && (
-          <> · {new Date(poll.ends_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' })} tarihinde sona erer</>
+          <> · {t('community.endsOn', { date: new Date(poll.ends_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' }) })}</>
         )}
       </p>
     </div>

@@ -2,13 +2,15 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Props {
   next?: string
   label?: string
 }
 
-export default function GoogleAuthButton({ next = '/', label = 'Google ile devam et' }: Props) {
+export default function GoogleAuthButton({ next = '/', label }: Props) {
+  const { t } = useLocale()
   const [loading, setLoading] = useState(false)
   const [error, setError]   = useState('')
 
@@ -24,7 +26,7 @@ export default function GoogleAuthButton({ next = '/', label = 'Google ile devam
       },
     })
     if (oauthError) {
-      setError('Google ile giriş başlatılamadı. Lütfen tekrar dene.')
+      setError(t('auth.googleLoginFailed'))
       setLoading(false)
     }
     // Başarıda tarayıcı Google'a yönlendiriyor — setLoading(false) gerekmez
@@ -53,7 +55,7 @@ export default function GoogleAuthButton({ next = '/', label = 'Google ile devam
             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
           </svg>
         )}
-        <span>{loading ? 'Yönlendiriliyor...' : label}</span>
+        <span>{loading ? t('auth.redirecting') : (label ?? t('auth.googleContinue'))}</span>
       </button>
 
       {error && (

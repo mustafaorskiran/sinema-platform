@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { IconMessageSquare, IconSend, IconTrash, IconChevronDown, IconChevronUp } from '@/components/icons'
 import { createClient } from '@/lib/supabase/client'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Reply {
   id: string
@@ -20,15 +21,16 @@ interface Props {
   isLoggedIn: boolean
 }
 
-function timeAgo(date: string) {
+function timeAgo(date: string, t: (key: string, params?: Record<string, string | number>) => string) {
   const diff = Math.floor((Date.now() - new Date(date).getTime()) / 1000)
-  if (diff < 60) return 'az önce'
-  if (diff < 3600) return `${Math.floor(diff / 60)} dk önce`
-  if (diff < 86400) return `${Math.floor(diff / 3600)} sa önce`
+  if (diff < 60) return t('review.timeJustNow')
+  if (diff < 3600) return t('review.timeMinutesAgo', { n: Math.floor(diff / 60) })
+  if (diff < 86400) return t('review.timeHoursAgo', { n: Math.floor(diff / 3600) })
   return new Date(date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' })
 }
 
 export default function ReviewReplySection({ reviewId, initialCount, currentUserId, isLoggedIn }: Props) {
+  const { t } = useLocale()
   const [open, setOpen] = useState(false)
   const [replies, setReplies] = useState<Reply[]>([])
   const [loaded, setLoaded] = useState(false)
@@ -88,7 +90,7 @@ export default function ReviewReplySection({ reviewId, initialCount, currentUser
           className="flex items-center gap-1.5 text-xs text-[--text-secondary] hover:text-white transition-colors"
         >
           <IconMessageSquare className="h-3.5 w-3.5" />
-          {count > 0 ? `${count} yanıt` : 'Yanıtlar'}
+          {count > 0 ? t('review.replyCount', { n: count }) : t('review.replies')}
           {count > 0 && (open ? <IconChevronUp className="h-3 w-3" /> : <IconChevronDown className="h-3 w-3" />)}
         </button>
 
@@ -97,7 +99,7 @@ export default function ReviewReplySection({ reviewId, initialCount, currentUser
             onClick={() => { setShowForm(f => !f); if (!loaded) loadReplies() }}
             className="text-xs text-[--accent] hover:underline transition-colors"
           >
-            Yanıtla
+            {t('review.reply')}
           </button>
         )}
       </div>
@@ -108,7 +110,7 @@ export default function ReviewReplySection({ reviewId, initialCount, currentUser
           <textarea
             value={content}
             onChange={e => setContent(e.target.value)}
-            placeholder="Yanıtınızı yazın..."
+            placeholder={t('review.replyPlaceholder')}
             maxLength={1000}
             rows={2}
             required
@@ -124,7 +126,7 @@ export default function ReviewReplySection({ reviewId, initialCount, currentUser
               style={{ background: 'var(--accent)' }}
             >
               <IconSend className="h-3.5 w-3.5" />
-              Gönder
+              {t('review.send')}
             </button>
           </div>
         </form>
@@ -134,7 +136,7 @@ export default function ReviewReplySection({ reviewId, initialCount, currentUser
       {open && loaded && (
         <div className="mt-3 space-y-3 pl-4 border-l-2 border-[--border]">
           {replies.length === 0 ? (
-            <p className="text-xs text-[--text-secondary]">Henüz yanıt yok.</p>
+            <p className="text-xs text-[--text-secondary]">{t('review.noReplies')}</p>
           ) : (
             replies.map(reply => (
               <div key={reply.id} className="flex gap-2.5 group">
@@ -154,7 +156,7 @@ export default function ReviewReplySection({ reviewId, initialCount, currentUser
                     >
                       {reply.profiles?.username}
                     </a>
-                    <span className="text-[10px] text-[--text-secondary]">{timeAgo(reply.created_at)}</span>
+                    <span className="text-[10px] text-[--text-secondary]">{timeAgo(reply.created_at, t)}</span>
                   </div>
                   <p className="text-sm text-[--text-secondary] leading-relaxed mt-0.5">{reply.content}</p>
                 </div>

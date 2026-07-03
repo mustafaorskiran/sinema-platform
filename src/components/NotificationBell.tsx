@@ -5,6 +5,7 @@ import { useState, useEffect, useRef, useId } from 'react'
 import Link from 'next/link'
 import { IconBell } from '@/components/icons'
 import { createClient } from '@/lib/supabase/client'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Notification {
   id: string
@@ -18,19 +19,20 @@ interface Notification {
 
 interface Props { userId: string }
 
-function timeAgo(date: string) {
-  const diff = Math.floor((Date.now() - new Date(date).getTime()) / 1000)
-  if (diff < 60) return 'az önce'
-  if (diff < 3600) return `${Math.floor(diff / 60)} dk önce`
-  if (diff < 86400) return `${Math.floor(diff / 3600)} sa önce`
-  return `${Math.floor(diff / 86400)} gün önce`
-}
-
 export default function NotificationBell({ userId }: Props) {
+  const { t } = useLocale()
   const [open, setOpen] = useState(false)
   const [notifications, setNotifications] = useState<Notification[]>([])
   const ref = useRef<HTMLDivElement>(null)
   const instanceId = useId()
+
+  function timeAgo(date: string) {
+    const diff = Math.floor((Date.now() - new Date(date).getTime()) / 1000)
+    if (diff < 60) return t('notifications.justNow')
+    if (diff < 3600) return t('notifications.minutesAgo', { minutes: Math.floor(diff / 60) })
+    if (diff < 86400) return t('notifications.hoursAgo', { hours: Math.floor(diff / 3600) })
+    return t('notifications.daysAgo', { days: Math.floor(diff / 86400) })
+  }
 
   async function fetchNotifications() {
     const supabase = createClient()
@@ -83,10 +85,10 @@ export default function NotificationBell({ userId }: Props) {
   const unread = notifications.filter(n => !n.read).length
 
   function notifText(n: Notification) {
-    const actor = n.actor?.username ?? 'Biri'
-    if (n.type === 'like') return `${actor} yorumunu beğendi`
-    if (n.type === 'follow') return `${actor} seni takip etmeye başladı`
-    if (n.type === 'reply') return `${actor} yorumuna yanıt verdi`
+    const actor = n.actor?.username ?? t('notifications.someone')
+    if (n.type === 'like') return t('notifications.likedReviewWithActor', { actor })
+    if (n.type === 'follow') return t('notifications.newFollower', { actor })
+    if (n.type === 'reply') return t('notifications.repliedToReviewWithActor', { actor })
     return ''
   }
 
@@ -101,7 +103,7 @@ export default function NotificationBell({ userId }: Props) {
       <button
         onClick={() => setOpen(o => !o)}
         className="relative p-2 rounded-lg text-[--text-secondary] hover:text-white hover:bg-white/5 transition-colors"
-        aria-label="Bildirimler"
+        aria-label={t('notifications.ariaLabel')}
       >
         <IconBell className="h-5 w-5" />
         {unread > 0 && (
@@ -116,13 +118,13 @@ export default function NotificationBell({ userId }: Props) {
           style={{ background: 'linear-gradient(160deg, rgba(14,20,36,0.98), rgba(10,14,26,0.99))', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)' }}>
           {/* Başlık */}
           <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-            <span className="text-sm font-semibold text-white">Bildirimler</span>
+            <span className="text-sm font-semibold text-white">{t('notifications.title')}</span>
             {notifications.length > 0 && (
               <button
                 onClick={markAllRead}
                 className="text-xs text-[--accent] hover:underline"
               >
-                Tümünü okundu işaretle
+                {t('notifications.markAllRead')}
               </button>
             )}
           </div>
@@ -131,7 +133,7 @@ export default function NotificationBell({ userId }: Props) {
           <div className="max-h-80 overflow-y-auto">
             {notifications.length === 0 ? (
               <div className="py-10 text-center text-sm text-[--text-secondary]">
-                Henüz bildirim yok.
+                {t('notifications.empty')}
               </div>
             ) : (
               notifications.map(n => (
@@ -173,7 +175,7 @@ export default function NotificationBell({ userId }: Props) {
               className="block text-center text-xs font-medium hover:underline"
               style={{ color: 'var(--accent)' }}
             >
-              Tüm bildirimleri gör →
+              {t('notifications.viewAll')}
             </Link>
           </div>
         </div>

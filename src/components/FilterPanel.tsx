@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { IconChevronDown } from '@/components/icons'
+import { useLocale } from '@/context/LocaleContext'
 
 export interface FilterItem {
   href: string
@@ -64,6 +65,7 @@ function Section({
 }
 
 export default function FilterPanel({ genres, countries, years, specialCategories }: Props) {
+  const { t } = useLocale()
   const activeGenre   = genres.find(g => g.active)
   const activeCountry = countries.find(c => c.active)
   const activeYear    = years.find(y => y.active)
@@ -97,10 +99,10 @@ export default function FilterPanel({ genres, countries, years, specialCategorie
         >
           <div className="flex items-center justify-between mb-2.5">
             <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--accent)' }}>
-              Aktif Filtreler
+              {t('filterPanel.activeFilters')}
             </p>
             <span className="text-[10px] tabular-nums" style={{ color: 'var(--accent)', opacity: 0.65 }}>
-              {activeItems.length} seçili
+              {t('filterPanel.selectedCount', { count: activeItems.length })}
             </span>
           </div>
           <div className="flex flex-wrap gap-1.5">
@@ -124,7 +126,7 @@ export default function FilterPanel({ genres, countries, years, specialCategorie
       )}
 
       {/* Türler */}
-      <Section title="Türler" defaultOpen>
+      <Section title={t('filterPanel.genres')} defaultOpen>
         <div className="filter-section-scroll">
           <div className="flex flex-wrap gap-1.5">
             {genres.map(g => (
@@ -145,7 +147,7 @@ export default function FilterPanel({ genres, countries, years, specialCategorie
       </Section>
 
       {/* Ülkeler */}
-      <Section title="Ülkeler" defaultOpen>
+      <Section title={t('filterPanel.countries')} defaultOpen>
         <div className="filter-section-scroll">
           <div className="flex flex-wrap gap-1.5">
             {countries.map(c => (
@@ -163,7 +165,7 @@ export default function FilterPanel({ genres, countries, years, specialCategorie
       </Section>
 
       {/* Yıllar */}
-      <Section title="Yıllar" defaultOpen>
+      <Section title={t('filterPanel.years')} defaultOpen>
         <div className="filter-section-scroll filter-section-scroll-years">
           <div className="grid grid-cols-3 gap-1.5">
             {years.map(y => (
@@ -181,7 +183,7 @@ export default function FilterPanel({ genres, countries, years, specialCategorie
 
       {/* Özel Kategoriler */}
       {specialCategories && specialCategories.length > 0 && (
-        <Section title="Özel Kategoriler" defaultOpen={false}>
+        <Section title={t('filterPanel.specialCategories')} defaultOpen={false}>
           <div className="filter-section-scroll filter-section-scroll-topics">
             <div className="flex flex-wrap gap-1.5">
               {specialCategories.map(s => (

@@ -6,7 +6,7 @@ import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration'
 import KeyboardShortcuts from '@/components/KeyboardShortcuts'
 import { createClient } from '@/lib/supabase/server'
 import { LocaleProvider } from '@/context/LocaleContext'
-import { getLocale, getMessages } from '@/lib/i18n'
+import { getLocale, getMessages, createT } from '@/lib/i18n'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sinezon.com'
 const SITE_NAME = 'Sinezon'
@@ -63,6 +63,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocale()
   const messages = await getMessages(locale)
+  const t = createT(messages)
 
   let user = null
   try {
@@ -102,43 +103,43 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <footer className="mt-16 pt-10 pb-24 md:pb-10 text-sm text-[--text-secondary]" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
             <div className="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 mb-8">
               <div>
-                <p className="font-semibold text-white mb-3">Keşfet</p>
+                <p className="font-semibold text-white mb-3">{t('footer.exploreHeading')}</p>
                 <ul className="space-y-2">
-                  <li><a href="/filmler" className="hover:text-white transition-colors">Filmler</a></li>
-                  <li><a href="/diziler" className="hover:text-white transition-colors">Diziler</a></li>
-                  <li><a href="/top10" className="hover:text-white transition-colors">🔥 Top 10</a></li>
-                  <li><a href="/evren" className="hover:text-white transition-colors">🌌 Sinema Evrenler</a></li>
-                  <li><a href="/versus" className="hover:text-white transition-colors">⚔️ Film vs Film</a></li>
-                  <li><a href="/yakinda" className="hover:text-white transition-colors">Yakında Çıkacaklar</a></li>
-                  <li><a href="/kutu-ofis" className="hover:text-white transition-colors">🎟️ Türkiye Gişe</a></li>
+                  <li><a href="/filmler" className="hover:text-white transition-colors">{t('nav.films')}</a></li>
+                  <li><a href="/diziler" className="hover:text-white transition-colors">{t('nav.series')}</a></li>
+                  <li><a href="/top10" className="hover:text-white transition-colors">{t('nav.megaMenu.films.top10')}</a></li>
+                  <li><a href="/evren" className="hover:text-white transition-colors">{t('nav.megaMenu.explore.cinemaUniverses')}</a></li>
+                  <li><a href="/versus" className="hover:text-white transition-colors">{t('nav.megaMenu.explore.filmVsFilm')}</a></li>
+                  <li><a href="/yakinda" className="hover:text-white transition-colors">{t('footer.upcomingReleases')}</a></li>
+                  <li><a href="/kutu-ofis" className="hover:text-white transition-colors">{t('nav.megaMenu.films.boxOffice')}</a></li>
                 </ul>
               </div>
               <div>
-                <p className="font-semibold text-white mb-3">Topluluk</p>
+                <p className="font-semibold text-white mb-3">{t('footer.communityHeading')}</p>
                 <ul className="space-y-2">
-                  <li><a href="/liderlik" className="hover:text-white transition-colors">Liderlik Tablosu</a></li>
-                  <li><a href="/haftalik" className="hover:text-white transition-colors">📰 Haftanın Özeti</a></li>
-                  <li><a href="/forum" className="hover:text-white transition-colors">Forum</a></li>
-                  <li><a href="/alintilar" className="hover:text-white transition-colors">Alıntılar</a></li>
-                  <li><a href="/haberler" className="hover:text-white transition-colors">Sinema Haberleri</a></li>
+                  <li><a href="/liderlik" className="hover:text-white transition-colors">{t('footer.leaderboard')}</a></li>
+                  <li><a href="/haftalik" className="hover:text-white transition-colors">{t('nav.megaMenu.explore.weeklyDigest')}</a></li>
+                  <li><a href="/forum" className="hover:text-white transition-colors">{t('nav.forum')}</a></li>
+                  <li><a href="/alintilar" className="hover:text-white transition-colors">{t('nav.megaMenu.explore.quotes')}</a></li>
+                  <li><a href="/haberler" className="hover:text-white transition-colors">{t('nav.megaMenu.films.news')}</a></li>
                 </ul>
               </div>
               <div>
-                <p className="font-semibold text-white mb-3">Kullanıcı</p>
+                <p className="font-semibold text-white mb-3">{t('footer.userHeading')}</p>
                 <ul className="space-y-2">
-                  <li><a href="/akis" className="hover:text-white transition-colors">Akışım</a></li>
-                  <li><a href="/izleme-listem" className="hover:text-white transition-colors">İzleme Listem</a></li>
-                  <li><a href="/dizi-takip" className="hover:text-white transition-colors">📺 Dizi Takip</a></li>
-                  <li><a href="/gunluk" className="hover:text-white transition-colors">Günlüğüm</a></li>
-                  <li><a href={`/ozet/${new Date().getFullYear()}`} className="hover:text-white transition-colors">Yıl Özetim</a></li>
+                  <li><a href="/akis" className="hover:text-white transition-colors">{t('footer.myFeedLink')}</a></li>
+                  <li><a href="/izleme-listem" className="hover:text-white transition-colors">{t('nav.myWatchlist')}</a></li>
+                  <li><a href="/dizi-takip" className="hover:text-white transition-colors">{t('nav.seriesTracker')}</a></li>
+                  <li><a href="/gunluk" className="hover:text-white transition-colors">{t('footer.myDiary')}</a></li>
+                  <li><a href={`/ozet/${new Date().getFullYear()}`} className="hover:text-white transition-colors">{t('footer.yearRecap')}</a></li>
                 </ul>
               </div>
               <div>
-                <p className="font-semibold text-white mb-3">Hakkında</p>
+                <p className="font-semibold text-white mb-3">{t('footer.aboutHeading')}</p>
                 <ul className="space-y-2">
-                  <li><a href="/hakkinda" className="hover:text-white transition-colors">Hakkımızda</a></li>
-                  <li><a href="/gizlilik" className="hover:text-white transition-colors">Gizlilik</a></li>
-                  <li><a href="/kullanim-sartlari" className="hover:text-white transition-colors">Kullanım Şartları</a></li>
+                  <li><a href="/hakkinda" className="hover:text-white transition-colors">{t('footer.aboutUs')}</a></li>
+                  <li><a href="/gizlilik" className="hover:text-white transition-colors">{t('footer.privacy')}</a></li>
+                  <li><a href="/kullanim-sartlari" className="hover:text-white transition-colors">{t('footer.terms')}</a></li>
                 </ul>
               </div>
             </div>

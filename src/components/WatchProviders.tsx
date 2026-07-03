@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import type { WatchProviderResult } from '@/lib/tmdb'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Props {
   allProviders: Record<string, WatchProviderResult> | null
@@ -9,34 +10,34 @@ interface Props {
   title?: string
 }
 
-const COUNTRIES: { code: string; flag: string; name: string }[] = [
-  { code: 'TR', flag: '🇹🇷', name: 'Türkiye' },
-  { code: 'US', flag: '🇺🇸', name: 'ABD' },
-  { code: 'GB', flag: '🇬🇧', name: 'İngiltere' },
-  { code: 'DE', flag: '🇩🇪', name: 'Almanya' },
-  { code: 'FR', flag: '🇫🇷', name: 'Fransa' },
-  { code: 'IT', flag: '🇮🇹', name: 'İtalya' },
-  { code: 'ES', flag: '🇪🇸', name: 'İspanya' },
-  { code: 'NL', flag: '🇳🇱', name: 'Hollanda' },
-  { code: 'CA', flag: '🇨🇦', name: 'Kanada' },
-  { code: 'AU', flag: '🇦🇺', name: 'Avustralya' },
-  { code: 'JP', flag: '🇯🇵', name: 'Japonya' },
-  { code: 'KR', flag: '🇰🇷', name: 'Güney Kore' },
-  { code: 'BR', flag: '🇧🇷', name: 'Brezilya' },
-  { code: 'MX', flag: '🇲🇽', name: 'Meksika' },
-  { code: 'IN', flag: '🇮🇳', name: 'Hindistan' },
-  { code: 'SE', flag: '🇸🇪', name: 'İsveç' },
-  { code: 'NO', flag: '🇳🇴', name: 'Norveç' },
-  { code: 'PL', flag: '🇵🇱', name: 'Polonya' },
-  { code: 'PT', flag: '🇵🇹', name: 'Portekiz' },
-  { code: 'AR', flag: '🇦🇷', name: 'Arjantin' },
+const COUNTRIES: { code: string; flag: string; nameKey: string }[] = [
+  { code: 'TR', flag: '🇹🇷', nameKey: 'Turkey' },
+  { code: 'US', flag: '🇺🇸', nameKey: 'Usa' },
+  { code: 'GB', flag: '🇬🇧', nameKey: 'Uk' },
+  { code: 'DE', flag: '🇩🇪', nameKey: 'Germany' },
+  { code: 'FR', flag: '🇫🇷', nameKey: 'France' },
+  { code: 'IT', flag: '🇮🇹', nameKey: 'Italy' },
+  { code: 'ES', flag: '🇪🇸', nameKey: 'Spain' },
+  { code: 'NL', flag: '🇳🇱', nameKey: 'Netherlands' },
+  { code: 'CA', flag: '🇨🇦', nameKey: 'Canada' },
+  { code: 'AU', flag: '🇦🇺', nameKey: 'Australia' },
+  { code: 'JP', flag: '🇯🇵', nameKey: 'Japan' },
+  { code: 'KR', flag: '🇰🇷', nameKey: 'SouthKorea' },
+  { code: 'BR', flag: '🇧🇷', nameKey: 'Brazil' },
+  { code: 'MX', flag: '🇲🇽', nameKey: 'Mexico' },
+  { code: 'IN', flag: '🇮🇳', nameKey: 'India' },
+  { code: 'SE', flag: '🇸🇪', nameKey: 'Sweden' },
+  { code: 'NO', flag: '🇳🇴', nameKey: 'Norway' },
+  { code: 'PL', flag: '🇵🇱', nameKey: 'Poland' },
+  { code: 'PT', flag: '🇵🇹', nameKey: 'Portugal' },
+  { code: 'AR', flag: '🇦🇷', nameKey: 'Argentina' },
 ]
 
-const SECTION_LABELS: Record<string, string> = {
-  flatrate: '▶️ Abonelik',
-  free: '🆓 Ücretsiz',
-  rent: '💳 Kirala',
-  buy: '🛒 Satın Al',
+const SECTION_ICONS: Record<string, string> = {
+  flatrate: '▶️',
+  free: '🆓',
+  rent: '💳',
+  buy: '🛒',
 }
 
 // Abonelik platformları → anasayfa
@@ -91,9 +92,18 @@ function buildSearchUrl(providerId: number, title: string): string | null {
 }
 
 export default function WatchProviders({ allProviders, title = '' }: Props) {
+  const { t } = useLocale()
   const [selectedCountry, setSelectedCountry] = useState('TR')
 
   if (!allProviders) return null
+
+  function sectionLabel(section: string) {
+    if (section === 'flatrate') return t('watchProviders.sectionFlatrate')
+    if (section === 'free') return t('watchProviders.sectionFree')
+    if (section === 'rent') return t('watchProviders.rent')
+    if (section === 'buy') return t('watchProviders.buy')
+    return section
+  }
 
   const availableCountryCodes = new Set(Object.keys(allProviders))
   const availableCountries = COUNTRIES.filter(c => availableCountryCodes.has(c.code))
@@ -112,7 +122,7 @@ export default function WatchProviders({ allProviders, title = '' }: Props) {
   return (
     <div className="mt-5">
       <div className="flex items-center gap-2 mb-3 flex-wrap">
-        <p className="text-sm font-semibold text-white">Nerede İzlenir?</p>
+        <p className="text-sm font-semibold text-white">{t('watchProviders.title')}</p>
         {providers?.link && (
           <a
             href={providers.link}
@@ -138,23 +148,23 @@ export default function WatchProviders({ allProviders, title = '' }: Props) {
             }`}
           >
             <span>{c.flag}</span>
-            <span>{c.name}</span>
+            <span>{t(`watchProviders.country${c.nameKey}`)}</span>
           </button>
         ))}
       </div>
 
       {sections.length === 0 ? (
-        <p className="text-xs text-[--text-secondary]">Bu ülkede platform verisi bulunamadı.</p>
+        <p className="text-xs text-[--text-secondary]">{t('watchProviders.noProviderData')}</p>
       ) : (
         <div className="space-y-3">
           {sections.map(section => (
             <div key={section}>
               <div className="flex items-center gap-2 mb-1.5">
                 <p className="text-[10px] text-[--text-secondary] uppercase font-semibold">
-                  {SECTION_LABELS[section]}
+                  {SECTION_ICONS[section]} {sectionLabel(section)}
                 </p>
                 {(section === 'rent' || section === 'buy') && providers?.link && (
-                  <span className="text-[9px] opacity-40">· JustWatch üzerinden</span>
+                  <span className="text-[9px] opacity-40">· {t('watchProviders.viaJustWatch')}</span>
                 )}
               </div>
               <div className="flex flex-wrap gap-2">
@@ -176,7 +186,7 @@ export default function WatchProviders({ allProviders, title = '' }: Props) {
                         ?? '#'
                     }
 
-                    const actionLabel = section === 'rent' ? 'Kirala' : section === 'buy' ? 'Satın Al' : 'İzle'
+                    const actionLabel = section === 'rent' ? t('watchProviders.rent') : section === 'buy' ? t('watchProviders.buy') : t('watchProviders.watch')
 
                     return (
                       <a
@@ -184,7 +194,7 @@ export default function WatchProviders({ allProviders, title = '' }: Props) {
                         href={href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        title={`${p.provider_name}'de ${actionLabel} →`}
+                        title={t('watchProviders.actionTitle', { provider: p.provider_name, action: actionLabel })}
                         className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 transition-all hover:scale-[1.04] hover:brightness-125 cursor-pointer"
                         style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
                       >
@@ -207,7 +217,7 @@ export default function WatchProviders({ allProviders, title = '' }: Props) {
       )}
 
       <p className="text-[10px] text-[--text-secondary] mt-3">
-        {availableCountries.length} ülkede mevcut · JustWatch verisi
+        {t('watchProviders.availableInCountries', { count: availableCountries.length })}
       </p>
     </div>
   )

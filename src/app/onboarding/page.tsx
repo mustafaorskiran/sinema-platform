@@ -2,11 +2,15 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { discoverMovies, discoverSeries, getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb'
 import OnboardingClient from './OnboardingClient'
+import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = {
-  title: 'Sinezon\'u Kişiselleştir',
-  robots: { index: false },
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getTranslations()
+  return {
+    title: t('onboarding.metaTitle'),
+    robots: { index: false },
+  }
 }
 
 export interface RatingItem {

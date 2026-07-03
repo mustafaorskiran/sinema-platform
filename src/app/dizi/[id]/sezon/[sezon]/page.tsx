@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getSeriesDetail, getSeasonDetail, getMediaTitle, getPosterUrl } from '@/lib/tmdb'
+import { getTranslations } from '@/lib/i18n'
 import EpisodeRow from './EpisodeRow'
 import type { Metadata } from 'next'
 
@@ -11,17 +12,19 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id, sezon } = await params
+  const { t } = await getTranslations()
   try {
     const series = await getSeriesDetail(Number(id))
     const title = getMediaTitle(series)
-    return { title: `${title} — Sezon ${sezon} | Sinezon` }
+    return { title: `${title} — ${t('series.seasonNumber', { n: sezon })} | Sinezon` }
   } catch {
-    return { title: `Sezon ${sezon} | Sinezon` }
+    return { title: `${t('series.seasonNumber', { n: sezon })} | Sinezon` }
   }
 }
 
 export default async function SezonPage({ params }: Props) {
   const { id, sezon } = await params
+  const { t } = await getTranslations()
   const seriesId = Number(id)
   const seasonNumber = Number(sezon)
 
@@ -68,7 +71,7 @@ export default async function SezonPage({ params }: Props) {
       <nav className="flex items-center gap-2 text-xs mb-6" style={{ color: 'rgba(255,255,255,0.35)' }}>
         <Link href={`/dizi/${seriesId}`} className="hover:text-white transition-colors">{title}</Link>
         <span>/</span>
-        <span className="text-white">Sezon {seasonNumber}</span>
+        <span className="text-white">{t('series.seasonNumber', { n: seasonNumber })}</span>
       </nav>
 
       {/* Sezon başlığı */}
@@ -76,7 +79,7 @@ export default async function SezonPage({ params }: Props) {
         {season.poster_path && (
           <img
             src={getPosterUrl(season.poster_path, 'w342') ?? ''}
-            alt={`Sezon ${seasonNumber}`}
+            alt={t('series.seasonNumber', { n: seasonNumber })}
             className="w-24 h-36 rounded-xl object-cover shrink-0"
             style={{ border: '1px solid rgba(255,255,255,0.08)' }}
           />
@@ -84,7 +87,7 @@ export default async function SezonPage({ params }: Props) {
         <div>
           <h1 className="text-xl sm:text-2xl font-black text-white mb-1 leading-tight">{title}</h1>
           <p className="text-sm sm:text-base font-bold mb-2" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            Sezon {seasonNumber} — {episodes.length} Bölüm
+            {t('series.seasonNumber', { n: seasonNumber })} — {episodes.length} {t('series.episodes')}
           </p>
           {user && (
             <div className="flex items-center gap-2">
@@ -94,7 +97,7 @@ export default async function SezonPage({ params }: Props) {
                   style={{ width: `${episodes.length > 0 ? (watchedCount / episodes.length) * 100 : 0}%`, background: 'linear-gradient(90deg, #E11D48, #be123c)' }} />
               </div>
               <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                {watchedCount}/{episodes.length} izlendi
+                {watchedCount}/{episodes.length} {t('series.watchedLabel')}
               </span>
             </div>
           )}
@@ -115,7 +118,7 @@ export default async function SezonPage({ params }: Props) {
               style={s === seasonNumber
                 ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: 'white' }
                 : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.45)' }}>
-              Sezon {s}
+              {t('series.seasonNumber', { n: s })}
             </Link>
           ))}
         </div>
@@ -138,7 +141,7 @@ export default async function SezonPage({ params }: Props) {
       {episodes.length === 0 && (
         <div className="text-center py-12 rounded-2xl" style={card}>
           <p className="text-3xl mb-2">📺</p>
-          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>Bu sezon için bölüm bilgisi henüz eklenmemiş.</p>
+          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>{t('series.noEpisodesInfo')}</p>
         </div>
       )}
 
@@ -148,7 +151,7 @@ export default async function SezonPage({ params }: Props) {
           <Link href={`/dizi/${seriesId}/sezon/${seasonNumber - 1}`}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all active:scale-95 hover:-translate-x-1"
             style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.6)' }}>
-            ← Sezon {seasonNumber - 1}
+            ← {t('series.seasonNumber', { n: seasonNumber - 1 })}
           </Link>
         ) : (
           <div />
@@ -158,7 +161,7 @@ export default async function SezonPage({ params }: Props) {
           <Link href={`/dizi/${seriesId}/sezon/${seasonNumber + 1}`}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all active:scale-95 hover:translate-x-1"
             style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.6)' }}>
-            Sezon {seasonNumber + 1} →
+            {t('series.seasonNumber', { n: seasonNumber + 1 })} →
           </Link>
         ) : (
           <div />

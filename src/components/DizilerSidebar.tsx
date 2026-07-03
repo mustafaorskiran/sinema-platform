@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { IconChevronDown, IconSlidersHorizontal, IconClose } from '@/components/icons'
 import { DIZI_GENRES } from '@/lib/dizi-genres'
 import { WATCH_REGIONS } from '@/lib/watch-regions'
+import { useLocale } from '@/context/LocaleContext'
 
 export { DIZI_GENRES }
 
@@ -12,31 +13,31 @@ const GOLD   = '#D4A843'
 const GOLD_B = '#F0C060'
 const RED    = '#E11D48'
 
-const SORT_OPTIONS = [
-  { value: 'popularity.desc',     label: 'Popülerlik Azalan'         },
-  { value: 'popularity.asc',      label: 'Popülerlik Artan'          },
-  { value: 'vote_average.desc',   label: 'En Yüksek Puan'            },
-  { value: 'vote_average.asc',    label: 'En Düşük Puan'             },
-  { value: 'first_air_date.desc', label: 'İlk Yayın (Yeni → Eski)'  },
-  { value: 'first_air_date.asc',  label: 'İlk Yayın (Eski → Yeni)'  },
-  { value: 'name.asc',            label: 'Başlık (A → Z)'            },
+const SORT_OPTION_DEFS = [
+  { value: 'popularity.desc',     labelKey: 'sidebarFilters.sortOptions.popularityDesc'     },
+  { value: 'popularity.asc',      labelKey: 'sidebarFilters.sortOptions.popularityAsc'      },
+  { value: 'vote_average.desc',   labelKey: 'sidebarFilters.sortOptions.ratingDesc'         },
+  { value: 'vote_average.asc',    labelKey: 'sidebarFilters.sortOptions.ratingAsc'          },
+  { value: 'first_air_date.desc', labelKey: 'sidebarFilters.sortOptions.firstAirDateDesc'   },
+  { value: 'first_air_date.asc',  labelKey: 'sidebarFilters.sortOptions.firstAirDateAsc'    },
+  { value: 'name.asc',            labelKey: 'sidebarFilters.sortOptions.titleAsc'           },
 ]
 
-const LANGUAGE_OPTIONS = [
-  { value: '',   label: 'Herhangi bir dil' },
-  { value: 'tr', label: '🇹🇷 Türkçe'      },
-  { value: 'en', label: '🇺🇸 İngilizce'   },
-  { value: 'ko', label: '🇰🇷 Korece'      },
-  { value: 'ja', label: '🇯🇵 Japonca'     },
-  { value: 'fr', label: '🇫🇷 Fransızca'   },
-  { value: 'de', label: '🇩🇪 Almanca'     },
-  { value: 'es', label: '🇪🇸 İspanyolca'  },
-  { value: 'it', label: '🇮🇹 İtalyanca'   },
-  { value: 'zh', label: '🇨🇳 Çince'       },
-  { value: 'hi', label: '🇮🇳 Hintçe'      },
-  { value: 'pt', label: '🇧🇷 Portekizce'  },
-  { value: 'sv', label: '🇸🇪 İsveççe'     },
-  { value: 'da', label: '🇩🇰 Danimarkaca' },
+const LANGUAGE_OPTION_DEFS = [
+  { value: '',   labelKey: 'sidebarFilters.languages.any' },
+  { value: 'tr', labelKey: 'sidebarFilters.languages.tr'  },
+  { value: 'en', labelKey: 'sidebarFilters.languages.en'  },
+  { value: 'ko', labelKey: 'sidebarFilters.languages.ko'  },
+  { value: 'ja', labelKey: 'sidebarFilters.languages.ja'  },
+  { value: 'fr', labelKey: 'sidebarFilters.languages.fr'  },
+  { value: 'de', labelKey: 'sidebarFilters.languages.de'  },
+  { value: 'es', labelKey: 'sidebarFilters.languages.es'  },
+  { value: 'it', labelKey: 'sidebarFilters.languages.it'  },
+  { value: 'zh', labelKey: 'sidebarFilters.languages.zh'  },
+  { value: 'hi', labelKey: 'sidebarFilters.languages.hi'  },
+  { value: 'pt', labelKey: 'sidebarFilters.languages.pt'  },
+  { value: 'sv', labelKey: 'sidebarFilters.languages.sv'  },
+  { value: 'da', labelKey: 'sidebarFilters.languages.da'  },
 ]
 
 interface Provider {
@@ -124,7 +125,11 @@ export default function DizilerSidebar({
   initialGoruntum = 'grid',
   initialUlke = 'TR',
 }: Props) {
+  const { t } = useLocale()
   const router = useRouter()
+
+  const SORT_OPTIONS = SORT_OPTION_DEFS.map(o => ({ value: o.value, label: t(o.labelKey) }))
+  const LANGUAGE_OPTIONS = LANGUAGE_OPTION_DEFS.map(o => ({ value: o.value, label: t(o.labelKey) }))
 
   const [sirala,   setSirala]   = useState(initialSirala || 'popularity.desc')
   const [genres,   setGenres]   = useState<string[]>(
@@ -250,7 +255,7 @@ export default function DizilerSidebar({
         onClick={() => setDrawerOpen(true)}
       >
         <IconSlidersHorizontal className="h-4 w-4" />
-        Filtrele
+        {t('sidebarFilters.filterButton')}
         {hasFilters && <span className="w-1.5 h-1.5 rounded-full bg-[#F0C060]" />}
       </button>
 
@@ -266,7 +271,7 @@ export default function DizilerSidebar({
         {drawerOpen && (
           <div className="lg:hidden flex justify-between items-center px-1 pb-2">
             <span className="text-[11px] font-bold uppercase tracking-[0.15em]"
-                  style={{ color: 'rgba(212,168,67,0.5)' }}>Filtrele</span>
+                  style={{ color: 'rgba(212,168,67,0.5)' }}>{t('sidebarFilters.filterButton')}</span>
             <button onClick={() => setDrawerOpen(false)}
               className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
               style={{ color: 'rgba(255,255,255,0.5)' }}>
@@ -293,7 +298,7 @@ export default function DizilerSidebar({
           <div className="px-5 pt-5 pb-4">
             <p className="text-[9.5px] font-bold uppercase tracking-[0.18em] mb-3"
                style={{ color: 'rgba(212,168,67,0.5)' }}>
-              Sırala
+              {t('sidebarFilters.sort')}
             </p>
             <div className="relative">
               <select value={sirala} onChange={e => setSirala(e.target.value)}
@@ -310,7 +315,7 @@ export default function DizilerSidebar({
             {/* Görünüm toggle */}
             <div className="mt-3 flex rounded-xl overflow-hidden"
                  style={{ border: '1px solid rgba(212,168,67,0.12)' }}>
-              {[{ key: 'grid', label: 'Grid' }, { key: 'liste', label: 'Liste' }].map(v => (
+              {[{ key: 'grid', label: t('sidebarFilters.grid') }, { key: 'liste', label: t('sidebarFilters.list') }].map(v => (
                 <button
                   key={v.key}
                   onClick={() => setGoruntum(v.key)}
@@ -332,7 +337,7 @@ export default function DizilerSidebar({
                 background: `linear-gradient(135deg, ${RED} 0%, #be123c 100%)`,
                 boxShadow: `0 4px 18px rgba(225,29,72,0.32), 0 1px 0 rgba(255,255,255,0.08) inset`,
               }}>
-              Ara
+              {t('sidebarFilters.search')}
             </button>
           </div>
 
@@ -340,7 +345,7 @@ export default function DizilerSidebar({
 
           {/* ── İzleme Servisleri ── */}
           <>
-            <SectionHeader label="İzleme Servisleri" open={providerOpen} onToggle={() => setProviderOpen(o => !o)} />
+            <SectionHeader label={t('sidebarFilters.watchProviders')} open={providerOpen} onToggle={() => setProviderOpen(o => !o)} />
             {providerOpen && (
               <div className="px-5 pb-4">
                 {/* Ülke seçici */}
@@ -367,7 +372,7 @@ export default function DizilerSidebar({
                   <button onClick={() => setPlatform('')}
                     className="text-[10px] mb-2 transition-colors"
                     style={{ color: 'rgba(212,168,67,0.5)' }}>
-                    × Seçimi temizle
+                    × {t('sidebarFilters.clearSelection')}
                   </button>
                 )}
 
@@ -380,7 +385,7 @@ export default function DizilerSidebar({
                   </div>
                 ) : providerList.length === 0 ? (
                   <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.2)' }}>
-                    Bu ülkede servis bulunamadı.
+                    {t('sidebarFilters.noProvidersInCountry')}
                   </p>
                 ) : (
                   <div className="flex flex-wrap gap-1.5">
@@ -414,7 +419,7 @@ export default function DizilerSidebar({
           </>
 
           {/* ── Dil ── */}
-          <SectionHeader label="Dil" open={dilOpen} onToggle={() => setDilOpen(o => !o)} />
+          <SectionHeader label={t('sidebarFilters.language')} open={dilOpen} onToggle={() => setDilOpen(o => !o)} />
           {dilOpen && (
             <>
               <div className="px-5 pb-4">
@@ -435,17 +440,17 @@ export default function DizilerSidebar({
           )}
 
           {/* ── Filtreleme ── */}
-          <SectionHeader label="Filtreleme" open={filterOpen} onToggle={() => setFilterOpen(o => !o)} />
+          <SectionHeader label={t('sidebarFilters.filtering')} open={filterOpen} onToggle={() => setFilterOpen(o => !o)} />
           {filterOpen && (
             <div className="px-5 pb-5 space-y-5">
 
               {/* Tarih */}
               <div>
-                <FilterLabel>İlk Yayın Tarihi</FilterLabel>
+                <FilterLabel>{t('sidebarFilters.firstAirDate')}</FilterLabel>
                 <div className="flex gap-2">
                   {[
-                    { label: 'Başlangıç', val: tarihten, set: setTarihten, ph: '1990' },
-                    { label: 'Bitiş',     val: tarihe,   set: setTarihe,   ph: String(new Date().getFullYear()) },
+                    { label: t('sidebarFilters.dateRange.start'), val: tarihten, set: setTarihten, ph: '1990' },
+                    { label: t('sidebarFilters.dateRange.end'),   val: tarihe,   set: setTarihe,   ph: String(new Date().getFullYear()) },
                   ].map(f => (
                     <div key={f.label} className="flex-1">
                       <p className="text-[10px] mb-1.5" style={{ color: 'rgba(212,168,67,0.3)' }}>{f.label}</p>
@@ -460,7 +465,7 @@ export default function DizilerSidebar({
 
               {/* Türler */}
               <div>
-                <FilterLabel>Türler</FilterLabel>
+                <FilterLabel>{t('sidebarFilters.genres')}</FilterLabel>
                 <div className="flex flex-wrap gap-1.5">
                   {DIZI_GENRES.map(g => {
                     const active = genres.includes(String(g.id))
@@ -488,7 +493,7 @@ export default function DizilerSidebar({
               {/* Kullanıcı Puanı */}
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <FilterLabel>Kullanıcı Puanı</FilterLabel>
+                  <FilterLabel>{t('sidebarFilters.userRating')}</FilterLabel>
                   <span className="text-[13px] font-bold tabular-nums" style={{ color: GOLD_B }}>
                     {minPuan.toFixed(1)}
                   </span>
@@ -502,7 +507,7 @@ export default function DizilerSidebar({
               {/* En Az Kullanıcı Oyu */}
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <FilterLabel>En Az Kullanıcı Oyu</FilterLabel>
+                  <FilterLabel>{t('sidebarFilters.minVotes')}</FilterLabel>
                   <span className="text-[13px] font-bold tabular-nums" style={{ color: GOLD_B }}>
                     {minOy.toLocaleString('tr-TR')}
                   </span>
@@ -521,7 +526,7 @@ export default function DizilerSidebar({
                     background: `linear-gradient(135deg, ${RED} 0%, #be123c 100%)`,
                     boxShadow: `0 4px 18px rgba(225,29,72,0.30), 0 1px 0 rgba(255,255,255,0.08) inset`,
                   }}>
-                  Ara
+                  {t('sidebarFilters.search')}
                 </button>
                 {hasFilters && (
                   <button onClick={reset}
@@ -535,7 +540,7 @@ export default function DizilerSidebar({
                       (e.currentTarget as HTMLButtonElement).style.color = 'rgba(212,168,67,0.35)'
                       ;(e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(212,168,67,0.1)'
                     }}>
-                    Filtreleri Temizle
+                    {t('sidebarFilters.clearFilters')}
                   </button>
                 )}
               </div>

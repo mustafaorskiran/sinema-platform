@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Props {
   mediaId: number
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export default function DiaryButton({ mediaId, mediaType, mediaTitle, isLoggedIn }: Props) {
+  const { t } = useLocale()
   const [open, setOpen] = useState(false)
   const [watchedAt, setWatchedAt] = useState(new Date().toISOString().slice(0, 10))
   const [rating, setRating] = useState<number | ''>('')
@@ -67,7 +69,7 @@ export default function DiaryButton({ mediaId, mediaType, mediaTitle, isLoggedIn
             : 'border-[--border] bg-[--bg-card] text-[--text-secondary] hover:border-white/30 hover:text-white'
         }`}
       >
-        {done ? '✓ Günlüğe Eklendi' : '📅 Günlüğe Ekle'}
+        {done ? t('diary.added') : t('diary.addToDiary')}
       </button>
 
       {open && (
@@ -75,7 +77,7 @@ export default function DiaryButton({ mediaId, mediaType, mediaTitle, isLoggedIn
           <p className="text-sm font-semibold text-white mb-3 line-clamp-1">{mediaTitle}</p>
           <form onSubmit={handleSubmit} className="space-y-3">
             <div>
-              <label className="block text-xs text-[--text-secondary] mb-1">İzleme Tarihi</label>
+              <label className="block text-xs text-[--text-secondary] mb-1">{t('diary.watchDate')}</label>
               <input
                 type="date"
                 value={watchedAt}
@@ -88,7 +90,7 @@ export default function DiaryButton({ mediaId, mediaType, mediaTitle, isLoggedIn
             </div>
 
             <div>
-              <label className="block text-xs text-[--text-secondary] mb-1">Puan (opsiyonel)</label>
+              <label className="block text-xs text-[--text-secondary] mb-1">{t('diary.ratingOptional')}</label>
               <div className="flex gap-1 flex-wrap">
                 {[1,2,3,4,5,6,7,8,9,10].map(n => (
                   <button
@@ -115,15 +117,15 @@ export default function DiaryButton({ mediaId, mediaType, mediaTitle, isLoggedIn
                 onChange={e => setIsRewatch(e.target.checked)}
                 className="w-3.5 h-3.5 rounded accent-[--accent]"
               />
-              <span className="text-xs text-[--text-secondary]">🔁 Tekrar izledim</span>
+              <span className="text-xs text-[--text-secondary]">{t('diary.rewatch')}</span>
             </label>
 
             <div>
-              <label className="block text-xs text-[--text-secondary] mb-1">Not (opsiyonel)</label>
+              <label className="block text-xs text-[--text-secondary] mb-1">{t('diary.noteOptional')}</label>
               <textarea
                 value={note}
                 onChange={e => setNote(e.target.value)}
-                placeholder="Kısa bir not..."
+                placeholder={t('diary.notePlaceholder')}
                 rows={2}
                 className="w-full rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/25 focus:outline-none transition-colors resize-none"
                 style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
@@ -131,7 +133,7 @@ export default function DiaryButton({ mediaId, mediaType, mediaTitle, isLoggedIn
             </div>
 
             <div>
-              <label className="block text-xs text-[--text-secondary] mb-1">Etiketler (Enter ile ekle)</label>
+              <label className="block text-xs text-[--text-secondary] mb-1">{t('diary.tagsLabel')}</label>
               <div className="flex flex-wrap gap-1 mb-1">
                 {tags.map(t => (
                   <span key={t} className="text-[10px] rounded-xl rounded-full px-2 py-0.5 text-white flex items-center gap-1" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
@@ -144,7 +146,7 @@ export default function DiaryButton({ mediaId, mediaType, mediaTitle, isLoggedIn
                 value={tagInput}
                 onChange={e => setTagInput(e.target.value)}
                 onKeyDown={addTag}
-                placeholder="etiket..."
+                placeholder={t('diary.tagPlaceholder')}
                 disabled={tags.length >= 5}
                 className="w-full rounded-lg px-3 py-1.5 text-xs text-white placeholder:text-white/25 focus:outline-none transition-colors disabled:opacity-40"
                 style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
@@ -157,14 +159,14 @@ export default function DiaryButton({ mediaId, mediaType, mediaTitle, isLoggedIn
                 onClick={() => setOpen(false)}
                 className="flex-1 py-2 rounded-lg border border-[--border] text-xs text-[--text-secondary] hover:text-white transition-colors"
               >
-                İptal
+                {t('diary.cancel')}
               </button>
               <button
                 type="submit"
                 disabled={loading}
                 className="flex-1 py-2 rounded-lg bg-[--accent] hover:bg-[--accent-hover] disabled:opacity-50 text-white text-xs font-semibold transition-colors"
               >
-                {loading ? 'Kaydediliyor...' : 'Kaydet'}
+                {loading ? t('diary.saving') : t('diary.save')}
               </button>
             </div>
           </form>

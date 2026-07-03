@@ -1,24 +1,26 @@
 import Link from 'next/link'
 import { CURATED_LISTS } from '@/lib/curated-lists'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 export const metadata: Metadata = {
   title: 'Özel Listeler | Sinezon',
   description: 'Editörler tarafından derlenen, mutlaka izlenmesi gereken seçki listeler.'
 }
 
-export default function OzelListelerPage() {
+export default async function OzelListelerPage() {
+  const { t } = await getTranslations()
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
       {/* Hero */}
       <div className="mb-10 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-4"
           style={{ background: 'rgba(225,29,72,0.1)', border: '1px solid rgba(225,29,72,0.25)', color: 'var(--accent)' }}>
-          ✦ Editöryal Seçkiler
+          ✦ {t('specialLists.badge')}
         </div>
-        <h1 className="text-3xl font-bold text-white mb-2">Özel Listeler</h1>
+        <h1 className="text-3xl font-bold text-white mb-2">{t('specialLists.title')}</h1>
         <p className="text-sm max-w-md mx-auto" style={{ color: 'var(--text-secondary)' }}>
-          Editörlerimiz tarafından özenle derlenen, mutlaka izlenmesi gereken sinema şaheserleri
+          {t('specialLists.subtitle')}
         </p>
       </div>
 
@@ -42,7 +44,7 @@ export default function OzelListelerPage() {
                   ? 'bg-blue-500/15 text-blue-400 border border-blue-500/20'
                   : 'bg-purple-500/15 text-purple-400 border border-purple-500/20'
               }`}>
-                {list.mediaType === 'film' ? '🎬 Film' : '📺 Dizi'}
+                {list.mediaType === 'film' ? `🎬 ${t('film.badge')}` : `📺 ${t('series.badge')}`}
               </span>
             </div>
             <div>
@@ -55,10 +57,10 @@ export default function OzelListelerPage() {
             </div>
             <div className="mt-auto pt-3 flex items-center justify-between" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
               <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.3)' }}>
-                #{i + 1} Seçki
+                {t('specialLists.pickNumber', { number: i + 1 })}
               </span>
               <span className="text-[11px] font-semibold group-hover:translate-x-0.5 transition-transform" style={{ color: 'var(--accent)' }}>
-                Keşfet →
+                {t('specialLists.explore')} →
               </span>
             </div>
           </Link>

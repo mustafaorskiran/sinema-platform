@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Goal {
   target_films: number
@@ -46,6 +47,7 @@ function Ring({ value, max, label, color }: { value: number; max: number; label:
 }
 
 export default function WatchGoalWidget() {
+  const { t } = useLocale()
   const [goal, setGoal] = useState<Goal | null>(null)
   const [watched, setWatched] = useState<Watched>({ films: 0, series: 0 })
   const [editing, setEditing] = useState(false)
@@ -80,19 +82,19 @@ export default function WatchGoalWidget() {
   return (
     <div className="rounded-2xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
       <div className="flex items-center justify-between mb-5">
-        <h3 className="text-base font-bold text-white">{year} İzleme Hedefi</h3>
+        <h3 className="text-base font-bold text-white">{t('watchGoal.title', { year })}</h3>
         <button
           onClick={() => { setEditing(e => !e); if (goal) { setFilms(goal.target_films); setSeries(goal.target_series) } }}
           className="text-xs text-[--accent] hover:underline"
         >
-          {editing ? 'İptal' : (goal ? 'Düzenle' : 'Hedef Belirle')}
+          {editing ? t('watchGoal.cancel') : (goal ? t('watchGoal.edit') : t('watchGoal.setGoal'))}
         </button>
       </div>
 
       {editing ? (
         <div className="space-y-4">
           <div>
-            <label className="text-xs text-[--text-secondary] block mb-1">Film hedefi</label>
+            <label className="text-xs text-[--text-secondary] block mb-1">{t('watchGoal.filmGoal')}</label>
             <div className="flex items-center gap-3">
               <button onClick={() => setFilms(f => Math.max(0, f - 10))} className="w-8 h-8 rounded-lg text-white text-lg flex items-center justify-center transition-colors hover:bg-white/10"
                 style={{ background: 'rgba(255,255,255,0.07)' }}>-</button>
@@ -104,7 +106,7 @@ export default function WatchGoalWidget() {
             </div>
           </div>
           <div>
-            <label className="text-xs text-[--text-secondary] block mb-1">Dizi hedefi</label>
+            <label className="text-xs text-[--text-secondary] block mb-1">{t('watchGoal.seriesGoal')}</label>
             <div className="flex items-center gap-3">
               <button onClick={() => setSeries(s => Math.max(0, s - 5))} className="w-8 h-8 rounded-lg text-white text-lg flex items-center justify-center transition-colors hover:bg-white/10"
                 style={{ background: 'rgba(255,255,255,0.07)' }}>-</button>
@@ -118,22 +120,22 @@ export default function WatchGoalWidget() {
           <button onClick={save} disabled={saving}
             className="w-full py-2.5 rounded-xl text-white text-sm font-semibold transition-all hover:scale-[1.02] disabled:opacity-50"
             style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', boxShadow: '0 2px 8px rgba(225,29,72,0.3)' }}>
-            {saving ? 'Kaydediliyor...' : 'Kaydet'}
+            {saving ? t('watchGoal.saving') : t('watchGoal.save')}
           </button>
         </div>
       ) : goal && (goal.target_films > 0 || goal.target_series > 0) ? (
         <div className="flex justify-around">
           {goal.target_films > 0 && (
-            <Ring value={watched.films} max={goal.target_films} label="Film" color="var(--accent)" />
+            <Ring value={watched.films} max={goal.target_films} label={t('watchGoal.filmLabel')} color="var(--accent)" />
           )}
           {goal.target_series > 0 && (
-            <Ring value={watched.series} max={goal.target_series} label="Dizi" color="var(--gold)" />
+            <Ring value={watched.series} max={goal.target_series} label={t('watchGoal.seriesLabel')} color="var(--gold)" />
           )}
         </div>
       ) : (
         <div className="text-center py-6">
           <p className="text-4xl mb-2">🎯</p>
-          <p className="text-sm text-[--text-secondary]">{year} yılı için henüz hedef belirlemedin.</p>
+          <p className="text-sm text-[--text-secondary]">{t('watchGoal.noGoalYet', { year })}</p>
         </div>
       )}
     </div>

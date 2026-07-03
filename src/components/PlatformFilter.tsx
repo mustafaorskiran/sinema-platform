@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Provider {
   provider_id: number
@@ -17,6 +18,7 @@ interface Props {
 
 export default function PlatformFilter({ providers, basePath, currentPlatform, currentParams }: Props) {
   const router = useRouter()
+  const { t } = useLocale()
 
   function navigate(platformId: string | undefined) {
     const params = new URLSearchParams()
@@ -35,7 +37,7 @@ export default function PlatformFilter({ providers, basePath, currentPlatform, c
 
   return (
     <div className="flex flex-wrap items-center gap-2 mb-4 pb-3 border-b border-[--border]">
-      <span className="text-xs text-[--text-secondary] font-medium shrink-0">Platform:</span>
+      <span className="text-xs text-[--text-secondary] font-medium shrink-0">{t('browse.platformLabel')}</span>
 
       <button
         onClick={() => navigate(undefined)}
@@ -45,7 +47,7 @@ export default function PlatformFilter({ providers, basePath, currentPlatform, c
             : 'border-[--border] text-[--text-secondary] hover:text-white bg-[--bg-card]'
         }`}
       >
-        Tümü
+        {t('common.all')}
       </button>
 
       {providers.map(p => (

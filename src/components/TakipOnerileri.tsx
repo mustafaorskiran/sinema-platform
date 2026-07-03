@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Suggestion {
   id: string
@@ -10,6 +11,7 @@ interface Suggestion {
 }
 
 export default function TakipOnerileri() {
+  const { t } = useLocale()
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
   const [type, setType] = useState<'mutual' | 'popular'>('popular')
   const [followed, setFollowed] = useState<Set<string>>(new Set())
@@ -32,7 +34,7 @@ export default function TakipOnerileri() {
     <div className="rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(212,168,67,0.1)' }}>
       <div className="px-4 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(212,168,67,0.6)' }}>
-          {type === 'mutual' ? 'Seni Takip Edenler' : 'Tanıyor Olabilirsin'}
+          {type === 'mutual' ? t('social.followingYou') : t('social.mayKnow')}
         </p>
       </div>
       <div className="divide-y divide-white/5">
@@ -52,13 +54,13 @@ export default function TakipOnerileri() {
             </div>
             {followed.has(s.id) ? (
               <span className="text-[11px] font-semibold px-3 py-1 rounded-full" style={{ background: 'rgba(52,211,153,0.1)', color: '#34d399' }}>
-                Takip edildi
+                {t('social.followed')}
               </span>
             ) : (
               <button onClick={() => follow(s.id)}
                 className="text-[11px] font-semibold px-3 py-1.5 rounded-full transition-all hover:opacity-90"
                 style={{ background: 'rgba(212,168,67,0.12)', border: '1px solid rgba(212,168,67,0.25)', color: '#D4A843' }}>
-                Takip Et
+                {t('profile.follow')}
               </button>
             )}
           </div>

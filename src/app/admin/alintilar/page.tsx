@@ -1,5 +1,6 @@
 import { requireAdmin } from '@/lib/admin'
 import { createClient } from '@/lib/supabase/server'
+import { getTranslations } from '@/lib/i18n'
 import ApproveQuoteButton from './ApproveQuoteButton'
 import type { Metadata } from 'next'
 
@@ -8,6 +9,7 @@ export const metadata: Metadata = { title: 'Admin — Alıntılar' }
 export default async function AdminAlıntilarPage() {
   await requireAdmin()
   const supabase = await createClient()
+  const { t } = await getTranslations()
 
   const { data: pending } = await supabase
     .from('quotes')
@@ -17,10 +19,10 @@ export default async function AdminAlıntilarPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-white mb-6">Alıntı Onaylama</h1>
+      <h1 className="text-2xl font-bold text-white mb-6">{t('admin.quotes.title')}</h1>
       {(!pending || pending.length === 0) ? (
         <p className="text-[--text-secondary] rounded-xl p-8 text-center"
-          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>Bekleyen alıntı yok.</p>
+          style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>{t('admin.quotes.empty')}</p>
       ) : (
         <div className="space-y-3">
           {pending.map((q: any) => (

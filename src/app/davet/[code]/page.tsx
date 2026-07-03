@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { getTranslations } from '@/lib/i18n'
 import { IconFilm } from '@/components/icons'
 import type { Metadata } from 'next'
 
@@ -17,6 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function DavetPage({ params }: Props) {
   const { code } = await params
+  const { t } = await getTranslations()
   const supabase = await createClient()
 
   // Bu referral_code'a sahip profili bul
@@ -84,19 +86,19 @@ export default async function DavetPage({ params }: Props) {
                 </div>
               </div>
               <h1 className="text-xl font-extrabold mb-2" style={{ color: 'var(--text-primary)' }}>
-                <span style={{ color: 'var(--accent)' }}>{inviterProfile.username}</span> sizi Sinezon&apos;a davet etti!
+                <span style={{ color: 'var(--accent)' }}>{inviterProfile.username}</span> {t('invite.invitedBySuffix')}
               </h1>
               <p className="text-sm leading-relaxed mb-6" style={{ color: 'var(--text-secondary)' }}>
-                Film ve dizi yorumları, izleme listeleri, arkadaş tavsiyeleri ile sinema deneyimini bir üst seviyeye taşı.
+                {t('invite.pitch')}
               </p>
             </>
           ) : (
             <>
               <h1 className="text-xl font-extrabold mb-2" style={{ color: 'var(--text-primary)' }}>
-                Sinezon&apos;a Davet Edildiniz!
+                {t('invite.genericTitle')}
               </h1>
               <p className="text-sm leading-relaxed mb-6" style={{ color: 'var(--text-secondary)' }}>
-                Film ve dizi yorumları, izleme listeleri, arkadaş tavsiyeleri ile sinema deneyimini bir üst seviyeye taşı.
+                {t('invite.pitch')}
               </p>
             </>
           )}
@@ -106,7 +108,7 @@ export default async function DavetPage({ params }: Props) {
             className="block w-full py-3 rounded-xl font-bold text-sm text-center mb-3 transition-all"
             style={{ background: 'var(--accent)', color: '#fff' }}
           >
-            Ücretsiz Kayıt Ol
+            {t('invite.registerFree')}
           </Link>
 
           <Link
@@ -114,11 +116,11 @@ export default async function DavetPage({ params }: Props) {
             className="block w-full py-2.5 rounded-xl text-sm text-center transition-colors"
             style={{ border: '1px solid var(--border)', color: 'var(--text-secondary)' }}
           >
-            Zaten hesabın var mı? Giriş Yap
+            {t('invite.alreadyHaveAccount')}
           </Link>
 
           <p className="mt-5 text-xs" style={{ color: 'var(--text-secondary)', opacity: 0.6 }}>
-            Kayıt olduktan sonra sizi davet eden kişiyle bağlantı kurabilirsiniz.
+            {t('invite.afterRegisterNote')}
           </p>
         </div>
       </div>

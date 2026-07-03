@@ -4,6 +4,7 @@ import { IconRss, IconClock, IconGlobe } from '@/components/icons'
 import Link from 'next/link'
 import HaberlerSearch from './HaberlerSearch'
 import AdBanner from '@/components/AdBanner'
+import { getTranslations } from '@/lib/i18n'
 
 export const revalidate = 3600
 
@@ -56,7 +57,7 @@ async function fetchRSS(
   }
 }
 
-function formatRelativeTime(pubDate: string): string {
+function formatRelativeTime(pubDate: string, t: (key: string, params?: Record<string, string | number>) => string): string {
   if (!pubDate) return ''
   try {
     const date = new Date(pubDate)
@@ -67,10 +68,10 @@ function formatRelativeTime(pubDate: string): string {
     const diffHour = Math.floor(diffMin / 60)
     const diffDay = Math.floor(diffHour / 24)
 
-    if (diffSec < 60) return 'Az önce'
-    if (diffMin < 60) return `${diffMin} dakika önce`
-    if (diffHour < 24) return `${diffHour} saat önce`
-    if (diffDay < 7) return `${diffDay} gün önce`
+    if (diffSec < 60) return t('news.timeJustNow')
+    if (diffMin < 60) return t('news.timeMinutesAgo', { count: diffMin })
+    if (diffHour < 24) return t('news.timeHoursAgo', { count: diffHour })
+    if (diffDay < 7) return t('news.timeDaysAgo', { count: diffDay })
     return date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })
   } catch {
     return pubDate
@@ -91,6 +92,7 @@ interface PageProps {
 }
 
 export default async function HaberlerPage({ searchParams }: PageProps) {
+  const { t } = await getTranslations()
   const params = await searchParams
   const kategori = params.kategori ?? 'tumu'
   const searchQ = (params.q ?? '').toLowerCase().trim()
@@ -135,20 +137,20 @@ export default async function HaberlerPage({ searchParams }: PageProps) {
         <div className="flex items-center gap-2.5 mb-2">
           <IconRss className="h-6 w-6" style={{ color: 'var(--accent)' }} />
           <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
-            Sinema Haberleri
+            {t('news.title')}
           </h1>
         </div>
         <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-          Beyazperde, Hollywood Reporter ve Variety'den en güncel haberler
+          {t('news.subtitle')}
         </p>
       </div>
 
       {/* Kategori Filtreleri */}
       <div className="flex flex-wrap gap-2 mb-8">
         {[
-          { id: 'tumu', label: 'Tümü' },
-          { id: 'yerli', label: 'Yerli' },
-          { id: 'yabanci', label: 'Yabancı' },
+          { id: 'tumu', label: t('news.categoryAll') },
+          { id: 'yerli', label: t('news.categoryLocal') },
+          { id: 'yabanci', label: t('news.categoryForeign') },
         ].map(cat => {
           const isActive = cat.id === kategori
           return (
@@ -174,7 +176,7 @@ export default async function HaberlerPage({ searchParams }: PageProps) {
           )
         })}
         <span className="ml-auto text-xs self-center" style={{ color: 'var(--text-secondary)' }}>
-          {filteredNews.length} haber
+          {t('news.countLabel', { count: filteredNews.length })}
         </span>
       </div>
 
@@ -208,7 +210,7 @@ export default async function HaberlerPage({ searchParams }: PageProps) {
                   <div className="flex items-center gap-1.5 mb-2">
                     <div className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: 'var(--accent)' }} />
                     <span className="text-[9.5px] font-bold uppercase tracking-[0.16em]" style={{ color: 'rgba(225,29,72,0.7)' }}>
-                      Öne Çıkan
+                      {t('news.featured')}
                     </span>
                   </div>
                 )}
@@ -236,7 +238,7 @@ export default async function HaberlerPage({ searchParams }: PageProps) {
                       {item.pubDate && (
                         <span className="flex items-center gap-1" style={{ color: 'rgba(255,255,255,0.25)' }}>
                           <IconClock className="h-3 w-3" />
-                          {formatRelativeTime(item.pubDate)}
+                          {formatRelativeTime(item.pubDate, t)}
                         </span>
                       )}
                     </div>
@@ -284,7 +286,7 @@ export default async function HaberlerPage({ searchParams }: PageProps) {
                       {item.pubDate && (
                         <span className="flex items-center gap-1" style={{ color: 'rgba(255,255,255,0.25)' }}>
                           <IconClock className="h-3 w-3" />
-                          {formatRelativeTime(item.pubDate)}
+                          {formatRelativeTime(item.pubDate, t)}
                         </span>
                       )}
                     </div>
@@ -303,7 +305,7 @@ export default async function HaberlerPage({ searchParams }: PageProps) {
         >
           <IconRss className="h-12 w-12 mb-4" style={{ color: 'rgba(255,255,255,0.15)' }} />
           <p className="text-base font-medium" style={{ color: 'var(--text-secondary)' }}>
-            Bu kategoride haber bulunamadı.
+            {t('news.empty')}
           </p>
         </div>
       )}

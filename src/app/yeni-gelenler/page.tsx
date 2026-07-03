@@ -4,6 +4,7 @@ import MovieCard from '@/components/MovieCard'
 import { IconTv, IconFilm } from '@/components/icons'
 import AdBanner from '@/components/AdBanner'
 import type { TMDbMovie, TMDbSearchResult } from '@/lib/types'
+import { getTranslations } from '@/lib/i18n'
 
 export const revalidate = 3600
 
@@ -69,6 +70,7 @@ interface PageProps {
 }
 
 export default async function YeniGelenlerPage({ searchParams }: PageProps) {
+  const { t } = await getTranslations()
   const params = await searchParams
   const activePlatformId = params.platform ?? 'netflix'
   const tip = params.tip ?? 'film'
@@ -90,11 +92,11 @@ export default async function YeniGelenlerPage({ searchParams }: PageProps) {
         <div className="flex items-center gap-2.5 mb-2">
           <IconTv className="h-6 w-6" style={{ color: 'var(--accent)' }} />
           <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
-            Platformlara Bu Ay Gelenler
+            {t('newArrivals.title')}
           </h1>
         </div>
         <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-          Türkiye'deki streaming platformlarında son 30 günde neler çıktı?
+          {t('newArrivals.subtitle')}
         </p>
       </div>
 
@@ -129,7 +131,7 @@ export default async function YeniGelenlerPage({ searchParams }: PageProps) {
             : { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.08)' }}
         >
           <IconFilm className="h-3.5 w-3.5" />
-          Filmler {filmler.length > 0 && <span className="ml-1 text-[10px] opacity-70">({filmler.length})</span>}
+          {t('newArrivals.movies')} {filmler.length > 0 && <span className="ml-1 text-[10px] opacity-70">({filmler.length})</span>}
         </Link>
         <Link
           href={`/yeni-gelenler?platform=${activePlatformId}&tip=dizi`}
@@ -139,7 +141,7 @@ export default async function YeniGelenlerPage({ searchParams }: PageProps) {
             : { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.08)' }}
         >
           <IconTv className="h-3.5 w-3.5" />
-          Diziler {diziler.length > 0 && <span className="ml-1 text-[10px] opacity-70">({diziler.length})</span>}
+          {t('newArrivals.series')} {diziler.length > 0 && <span className="ml-1 text-[10px] opacity-70">({diziler.length})</span>}
         </Link>
       </div>
 
@@ -147,9 +149,9 @@ export default async function YeniGelenlerPage({ searchParams }: PageProps) {
       <div className="mb-6 flex items-center gap-3">
         <span className="inline-block w-3 h-3 rounded-full" style={{ background: activePlatform.color }} />
         <h2 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
-          {activePlatform.label} — {tip === 'dizi' ? 'Yeni Diziler' : 'Yeni Filmler'} (Son 30 Gün)
+          {activePlatform.label} — {tip === 'dizi' ? t('newArrivals.newSeries') : t('newArrivals.newMovies')} ({t('newArrivals.last30Days')})
         </h2>
-        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>{items.length} içerik</span>
+        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>{t('newArrivals.itemCount', { count: items.length })}</span>
       </div>
 
       {/* AdBanner */}
@@ -173,7 +175,7 @@ export default async function YeniGelenlerPage({ searchParams }: PageProps) {
         >
           <IconTv className="h-12 w-12 mb-4" style={{ color: 'var(--text-secondary)', opacity: 0.4 }} />
           <p className="text-base font-medium" style={{ color: 'var(--text-secondary)' }}>
-            Bu platformda son 30 günde {tip === 'dizi' ? 'dizi' : 'film'} bulunamadı.
+            {tip === 'dizi' ? t('newArrivals.emptySeries') : t('newArrivals.emptyMovies')}
           </p>
         </div>
       )}

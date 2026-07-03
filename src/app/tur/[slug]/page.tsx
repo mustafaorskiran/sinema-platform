@@ -6,6 +6,7 @@ import { GENRE_MAP } from '@/lib/genres'
 import MovieCard from '@/components/MovieCard'
 import Pagination from '@/components/Pagination'
 import TurSidebar from '@/components/TurSidebar'
+import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
 
 interface Props {
@@ -55,6 +56,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function TurPage({ params, searchParams }: Props) {
+  const { t } = await getTranslations()
   const { slug } = await params
   const { tab, sayfa, sirala = 'popularity.desc', yil, min_puan } = await searchParams
 
@@ -100,9 +102,9 @@ export default async function TurPage({ params, searchParams }: Props) {
 
       {/* Breadcrumb */}
       <div className="flex gap-2 text-xs text-[--text-secondary] mb-6">
-        <Link href="/" className="hover:text-white transition-colors">Ana Sayfa</Link>
+        <Link href="/" className="hover:text-white transition-colors">{t('genre.breadcrumbHome')}</Link>
         <span>/</span>
-        <Link href="/tur" className="hover:text-white transition-colors">Türler</Link>
+        <Link href="/tur" className="hover:text-white transition-colors">{t('genre.breadcrumbGenres')}</Link>
         <span>/</span>
         <span className="text-white">{genre.name}</span>
       </div>
@@ -137,7 +139,7 @@ export default async function TurPage({ params, searchParams }: Props) {
             <section className="mb-8">
               <h2 className="flex items-center gap-2 text-base font-bold text-white mb-4">
                 <IconStar className="h-4 w-4 text-[--gold]" />
-                {genre.name} Türünün En İyileri
+                {t('genre.topPicksTitle', { genre: genre.name })}
               </h2>
               <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
                 {topPicks.map(item => (
@@ -170,7 +172,7 @@ export default async function TurPage({ params, searchParams }: Props) {
 
           {/* Sonuçlar */}
           {results.length === 0 ? (
-            <div className="text-center py-20 text-[--text-secondary]">İçerik bulunamadı.</div>
+            <div className="text-center py-20 text-[--text-secondary]">{t('common.noResults')}</div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {results.map(item => (

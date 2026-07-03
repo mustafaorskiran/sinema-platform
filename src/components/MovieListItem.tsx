@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props {
   media: any
@@ -9,7 +10,8 @@ interface Props {
   sinemaVoteCount?: number
 }
 
-export default function MovieListItem({ media, type, genreIdToName, sinemaPuan }: Props) {
+export default async function MovieListItem({ media, type, genreIdToName, sinemaPuan }: Props) {
+  const { t }         = await getTranslations()
   const title         = getMediaTitle(media)
   const year          = getMediaYear(media)
   const poster        = getPosterUrl(media.poster_path, 'w342')
@@ -46,7 +48,7 @@ export default function MovieListItem({ media, type, genreIdToName, sinemaPuan }
               className="w-full h-full flex items-center justify-center text-[10px] text-center p-2"
               style={{ color: 'var(--text-secondary)' }}
             >
-              Afiş yok
+              {t('common.posterUnavailable')}
             </div>
           )}
         </div>
@@ -113,7 +115,7 @@ export default function MovieListItem({ media, type, genreIdToName, sinemaPuan }
                 color: 'rgba(225,29,72,0.5)',
               }}
             >
-              Sinezon —
+              {t('browse.sinemaScorePending')}
             </span>
           )}
         </div>

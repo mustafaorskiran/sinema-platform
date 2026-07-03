@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { getTranslations } from '@/lib/i18n'
 import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle } from '@/lib/tmdb'
 import { IconCalendarDays, IconUsers } from '@/components/icons'
 import JoinButton from './JoinButton'
@@ -17,6 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function FilmGecesiDetailPage({ params }: Props) {
   const { id } = await params
+  const { t } = await getTranslations()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -51,7 +53,7 @@ export default async function FilmGecesiDetailPage({ params }: Props) {
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
-      <Link href="/film-gecesi" className="text-sm text-[--text-secondary] hover:text-white transition-colors mb-6 inline-block">← Film Geceleri</Link>
+      <Link href="/film-gecesi" className="text-sm text-[--text-secondary] hover:text-white transition-colors mb-6 inline-block">{t('filmNight.backToList')}</Link>
 
       <div className="rounded-2xl p-6 mb-6" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(212,168,67,0.08)' }}>
         <div className="flex items-start justify-between gap-4 mb-4">
@@ -80,7 +82,7 @@ export default async function FilmGecesiDetailPage({ params }: Props) {
           )}
           <span className="flex items-center gap-1.5">
             <IconUsers className="h-4 w-4" />
-            {(members ?? []).length} katılımcı
+            {t('filmNight.participantsCount', { count: (members ?? []).length })}
           </span>
         </div>
       </div>
@@ -88,10 +90,10 @@ export default async function FilmGecesiDetailPage({ params }: Props) {
       <div className="grid md:grid-cols-3 gap-6">
         {/* İzleme Listesi */}
         <div className="md:col-span-2">
-          <h2 className="text-lg font-bold text-white mb-4">İzleme Listesi</h2>
+          <h2 className="text-lg font-bold text-white mb-4">{t('filmNight.watchlistTitle')}</h2>
           {withMedia.length === 0 ? (
             <p className="text-sm text-[--text-secondary] rounded-xl p-6 text-center"
-              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>Liste boş</p>
+              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>{t('filmNight.listEmpty')}</p>
           ) : (
             <div className="space-y-2">
               {withMedia.map((item, idx) => (
@@ -104,7 +106,7 @@ export default async function FilmGecesiDetailPage({ params }: Props) {
                   </div>
                   <p className="text-sm font-medium text-white group-hover:text-[--accent] transition-colors flex-1 truncate">{item.title}</p>
                   <span className={`text-[10px] px-1.5 py-0.5 rounded shrink-0 ${item.media_type === 'film' ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-500/20 text-purple-400'}`}>
-                    {item.media_type === 'film' ? 'Film' : 'Dizi'}
+                    {item.media_type === 'film' ? t('film.badge') : t('series.badge')}
                   </span>
                 </Link>
               ))}
@@ -114,9 +116,9 @@ export default async function FilmGecesiDetailPage({ params }: Props) {
 
         {/* Katılımcılar */}
         <div>
-          <h2 className="text-lg font-bold text-white mb-4">Katılımcılar</h2>
+          <h2 className="text-lg font-bold text-white mb-4">{t('filmNight.participantsTitle')}</h2>
           {(members ?? []).length === 0 ? (
-            <p className="text-sm text-[--text-secondary] text-center py-4">Henüz kimse katılmamış</p>
+            <p className="text-sm text-[--text-secondary] text-center py-4">{t('filmNight.noParticipants')}</p>
           ) : (
             <div className="space-y-2">
               {(members as any[]).map(m => (
@@ -130,7 +132,7 @@ export default async function FilmGecesiDetailPage({ params }: Props) {
                   </div>
                   <span className="text-sm text-white">{m.profiles?.username}</span>
                   {m.user_id === party.host_id && (
-                    <span className="ml-auto text-[10px] text-[--accent] font-medium">host</span>
+                    <span className="ml-auto text-[10px] text-[--accent] font-medium">{t('filmNight.hostLabel')}</span>
                   )}
                 </Link>
               ))}

@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { IconFilm, IconStar, IconTv, IconUsers, IconBookmark, IconCheck, IconCalendarDays, IconList } from '@/components/icons'
 import { createClient } from '@/lib/supabase/server'
+import { getTranslations } from '@/lib/i18n'
 import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle } from '@/lib/tmdb'
 import UserHoverCard from '@/components/UserHoverCard'
 import TakipOnerileri from '@/components/TakipOnerileri'
@@ -13,17 +14,20 @@ interface Props {
   searchParams: Promise<{ tip?: string; sayfa?: string }>
 }
 
-function timeAgo(date: string) {
+type TFunc = (key: string, params?: Record<string, string | number>) => string
+
+function timeAgo(date: string, t: TFunc) {
   const diff = Math.floor((Date.now() - new Date(date).getTime()) / 1000)
-  if (diff < 60) return 'az önce'
-  if (diff < 3600) return `${Math.floor(diff / 60)} dk önce`
-  if (diff < 86400) return `${Math.floor(diff / 3600)} sa önce`
-  if (diff < 604800) return `${Math.floor(diff / 86400)} gün önce`
+  if (diff < 60) return t('common.timeAgo.justNow')
+  if (diff < 3600) return t('common.timeAgo.minutesAgo', { n: Math.floor(diff / 60) })
+  if (diff < 86400) return t('common.timeAgo.hoursAgo', { n: Math.floor(diff / 3600) })
+  if (diff < 604800) return t('common.timeAgo.daysAgo', { n: Math.floor(diff / 86400) })
   return new Date(date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })
 }
 
 export default async function AkisPage({ searchParams }: Props) {
   const supabase = await createClient()
+  const { t } = await getTranslations()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/giris')
 
@@ -36,7 +40,7 @@ export default async function AkisPage({ searchParams }: Props) {
 
   const followingIds = (follows ?? []).map(f => f.following_id)
 
-  if (followingIds.length === 0) return <EmptyFeed />
+  if (followingIds.length === 0) return <EmptyFeed t={t} />
 
   const showReview   = tip === 'hepsi' || tip === 'yorum'
   const showWatch    = tip === 'hepsi' || tip === 'izleme'
@@ -72,7 +76,7 @@ export default async function AkisPage({ searchParams }: Props) {
     ...(newLists ?? []).map(l => ({ ...l, _type: 'list' as const, _sortDate: l.created_at })),
   ].sort((a, b) => new Date(b._sortDate).getTime() - new Date(a._sortDate).getTime()).slice(0, 60)
 
-  if (allActivities.length === 0) return <EmptyFeed />
+  if (allActivities.length === 0) return <EmptyFeed t={t} />
 
   // Medya bilgilerini önce lokal katalogdan çek (hızlı), bulamazsak TMDb'den
   const mediaCache = new Map<string, { title: string; poster: string | null } | null>()
@@ -106,19 +110,19 @@ export default async function AkisPage({ searchParams }: Props) {
   const listCount     = (newLists ?? []).length
 
   const tabs = [
-    { key: 'hepsi',   label: 'Tümü',      count: reviewCount + watchCount + diaryCount + listCount },
-    { key: 'yorum',   label: 'Yorumlar',   count: reviewCount },
-    { key: 'izleme',  label: 'İzleme',     count: watchCount },
-    { key: 'gunluk',  label: 'Günlük',     count: diaryCount },
-    { key: 'liste',   label: 'Listeler',   count: listCount },
+    { key: 'hepsi',   label: t('feed.tabAll'),      count: reviewCount + watchCount + diaryCount + listCount },
+    { key: 'yorum',   label: t('feed.tabReviews'),   count: reviewCount },
+    { key: 'izleme',  label: t('feed.tabWatch'),     count: watchCount },
+    { key: 'gunluk',  label: t('feed.tabDiary'),     count: diaryCount },
+    { key: 'liste',   label: t('feed.tabLists'),   count: listCount },
   ]
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
       <div className="flex items-center gap-3 mb-6">
         <IconUsers className="h-7 w-7 text-[--accent]" />
-        <h1 className="text-2xl font-bold text-white">Arkadaş Akışı</h1>
-        <span className="text-sm text-[--text-secondary]">· {follows?.length} takip</span>
+        <h1 className="text-2xl font-bold text-white">{t('feed.title')}</h1>
+        <span className="text-sm text-[--text-secondary]">· {t('feed.followingCount', { count: follows?.length ?? 0 })}</span>
       </div>
 
       {/* Sekmeler */}
@@ -166,12 +170,12 @@ export default async function AkisPage({ searchParams }: Props) {
                   <div className="flex-1 min-w-0">
                     <span className="text-xs text-[--text-secondary]">
                       <UserHoverCard username={profile?.username ?? ''}><Link href={profileHref} className="font-semibold text-white hover:text-[--accent] transition-colors">{profile?.username}</Link></UserHoverCard>
-                      {' '}<span className="text-[--gold]">★ {r.rating}/10</span> puan verdi
+                      {' '}<span className="text-[--gold]">★ {r.rating}/10</span> {t('feed.ratedSuffix')}
                     </span>
-                    <p className="text-[10px] text-[--text-secondary]/60">{timeAgo(r.created_at)}</p>
+                    <p className="text-[10px] text-[--text-secondary]/60">{timeAgo(r.created_at, t)}</p>
                   </div>
                   <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${r.media_type === 'film' ? 'bg-blue-500/15 text-blue-400' : 'bg-purple-500/15 text-purple-400'}`}>
-                    {r.media_type === 'film' ? 'Film' : 'Dizi'}
+                    {r.media_type === 'film' ? t('film.badge') : t('series.badge')}
                   </span>
                 </div>
                 <Link href={`/${r.media_type}/${r.media_id}`} className="flex gap-3 group">
@@ -204,10 +208,10 @@ export default async function AkisPage({ searchParams }: Props) {
                     <IconCheck className="h-3.5 w-3.5 text-green-400 shrink-0" />
                     <span className="text-xs text-[--text-secondary] truncate">
                       <UserHoverCard username={profile?.username ?? ''}><Link href={profileHref} className="font-semibold text-white hover:text-[--accent] transition-colors">{profile?.username}</Link></UserHoverCard>
-                      {' '}izledi: {' '}
+                      {' '}{t('feed.watchedLabel')} {' '}
                       <Link href={`/${w.media_type}/${w.media_id}`} className="text-white hover:text-[--accent] transition-colors">{media?.title ?? `#${w.media_id}`}</Link>
                     </span>
-                    <span className="text-[10px] text-[--text-secondary]/60 shrink-0 ml-auto">{timeAgo(w.created_at)}</span>
+                    <span className="text-[10px] text-[--text-secondary]/60 shrink-0 ml-auto">{timeAgo(w.created_at, t)}</span>
                   </div>
                 </div>
               </article>
@@ -231,11 +235,11 @@ export default async function AkisPage({ searchParams }: Props) {
                     <IconCalendarDays className="h-3.5 w-3.5 text-blue-400 shrink-0" />
                     <span className="text-xs text-[--text-secondary] truncate">
                       <UserHoverCard username={profile?.username ?? ''}><Link href={profileHref} className="font-semibold text-white hover:text-[--accent] transition-colors">{profile?.username}</Link></UserHoverCard>
-                      {' '}günlüğüne ekledi: {' '}
+                      {' '}{t('feed.diaryAddedLabel')} {' '}
                       <Link href={`/${d.media_type}/${d.media_id}`} className="text-white hover:text-[--accent] transition-colors">{media?.title ?? `#${d.media_id}`}</Link>
                       {d.rating && <span className="text-[--gold] ml-1">★ {d.rating}</span>}
                     </span>
-                    <span className="text-[10px] text-[--text-secondary]/60 shrink-0 ml-auto">{timeAgo(d.watched_at)}</span>
+                    <span className="text-[10px] text-[--text-secondary]/60 shrink-0 ml-auto">{timeAgo(d.watched_at, t)}</span>
                   </div>
                 </div>
                 {d.note && <p className="mt-2 ml-11 text-xs text-[--text-secondary] line-clamp-1 italic">"{d.note}"</p>}
@@ -258,10 +262,10 @@ export default async function AkisPage({ searchParams }: Props) {
                     <IconList className="h-3.5 w-3.5 text-purple-400 shrink-0" />
                     <span className="text-xs text-[--text-secondary] truncate">
                       <UserHoverCard username={profile?.username ?? ''}><Link href={profileHref} className="font-semibold text-white hover:text-[--accent] transition-colors">{profile?.username}</Link></UserHoverCard>
-                      {' '}yeni liste oluşturdu: {' '}
+                      {' '}{t('feed.createdListLabel')} {' '}
                       <Link href={`/liste/${l.id}`} className="text-white hover:text-[--accent] transition-colors">"{l.title}"</Link>
                     </span>
-                    <span className="text-[10px] text-[--text-secondary]/60 shrink-0 ml-auto">{timeAgo(l.created_at)}</span>
+                    <span className="text-[10px] text-[--text-secondary]/60 shrink-0 ml-auto">{timeAgo(l.created_at, t)}</span>
                   </div>
                 </div>
               </article>
@@ -275,31 +279,31 @@ export default async function AkisPage({ searchParams }: Props) {
   )
 }
 
-function EmptyFeed() {
+function EmptyFeed({ t }: { t: TFunc }) {
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
       <div className="flex items-center gap-3 mb-8">
         <IconUsers className="h-7 w-7 text-[--accent]" />
 
-        <h1 className="text-2xl font-bold text-white">Arkadaş Akışı</h1>
+        <h1 className="text-2xl font-bold text-white">{t('feed.title')}</h1>
       </div>
       <div className="rounded-2xl py-20 text-center px-6"
         style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="text-5xl mb-4">👥</div>
-        <p className="text-lg font-bold text-white mb-2">Akışın boş</p>
+        <p className="text-lg font-bold text-white mb-2">{t('feed.emptyTitle')}</p>
         <p className="text-sm mb-6" style={{ color: 'rgba(255,255,255,0.4)' }}>
-          Kullanıcıları takip etmeye başladığında yorumları, izledikleri ve günlükleri burada görünür.
+          {t('feed.emptyDesc')}
         </p>
         <div className="flex flex-wrap justify-center gap-3">
           <Link href="/kullanicilar"
             className="inline-flex items-center gap-2 text-white text-sm font-semibold px-6 py-2.5 rounded-full transition-all hover:scale-105"
             style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', boxShadow: '0 4px 14px rgba(225,29,72,0.3)' }}>
-            <IconUsers className="h-4 w-4" /> Kullanıcıları Keşfet
+            <IconUsers className="h-4 w-4" /> {t('feed.discoverUsers')}
           </Link>
           <Link href="/benzer-kullanicilar"
             className="inline-flex items-center gap-2 text-sm font-semibold px-6 py-2.5 rounded-full transition-all hover:scale-105"
             style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)' }}>
-            Sana Benzer Kullanıcılar →
+            {t('feed.similarUsers')}
           </Link>
         </div>
       </div>

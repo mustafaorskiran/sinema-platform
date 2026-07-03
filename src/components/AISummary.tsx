@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Props {
   mediaId: number
@@ -12,6 +13,7 @@ interface Props {
 }
 
 export default function AISummary({ mediaId, mediaType, title, year, genres, director }: Props) {
+  const { t } = useLocale()
   const [summary, setSummary] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -61,13 +63,13 @@ export default function AISummary({ mediaId, mediaType, title, year, genres, dir
     <div className="mt-4 rounded-xl p-4"
       style={{ background: 'rgba(124,58,237,0.05)', border: '1px solid rgba(124,58,237,0.12)', borderLeft: '3px solid rgba(124,58,237,0.5)' }}>
       <p className="text-[10px] font-bold uppercase tracking-wider mb-2" style={{ color: '#a78bfa' }}>
-        🤖 Sinezon AI Değerlendirmesi
+        🤖 {t('aiSummary.title')}
       </p>
       <p className="text-sm leading-relaxed italic" style={{ color: 'rgba(255,255,255,0.7)' }}>
         {summary}
       </p>
       <p className="mt-2 text-[10px]" style={{ color: 'rgba(255,255,255,0.25)' }}>
-        Yapay zeka tarafından oluşturulmuştur.
+        {t('aiSummary.disclaimer')}
       </p>
     </div>
   )

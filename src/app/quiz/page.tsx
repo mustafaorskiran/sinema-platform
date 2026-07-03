@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 import type { Metadata } from "next"
 import QuizClient from "./QuizClient"
+import { getTranslations } from "@/lib/i18n"
 
 export const metadata: Metadata = {
   title: "Film Quiz — Posteri Gör, Filmi Bul | Sinezon",
@@ -19,9 +20,9 @@ interface TMDbFilm {
 }
 
 const DIFFICULTY_LEVELS = [
-  { id: "kolay", label: "Kolay", icon: "🟢", desc: "Popüler filmler" },
-  { id: "orta",  label: "Orta",  icon: "🟡", desc: "Karışık" },
-  { id: "zor",   label: "Zor",   icon: "🔴", desc: "Yüksek puanlı, az bilinen" },
+  { id: "kolay", icon: "🟢", labelKey: "quiz.difficulty.easy.label", descKey: "quiz.difficulty.easy.desc" },
+  { id: "orta",  icon: "🟡", labelKey: "quiz.difficulty.medium.label", descKey: "quiz.difficulty.medium.desc" },
+  { id: "zor",   icon: "🔴", labelKey: "quiz.difficulty.hard.label", descKey: "quiz.difficulty.hard.desc" },
 ]
 
 async function fetchQuizFilms(zorluk: string): Promise<TMDbFilm[]> {
@@ -54,6 +55,7 @@ interface PageProps {
 }
 
 export default async function QuizPage({ searchParams }: PageProps) {
+  const { t } = await getTranslations()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -87,8 +89,8 @@ export default async function QuizPage({ searchParams }: PageProps) {
         style={{ background: "var(--bg-primary)" }}>
         <div className="text-center" style={{ color: "var(--text-secondary)" }}>
           <p className="text-4xl mb-4">🎬</p>
-          <p className="text-lg font-semibold" style={{ color: "var(--text-primary)" }}>Quiz yüklenemedi</p>
-          <p className="text-sm mt-2">Lütfen daha sonra tekrar dene.</p>
+          <p className="text-lg font-semibold" style={{ color: "var(--text-primary)" }}>{t('quiz.loadFailedTitle')}</p>
+          <p className="text-sm mt-2">{t('quiz.loadFailedDesc')}</p>
         </div>
       </div>
     )
@@ -99,10 +101,10 @@ export default async function QuizPage({ searchParams }: PageProps) {
   return (
     <div className="max-w-2xl mx-auto px-4 pt-8 pb-16">
       <h1 className="text-2xl font-extrabold text-center mb-1" style={{ color: "var(--text-primary)" }}>
-        🎬 Film Quiz
+        🎬 {t('quiz.title')}
       </h1>
       <p className="text-sm text-center mb-3" style={{ color: "var(--text-secondary)" }}>
-        Posteri gör, filmi bul — 10 soruluk tur
+        {t('quiz.subtitle')}
       </p>
 
       {/* Streak göstergesi */}
@@ -111,19 +113,19 @@ export default async function QuizPage({ searchParams }: PageProps) {
           style={{ background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.2)' }}>
           <span className="text-base">🔥</span>
           <span className="text-sm font-black" style={{ color: '#fbbf24' }}>{streakData?.streak ?? 0}</span>
-          <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>günlük seri</span>
+          <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>{t('quiz.dailyStreak')}</span>
         </div>
         {(streakData?.best_streak ?? 0) > 0 && (
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <span className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>En iyi:</span>
-            <span className="text-xs font-bold" style={{ color: 'rgba(255,255,255,0.6)' }}>{streakData?.best_streak} gün</span>
+            <span className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>{t('quiz.best')}</span>
+            <span className="text-xs font-bold" style={{ color: 'rgba(255,255,255,0.6)' }}>{t('quiz.bestDays', { count: streakData?.best_streak ?? 0 })}</span>
           </div>
         )}
         {playedToday && (
           <span className="text-xs px-2.5 py-1 rounded-full font-semibold"
             style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.25)', color: '#4ade80' }}>
-            ✓ Bugün oynadın
+            ✓ {t('quiz.playedToday')}
           </span>
         )}
       </div>
@@ -140,8 +142,8 @@ export default async function QuizPage({ searchParams }: PageProps) {
                 : { background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.08)" }
               }>
               <span className="text-base mb-0.5">{d.icon}</span>
-              <span className="font-bold">{d.label}</span>
-              <span className="text-[10px] opacity-70">{d.desc}</span>
+              <span className="font-bold">{t(d.labelKey)}</span>
+              <span className="text-[10px] opacity-70">{t(d.descKey)}</span>
             </Link>
           )
         })}
@@ -150,7 +152,7 @@ export default async function QuizPage({ searchParams }: PageProps) {
       <div className="mb-4 text-center">
         <span className="text-xs px-3 py-1 rounded-full font-semibold"
           style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.4)" }}>
-          {currentLevel.icon} {currentLevel.label} mod
+          {currentLevel.icon} {t(currentLevel.labelKey)} {t('quiz.modeSuffix')}
         </span>
       </div>
 
@@ -161,7 +163,7 @@ export default async function QuizPage({ searchParams }: PageProps) {
           style={{ background: "linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))", border: "1px solid rgba(212,168,67,0.1)" }}>
           <div className="px-5 py-4 flex items-center gap-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
             <span className="text-lg">🏆</span>
-            <h2 className="font-bold" style={{ color: "var(--text-primary)" }}>Liderlik Tablosu</h2>
+            <h2 className="font-bold" style={{ color: "var(--text-primary)" }}>{t('quiz.leaderboardTitle')}</h2>
           </div>
           <div className="divide-y" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
             {leaderboard.map((entry: any, i: number) => {
@@ -177,11 +179,11 @@ export default async function QuizPage({ searchParams }: PageProps) {
                       : (profile?.username?.[0] ?? "?").toUpperCase()}
                   </div>
                   <span className="flex-1 text-sm font-medium" style={{ color: "var(--text-primary)" }}>
-                    {profile?.username ?? "Anonim"}
+                    {profile?.username ?? t('quiz.anonymous')}
                   </span>
                   <div className="text-right">
-                    <p className="text-sm font-bold" style={{ color: "#D4A843" }}>{entry.score} puan</p>
-                    <p className="text-[10px]" style={{ color: "rgba(255,255,255,0.3)" }}>{entry.correct}/{entry.total} doğru</p>
+                    <p className="text-sm font-bold" style={{ color: "#D4A843" }}>{t('quiz.pointsValue', { score: entry.score })}</p>
+                    <p className="text-[10px]" style={{ color: "rgba(255,255,255,0.3)" }}>{t('quiz.correctOutOf', { correct: entry.correct, total: entry.total })}</p>
                   </div>
                 </div>
               )

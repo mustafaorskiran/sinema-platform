@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import MovieCard from '@/components/MovieCard'
 import { SkMovieCard } from '@/components/skeletons'
+import { useLocale } from '@/context/LocaleContext'
 
 interface InfiniteGridProps {
   initialItems: any[]
@@ -23,6 +24,7 @@ export default function InfiniteGrid({
   watchedIds,
   filterMode,
 }: InfiniteGridProps) {
+  const { t } = useLocale()
   const [items, setItems] = useState(initialItems)
   const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(false)
@@ -80,7 +82,7 @@ export default function InfiniteGrid({
           {loading && (
             <div className="flex items-center gap-2 text-sm text-[--text-secondary]">
               <div className="w-4 h-4 border-2 border-[--accent] border-t-transparent rounded-full animate-spin" />
-              Yükleniyor...
+              {t('common.loading')}
             </div>
           )}
         </div>
@@ -88,7 +90,7 @@ export default function InfiniteGrid({
 
       {!hasMore && items.length > 40 && (
         <p className="text-center text-sm text-[--text-secondary] py-8">
-          {items.length.toLocaleString('tr-TR')} içerik yüklendi
+          {t('infiniteGrid.itemsLoaded', { count: items.length.toLocaleString('tr-TR') })}
         </p>
       )}
     </div>

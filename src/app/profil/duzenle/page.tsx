@@ -2,15 +2,21 @@
 import { IconSettings } from '@/components/icons'
 import { createClient } from '@/lib/supabase/server'
 import ProfilDuzenleForm from './ProfilDuzenleForm'
+import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Profili Düzenle' }
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getTranslations()
+  return { title: t('settings.editProfileMetaTitle') }
+}
 
 export default async function ProfilDuzenle() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) redirect('/auth/giris')
+
+  const { t } = await getTranslations()
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -25,7 +31,7 @@ export default async function ProfilDuzenle() {
       <div className="w-full max-w-md">
         <div className="flex items-center gap-3 mb-8 justify-center">
           <IconSettings className="h-6 w-6 text-[--accent]" />
-          <h1 className="text-2xl font-bold text-white">Profili Düzenle</h1>
+          <h1 className="text-2xl font-bold text-white">{t('settings.editProfileTitle')}</h1>
         </div>
 
         <div className="rounded-xl rounded-2xl p-8" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>

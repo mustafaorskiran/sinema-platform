@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import { getTranslations } from '@/lib/i18n'
 import SinezonStats from '@/components/SinezonStats'
 import { getSeriesDetail, getSimilarSeries, getBackdropUrl, getPosterUrl, getMediaTitle, getMediaYear, getTVWatchProviders, getSeriesImages, getSeriesKeywords, getSeriesCertification, getTVVideos, getPersonCredits } from '@/lib/tmdb'
 import { tvGenreToSlug } from '@/lib/genres'
@@ -48,6 +49,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
+  const { t } = await getTranslations()
   try {
     const series = await getSeriesDetail(Number(id))
     const title = getMediaTitle(series)
@@ -55,7 +57,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const genreNames = (series.genres ?? []).slice(0, 2).map((g: { name: string }) => g.name).join(', ')
     const description = series.overview
       ? series.overview.slice(0, 155)
-      : `${title}${year ? ` (${year})` : ''}${genreNames ? ' — ' + genreNames : ''} · Sinezon'da puan ver ve yorum yap.`
+      : `${title}${year ? ` (${year})` : ''}${genreNames ? ' — ' + genreNames : ''} · ${t('series.metaDescriptionSuffix')}`
     const posterUrl = series.poster_path ? `https://image.tmdb.org/t/p/w300${series.poster_path}` : ''
     const ogParams = new URLSearchParams({ title, type: 'dizi', ...(year && { year }), ...(posterUrl && { poster: posterUrl }) })
     const ogImage = `/api/og?${ogParams.toString()}`
@@ -78,12 +80,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     }
   } catch {
-    return { title: 'Dizi bulunamadı' }
+    return { title: t('series.notFound') }
   }
 }
 
 export default async function DiziPage({ params, searchParams }: Props) {
   const { id } = await params
+  const { t } = await getTranslations()
   const { siralama = 'yeni' } = (await searchParams) ?? {}
   const seriesId = Number(id)
 
@@ -359,7 +362,7 @@ export default async function DiziPage({ params, searchParams }: Props) {
     ...(trailer && {
       trailer: {
         '@type': 'VideoObject',
-        name: `${title} — Fragman`,
+        name: `${title} — ${t('film.trailer')}`,
         embedUrl: `https://www.youtube.com/embed/${trailer.key}`,
         thumbnailUrl: `https://img.youtube.com/vi/${trailer.key}/maxresdefault.jpg`,
       }
@@ -393,7 +396,7 @@ export default async function DiziPage({ params, searchParams }: Props) {
                 <img src={poster} alt={title} className="w-full h-full object-cover" />
               ) : (
                 <div className="aspect-[2/3] bg-[--bg-card] flex items-center justify-center text-[--text-secondary] text-sm">
-                  Afiş yok
+                  {t('film.poster')}
                 </div>
               )}
             </div>
@@ -413,7 +416,7 @@ export default async function DiziPage({ params, searchParams }: Props) {
             {anniversary && (
               <div className="mb-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold animate-pulse"
                 style={{ background: 'rgba(212,168,67,0.15)', border: '1px solid rgba(212,168,67,0.3)', color: '#D4A843' }}>
-                🎂 {anniversary.type === 'exact' ? `${anniversary.years}. yıl dönümü bugün!` : `${anniversary.years}. yıl dönümü bu hafta!`}
+                🎂 {anniversary.type === 'exact' ? t('film.anniversaryToday', { years: anniversary.years }) : t('film.anniversaryWeek', { years: anniversary.years })}
               </div>
             )}
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight tracking-tight">{title}</h1>
@@ -436,7 +439,7 @@ export default async function DiziPage({ params, searchParams }: Props) {
               {series.number_of_seasons && (
                 <>
                   <span className="opacity-40">·</span>
-                  <span>{series.number_of_seasons} sezon</span>
+                  <span>{series.number_of_seasons} {t('series.seasons')}</span>
                 </>
               )}
             </div>
@@ -553,13 +556,13 @@ export default async function DiziPage({ params, searchParams }: Props) {
 
             {/* Paylaş + Karşılaştır */}
             <div className="mt-4 flex flex-wrap items-center gap-3">
-              <ShareButtons path={`/dizi/${seriesId}`} title={`${title} — SineMa'da izle`} />
+              <ShareButtons path={`/dizi/${seriesId}`} title={`${title} — ${t('film.shareSuffix')}`} />
               <a
                 href={`/karsilastir?a=${seriesId}&ta=dizi`}
                 className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition-all hover:text-white hover:scale-105"
                 style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.55)' }}
               >
-                ⚖️ Karşılaştır
+                ⚖️ {t('film.compare')}
               </a>
               {user && (
                 <FilmOnerButton
@@ -587,34 +590,34 @@ export default async function DiziPage({ params, searchParams }: Props) {
               <div className="grid grid-cols-2 sm:grid-cols-3 divide-y sm:divide-y-0">
                 {[
                   series.first_air_date && {
-                    label: 'İlk Yayın',
+                    label: t('series.labelFirstAir'),
                     value: new Date(series.first_air_date).toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' }),
                     link: null,
                   },
                   series.number_of_seasons && {
-                    label: 'Sezon / Bölüm',
-                    value: `${series.number_of_seasons} sezon${series.number_of_episodes ? ` · ${series.number_of_episodes} bölüm` : ''}`,
+                    label: t('series.labelSeasonEpisode'),
+                    value: `${series.number_of_seasons} ${t('series.seasons')}${series.number_of_episodes ? ` · ${series.number_of_episodes} ${t('series.episodes')}` : ''}`,
                     link: null,
                   },
                   (series as any).spoken_languages?.[0] && {
-                    label: 'Orijinal Dil',
+                    label: t('film.labelLanguage'),
                     value: ((series as any).spoken_languages as Array<{ english_name?: string; name: string }>)
                       .slice(0, 2).map(l => l.english_name || l.name).join(', '),
                     link: null,
                   },
                   (series as any).production_countries?.[0] && {
-                    label: 'Ülke',
+                    label: t('film.labelCountry'),
                     value: ((series as any).production_countries as Array<{ name: string }>)
                       .slice(0, 2).map(c => c.name).join(', '),
                     link: null,
                   },
                   director && {
-                    label: director.job === 'Creator' ? 'Yaratıcı' : 'Yönetmen',
+                    label: director.job === 'Creator' ? t('series.creator') : t('film.director'),
                     value: director.name,
                     link: `/oyuncu/${director.id}`,
                   },
                   (series as any).networks?.[0] && {
-                    label: 'Yayın Ağı',
+                    label: t('series.network'),
                     value: (series as any).networks[0].name,
                     link: null,
                   },
@@ -648,7 +651,7 @@ export default async function DiziPage({ params, searchParams }: Props) {
               <div className="mt-6">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-1 h-5 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
-                  <h2 className="text-base font-bold text-white">Sezonlar</h2>
+                  <h2 className="text-base font-bold text-white">{t('series.seasonsHeading')}</h2>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {((series as any).seasons as any[])
@@ -658,14 +661,14 @@ export default async function DiziPage({ params, searchParams }: Props) {
                       className="flex items-center gap-2.5 p-3 rounded-xl transition-all active:scale-95 hover:-translate-y-0.5"
                       style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', minHeight: '56px' }}>
                       {s.poster_path
-                        ? <img src={`https://image.tmdb.org/t/p/w92${s.poster_path}`} alt={`Sezon ${s.season_number}`}
+                        ? <img src={`https://image.tmdb.org/t/p/w92${s.poster_path}`} alt={t('series.seasonNumber', { n: s.season_number })}
                             className="w-8 h-12 rounded-md object-cover shrink-0" />
                         : <div className="w-8 h-12 rounded-md shrink-0 flex items-center justify-center text-lg"
                             style={{ background: 'rgba(255,255,255,0.05)' }}>📺</div>
                       }
                       <div className="min-w-0">
-                        <p className="text-xs font-bold text-white">Sezon {s.season_number}</p>
-                        <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>{s.episode_count} bölüm</p>
+                        <p className="text-xs font-bold text-white">{t('series.seasonNumber', { n: s.season_number })}</p>
+                        <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>{s.episode_count} {t('series.episodes')}</p>
                       </div>
                     </a>
                   ))}
@@ -697,12 +700,12 @@ export default async function DiziPage({ params, searchParams }: Props) {
           <div className="mt-12">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
-              <h2 className="text-xl font-bold text-white tracking-tight">Fragman</h2>
+              <h2 className="text-xl font-bold text-white tracking-tight">{t('film.trailer')}</h2>
             </div>
             <div className="relative w-full rounded-2xl overflow-hidden" style={{ paddingBottom: '56.25%', background: 'var(--bg-card)' }}>
               <iframe
                 src={`https://www.youtube.com/embed/${trailer.key}?modestbranding=1&rel=0`}
-                title={`${title} — Fragman`}
+                title={`${title} — ${t('film.trailer')}`}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 className="absolute inset-0 w-full h-full border-0"
                 allowFullScreen
@@ -713,14 +716,14 @@ export default async function DiziPage({ params, searchParams }: Props) {
 
         {/* Sayfa içi navigasyon */}
         <PageNav sections={[
-          { id: 'oyuncular', label: '🎭 Oyuncular' },
-          { id: 'odüller', label: '🏆 Ödüller' },
-          { id: 'puan-dagilimi', label: '📊 Puanlar' },
-          ...(videos.length > 0 ? [{ id: 'videolar', label: '🎬 Videolar' }] : []),
-          ...(backdrops.length > 0 || posters.length > 0 ? [{ id: 'galeri', label: '🖼 Galeri' }] : []),
-          { id: 'trivia', label: '💡 Trivia' },
-          { id: 'yorumlar', label: '💬 Yorumlar' },
-          { id: 'benzer', label: '📺 Benzer' },
+          { id: 'oyuncular', label: `🎭 ${t('film.cast')}` },
+          { id: 'odüller', label: `🏆 ${t('film.awardsNav')}` },
+          { id: 'puan-dagilimi', label: `📊 ${t('film.ratingsNav')}` },
+          ...(videos.length > 0 ? [{ id: 'videolar', label: `🎬 ${t('film.videosNav')}` }] : []),
+          ...(backdrops.length > 0 || posters.length > 0 ? [{ id: 'galeri', label: `🖼 ${t('film.galleryNav')}` }] : []),
+          { id: 'trivia', label: `💡 ${t('film.triviaNav')}` },
+          { id: 'yorumlar', label: `💬 ${t('film.reviewsNav')}` },
+          { id: 'benzer', label: `📺 ${t('film.similarNav')}` },
         ]} />
 
         {/* Cast & Crew */}
@@ -732,14 +735,14 @@ export default async function DiziPage({ params, searchParams }: Props) {
             <div className="mt-6 rounded-2xl overflow-hidden"
               style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(212,168,67,0.1)' }}>
               <div className="px-4 py-3" style={{ borderBottom: '1px solid rgba(212,168,67,0.08)', background: 'rgba(212,168,67,0.02)' }}>
-                <p className="text-[9.5px] font-bold uppercase tracking-[0.18em]" style={{ color: 'rgba(212,168,67,0.5)' }}>Yapım Ekibi</p>
+                <p className="text-[9.5px] font-bold uppercase tracking-[0.18em]" style={{ color: 'rgba(212,168,67,0.5)' }}>{t('film.crew')}</p>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-px" style={{ background: 'rgba(212,168,67,0.06)' }}>
                 {[
-                  tvWriters.length > 0 && { label: 'Yaratıcı / Senarist', people: tvWriters },
-                  tvComposers.length > 0 && { label: 'Müzik', people: tvComposers },
-                  tvDops.length > 0 && { label: 'Görüntü Yönetmeni', people: tvDops },
-                  tvProducers.length > 0 && { label: 'Yürütücü Yapımcı', people: tvProducers },
+                  tvWriters.length > 0 && { label: t('series.creatorWriter'), people: tvWriters },
+                  tvComposers.length > 0 && { label: t('film.composer'), people: tvComposers },
+                  tvDops.length > 0 && { label: t('film.cinematographer'), people: tvDops },
+                  tvProducers.length > 0 && { label: t('series.executiveProducer'), people: tvProducers },
                 ].filter(Boolean).map((item: any) => (
                   <div key={item.label} className="px-4 py-3" style={{ background: 'rgba(14,20,32,0.95)' }}>
                     <p className="text-[9.5px] font-bold uppercase tracking-[0.14em] mb-2" style={{ color: 'rgba(212,168,67,0.4)' }}>{item.label}</p>
@@ -761,7 +764,7 @@ export default async function DiziPage({ params, searchParams }: Props) {
               <a href={`https://www.imdb.com/title/${imdbId}`} target="_blank" rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[12px] font-semibold transition-all hover:scale-105"
                 style={{ background: 'rgba(212,168,67,0.1)', border: '1px solid rgba(212,168,67,0.25)', color: '#D4A843' }}>
-                ⭐ IMDb Sayfasını Aç →
+                ⭐ {t('film.imdbOpen')} →
               </a>
             </div>
           )}
@@ -791,7 +794,7 @@ export default async function DiziPage({ params, searchParams }: Props) {
           <div className="mt-12">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%)' }} />
-              <h2 className="text-xl font-bold text-white tracking-tight">Takip Ettiklerinin Puanları</h2>
+              <h2 className="text-xl font-bold text-white tracking-tight">{t('film.friendsRatings')}</h2>
             </div>
             <div className="flex flex-wrap gap-2.5">
               {friendsRatings.map(fr => (
@@ -809,7 +812,7 @@ export default async function DiziPage({ params, searchParams }: Props) {
             </div>
             {friendsRatings.length > 1 && (
               <p className="text-[11px] mt-3" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                Ortalama: <span className="font-bold" style={{ color: '#D4A843' }}>{(friendsRatings.reduce((s, r) => s + r.rating, 0) / friendsRatings.length).toFixed(1)}/10</span>
+                {t('film.average')} <span className="font-bold" style={{ color: '#D4A843' }}>{(friendsRatings.reduce((s, r) => s + r.rating, 0) / friendsRatings.length).toFixed(1)}/10</span>
               </p>
             )}
           </div>
@@ -842,10 +845,10 @@ export default async function DiziPage({ params, searchParams }: Props) {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
-                <h2 className="text-xl font-bold text-white tracking-tight">Unutulmaz Replikler</h2>
+                <h2 className="text-xl font-bold text-white tracking-tight">{t('film.memorableQuotes')}</h2>
               </div>
               <a href="/alintilar" className="text-xs hover:underline" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                Tümü →
+                {t('film.viewAll')} →
               </a>
             </div>
             <div className="space-y-3">
@@ -880,7 +883,7 @@ export default async function DiziPage({ params, searchParams }: Props) {
           <div className="mt-10">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
-              <h2 className="text-xl font-bold text-white tracking-tight">Bu Diziyi İçeren Listeler</h2>
+              <h2 className="text-xl font-bold text-white tracking-tight">{t('series.containingLists')}</h2>
             </div>
             <div className="flex flex-wrap gap-2">
               {(containingLists ?? []).map((list: any) => (
@@ -905,7 +908,7 @@ export default async function DiziPage({ params, searchParams }: Props) {
             <div className="flex items-center gap-3 mb-5">
               <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #E11D48 0%, #E11D4880 100%)' }} />
               <h2 className="text-xl font-bold text-white tracking-tight">
-                {userReview ? 'Yorumunu Düzenle' : 'Yorum Yaz'}
+                {userReview ? t('review.editTitle') : t('review.write')}
               </h2>
             </div>
             {user && (
@@ -919,13 +922,13 @@ export default async function DiziPage({ params, searchParams }: Props) {
               <div className="rounded-lg p-6 text-center"
                 style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <p className="text-[--text-secondary] text-sm mb-4">
-                  Yorum yapmak için giriş yapman gerekiyor.
+                  {t('review.loginPrompt')}
                 </p>
                 <a
                   href="/auth/giris"
                   className="inline-block bg-[--accent] hover:bg-[--accent-hover] text-white font-semibold px-5 py-2 rounded-full text-sm transition-colors"
                 >
-                  Giriş Yap
+                  {t('review.loginBtn')}
                 </a>
               </div>
             )}
@@ -937,7 +940,7 @@ export default async function DiziPage({ params, searchParams }: Props) {
               <div className="flex items-center gap-3">
                 <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #E11D48 0%, #E11D4880 100%)' }} />
                 <h2 className="text-xl font-bold text-white tracking-tight">
-                  Yorumlar <span className="font-normal text-base" style={{ color: 'rgba(255,255,255,0.35)' }}>({reviews?.length ?? 0})</span>
+                  {t('review.title')} <span className="font-normal text-base" style={{ color: 'rgba(255,255,255,0.35)' }}>({reviews?.length ?? 0})</span>
                 </h2>
               </div>
               <ReviewSortButton current={siralama as any} />
@@ -955,10 +958,10 @@ export default async function DiziPage({ params, searchParams }: Props) {
             <div className="flex items-center gap-3 mb-5">
               <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%)' }} />
               <h2 className="text-xl font-bold text-white tracking-tight">
-                {director.name} — Diğer Yapımları
+                {director.name} — {t('series.otherWorksBy')}
               </h2>
               <a href={`/kisi/${director.id}`} className="ml-auto text-xs hover:underline" style={{ color: 'var(--accent)' }}>
-                Tüm Filmografi →
+                {t('film.fullFilmography')} →
               </a>
             </div>
             <div className="home-carousel-scroll flex gap-3 overflow-x-auto pb-3">
@@ -989,7 +992,7 @@ export default async function DiziPage({ params, searchParams }: Props) {
           <div className="mt-12" id="benzer">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #D4A843 0%, #E11D48 100%)' }} />
-              <h2 className="text-xl font-bold text-white tracking-tight">Benzer Diziler</h2>
+              <h2 className="text-xl font-bold text-white tracking-tight">{t('series.similar')}</h2>
             </div>
             <div className="home-carousel-scroll flex gap-3 overflow-x-auto pb-3">
               {similar.map((item) => (

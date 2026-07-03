@@ -12,6 +12,7 @@ import ReportButton from './ReportButton'
 import HelpfulButton from './HelpfulButton'
 import UserHoverCard from './UserHoverCard'
 import ReviewReactions from './ReviewReactions'
+import { useLocale } from '@/context/LocaleContext'
 
 interface ReviewListProps {
   reviews: Review[]
@@ -32,6 +33,7 @@ function formatDate(dateStr: string) {
 
 function SpoilerContent({ content }: { content: string }) {
   const [revealed, setRevealed] = useState(false)
+  const { t } = useLocale()
   if (revealed) return (
     <div className="mt-3 relative">
       <div className="absolute -left-3 top-0 bottom-0 w-0.5 rounded-full" style={{ background: 'rgba(248,113,113,0.4)' }} />
@@ -46,12 +48,12 @@ function SpoilerContent({ content }: { content: string }) {
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-2"
         style={{ background: 'rgba(10,12,20,0.75)', backdropFilter: 'blur(2px)' }}>
         <span className="text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: 'rgba(248,113,113,0.6)' }}>
-          Spoiler İçerik
+          {t('review.spoilerContentLabel')}
         </span>
         <button onClick={() => setRevealed(true)}
           className="text-[12px] font-semibold px-4 py-2 rounded-xl transition-all hover:scale-105"
           style={{ background: 'rgba(248,113,113,0.12)', border: '1px solid rgba(248,113,113,0.3)', color: '#f87171' }}>
-          ⚠️ Görmek için tıkla
+          {t('review.clickToReveal')}
         </button>
       </div>
     </div>
@@ -60,10 +62,11 @@ function SpoilerContent({ content }: { content: string }) {
 
 function InlineSpoiler({ text }: { text: string }) {
   const [revealed, setRevealed] = useState(false)
+  const { t } = useLocale()
   return (
     <span
       onClick={() => setRevealed(r => !r)}
-      title={revealed ? 'Gizle' : 'Spoiler — görmek için tıkla'}
+      title={revealed ? t('review.hideAction') : t('review.spoilerClickToReveal')}
       className="cursor-pointer rounded px-0.5 transition-all select-none"
       style={revealed
         ? { background: 'rgba(248,113,113,0.08)', color: 'inherit' }
@@ -90,6 +93,7 @@ function renderWithSpoilers(content: string) {
 
 function ReviewContent({ content }: { content: string }) {
   const [expanded, setExpanded] = useState(false)
+  const { t } = useLocale()
   const hasSpoilerTag = /\[spoiler\]/i.test(content)
   const isLong = content.length > 400
   return (
@@ -104,9 +108,9 @@ function ReviewContent({ content }: { content: string }) {
           style={{ color: 'var(--accent)' }}
         >
           {expanded ? (
-            <><IconChevronUp className="h-3 w-3" />Daha az göster</>
+            <><IconChevronUp className="h-3 w-3" />{t('review.showLess')}</>
           ) : (
-            <><IconChevronDown className="h-3 w-3" />Devamını oku</>
+            <><IconChevronDown className="h-3 w-3" />{t('review.readMore')}</>
           )}
         </button>
       )}
@@ -114,20 +118,21 @@ function ReviewContent({ content }: { content: string }) {
   )
 }
 
-const SORT_OPTIONS: { key: SortKey; label: string }[] = [
-  { key: 'yeni',      label: 'En Yeni'          },
-  { key: 'begenilen', label: 'En Çok Beğenilen' },
-  { key: 'faydali',   label: 'En Faydalı'       },
-]
-
 export default function ReviewList({ reviews, currentUserId, likeData = {}, replyCount = {}, helpfulData = {}, reactionsData = {} }: ReviewListProps) {
   const [sort, setSort] = useState<SortKey>('yeni')
+  const { t } = useLocale()
+
+  const SORT_OPTIONS: { key: SortKey; label: string }[] = [
+    { key: 'yeni',      label: t('review.sortNewest')     },
+    { key: 'begenilen', label: t('review.sortMostLiked')   },
+    { key: 'faydali',   label: t('review.sortMostHelpful') },
+  ]
 
   if (reviews.length === 0) {
     return (
       <div className="text-center py-12 text-[--text-secondary]">
         <IconStar className="h-10 w-10 mx-auto mb-3 opacity-30" />
-        <p>Henüz yorum yok. İlk yorumu sen yap!</p>
+        <p>{t('review.noReviews')}</p>
       </div>
     )
   }
@@ -164,7 +169,7 @@ export default function ReviewList({ reviews, currentUserId, likeData = {}, repl
           const likes   = likeData[review.id]   ?? { count: 0, liked: false }
           const helpful = helpfulData[review.id] ?? { count: 0, marked: false }
           const replies = replyCount[review.id]  ?? 0
-          const username  = review.profiles?.username || 'Anonim'
+          const username  = review.profiles?.username || t('review.anonymous')
           const avatarUrl = review.profiles?.avatar_url ?? null
           const isAdmin   = (review.profiles as any)?.is_admin ?? false
           const initial   = username[0].toUpperCase()
@@ -200,7 +205,7 @@ export default function ReviewList({ reviews, currentUserId, likeData = {}, repl
                       {isAdmin && (
                         <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded"
                           style={{ background: 'rgba(225,29,72,0.12)', color: 'var(--accent)', border: '1px solid rgba(225,29,72,0.25)' }}>
-                          STAFF
+                          {t('review.staffBadge')}
                         </span>
                       )}
                     </div>
@@ -212,7 +217,7 @@ export default function ReviewList({ reviews, currentUserId, likeData = {}, repl
                   {/* Spoiler badge */}
                   {review.has_spoiler && (
                     <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full" style={{ background: 'rgba(239,68,68,0.15)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)' }}>
-                      ⚠️ Spoiler
+                      {t('review.spoilerBadge')}
                     </span>
                   )}
                   {/* Puan */}

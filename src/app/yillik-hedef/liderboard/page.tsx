@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 export const metadata: Metadata = {
   title: 'Yıllık Hedef Liderboard | Sinezon',
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 const YEAR = new Date().getFullYear()
 
 export default async function YillikLiderboardPage() {
+  const { t } = await getTranslations()
   const supabase = await createClient()
 
   // Hedefi olanları çek
@@ -23,11 +25,11 @@ export default async function YillikLiderboardPage() {
     return (
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-16 text-center">
         <div className="text-5xl mb-4">🏆</div>
-        <h1 className="text-2xl font-bold text-white mb-2">{YEAR} Liderboard</h1>
-        <p className="text-[--text-secondary]">Henüz kimse hedef belirlemedi.</p>
+        <h1 className="text-2xl font-bold text-white mb-2">{t('yearlyGoal.leaderboardYearTitle', { year: YEAR })}</h1>
+        <p className="text-[--text-secondary]">{t('yearlyGoal.noOneYet')}</p>
         <Link href="/yillik-hedef" className="inline-block mt-6 px-6 py-2.5 rounded-full text-sm font-semibold text-white transition-all hover:scale-105"
           style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', boxShadow: '0 4px 14px rgba(225,29,72,0.3)' }}>
-          Hedef Belirle
+          {t('yearlyGoal.setGoal')}
         </Link>
       </div>
     )
@@ -69,14 +71,14 @@ export default async function YillikLiderboardPage() {
       {/* Başlık */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-white">{YEAR} Yıllık Hedef Liderboard</h1>
+          <h1 className="text-2xl font-bold text-white">{t('yearlyGoal.leaderboardTitle', { year: YEAR })}</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
-            Hedefine en yakın olanlar — {ranked.length} kullanıcı
+            {t('yearlyGoal.closestUsers', { count: ranked.length })}
           </p>
         </div>
         <Link href="/yillik-hedef" className="text-sm font-medium transition-colors hover:text-white"
           style={{ color: 'rgba(255,255,255,0.4)' }}>
-          Hedefim →
+          {t('yearlyGoal.myGoal')}
         </Link>
       </div>
 
@@ -136,7 +138,7 @@ export default async function YillikLiderboardPage() {
                   <p className="text-lg font-black" style={{ color: u.pct >= 100 ? '#4ade80' : 'var(--gold)' }}>
                     %{u.pct}
                   </p>
-                  {u.pct >= 100 && <p className="text-[10px] text-green-400 font-bold">Tamamlandı ✓</p>}
+                  {u.pct >= 100 && <p className="text-[10px] text-green-400 font-bold">{t('yearlyGoal.completed')}</p>}
                 </div>
               </div>
 
@@ -158,7 +160,7 @@ export default async function YillikLiderboardPage() {
       </div>
 
       <p className="text-center text-xs mt-8" style={{ color: 'rgba(255,255,255,0.2)' }}>
-        Tamamlanma yüzdesine göre sıralanır. Her gün güncellenir.
+        {t('yearlyGoal.footerNote')}
       </p>
 
       {/* CTA */}
@@ -166,7 +168,7 @@ export default async function YillikLiderboardPage() {
         <Link href="/yillik-hedef"
           className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold text-white transition-all hover:scale-105"
           style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', boxShadow: '0 4px 14px rgba(225,29,72,0.25)' }}>
-          🏆 Hedefini Güncelle
+          🏆 {t('yearlyGoal.updateGoal')}
         </Link>
       </div>
     </div>

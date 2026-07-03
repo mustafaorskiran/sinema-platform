@@ -1,6 +1,7 @@
 'use client'
 import { useState, useCallback, useRef } from 'react'
 import Link from 'next/link'
+import { useLocale } from '@/context/LocaleContext'
 
 type Tip = 'film' | 'dizi'
 
@@ -16,6 +17,7 @@ interface Result {
 }
 
 export default function KatkilClient({ isLoggedIn }: { isLoggedIn: boolean }) {
+  const { t } = useLocale()
   const [tip, setTip] = useState<Tip>('film')
   const [q, setQ] = useState('')
   const [results, setResults] = useState<Result[]>([])
@@ -64,26 +66,26 @@ export default function KatkilClient({ isLoggedIn }: { isLoggedIn: boolean }) {
       <div className="mb-8">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4"
           style={{ background: 'rgba(212,168,67,0.1)', border: '1px solid rgba(212,168,67,0.2)', color: 'rgba(212,168,67,0.7)' }}>
-          Katkıda Bulun
+          {t('contribute.badge')}
         </div>
-        <h1 className="text-3xl font-black text-white mb-2">Eksik İçerik Ekle</h1>
+        <h1 className="text-3xl font-black text-white mb-2">{t('contribute.title')}</h1>
         <p className="text-sm" style={{ color: 'rgba(255,255,255,0.45)' }}>
-          Siteye eklemek istediğin film veya diziyi ara — TMDb&apos;den otomatik alınır, anında erişime açılır.
+          {t('contribute.subtitle')}
         </p>
       </div>
 
       {/* Film / Dizi Seçici */}
       <div className="flex rounded-xl overflow-hidden mb-5"
         style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
-        {(['film', 'dizi'] as Tip[]).map((t) => (
-          <button key={t} onClick={() => { setTip(t); search(q, t); setResults([]) }}
+        {(['film', 'dizi'] as Tip[]).map((opt) => (
+          <button key={opt} onClick={() => { setTip(opt); search(q, opt); setResults([]) }}
             className="flex-1 py-2.5 text-sm font-semibold capitalize transition-all"
             style={{
-              background: tip === t ? 'rgba(212,168,67,0.12)' : 'transparent',
-              color: tip === t ? '#D4A843' : 'rgba(255,255,255,0.4)',
-              borderRight: t === 'film' ? '1px solid rgba(255,255,255,0.08)' : 'none',
+              background: tip === opt ? 'rgba(212,168,67,0.12)' : 'transparent',
+              color: tip === opt ? '#D4A843' : 'rgba(255,255,255,0.4)',
+              borderRight: opt === 'film' ? '1px solid rgba(255,255,255,0.08)' : 'none',
             }}>
-            {t === 'film' ? '🎬 Film' : '📺 Dizi'}
+            {opt === 'film' ? `🎬 ${t('contribute.tabMovie')}` : `📺 ${t('contribute.tabSeries')}`}
           </button>
         ))}
       </div>

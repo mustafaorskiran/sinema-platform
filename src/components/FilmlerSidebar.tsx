@@ -5,36 +5,37 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { IconChevronDown, IconSlidersHorizontal, IconClose } from '@/components/icons'
 import { FILM_GENRES } from '@/lib/film-genres'
 import { WATCH_REGIONS } from '@/lib/watch-regions'
+import { useLocale } from '@/context/LocaleContext'
 
 export { FILM_GENRES }
 
-const SORT_OPTIONS = [
-  { value: 'popularity.desc',           label: 'Popülerlik Azalan'          },
-  { value: 'popularity.asc',            label: 'Popülerlik Artan'           },
-  { value: 'vote_average.desc',         label: 'En Yüksek Puan'             },
-  { value: 'vote_average.asc',          label: 'En Düşük Puan'              },
-  { value: 'primary_release_date.desc', label: 'Çıkış Tarihi (Yeni → Eski)' },
-  { value: 'primary_release_date.asc',  label: 'Çıkış Tarihi (Eski → Yeni)' },
-  { value: 'title.asc',                 label: 'Başlık (A → Z)'             },
-  { value: 'revenue.desc',              label: 'Gişe Hasılatı'              },
-  { value: 'en-cok-puan',              label: '⭐ Sinezon\'da En Çok Puanlanan' },
+const SORT_OPTION_DEFS = [
+  { value: 'popularity.desc',           labelKey: 'sidebarFilters.sortOptions.popularityDesc'    },
+  { value: 'popularity.asc',            labelKey: 'sidebarFilters.sortOptions.popularityAsc'     },
+  { value: 'vote_average.desc',         labelKey: 'sidebarFilters.sortOptions.ratingDesc'        },
+  { value: 'vote_average.asc',          labelKey: 'sidebarFilters.sortOptions.ratingAsc'         },
+  { value: 'primary_release_date.desc', labelKey: 'sidebarFilters.sortOptions.releaseDateDesc'   },
+  { value: 'primary_release_date.asc',  labelKey: 'sidebarFilters.sortOptions.releaseDateAsc'    },
+  { value: 'title.asc',                 labelKey: 'sidebarFilters.sortOptions.titleAsc'          },
+  { value: 'revenue.desc',              labelKey: 'sidebarFilters.sortOptions.revenueDesc'       },
+  { value: 'en-cok-puan',               labelKey: 'sidebarFilters.sortOptions.topRatedSinezon'   },
 ]
 
-const LANGUAGE_OPTIONS = [
-  { value: '',   label: 'Herhangi bir dil' },
-  { value: 'tr', label: '🇹🇷 Türkçe' },
-  { value: 'en', label: '🇺🇸 İngilizce' },
-  { value: 'fr', label: '🇫🇷 Fransızca' },
-  { value: 'de', label: '🇩🇪 Almanca' },
-  { value: 'ja', label: '🇯🇵 Japonca' },
-  { value: 'ko', label: '🇰🇷 Korece' },
-  { value: 'es', label: '🇪🇸 İspanyolca' },
-  { value: 'it', label: '🇮🇹 İtalyanca' },
-  { value: 'zh', label: '🇨🇳 Çince' },
-  { value: 'hi', label: '🇮🇳 Hintçe' },
-  { value: 'pt', label: '🇧🇷 Portekizce' },
-  { value: 'ru', label: '🇷🇺 Rusça' },
-  { value: 'ar', label: '🇸🇦 Arapça' },
+const LANGUAGE_OPTION_DEFS = [
+  { value: '',   labelKey: 'sidebarFilters.languages.any' },
+  { value: 'tr', labelKey: 'sidebarFilters.languages.tr'  },
+  { value: 'en', labelKey: 'sidebarFilters.languages.en'  },
+  { value: 'fr', labelKey: 'sidebarFilters.languages.fr'  },
+  { value: 'de', labelKey: 'sidebarFilters.languages.de'  },
+  { value: 'ja', labelKey: 'sidebarFilters.languages.ja'  },
+  { value: 'ko', labelKey: 'sidebarFilters.languages.ko'  },
+  { value: 'es', labelKey: 'sidebarFilters.languages.es'  },
+  { value: 'it', labelKey: 'sidebarFilters.languages.it'  },
+  { value: 'zh', labelKey: 'sidebarFilters.languages.zh'  },
+  { value: 'hi', labelKey: 'sidebarFilters.languages.hi'  },
+  { value: 'pt', labelKey: 'sidebarFilters.languages.pt'  },
+  { value: 'ru', labelKey: 'sidebarFilters.languages.ru'  },
+  { value: 'ar', labelKey: 'sidebarFilters.languages.ar'  },
 ]
 
 const GOLD   = '#D4A843'
@@ -47,13 +48,13 @@ interface Provider {
   logo_path: string
 }
 
-const CERTIFICATION_OPTIONS = [
-  { value: '',     label: 'Tümü' },
-  { value: 'G',    label: 'G — Genel İzleyici' },
-  { value: 'PG',   label: 'PG — Ebeveyn Rehberliği' },
-  { value: 'PG-13',label: 'PG-13 — 13 Yaş Altı Uyarısı' },
-  { value: 'R',    label: 'R — Kısıtlı' },
-  { value: 'NC-17',label: 'NC-17 — Yetişkin' },
+const CERTIFICATION_OPTION_DEFS = [
+  { value: '',      labelKey: 'sidebarFilters.certification.all'   },
+  { value: 'G',     labelKey: 'sidebarFilters.certification.g'     },
+  { value: 'PG',    labelKey: 'sidebarFilters.certification.pg'    },
+  { value: 'PG-13', labelKey: 'sidebarFilters.certification.pg13'  },
+  { value: 'R',     labelKey: 'sidebarFilters.certification.r'     },
+  { value: 'NC-17', labelKey: 'sidebarFilters.certification.nc17'  },
 ]
 
 interface Props {
@@ -153,8 +154,13 @@ export default function FilmlerSidebar({
   initialSertifikasyon = '',
   isLoggedIn = false,
 }: Props) {
+  const { t } = useLocale()
   const router = useRouter()
   const sp = useSearchParams()
+
+  const SORT_OPTIONS = SORT_OPTION_DEFS.map(o => ({ value: o.value, label: t(o.labelKey) }))
+  const LANGUAGE_OPTIONS = LANGUAGE_OPTION_DEFS.map(o => ({ value: o.value, label: t(o.labelKey) }))
+  const CERTIFICATION_OPTIONS = CERTIFICATION_OPTION_DEFS.map(o => ({ value: o.value, label: t(o.labelKey) }))
 
   const [sirala,        setSirala]        = useState(initialSirala || 'popularity.desc')
   const [genres,        setGenres]        = useState<string[]>(
@@ -305,7 +311,7 @@ export default function FilmlerSidebar({
         onClick={() => setDrawerOpen(true)}
       >
         <IconSlidersHorizontal className="h-4 w-4" />
-        Filtrele
+        {t('sidebarFilters.filterButton')}
         {hasFilters && <span className="w-1.5 h-1.5 rounded-full bg-[#F0C060]" />}
       </button>
 
@@ -324,7 +330,7 @@ export default function FilmlerSidebar({
         {drawerOpen && (
           <div className="lg:hidden flex justify-between items-center px-1 pb-2">
             <span className="text-[11px] font-bold uppercase tracking-[0.15em]"
-                  style={{ color: 'rgba(212,168,67,0.5)' }}>Filtrele</span>
+                  style={{ color: 'rgba(212,168,67,0.5)' }}>{t('sidebarFilters.filterButton')}</span>
             <button
               onClick={() => setDrawerOpen(false)}
               className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
@@ -353,16 +359,16 @@ export default function FilmlerSidebar({
           {/* ── Gösterme Ölçütü ── */}
           <>
             <SectionHeader
-              label="Gösterme Ölçütü"
+              label={t('sidebarFilters.filmler.showCriteria')}
               open={gosterOpen}
               onToggle={() => setGosterOpen(o => !o)}
             />
             {gosterOpen && (
               <div className="px-5 pb-4 space-y-2">
                 {[
-                  { value: 'hepsi',        label: 'Her Şey' },
-                  { value: 'gormediklerim', label: 'Görmediğim Filmler' },
-                  { value: 'gorduklerim',  label: 'Gördüğüm Filmler' },
+                  { value: 'hepsi',         label: t('sidebarFilters.filmler.showAll') },
+                  { value: 'gormediklerim', label: t('sidebarFilters.filmler.showUnwatched') },
+                  { value: 'gorduklerim',   label: t('sidebarFilters.filmler.showWatched') },
                 ].map(opt => {
                   const needsAuth = opt.value !== 'hepsi' && !isLoggedIn
                   const active = goster === opt.value
@@ -370,7 +376,7 @@ export default function FilmlerSidebar({
                     <label
                       key={opt.value}
                       className={`flex items-center gap-2.5 cursor-pointer group ${needsAuth ? 'opacity-40' : ''}`}
-                      title={needsAuth ? 'Bu seçenek için giriş yapmanız gerekiyor' : undefined}
+                      title={needsAuth ? t('sidebarFilters.filmler.loginRequired') : undefined}
                     >
                       <div
                         onClick={() => !needsAuth && setGoster(opt.value)}
@@ -402,7 +408,7 @@ export default function FilmlerSidebar({
           <div className="px-5 pt-5 pb-4">
             <p className="text-[9.5px] font-bold uppercase tracking-[0.18em] mb-3"
                style={{ color: 'rgba(212,168,67,0.5)' }}>
-              Sırala
+              {t('sidebarFilters.sort')}
             </p>
             <div className="relative lux-select-wrap">
               <select
@@ -435,7 +441,7 @@ export default function FilmlerSidebar({
                 boxShadow: `0 4px 18px rgba(225,29,72,0.32), 0 1px 0 rgba(255,255,255,0.08) inset`,
               }}
             >
-              Ara
+              {t('sidebarFilters.search')}
             </button>
           </div>
 
@@ -444,7 +450,7 @@ export default function FilmlerSidebar({
           {/* ── İzleme Servisleri ── */}
           <>
             <SectionHeader
-              label="İzleme Servisleri"
+              label={t('sidebarFilters.watchProviders')}
               open={providerOpen}
               onToggle={() => setProviderOpen(o => !o)}
             />
@@ -480,7 +486,7 @@ export default function FilmlerSidebar({
                     className="text-[10px] mb-2 transition-colors"
                     style={{ color: 'rgba(212,168,67,0.5)' }}
                   >
-                    × Seçimi temizle
+                    × {t('sidebarFilters.clearSelection')}
                   </button>
                 )}
 
@@ -494,7 +500,7 @@ export default function FilmlerSidebar({
                   </div>
                 ) : providerList.length === 0 ? (
                   <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.2)' }}>
-                    Bu ülkede servis bulunamadı.
+                    {t('sidebarFilters.noProvidersInCountry')}
                   </p>
                 ) : (
                   <div className="flex flex-wrap gap-1.5">
@@ -532,7 +538,7 @@ export default function FilmlerSidebar({
           </>
 
           {/* ── Dil ── */}
-          <SectionHeader label="Dil" open={dilOpen} onToggle={() => setDilOpen(o => !o)} />
+          <SectionHeader label={t('sidebarFilters.language')} open={dilOpen} onToggle={() => setDilOpen(o => !o)} />
           {dilOpen && (
             <>
               <div className="px-5 pb-4">
@@ -563,17 +569,17 @@ export default function FilmlerSidebar({
           )}
 
           {/* ── Filtreleme ── */}
-          <SectionHeader label="Filtreleme" open={filterOpen} onToggle={() => setFilterOpen(o => !o)} />
+          <SectionHeader label={t('sidebarFilters.filtering')} open={filterOpen} onToggle={() => setFilterOpen(o => !o)} />
           {filterOpen && (
             <div className="px-5 pb-5 space-y-5">
 
               {/* Tarih */}
               <div>
-                <FilterLabel>İlk Gösterim Tarihi</FilterLabel>
+                <FilterLabel>{t('sidebarFilters.firstShowDate')}</FilterLabel>
                 <div className="flex gap-2">
                   {[
-                    { label: 'Başlangıç', val: tarihten, set: setTarihten, ph: '2000' },
-                    { label: 'Bitiş',     val: tarihe,   set: setTarihe,   ph: String(new Date().getFullYear()) },
+                    { label: t('sidebarFilters.dateRange.start'), val: tarihten, set: setTarihten, ph: '2000' },
+                    { label: t('sidebarFilters.dateRange.end'),   val: tarihe,   set: setTarihe,   ph: String(new Date().getFullYear()) },
                   ].map(f => (
                     <div key={f.label} className="flex-1">
                       <p className="text-[10px] mb-1.5" style={{ color: 'rgba(212,168,67,0.3)' }}>
@@ -595,7 +601,7 @@ export default function FilmlerSidebar({
 
               {/* Türler */}
               <div>
-                <FilterLabel>Türler</FilterLabel>
+                <FilterLabel>{t('sidebarFilters.genres')}</FilterLabel>
                 <div className="flex flex-wrap gap-1.5">
                   {FILM_GENRES.map(g => {
                     const active = genres.includes(String(g.id))
@@ -625,7 +631,7 @@ export default function FilmlerSidebar({
 
               {/* Sertifikasyon */}
               <div>
-                <FilterLabel>Sertifikasyon</FilterLabel>
+                <FilterLabel>{t('sidebarFilters.certificationLabel')}</FilterLabel>
                 <div className="flex flex-wrap gap-1.5">
                   {CERTIFICATION_OPTIONS.map(cert => {
                     const active = sertifikasyon === cert.value
@@ -646,7 +652,7 @@ export default function FilmlerSidebar({
                           color: 'rgba(255,255,255,0.35)',
                         }}
                       >
-                        {cert.value || 'Tümü'}
+                        {cert.value || t('sidebarFilters.certification.all')}
                       </button>
                     )
                   })}
@@ -656,7 +662,7 @@ export default function FilmlerSidebar({
               {/* Kullanıcı Puanı */}
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <FilterLabel>Kullanıcı Puanı</FilterLabel>
+                  <FilterLabel>{t('sidebarFilters.userRating')}</FilterLabel>
                   <span className="text-[13px] font-bold tabular-nums" style={{ color: GOLD_B }}>
                     {minPuan.toFixed(1)}
                   </span>
@@ -670,7 +676,7 @@ export default function FilmlerSidebar({
               {/* En Az Kullanıcı Oyu */}
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <FilterLabel>En Az Kullanıcı Oyu</FilterLabel>
+                  <FilterLabel>{t('sidebarFilters.minVotes')}</FilterLabel>
                   <span className="text-[13px] font-bold tabular-nums" style={{ color: GOLD_B }}>
                     {minOy.toLocaleString('tr-TR')}
                   </span>
@@ -684,9 +690,9 @@ export default function FilmlerSidebar({
               {/* Süre */}
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <FilterLabel>Süre</FilterLabel>
+                  <FilterLabel>{t('sidebarFilters.duration')}</FilterLabel>
                   <span className="text-[13px] font-bold tabular-nums" style={{ color: GOLD_B }}>
-                    {minSure > 0 ? `${minSure}–` : ''}{maxSure >= 400 ? '400+ dk' : `${maxSure} dk`}
+                    {minSure > 0 ? `${minSure}–` : ''}{maxSure >= 400 ? `400+ ${t('film.runtime')}` : `${maxSure} ${t('film.runtime')}`}
                   </span>
                 </div>
                 <div className="space-y-2">
@@ -702,10 +708,10 @@ export default function FilmlerSidebar({
 
               {/* Anahtar Sözcükler */}
               <div>
-                <FilterLabel>Anahtar Sözcükler</FilterLabel>
+                <FilterLabel>{t('sidebarFilters.keywords')}</FilterLabel>
                 <input
                   type="text"
-                  placeholder="Örn: uzay, dedektif..."
+                  placeholder={t('sidebarFilters.keywordsPlaceholder')}
                   value={keyword}
                   onChange={e => setKeyword(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && ara()}
@@ -724,7 +730,7 @@ export default function FilmlerSidebar({
                     boxShadow: `0 4px 18px rgba(225,29,72,0.30), 0 1px 0 rgba(255,255,255,0.08) inset`,
                   }}
                 >
-                  Ara
+                  {t('sidebarFilters.search')}
                 </button>
                 {hasFilters && (
                   <button
@@ -743,7 +749,7 @@ export default function FilmlerSidebar({
                       ;(e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(212,168,67,0.1)'
                     }}
                   >
-                    Filtreleri Temizle
+                    {t('sidebarFilters.clearFilters')}
                   </button>
                 )}
               </div>

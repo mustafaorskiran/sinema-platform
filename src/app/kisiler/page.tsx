@@ -4,34 +4,25 @@ import type { Metadata } from 'next'
 import { getPopularPeople } from '@/lib/tmdb'
 import type { TMDbPersonListItem } from '@/lib/tmdb'
 import { IconChevronLeft, IconChevronRight, IconUser } from '@/components/icons'
+import { getTranslations } from '@/lib/i18n'
 
 export const revalidate = 3600
 
-export const metadata: Metadata = {
-  title: 'Kişiler — Popüler Oyuncu ve Yönetmenler | Sinezon',
-  description: 'Sinema ve dizi dünyasının en popüler oyuncu, yönetmen ve yapımcılarını keşfet.',
-  alternates: { canonical: '/kisiler' },
-}
-
-const DEPT_TR: Record<string, string> = {
-  Acting: 'Oyuncu',
-  Directing: 'Yönetmen',
-  Writing: 'Senarist',
-  Production: 'Yapımcı',
-  Camera: 'Görüntü Yönetmeni',
-  Editing: 'Kurgu',
-  Sound: 'Ses',
-  'Visual Effects': 'Görsel Efekt',
-  Art: 'Sanat',
-  Crew: 'Ekip',
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getTranslations()
+  return {
+    title: t('person.listMetaTitle'),
+    description: t('person.listMetaDescription'),
+    alternates: { canonical: '/kisiler' },
+  }
 }
 
 interface Props {
   searchParams: Promise<{ sayfa?: string; sekme?: string }>
 }
 
-function ProfileCard({ person }: { person: TMDbPersonListItem }) {
-  const dept = DEPT_TR[person.known_for_department] ?? person.known_for_department
+function ProfileCard({ person, deptLabels }: { person: TMDbPersonListItem; deptLabels: Record<string, string> }) {
+  const dept = deptLabels[person.known_for_department] ?? person.known_for_department
   const knownForTitles = person.known_for
     .slice(0, 3)
     .map(k => k.title ?? k.name ?? '')
@@ -91,11 +82,23 @@ function ProfileCard({ person }: { person: TMDbPersonListItem }) {
   )
 }
 
-const TABS = [
-  { key: 'populer', label: 'Popüler' },
-]
-
 export default async function KisilerPage({ searchParams }: Props) {
+  const { t } = await getTranslations()
+  const deptLabels: Record<string, string> = {
+    Acting: t('person.roleActor'),
+    Directing: t('person.roleDirector'),
+    Writing: t('person.roleWriter'),
+    Production: t('person.roleProducer'),
+    Camera: t('film.cinematographer'),
+    Editing: t('person.deptEditing'),
+    Sound: t('person.deptSound'),
+    'Visual Effects': t('person.roleVisualEffects'),
+    Art: t('person.deptArt'),
+    Crew: t('person.deptCrew'),
+  }
+  const TABS = [
+    { key: 'populer', label: t('nav.popular') },
+  ]
   const params = await searchParams
   const page = Math.max(1, Number(params.sayfa) || 1)
   const sekme = params.sekme ?? 'populer'
@@ -119,10 +122,10 @@ export default async function KisilerPage({ searchParams }: Props) {
       {/* Başlık */}
       <div className="mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
-          Kişiler
+          {t('person.pageTitle')}
         </h1>
         <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
-          Sinema ve dizi dünyasının en popüler isimleri
+          {t('person.pageSubtitle')}
         </p>
       </div>
 
@@ -153,7 +156,7 @@ export default async function KisilerPage({ searchParams }: Props) {
       {people.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {people.map(person => (
-            <ProfileCard key={person.id} person={person} />
+            <ProfileCard key={person.id} person={person} deptLabels={deptLabels} />
           ))}
         </div>
       ) : (
@@ -162,7 +165,7 @@ export default async function KisilerPage({ searchParams }: Props) {
           style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
         >
           <IconUser className="h-12 w-12 mb-4 opacity-30" style={{ color: 'var(--text-secondary)' }} />
-          <p style={{ color: 'var(--text-secondary)' }}>Kişi bulunamadı.</p>
+          <p style={{ color: 'var(--text-secondary)' }}>{t('person.notFoundList')}</p>
         </div>
       )}
 
@@ -177,12 +180,12 @@ export default async function KisilerPage({ searchParams }: Props) {
               style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}
             >
               <IconChevronLeft className="h-4 w-4" />
-              Önceki
+              {t('common.prev')}
             </Link>
           ) : (
             <span className="px-4 py-2 rounded-xl text-sm opacity-30 select-none"
               style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
-              <IconChevronLeft className="h-4 w-4 inline" /> Önceki
+              <IconChevronLeft className="h-4 w-4 inline" /> {t('common.prev')}
             </span>
           )}
 
@@ -235,13 +238,13 @@ export default async function KisilerPage({ searchParams }: Props) {
               className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all"
               style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}
             >
-              Sonraki
+              {t('common.next')}
               <IconChevronRight className="h-4 w-4" />
             </Link>
           ) : (
             <span className="px-4 py-2 rounded-xl text-sm opacity-30 select-none"
               style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
-              Sonraki <IconChevronRight className="h-4 w-4 inline" />
+              {t('common.next')} <IconChevronRight className="h-4 w-4 inline" />
             </span>
           )}
         </div>
@@ -249,7 +252,7 @@ export default async function KisilerPage({ searchParams }: Props) {
 
       {/* Toplam */}
       <p className="text-center text-[11px] mt-4" style={{ color: 'var(--text-secondary)', opacity: 0.5 }}>
-        Sayfa {page} / {totalPages.toLocaleString('tr-TR')} · {data.total_results.toLocaleString('tr-TR')} kişi
+        {t('person.paginationSummary', { page, totalPages: totalPages.toLocaleString('tr-TR'), total: data.total_results.toLocaleString('tr-TR') })}
       </p>
     </div>
   )

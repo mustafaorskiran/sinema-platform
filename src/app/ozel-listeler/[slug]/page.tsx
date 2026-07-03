@@ -12,6 +12,7 @@ import {
 } from '@/lib/tmdb'
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -45,6 +46,7 @@ export default async function OzelListeDetayPage({ params, searchParams }: Props
   const list = CURATED_LISTS.find(l => l.slug === slug)
   if (!list) notFound()
 
+  const { t } = await getTranslations()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -69,7 +71,7 @@ export default async function OzelListeDetayPage({ params, searchParams }: Props
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-[--text-secondary] mb-6">
-        <Link href="/ozel-listeler" className="hover:text-white transition-colors">← Özel Listeler</Link>
+        <Link href="/ozel-listeler" className="hover:text-white transition-colors">← {t('specialLists.title')}</Link>
       </div>
 
       {/* Başlık */}
@@ -83,7 +85,7 @@ export default async function OzelListeDetayPage({ params, searchParams }: Props
                 ? 'bg-blue-500/15 text-blue-400'
                 : 'bg-purple-500/15 text-purple-400'
             }`}>
-              {list.mediaType === 'film' ? '🎬 Film' : '📺 Dizi'}
+              {list.mediaType === 'film' ? `🎬 ${t('film.badge')}` : `📺 ${t('series.badge')}`}
             </span>
           </div>
           <p className="text-[--text-secondary] text-sm mt-1">{list.description}</p>
@@ -92,7 +94,7 @@ export default async function OzelListeDetayPage({ params, searchParams }: Props
 
       {/* Sayfa bilgisi */}
       <p className="text-xs text-[--text-secondary] mb-6">
-        Sayfa {page} / {totalPages} · {items.length} sonuç gösteriliyor
+        {t('specialLists.pageInfo', { page, totalPages, count: items.length })}
       </p>
 
       {/* İçerik ızgarası */}
@@ -145,7 +147,7 @@ export default async function OzelListeDetayPage({ params, searchParams }: Props
               href={`/ozel-listeler/${slug}?sayfa=${page - 1}`}
               className="px-4 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
             >
-              ← Önceki
+              ← {t('common.prev')}
             </Link>
           )}
           {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
@@ -170,7 +172,7 @@ export default async function OzelListeDetayPage({ params, searchParams }: Props
               href={`/ozel-listeler/${slug}?sayfa=${page + 1}`}
               className="px-4 py-2 rounded-lg rounded-xl text-sm text-[--text-secondary] hover:text-white transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
             >
-              Sonraki →
+              {t('common.next')} →
             </Link>
           )}
         </div>

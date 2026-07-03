@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getCountryBySlug } from '@/lib/countries'
 import { discoverMovieRaw, discoverTVRaw, getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb'
+import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
 import UlkeClient from './UlkeClient'
 
@@ -19,6 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function UlkePage({ params, searchParams }: Props) {
+  const { t } = await getTranslations()
   const { slug } = await params
   const { tab = 'filmler', sayfa } = await searchParams
   const page = Math.max(1, Number(sayfa) || 1)
@@ -62,14 +64,14 @@ export default async function UlkePage({ params, searchParams }: Props) {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-[--text-secondary] mb-6">
-        <Link href="/ulke" className="hover:text-white transition-colors">← Ülke Sineması</Link>
+        <Link href="/ulke" className="hover:text-white transition-colors">← {t('country.countryCinema')}</Link>
       </div>
 
       {/* Başlık */}
       <div className="flex items-center gap-4 mb-8">
         <span className="text-5xl">{country.flag}</span>
         <div>
-          <h1 className="text-2xl font-bold text-white">{country.name} Sineması</h1>
+          <h1 className="text-2xl font-bold text-white">{t('country.countrySinemasi', { country: country.name })}</h1>
           {country.nativeName && country.nativeName !== country.name && (
             <p className="text-sm text-[--text-secondary]">{country.nativeName}</p>
           )}

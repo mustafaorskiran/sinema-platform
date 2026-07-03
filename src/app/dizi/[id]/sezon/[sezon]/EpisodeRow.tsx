@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Episode {
   episode_number: number
@@ -21,6 +22,7 @@ interface Props {
 }
 
 export default function EpisodeRow({ episode, seriesId, seasonNumber, isWatched: initialWatched, isLoggedIn }: Props) {
+  const { t } = useLocale()
   const [watched, setWatched] = useState(initialWatched)
   const [loading, setLoading] = useState(false)
   const [expanded, setExpanded] = useState(false)
@@ -92,7 +94,7 @@ export default function EpisodeRow({ episode, seriesId, seasonNumber, isWatched:
             )}
             {episode.runtime && (
               <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.25)' }}>
-                · {episode.runtime} dk
+                · {episode.runtime} {t('film.runtime')}
               </span>
             )}
           </div>
@@ -108,7 +110,7 @@ export default function EpisodeRow({ episode, seriesId, seasonNumber, isWatched:
               ? { background: 'linear-gradient(135deg, #E11D48, #be123c)', color: 'white' }
               : { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.4)' }
             }
-            title={watched ? 'İzlenmedi olarak işaretle' : 'İzlendi olarak işaretle'}
+            title={watched ? t('series.markUnwatched') : t('series.markWatched')}
           >
             {loading ? (
               <svg className="animate-spin w-3 h-3" viewBox="0 0 24 24" fill="none">

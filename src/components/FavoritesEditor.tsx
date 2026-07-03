@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useLocale } from '@/context/LocaleContext'
 
 interface FavoriteItem {
   id: string
@@ -20,6 +21,7 @@ interface Props {
 
 export default function FavoritesEditor({ favorites, isOwnProfile }: Props) {
   const router = useRouter()
+  const { t } = useLocale()
   const [editing, setEditing] = useState<number | null>(null)
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<{ id: number; title: string; poster: string | null; type: string }[]>([])
@@ -79,13 +81,13 @@ export default function FavoritesEditor({ favorites, isOwnProfile }: Props) {
                       onClick={() => { setEditing(pos); setQuery(''); setResults([]) }}
                       className="text-xs bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-full transition-colors"
                     >
-                      Değiştir
+                      {t('favorites.change')}
                     </button>
                     <button
                       onClick={() => remove(pos)}
                       className="text-xs bg-red-500/20 hover:bg-red-500/40 text-red-400 px-3 py-1 rounded-full transition-colors"
                     >
-                      Kaldır
+                      {t('favorites.remove')}
                     </button>
                   </div>
                 )}
@@ -103,7 +105,7 @@ export default function FavoritesEditor({ favorites, isOwnProfile }: Props) {
             {editing === pos && (
               <div className="absolute top-0 left-0 z-50 w-64 rounded-xl shadow-xl p-3" style={{ background: 'rgba(14,20,32,0.98)', border: '1px solid rgba(255,255,255,0.1)' }}>
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-xs font-semibold text-white">Film / Dizi seç</p>
+                  <p className="text-xs font-semibold text-white">{t('favorites.pickTitle')}</p>
                   <button onClick={() => setEditing(null)} className="text-[--text-secondary] hover:text-white text-lg leading-none">×</button>
                 </div>
                 <input
@@ -111,10 +113,10 @@ export default function FavoritesEditor({ favorites, isOwnProfile }: Props) {
                   type="text"
                   value={query}
                   onChange={e => search(e.target.value)}
-                  placeholder="Ara..."
+                  placeholder={t('favorites.searchPlaceholder')}
                   className="w-full text-sm rounded-xl rounded-lg px-3 py-2 text-white placeholder-[--text-secondary] outline-none focus:border-[--accent]" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}
                 />
-                {searching && <p className="text-xs text-[--text-secondary] mt-2">Aranıyor...</p>}
+                {searching && <p className="text-xs text-[--text-secondary] mt-2">{t('favorites.searching')}</p>}
                 <div className="mt-2 space-y-1 max-h-48 overflow-y-auto">
                   {results.map(r => (
                     <button

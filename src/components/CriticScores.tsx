@@ -1,9 +1,12 @@
+import { getTranslations } from '@/lib/i18n'
+
 interface OmdbRating { Source: string; Value: string }
 interface OmdbResponse { Ratings?: OmdbRating[]; imdbRating?: string; Response?: string }
 interface Props { imdbId: string | null | undefined }
 
 export default async function CriticScores({ imdbId }: Props) {
   if (!imdbId) return null
+  const { t } = await getTranslations()
   let data: OmdbResponse | null = null
   try {
     const apiKey = process.env.OMDB_API_KEY ?? ''
@@ -41,7 +44,7 @@ export default async function CriticScores({ imdbId }: Props) {
       }}>
       <div className="px-4 py-3" style={{ borderBottom: '1px solid rgba(212,168,67,0.08)', background: 'rgba(212,168,67,0.02)' }}>
         <p className="text-[9.5px] font-bold uppercase tracking-[0.18em]" style={{ color: 'rgba(212,168,67,0.5)' }}>
-          Eleştirmen Skorları
+          {t('criticScores.title')}
         </p>
       </div>
       <div className="flex flex-wrap gap-3 p-4">

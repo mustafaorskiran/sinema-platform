@@ -1,12 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import { LOCALES, type Locale } from '@/lib/i18n-config'
 import { useLocale } from '@/context/LocaleContext'
 import { IconChevronDown } from '@/components/icons'
 
 export default function LanguageSwitcher() {
   const { locale } = useLocale()
+  const router = useRouter()
+  const [, startTransition] = useTransition()
   const [open, setOpen] = useState(false)
 
   const current = LOCALES.find(l => l.code === locale) ?? LOCALES[0]
@@ -14,7 +17,9 @@ export default function LanguageSwitcher() {
   function switchLocale(code: Locale) {
     document.cookie = `locale=${code};path=/;max-age=31536000;SameSite=Lax`
     setOpen(false)
-    window.location.reload()
+    startTransition(() => {
+      router.refresh()
+    })
   }
 
   return (

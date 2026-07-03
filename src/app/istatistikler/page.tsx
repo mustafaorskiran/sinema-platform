@@ -1,14 +1,15 @@
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 export const metadata: Metadata = {
   title: 'Platform İstatistikleri | Sinezon',
   description: 'Sinezon platformunun genel istatistikleri: kullanıcı, yorum, izleme listesi verileri.',
 }
 
-async function fetchFilmTitle(mediaId: number): Promise<string> {
+async function fetchFilmTitle(mediaId: number, t: (key: string, params?: Record<string, string | number>) => string): Promise<string> {
   const apiKey = process.env.TMDB_API_KEY
-  if (!apiKey) return `Film #${mediaId}`
+  if (!apiKey) return t('stats.filmFallback', { id: mediaId })
   try {
     const res = await fetch(
       `https://api.themoviedb.org/3/movie/${mediaId}?language=tr-TR`,
@@ -17,15 +18,16 @@ async function fetchFilmTitle(mediaId: number): Promise<string> {
         next: { revalidate: 86400 },
       }
     )
-    if (!res.ok) return `Film #${mediaId}`
+    if (!res.ok) return t('stats.filmFallback', { id: mediaId })
     const data = await res.json()
-    return data.title ?? data.original_title ?? `Film #${mediaId}`
+    return data.title ?? data.original_title ?? t('stats.filmFallback', { id: mediaId })
   } catch {
-    return `Film #${mediaId}`
+    return t('stats.filmFallback', { id: mediaId })
   }
 }
 
 export default async function IstatistiklerPage() {
+  const { t } = await getTranslations()
   const supabase = await createClient()
 
   const [
@@ -62,7 +64,7 @@ export default async function IstatistiklerPage() {
     top5Ids.map(async ({ id, count }) => ({
       id,
       count,
-      title: await fetchFilmTitle(id),
+      title: await fetchFilmTitle(id, t),
     }))
   )
 
@@ -88,10 +90,10 @@ export default async function IstatistiklerPage() {
   const maxMonthly = Math.max(...monthlyData.map(m => m.count), 1)
 
   const stats = [
-    { label: 'Kullanıcı', value: userCount ?? 0, icon: '👤', color: '#60a5fa' },
-    { label: 'Yorum', value: reviewCount ?? 0, icon: '💬', color: 'var(--accent)' },
-    { label: 'İzleme Listesi', value: watchlistCount ?? 0, icon: '📋', color: '#a78bfa' },
-    { label: 'Bu Hafta', value: weeklyCount ?? 0, icon: '📈', color: '#34d399' },
+    { label: t('stats.users'), value: userCount ?? 0, icon: '👤', color: '#60a5fa' },
+    { label: t('stats.reviews'), value: reviewCount ?? 0, icon: '💬', color: 'var(--accent)' },
+    { label: t('stats.watchlist'), value: watchlistCount ?? 0, icon: '📋', color: '#a78bfa' },
+    { label: t('stats.thisWeek'), value: weeklyCount ?? 0, icon: '📈', color: '#34d399' },
   ]
 
   return (
@@ -102,10 +104,10 @@ export default async function IstatistiklerPage() {
       {/* Başlık */}
       <div className="mb-10 text-center">
         <h1 className="text-3xl sm:text-4xl font-extrabold" style={{ color: 'var(--text-primary)' }}>
-          Sinezon İstatistikleri
+          {t('stats.title')}
         </h1>
         <p className="text-sm mt-2" style={{ color: 'var(--text-secondary)' }}>
-          Platformun genel rakamları
+          {t('stats.subtitle')}
         </p>
       </div>
 
@@ -138,10 +140,10 @@ export default async function IstatistiklerPage() {
         style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
       >
         <h2 className="text-lg font-bold mb-5" style={{ color: 'var(--text-primary)', borderLeft: '3px solid var(--accent)', paddingLeft: '10px' }}>
-          En Çok İzlenen Filmler
+          {t('stats.mostWatchedTitle')}
         </h2>
         {top5Films.length === 0 ? (
-          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Henüz yeterli veri yok.</p>
+          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{t('stats.noDataYet')}</p>
         ) : (
           <div className="space-y-3">
             {top5Films.map((film, i) => (
@@ -165,7 +167,7 @@ export default async function IstatistiklerPage() {
                   className="text-xs px-2 py-1 rounded-full font-semibold"
                   style={{ background: 'rgba(var(--accent-rgb, 225,29,72), 0.15)', color: 'var(--accent)' }}
                 >
-                  {film.count} yorum
+                  {t('stats.reviewCount', { count: film.count })}
                 </span>
               </a>
             ))}
@@ -178,7 +180,7 @@ export default async function IstatistiklerPage() {
         style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(212,168,67,0.1)' }}>
         <div className="flex items-center gap-3 mb-6">
           <div className="w-1 h-5 rounded-full" style={{ background: 'linear-gradient(180deg, #D4A843, #E11D48)' }} />
-          <h2 className="text-base font-bold" style={{ color: 'var(--text-primary)' }}>Son 12 Ay Yorum Aktivitesi</h2>
+          <h2 className="text-base font-bold" style={{ color: 'var(--text-primary)' }}>{t('stats.monthlyActivityTitle')}</h2>
         </div>
         <div className="flex items-end gap-1.5 h-32">
           {monthlyData.map((m) => {
@@ -213,7 +215,7 @@ export default async function IstatistiklerPage() {
       <div className="rounded-2xl p-6"
         style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
         <h2 className="text-lg font-bold mb-3" style={{ color: 'var(--text-primary)', borderLeft: '3px solid #34d399', paddingLeft: '10px' }}>
-          Bu Hafta
+          {t('stats.thisWeek')}
         </h2>
         <div className="flex items-center gap-4">
           <div className="h-16 w-16 rounded-2xl flex items-center justify-center text-2xl font-extrabold"
@@ -221,8 +223,8 @@ export default async function IstatistiklerPage() {
             {weeklyCount ?? 0}
           </div>
           <div>
-            <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>yorum eklendi</p>
-            <p className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>Son 7 gün içinde</p>
+            <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{t('stats.reviewsAdded')}</p>
+            <p className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>{t('stats.last7Days')}</p>
           </div>
         </div>
       </div>

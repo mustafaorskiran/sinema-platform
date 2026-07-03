@@ -1,11 +1,13 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { getTranslations } from '@/lib/i18n'
 import { IconCalendarDays, IconPlus, IconUsers } from '@/components/icons'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Film Gecesi | SineMa' }
 
 export default async function FilmGecesiPage() {
+  const { t } = await getTranslations()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -33,15 +35,15 @@ export default async function FilmGecesiPage() {
         <div>
           <div className="flex items-center gap-3 mb-1">
             <IconCalendarDays className="h-7 w-7 text-[--accent]" />
-            <h1 className="text-2xl font-bold text-white">Film Gecesi</h1>
+            <h1 className="text-2xl font-bold text-white">{t('filmNight.title')}</h1>
           </div>
-          <p className="text-sm text-[--text-secondary] ml-10">Arkadaşlarınla izleme etkinliği planla</p>
+          <p className="text-sm text-[--text-secondary] ml-10">{t('filmNight.subtitle')}</p>
         </div>
         {user && (
           <Link href="/film-gecesi/yeni"
             className="flex items-center gap-2 px-4 py-2 rounded-full text-white text-sm font-semibold transition-all hover:scale-105 active:scale-95"
             style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', boxShadow: '0 4px 14px rgba(225,29,72,0.3)' }}>
-            <IconPlus className="h-4 w-4" /> Etkinlik Oluştur
+            <IconPlus className="h-4 w-4" /> {t('filmNight.createEvent')}
           </Link>
         )}
       </div>
@@ -49,13 +51,13 @@ export default async function FilmGecesiPage() {
       {(!parties || parties.length === 0) ? (
         <div className="text-center py-24 rounded-2xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <p className="text-4xl mb-4">🎬</p>
-          <p className="text-lg font-medium text-white mb-2">Henüz etkinlik yok</p>
-          <p className="text-sm text-[--text-secondary] mb-6">Film gecesi oluştur, arkadaşlarını davet et!</p>
+          <p className="text-lg font-medium text-white mb-2">{t('filmNight.noEvents')}</p>
+          <p className="text-sm text-[--text-secondary] mb-6">{t('filmNight.noEventsDesc')}</p>
           {user && (
             <Link href="/film-gecesi/yeni"
               className="inline-block text-white text-sm font-semibold px-6 py-2.5 rounded-full transition-all hover:scale-105"
               style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)', boxShadow: '0 4px 14px rgba(225,29,72,0.3)' }}>
-              İlk Etkinliği Oluştur
+              {t('filmNight.createFirstEvent')}
             </Link>
           )}
         </div>
@@ -101,21 +103,21 @@ export default async function FilmGecesiPage() {
                         </span>
                       )}
                       <span className="flex items-center gap-1">
-                        <IconUsers className="h-3 w-3" /> {memberCount} katılımcı
+                        <IconUsers className="h-3 w-3" /> {t('filmNight.participantsCount', { count: memberCount })}
                       </span>
-                      <span>{itemCount} içerik</span>
+                      <span>{t('filmNight.itemsCount', { count: itemCount })}</span>
                     </div>
                   </div>
 
                   <div className="shrink-0">
                     {isJoined ? (
                       <span className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold bg-green-500/20 text-green-400 border border-green-500/30 rounded-full">
-                        ✓ Katılıyorum
+                        {t('filmNight.joinedBadge')}
                       </span>
                     ) : user ? (
                       <Link href={`/film-gecesi/${party.id}`}
                         className="inline-flex items-center px-3 py-1.5 text-xs font-semibold bg-[--accent] hover:bg-[--accent-hover] text-white rounded-full transition-colors">
-                        Katıl
+                        {t('filmNight.joinButton')}
                       </Link>
                     ) : null}
                   </div>

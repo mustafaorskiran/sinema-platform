@@ -2,11 +2,13 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import ConversationList from './ConversationList'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 export const metadata: Metadata = { title: 'Mesajlar' }
 
 export default async function MesajlarPage() {
   const supabase = await createClient()
+  const { t } = await getTranslations()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/giris')
 
@@ -23,7 +25,7 @@ export default async function MesajlarPage() {
     <>
       {/* Mobil: tam liste göster */}
       <div className="md:hidden">
-        <h1 className="text-xl font-bold text-white mb-4">Mesajlar</h1>
+        <h1 className="text-xl font-bold text-white mb-4">{t('messages.title')}</h1>
         <ConversationList
           conversations={(conversations ?? []) as any[]}
           currentUserId={user.id}
@@ -34,8 +36,8 @@ export default async function MesajlarPage() {
       <div className="hidden md:flex flex-col items-center justify-center h-[60vh] rounded-2xl"
         style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
         <p className="text-4xl mb-3">💬</p>
-        <p className="text-sm font-medium text-white mb-1">Bir konuşma seç</p>
-        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>Soldan bir konuşmaya tıkla</p>
+        <p className="text-sm font-medium text-white mb-1">{t('messages.selectConversation')}</p>
+        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>{t('messages.selectConversationHint')}</p>
       </div>
     </>
   )

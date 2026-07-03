@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
 
 export const revalidate = 3600
@@ -34,9 +35,9 @@ interface TopItem {
 }
 
 const PERIODS = [
-  { id: 'hafta', label: 'Bu Hafta', days: 7 },
-  { id: 'ay',    label: 'Bu Ay',    days: 30 },
-  { id: 'tum',   label: 'Tüm Zamanlar', days: 0 },
+  { id: 'hafta', labelKey: 'top10Page.thisWeek', days: 7 },
+  { id: 'ay',    labelKey: 'top10Page.thisMonth', days: 30 },
+  { id: 'tum',   labelKey: 'top10Page.allTime', days: 0 },
 ]
 
 interface PageProps {
@@ -44,6 +45,7 @@ interface PageProps {
 }
 
 export default async function Top10Page({ searchParams }: PageProps) {
+  const { t } = await getTranslations()
   const params = await searchParams
   const donem = params.donem ?? 'hafta'
   const period = PERIODS.find(p => p.id === donem) ?? PERIODS[0]
@@ -203,7 +205,7 @@ export default async function Top10Page({ searchParams }: PageProps) {
       start.setDate(now.getDate() - 29)
       return `${start.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })} – ${now.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}`
     }
-    return 'Tüm zamanlar'
+    return t('top10Page.allTimeLower')
   })()
 
   return (
@@ -229,7 +231,7 @@ export default async function Top10Page({ searchParams }: PageProps) {
                 ? { background: 'var(--accent)', color: '#fff' }
                 : { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.08)' }
               }>
-              {p.label}
+              {t(p.labelKey)}
             </Link>
           )
         })}

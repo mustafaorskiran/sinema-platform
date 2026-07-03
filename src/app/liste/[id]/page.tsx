@@ -7,6 +7,7 @@ import ListeYorumlar from './ListeYorumlar'
 import ListeActions from './ListeActions'
 import ListeItemsView from './ListeItemsView'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props { params: Promise<{ id: string }> }
 
@@ -40,6 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ListePage({ params }: Props) {
   const { id } = await params
   const supabase = await createClient()
+  const { t } = await getTranslations()
   const { data: { user } } = await supabase.auth.getUser()
 
   const { data: list } = await supabase
@@ -143,13 +145,13 @@ export default async function ListePage({ params }: Props) {
                 className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold"
                 style={{ background: 'rgba(225,29,72,0.9)', color: 'white' }}
               >
-                ✦ Editöryal
+                ✦ {t('list.editorial')}
               </span>
             )}
             <span className="inline-flex items-center gap-1.5 text-[11px]" style={{ color: 'var(--text-secondary)' }}>
               {list.public
-                ? <><IconGlobe className="h-3.5 w-3.5" /> Herkese açık</>
-                : <><IconLock className="h-3.5 w-3.5" /> Gizli</>
+                ? <><IconGlobe className="h-3.5 w-3.5" /> {t('list.public')}</>
+                : <><IconLock className="h-3.5 w-3.5" /> {t('list.private')}</>
               }
             </span>
           </div>
@@ -173,7 +175,7 @@ export default async function ListePage({ params }: Props) {
                 style={{ border: '1px solid var(--border)', color: 'var(--text-secondary)' }}
               >
                 <IconPencil className="h-3.5 w-3.5" />
-                Düzenle
+                {t('common.edit')}
               </Link>
             )}
           </div>
@@ -199,9 +201,9 @@ export default async function ListePage({ params }: Props) {
             {/* İstatistik kartları */}
             <div className="flex items-center gap-2 ml-auto">
               {[
-                { value: itemsWithMedia.length, label: 'İçerik' },
-                { value: likeCount,             label: 'Beğeni'  },
-                { value: followCount,           label: 'Takipçi' },
+                { value: itemsWithMedia.length, label: t('list.statContent') },
+                { value: likeCount,             label: t('list.statLikes')  },
+                { value: followCount,           label: t('list.statFollowers') },
               ].map(stat => (
                 <div
                   key={stat.label}

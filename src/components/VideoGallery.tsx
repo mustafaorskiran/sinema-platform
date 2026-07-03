@@ -2,18 +2,20 @@
 
 import { useState } from 'react'
 import type { TMDbVideo } from '@/lib/types'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Props {
   videos: TMDbVideo[]
   title: string
 }
 
-const TYPE_LABELS: Record<string, string> = {
-  Trailer: 'Fragman', Teaser: 'Teaser', Clip: 'Klip',
-  Featurette: 'Tanıtım', 'Behind the Scenes': 'Kamera Arkası', Bloopers: 'Bloopers',
+const TYPE_LABEL_KEYS: Record<string, string> = {
+  Trailer: 'trailer', Teaser: 'teaser', Clip: 'clip',
+  Featurette: 'featurette', 'Behind the Scenes': 'behindTheScenes', Bloopers: 'bloopers',
 }
 
 export default function VideoGallery({ videos, title }: Props) {
+  const { t } = useLocale()
   const ytVideos = videos.filter(v => v.site === 'YouTube')
   const [activeKey, setActiveKey] = useState<string>(
     ytVideos.find(v => v.type === 'Trailer' && v.official)?.key ||
@@ -26,11 +28,16 @@ export default function VideoGallery({ videos, title }: Props) {
   const active = ytVideos.find(v => v.key === activeKey) ?? ytVideos[0]
   const rest = ytVideos.filter(v => v.key !== activeKey).slice(0, 8)
 
+  function typeLabel(type?: string | null) {
+    const key = TYPE_LABEL_KEYS[type ?? '']
+    return key ? t(`videoGallery.${key}`) : type
+  }
+
   return (
     <div className="mt-12" id="videolar">
       <div className="flex items-center gap-3 mb-4">
         <div className="w-1 h-6 rounded-full shrink-0" style={{ background: 'linear-gradient(180deg, #f87171 0%, #E11D48 100%)' }} />
-        <h2 className="text-xl font-bold text-white tracking-tight">🎬 Videolar</h2>
+        <h2 className="text-xl font-bold text-white tracking-tight">🎬 {t('videoGallery.title')}</h2>
         <span className="text-sm" style={{ color: 'rgba(255,255,255,0.3)' }}>({ytVideos.length})</span>
       </div>
       <div className="flex gap-5 flex-col lg:flex-row">
@@ -46,7 +53,7 @@ export default function VideoGallery({ videos, title }: Props) {
           </div>
           <div className="mt-2">
             <p className="text-white font-medium text-sm">{active.name}</p>
-            <p className="text-xs text-[--text-secondary]">{TYPE_LABELS[active.type ?? ''] ?? active.type}</p>
+            <p className="text-xs text-[--text-secondary]">{typeLabel(active.type)}</p>
           </div>
         </div>
 
@@ -74,7 +81,7 @@ export default function VideoGallery({ videos, title }: Props) {
                 </div>
                 <div className="p-1.5 text-left">
                   <p className="text-xs text-white font-medium line-clamp-1">{v.name}</p>
-                  <p className="text-[10px] text-[--text-secondary]">{TYPE_LABELS[v.type ?? ''] ?? v.type}</p>
+                  <p className="text-[10px] text-[--text-secondary]">{typeLabel(v.type)}</p>
                 </div>
               </button>
             ))}

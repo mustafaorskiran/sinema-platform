@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { GENRE_MAP } from '@/lib/genres'
 import { IconFilm, IconLayers, IconTv } from '@/components/icons'
+import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Türler | Sinezon' }
@@ -13,7 +14,8 @@ const GENRE_EMOJIS: Record<string, string> = {
   western: '🤠', gizem: '🕵️',
 }
 
-export default function TurlerPage() {
+export default async function TurlerPage() {
+  const { t } = await getTranslations()
   const entries = Object.entries(GENRE_MAP)
 
   return (
@@ -21,14 +23,14 @@ export default function TurlerPage() {
       {/* Hero başlık */}
       <div className="mb-10">
         <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: 'rgba(225,29,72,0.7)' }}>
-          ✦ Kategoriler
+          ✦ {t('genre.categoriesLabel')}
         </p>
         <div className="flex items-center gap-3 mb-2">
           <IconLayers className="h-7 w-7" style={{ color: 'var(--accent)' }} />
-          <h1 className="text-3xl font-bold text-white">Tüm Türler</h1>
+          <h1 className="text-3xl font-bold text-white">{t('genre.allGenres')}</h1>
         </div>
         <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
-          Favori türünü seç, o türün en iyi filmlerini ve dizilerini keşfet
+          {t('genre.pageSubtitle')}
         </p>
       </div>
 
@@ -50,9 +52,9 @@ export default function TurlerPage() {
                 {info.name}
               </span>
               <span className="flex items-center gap-1.5" style={{ color: 'rgba(255,255,255,0.3)' }}>
-                {info.movieGenreId && <><IconFilm className="h-3 w-3" /><span className="text-[10px]">Film</span></>}
+                {info.movieGenreId && <><IconFilm className="h-3 w-3" /><span className="text-[10px]">{t('genre.film')}</span></>}
                 {info.movieGenreId && info.tvGenreId && <span className="text-[10px]">·</span>}
-                {info.tvGenreId && <><IconTv className="h-3 w-3" /><span className="text-[10px]">Dizi</span></>}
+                {info.tvGenreId && <><IconTv className="h-3 w-3" /><span className="text-[10px]">{t('genre.dizi')}</span></>}
               </span>
             </Link>
           )

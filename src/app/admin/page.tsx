@@ -1,5 +1,6 @@
 ﻿import { requireAdmin } from '@/lib/admin'
 import { createClient } from '@/lib/supabase/server'
+import { getTranslations } from '@/lib/i18n'
 import { IconStar, IconUsers, IconMessageSquare, IconReply, IconHeart, IconUserCheck } from '@/components/icons'
 import type { Metadata } from 'next'
 
@@ -7,6 +8,7 @@ export const metadata: Metadata = { title: 'Admin — Dashboard' }
 
 export default async function AdminDashboard() {
   await requireAdmin()
+  const { t } = await getTranslations()
   const supabase = await createClient()
 
   const now = new Date()
@@ -42,7 +44,8 @@ export default async function AdminDashboard() {
   ])
 
   // Aylık kullanıcı büyüme grafiği (son 6 ay)
-  const MONTHS = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara']
+  const MONTH_KEYS = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec']
+  const MONTHS = MONTH_KEYS.map(k => t(`admin.dashboard.month.${k}`))
   const buildMonthly = (rows: { created_at: string }[] | null, months: number) => {
     const map: Record<string, number> = {}
     for (const r of rows ?? []) {
@@ -65,16 +68,16 @@ export default async function AdminDashboard() {
   const reviewTrend = reviewDelta >= 0 ? `+${reviewDelta}` : `${reviewDelta}`
 
   const stats = [
-    { label: 'Kullanıcı',  value: userCount ?? 0,   icon: IconUsers,        color: 'text-blue-400'   },
-    { label: 'Yorum',      value: reviewCount ?? 0,  icon: IconMessageSquare, color: 'text-green-400'  },
-    { label: 'Yanıt',      value: replyCount ?? 0,   icon: IconReply,        color: 'text-purple-400' },
-    { label: 'Beğeni',     value: likeCount ?? 0,    icon: IconHeart,        color: 'text-red-400'    },
-    { label: 'Takip',      value: followCount ?? 0,  icon: IconUserCheck,    color: 'text-yellow-400' },
+    { label: t('admin.dashboard.statUser'),   value: userCount ?? 0,   icon: IconUsers,        color: 'text-blue-400'   },
+    { label: t('admin.dashboard.statReview'), value: reviewCount ?? 0,  icon: IconMessageSquare, color: 'text-green-400'  },
+    { label: t('admin.dashboard.statReply'),  value: replyCount ?? 0,   icon: IconReply,        color: 'text-purple-400' },
+    { label: t('admin.dashboard.statLike'),   value: likeCount ?? 0,    icon: IconHeart,        color: 'text-red-400'    },
+    { label: t('admin.dashboard.statFollow'), value: followCount ?? 0,  icon: IconUserCheck,    color: 'text-yellow-400' },
   ]
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-white mb-8">Dashboard</h1>
+      <h1 className="text-2xl font-bold text-white mb-8">{t('admin.dashboard.title')}</h1>
 
       {/* İstatistik kartları */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-10">
@@ -91,9 +94,9 @@ export default async function AdminDashboard() {
       {/* Haftalık Özet */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         {[
-          { label: 'Bu Hafta Yorum', value: weekReviews ?? 0, sub: `${reviewTrend} geçen haftaya göre`, color: reviewDelta >= 0 ? '#4ade80' : '#f87171' },
-          { label: 'Bu Hafta Kayıt', value: weekUsers ?? 0, sub: 'yeni kullanıcı', color: '#60a5fa' },
-          { label: 'Ort. Puan', value: '', sub: 'genel platform', color: '#D4A843' },
+          { label: t('admin.dashboard.weekReviewLabel'), value: weekReviews ?? 0, sub: t('admin.dashboard.weekReviewSub', { trend: reviewTrend }), color: reviewDelta >= 0 ? '#4ade80' : '#f87171' },
+          { label: t('admin.dashboard.weekUserLabel'), value: weekUsers ?? 0, sub: t('admin.dashboard.weekUserSub'), color: '#60a5fa' },
+          { label: t('admin.dashboard.avgRatingLabel'), value: '', sub: t('admin.dashboard.avgRatingSub'), color: '#D4A843' },
         ].map((s, i) => (
           <div key={i} className="rounded-xl p-5"
             style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(212,168,67,0.08)' }}>
@@ -107,8 +110,8 @@ export default async function AdminDashboard() {
       {/* Büyüme Grafikleri */}
       <div className="grid lg:grid-cols-2 gap-4 mb-8">
         {[
-          { title: 'Kullanıcı Büyümesi', data: userGrowth, max: maxUser, color: '#60a5fa' },
-          { title: 'Yorum Aktivitesi', data: reviewGrowth, max: maxReview, color: 'var(--accent)' },
+          { title: t('admin.dashboard.userGrowthTitle'), data: userGrowth, max: maxUser, color: '#60a5fa' },
+          { title: t('admin.dashboard.reviewGrowthTitle'), data: reviewGrowth, max: maxReview, color: 'var(--accent)' },
         ].map(chart => (
           <div key={chart.title} className="rounded-xl p-5 overflow-hidden"
             style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
@@ -135,8 +138,8 @@ export default async function AdminDashboard() {
         <div className="rounded-xl overflow-hidden"
           style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-            <h2 className="font-semibold text-white">Son Yorumlar</h2>
-            <a href="/admin/yorumlar" className="text-xs text-[--accent] hover:underline">Tümü →</a>
+            <h2 className="font-semibold text-white">{t('admin.dashboard.recentReviewsTitle')}</h2>
+            <a href="/admin/yorumlar" className="text-xs text-[--accent] hover:underline">{t('admin.dashboard.seeAll')}</a>
           </div>
           <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.04)' }}>
             {(recentReviews ?? []).map(r => (
@@ -158,16 +161,16 @@ export default async function AdminDashboard() {
         <div className="rounded-xl overflow-hidden"
           style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <div className="px-5 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-            <h2 className="font-semibold text-white">Tablo Boyutları</h2>
+            <h2 className="font-semibold text-white">{t('admin.dashboard.tableSizesTitle')}</h2>
           </div>
           <div className="p-5 grid grid-cols-2 gap-3">
             {[
-              { label: 'Kullanıcılar', value: userCount ?? 0, color: '#60a5fa' },
-              { label: 'Yorumlar', value: reviewCount ?? 0, color: '#D4A843' },
-              { label: 'Beğeniler', value: likeCount ?? 0, color: '#f87171' },
-              { label: 'Takipler', value: followCount ?? 0, color: '#4ade80' },
-              { label: 'Yanıtlar', value: replyCount ?? 0, color: '#a78bfa' },
-              { label: 'Bu Hafta Yorum', value: weekReviews ?? 0, color: '#fb923c' },
+              { label: t('admin.dashboard.statUsersPlural'), value: userCount ?? 0, color: '#60a5fa' },
+              { label: t('admin.dashboard.statReviewsPlural'), value: reviewCount ?? 0, color: '#D4A843' },
+              { label: t('admin.dashboard.statLikesPlural'), value: likeCount ?? 0, color: '#f87171' },
+              { label: t('admin.dashboard.statFollowsPlural'), value: followCount ?? 0, color: '#4ade80' },
+              { label: t('admin.dashboard.statRepliesPlural'), value: replyCount ?? 0, color: '#a78bfa' },
+              { label: t('admin.dashboard.weekReviewLabel'), value: weekReviews ?? 0, color: '#fb923c' },
             ].map(s => (
               <div key={s.label} className="rounded-lg px-3 py-2.5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
                 <p className="text-lg font-black" style={{ color: s.color }}>{s.value.toLocaleString('tr-TR')}</p>
@@ -181,8 +184,8 @@ export default async function AdminDashboard() {
         <div className="rounded-xl overflow-hidden"
           style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-            <h2 className="font-semibold text-white">Son Kayıtlar</h2>
-            <a href="/admin/kullanicilar" className="text-xs text-[--accent] hover:underline">Tümü →</a>
+            <h2 className="font-semibold text-white">{t('admin.dashboard.recentUsersTitle')}</h2>
+            <a href="/admin/kullanicilar" className="text-xs text-[--accent] hover:underline">{t('admin.dashboard.seeAll')}</a>
           </div>
           <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.04)' }}>
             {(recentUsers ?? []).map(u => (
@@ -199,8 +202,8 @@ export default async function AdminDashboard() {
                   </div>
                 </div>
                 <div className="flex gap-1 shrink-0">
-                  {u.is_admin && <span className="text-[10px] bg-[--accent]/20 text-[--accent] px-1.5 py-0.5 rounded font-bold">ADMİN</span>}
-                  {u.banned && <span className="text-[10px] bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded font-bold">BANLANDI</span>}
+                  {u.is_admin && <span className="text-[10px] bg-[--accent]/20 text-[--accent] px-1.5 py-0.5 rounded font-bold">{t('admin.users.badgeAdmin')}</span>}
+                  {u.banned && <span className="text-[10px] bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded font-bold">{t('admin.users.badgeBanned')}</span>}
                 </div>
               </div>
             ))}

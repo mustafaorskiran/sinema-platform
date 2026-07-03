@@ -1,21 +1,23 @@
 import Link from 'next/link'
 import { MOODS } from '@/lib/moods'
+import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Ruh Haline Göre İzle | Sinezon' }
 
-export default function RuhHaliPage() {
+export default async function RuhHaliPage() {
+  const { t } = await getTranslations()
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
       <div className="text-center mb-12">
         <p className="text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color: 'rgba(212,168,67,0.5)' }}>
-          Kişiselleştirilmiş
+          {t('mood.personalized')}
         </p>
         <h1 className="text-3xl sm:text-4xl font-extrabold mb-3" style={{ color: 'var(--text-primary)' }}>
-          Şu an nasıl hissediyorsun?
+          {t('mood.howAreYouFeeling')}
         </h1>
         <p className="text-sm max-w-sm mx-auto" style={{ color: 'var(--text-secondary)' }}>
-          Ruh haline göre sana özel film ve dizi önerileri hazırlıyoruz
+          {t('mood.personalizedSubtitle')}
         </p>
       </div>
 

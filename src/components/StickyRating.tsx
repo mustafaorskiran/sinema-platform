@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Props {
   mediaId: number
@@ -12,6 +13,7 @@ interface Props {
 }
 
 export default function StickyRating({ mediaId, mediaType, title, posterPath, isLoggedIn, currentRating }: Props) {
+  const { t } = useLocale()
   const [visible, setVisible] = useState(false)
   const [rating, setRating] = useState(currentRating ?? 0)
   const [hovered, setHovered] = useState(0)
@@ -51,7 +53,7 @@ export default function StickyRating({ mediaId, mediaType, title, posterPath, is
           )}
           <div className="flex-1 min-w-0">
             <p className="text-white text-xs font-semibold truncate">{title}</p>
-            <p className="text-[--text-secondary] text-[10px]">Puanını ver</p>
+            <p className="text-[--text-secondary] text-[10px]">{t('review.rateNow')}</p>
           </div>
           <div className="flex items-center gap-0.5 shrink-0">
             {[1,2,3,4,5,6,7,8,9,10].map(n => (

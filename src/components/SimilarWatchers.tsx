@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { IconStar } from '@/components/icons'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Item {
   id: number
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export default function SimilarWatchers({ mediaId, mediaType }: Props) {
+  const { t } = useLocale()
   const [items, setItems] = useState<Item[]>([])
   const [count, setCount] = useState(0)
   const [loading, setLoading] = useState(true)
@@ -40,10 +42,10 @@ export default function SimilarWatchers({ mediaId, mediaType }: Props) {
     <div className="mt-10">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-white">
-          Bunu İzleyenler Şunu da İzledi
+          {t('similarWatchers.title')}
         </h2>
         {count > 0 && (
-          <span className="text-xs text-[--text-secondary]">{count} ortak izleyici</span>
+          <span className="text-xs text-[--text-secondary]">{t('similarWatchers.commonViewers', { count })}</span>
         )}
       </div>
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">

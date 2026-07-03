@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { IconClose, IconChevronLeft, IconChevronRight, IconExpand } from '@/components/icons'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Img {
   file_path: string
@@ -18,6 +19,7 @@ interface Props {
 const BASE = 'https://image.tmdb.org/t/p/'
 
 export default function BackdropGallery({ backdrops, posters = [], title }: Props) {
+  const { t } = useLocale()
   const [tab, setTab] = useState<'backdrops' | 'posters'>('backdrops')
   const [lightbox, setLightbox] = useState<{ images: Img[]; index: number } | null>(null)
 
@@ -38,7 +40,7 @@ export default function BackdropGallery({ backdrops, posters = [], title }: Prop
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-white">Fotoğraflar</h2>
+        <h2 className="text-xl font-bold text-white">{t('backdropGallery.title')}</h2>
 
         {posters.length > 0 ? (
           <div className="flex gap-1">
@@ -50,7 +52,7 @@ export default function BackdropGallery({ backdrops, posters = [], title }: Prop
                   : 'text-[--text-secondary] hover:text-white hover:bg-white/5'
               }`}
             >
-              Görseller ({backdrops.length})
+              {t('backdropGallery.imagesTab', { count: backdrops.length })}
             </button>
             <button
               onClick={() => setTab('posters')}
@@ -60,12 +62,12 @@ export default function BackdropGallery({ backdrops, posters = [], title }: Prop
                   : 'text-[--text-secondary] hover:text-white hover:bg-white/5'
               }`}
             >
-              Afişler ({posters.length})
+              {t('backdropGallery.postersTab', { count: posters.length })}
             </button>
           </div>
         ) : (
           backdrops.length > 9 && (
-            <span className="text-xs text-[--text-secondary]">{backdrops.length} fotoğraf</span>
+            <span className="text-xs text-[--text-secondary]">{t('backdropGallery.photoCount', { count: backdrops.length })}</span>
           )
         )}
       </div>
@@ -81,7 +83,7 @@ export default function BackdropGallery({ backdrops, posters = [], title }: Prop
             >
               <img
                 src={`${BASE}w500${bd.file_path}`}
-                alt={`${title} - görsel ${i + 1}`}
+                alt={t('backdropGallery.imageAlt', { title, index: i + 1 })}
                 className="w-full h-full object-cover group-hover:opacity-90 transition-opacity"
               />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
@@ -108,7 +110,7 @@ export default function BackdropGallery({ backdrops, posters = [], title }: Prop
             >
               <img
                 src={`${BASE}w342${p.file_path}`}
-                alt={`${title} - afiş ${i + 1}`}
+                alt={t('backdropGallery.posterAlt', { title, index: i + 1 })}
                 className="w-full h-full object-cover group-hover:opacity-90 transition-opacity"
               />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
@@ -142,7 +144,7 @@ export default function BackdropGallery({ backdrops, posters = [], title }: Prop
           <div className="max-w-5xl max-h-[85vh] px-16" onClick={e => e.stopPropagation()}>
             <img
               src={`${BASE}original${lightbox.images[lightbox.index].file_path}`}
-              alt={`${title} - ${lightbox.index + 1}`}
+              alt={t('backdropGallery.lightboxAlt', { title, index: lightbox.index + 1 })}
               className="max-w-full max-h-[85vh] object-contain rounded-xl"
             />
             <p className="text-center text-xs text-white/40 mt-2">

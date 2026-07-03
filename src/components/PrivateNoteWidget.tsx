@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Props {
   mediaId: number
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export default function PrivateNoteWidget({ mediaId, mediaType, initialNote }: Props) {
+  const { t } = useLocale()
   const [note, setNote] = useState(initialNote)
   const [editing, setEditing] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -30,13 +32,13 @@ export default function PrivateNoteWidget({ mediaId, mediaType, initialNote }: P
   return (
     <div className="rounded-xl p-4" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
       <div className="flex items-center justify-between mb-2">
-        <p className="text-xs font-semibold text-[--text-secondary] uppercase tracking-wider">🔒 Özel Notum</p>
+        <p className="text-xs font-semibold text-[--text-secondary] uppercase tracking-wider">{t('note.title')}</p>
         {!editing && (
           <button
             onClick={() => setEditing(true)}
             className="text-xs text-[--accent] hover:underline"
           >
-            {note ? 'Düzenle' : 'Not ekle'}
+            {note ? t('note.editBtn') : t('note.addBtn')}
           </button>
         )}
       </div>
@@ -49,7 +51,7 @@ export default function PrivateNoteWidget({ mediaId, mediaType, initialNote }: P
             onChange={e => setNote(e.target.value)}
             rows={3}
             maxLength={500}
-            placeholder="Sadece sen görebilirsin..."
+            placeholder={t('note.placeholder')}
             className="w-full rounded-lg px-3 py-2 text-sm text-white resize-none focus:outline-none"
             style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
           />
@@ -59,7 +61,7 @@ export default function PrivateNoteWidget({ mediaId, mediaType, initialNote }: P
               className="flex-1 py-1.5 text-xs rounded-lg transition-colors hover:text-white"
               style={{ border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.45)' }}
             >
-              İptal
+              {t('note.cancel')}
             </button>
             <button
               onClick={save}
@@ -67,7 +69,7 @@ export default function PrivateNoteWidget({ mediaId, mediaType, initialNote }: P
               className="flex-1 py-1.5 text-xs disabled:opacity-50 text-white rounded-lg font-semibold transition-all hover:scale-[1.02]"
               style={{ background: 'linear-gradient(135deg, #E11D48, #be123c)' }}
             >
-              {saving ? 'Kaydediliyor...' : 'Kaydet'}
+              {saving ? t('note.saving') : t('note.save')}
             </button>
           </div>
         </div>
@@ -75,9 +77,9 @@ export default function PrivateNoteWidget({ mediaId, mediaType, initialNote }: P
         <div>
           {note
             ? <p className="text-sm text-[--text-secondary] leading-relaxed">{note}</p>
-            : <p className="text-xs text-[--text-secondary] italic">Henüz not eklemedin.</p>
+            : <p className="text-xs text-[--text-secondary] italic">{t('note.empty')}</p>
           }
-          {saved && <p className="text-xs text-green-400 mt-1">✓ Kaydedildi</p>}
+          {saved && <p className="text-xs text-green-400 mt-1">{t('note.saved')}</p>}
         </div>
       )}
     </div>

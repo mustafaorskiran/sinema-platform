@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
+import { useLocale } from '@/context/LocaleContext'
 
 interface UserData {
   username: string
@@ -14,6 +15,7 @@ interface UserData {
 }
 
 export default function UserHoverCard({ username, children }: { username: string; children: React.ReactNode }) {
+  const { t } = useLocale()
   const [userData, setUserData] = useState<UserData | null>(null)
   const [visible, setVisible] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -89,11 +91,11 @@ export default function UserHoverCard({ username, children }: { username: string
                 <div className="flex gap-3 text-center">
                   <div>
                     <p className="text-xs font-bold text-white">{userData.reviewCount}</p>
-                    <p className="text-[9px]" style={{ color: 'rgba(255,255,255,0.3)' }}>Yorum</p>
+                    <p className="text-[9px]" style={{ color: 'rgba(255,255,255,0.3)' }}>{t('social.reviewsLabel')}</p>
                   </div>
                   <div>
                     <p className="text-xs font-bold text-white">{userData.followerCount}</p>
-                    <p className="text-[9px]" style={{ color: 'rgba(255,255,255,0.3)' }}>Takipçi</p>
+                    <p className="text-[9px]" style={{ color: 'rgba(255,255,255,0.3)' }}>{t('profile.followers')}</p>
                   </div>
                 </div>
               </>

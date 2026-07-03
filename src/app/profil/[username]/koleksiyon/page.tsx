@@ -4,17 +4,20 @@ import { createClient } from '@/lib/supabase/server'
 import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb'
 import ShelfView from './ShelfView'
 import type { Metadata } from 'next'
+import { getTranslations } from '@/lib/i18n'
 
 interface Props {
   params: Promise<{ username: string }>
   searchParams: Promise<{ gorunum?: string; format?: string }>
 }
 
-export const FORMAT_LABELS: Record<string, { label: string; emoji: string; color: string }> = {
-  dijital: { label: 'Dijital', emoji: '💻', color: '#3b82f6' },
-  bluray:  { label: 'Blu-ray', emoji: '💿', color: '#0ea5e9' },
-  dvd:     { label: 'DVD', emoji: '📀', color: '#8b5cf6' },
-  vhs:     { label: 'VHS', emoji: '📼', color: '#f59e0b' },
+export function getFormatLabels(t: (key: string) => string): Record<string, { label: string; emoji: string; color: string }> {
+  return {
+    dijital: { label: t('collection.formatDigital'), emoji: '💻', color: '#3b82f6' },
+    bluray:  { label: t('collection.formatBluray'), emoji: '💿', color: '#0ea5e9' },
+    dvd:     { label: t('collection.formatDvd'), emoji: '📀', color: '#8b5cf6' },
+    vhs:     { label: t('collection.formatVhs'), emoji: '📼', color: '#f59e0b' },
+  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -26,6 +29,8 @@ export default async function KoleksiyonPage({ params, searchParams }: Props) {
   const { username } = await params
   const { gorunum = 'raf', format: filterFormat } = await searchParams
   const supabase = await createClient()
+  const { t } = await getTranslations()
+  const FORMAT_LABELS = getFormatLabels(t)
 
   const { data: profile } = await supabase.from('profiles').select('id, username').eq('username', username).single()
   if (!profile) notFound()
@@ -69,8 +74,8 @@ export default async function KoleksiyonPage({ params, searchParams }: Props) {
 
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-white">Koleksiyon</h1>
-          <p className="text-[--text-secondary] text-sm mt-1">{withMedia.length} içerik</p>
+          <h1 className="text-2xl font-bold text-white">{t('profile.collectionTab.title')}</h1>
+          <p className="text-[--text-secondary] text-sm mt-1">{t('profile.collectionTab.itemCount', { count: withMedia.length })}</p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -78,7 +83,7 @@ export default async function KoleksiyonPage({ params, searchParams }: Props) {
           <div className="flex gap-1">
             <Link href={`/profil/${username}/koleksiyon?gorunum=${gorunum}`}
               className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${!filterFormat ? 'border-[--accent] text-white bg-[--accent]/10' : 'border-[--border] text-[--text-secondary] hover:text-white'}`}>
-              Tümü
+              {t('common.all')}
             </Link>
             {Object.entries(FORMAT_LABELS).filter(([f]) => formatCounts[f]).map(([f, info]) => (
               <Link key={f} href={`/profil/${username}/koleksiyon?gorunum=${gorunum}&format=${f}`}
@@ -92,11 +97,11 @@ export default async function KoleksiyonPage({ params, searchParams }: Props) {
           <div className="flex items-center rounded-xl rounded-lg overflow-hidden" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
             <Link href={`/profil/${username}/koleksiyon?gorunum=raf${filterFormat ? `&format=${filterFormat}` : ''}`}
               className={`px-3 py-2 text-xs font-medium transition-colors ${gorunum === 'raf' ? 'bg-[--accent] text-white' : 'text-[--text-secondary] hover:text-white'}`}>
-              🗄️ Raf
+              🗄️ {t('profile.collectionTab.shelfView')}
             </Link>
             <Link href={`/profil/${username}/koleksiyon?gorunum=grid${filterFormat ? `&format=${filterFormat}` : ''}`}
               className={`px-3 py-2 text-xs font-medium transition-colors ${gorunum === 'grid' ? 'bg-[--accent] text-white' : 'text-[--text-secondary] hover:text-white'}`}>
-              ⊞ Grid
+              ⊞ {t('profile.collectionTab.gridView')}
             </Link>
           </div>
         </div>
@@ -105,8 +110,8 @@ export default async function KoleksiyonPage({ params, searchParams }: Props) {
       {withMedia.length === 0 ? (
         <div className="text-center py-20 text-[--text-secondary]">
           <p className="text-5xl mb-4">📦</p>
-          <p className="font-medium text-white mb-1">Koleksiyon boş</p>
-          <p className="text-sm">Film veya dizi sayfasından koleksiyona ekleyebilirsin.</p>
+          <p className="font-medium text-white mb-1">{t('profile.collectionTab.empty')}</p>
+          <p className="text-sm">{t('profile.collectionTab.emptyHint')}</p>
         </div>
       ) : gorunum === 'raf' ? (
         <ShelfView items={withMedia} />
