@@ -12,7 +12,7 @@ export const LOCALES: LocaleInfo[] = [
   { code: 'en', name: 'English',   flag: '🇬🇧', tmdb: 'en-US' },
   { code: 'de', name: 'Deutsch',   flag: '🇩🇪', tmdb: 'de-DE' },
   { code: 'nl', name: 'Nederlands',flag: '🇳🇱', tmdb: 'nl-NL' },
-  { code: 'fr', name: 'Français',  flag: '🇨🇭', tmdb: 'fr-FR' },
+  { code: 'fr', name: 'Français',  flag: '🇫🇷', tmdb: 'fr-FR' },
   { code: 'ga', name: 'Gaeilge',   flag: '🇮🇪', tmdb: 'en-US' },
   { code: 'pt', name: 'Português', flag: '🇵🇹', tmdb: 'pt-PT' },
   { code: 'zh', name: '中文',       flag: '🇨🇳', tmdb: 'zh-CN' },

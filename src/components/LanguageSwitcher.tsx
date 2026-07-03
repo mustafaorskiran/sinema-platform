@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { LOCALES, type Locale } from '@/lib/i18n-config'
 import { useLocale } from '@/context/LocaleContext'
 import { IconChevronDown } from '@/components/icons'
+import { FlagIcon } from '@/components/icons/flags'
 
 export default function LanguageSwitcher() {
   const { locale } = useLocale()
@@ -34,7 +35,7 @@ export default function LanguageSwitcher() {
         }}
         aria-label="Language / Dil"
       >
-        <span className="text-base leading-none">{current.flag}</span>
+        <FlagIcon code={current.code} size={18} className="shrink-0" />
         <span className="hidden lg:inline text-xs">{current.name}</span>
         <IconChevronDown className={`h-3 w-3 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
       </button>
@@ -66,7 +67,7 @@ export default function LanguageSwitcher() {
                   background: lang.code === locale ? 'rgba(225,29,72,0.08)' : undefined,
                 }}
               >
-                <span className="text-base w-5 text-center leading-none shrink-0">{lang.flag}</span>
+                <FlagIcon code={lang.code} size={20} className="shrink-0" />
                 <span>{lang.name}</span>
                 {lang.code === locale && (
                   <span className="ml-auto h-1.5 w-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
