@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState, useMemo, useEffect } from 'react'
-import { IconEye, IconEyeOff, IconFilm, IconMail } from '@/components/icons'
+import { IconEye, IconEyeOff, IconMail } from '@/components/icons'
 import { createClient } from '@/lib/supabase/client'
 import GoogleAuthButton from '@/components/GoogleAuthButton'
 import { useLocale } from '@/context/LocaleContext'
@@ -113,7 +114,7 @@ export default function KayitPage() {
       <div className="w-full max-w-sm relative z-10">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2.5 mb-5">
-            <IconFilm className="h-7 w-7" style={{ color: 'var(--accent)' }} />
+            <Image src="/logo-mark.png" alt="Sinezon" width={32} height={32} className="h-8 w-8" priority />
             <span className="text-2xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>
               Sine<span style={{ color: 'var(--accent)' }}>zon</span>
             </span>

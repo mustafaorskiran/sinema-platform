@@ -115,7 +115,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang={locale} className="h-full dark">
       <head>
         <meta name="theme-color" content="#080A0F" />
-        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        <link rel="apple-touch-icon" href="/icons/apple-icon.png" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
         {process.env.NEXT_PUBLIC_ADSENSE_ID && (
