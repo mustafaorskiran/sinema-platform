@@ -501,8 +501,8 @@ export default function OnboardingClient({ ratingItems }: { ratingItems: RatingI
               </span>
             )}
 
-            {/* Atla (step 2, 4, 5 için) */}
-            {(step === 2 || step === 4 || step === 5) && (
+            {/* Atla (step 2, 3, 4, 5 için) */}
+            {(step === 2 || step === 3 || step === 4 || step === 5) && (
               <button
                 onClick={() => {
                   if (step === 5) handleComplete()
