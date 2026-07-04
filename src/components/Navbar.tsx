@@ -157,7 +157,7 @@ export default function Navbar({ user }: NavbarProps) {
 
   const suggestionDropdown = showDropdown && (
     <div
-      className="absolute top-full left-0 right-0 mt-2 rounded-2xl border border-[--border] shadow-2xl z-[9999] overflow-hidden backdrop-blur-xl"
+      className="absolute top-full left-0 right-0 mt-2 rounded-2xl border border-[--border] shadow-2xl z-[9999] overflow-y-auto max-h-[70vh] backdrop-blur-xl"
       style={{ background: 'rgba(11,15,25,0.97)' }}
     >
       <div className="px-4 pt-3 pb-1">
@@ -208,7 +208,7 @@ export default function Navbar({ user }: NavbarProps) {
   )
 
   const historyDropdown = showHistory && popularItems.length > 0 && (
-    <div className="absolute top-full left-0 right-0 mt-2 rounded-2xl border border-[--border] shadow-2xl z-[9999] overflow-hidden backdrop-blur-xl"
+    <div className="absolute top-full left-0 right-0 mt-2 rounded-2xl border border-[--border] shadow-2xl z-[9999] overflow-y-auto max-h-[70vh] backdrop-blur-xl"
       style={{ background: 'rgba(11,15,25,0.97)' }}>
       <div className="px-4 pt-3 pb-1">
         <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: 'var(--text-secondary)' }}>{t('nav.popular')}</p>

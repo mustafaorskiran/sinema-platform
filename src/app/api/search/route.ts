@@ -1,66 +1,66 @@
+import { createClient } from '@/lib/supabase/server'
 import { getPosterUrl } from '@/lib/tmdb'
 import { NextRequest, NextResponse } from 'next/server'
 
-const BASE_URL = 'https://api.themoviedb.org/3'
-
-type RawResult = {
+interface Result {
   id: number
-  title?: string
-  name?: string
-  original_title?: string
-  original_name?: string
-  poster_path: string | null
-  release_date?: string
-  first_air_date?: string
-  media_type: string
-}
-
-async function tmdbSearch(query: string, language: string): Promise<{ results: RawResult[] }> {
-  const url = new URL(`${BASE_URL}/search/multi`)
-  url.searchParams.set('query', query)
-  url.searchParams.set('language', language)
-  const res = await fetch(url.toString(), {
-    headers: {
-      Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
-      accept: 'application/json',
-    },
-    next: { revalidate: 60 },
-  })
-  if (!res.ok) return { results: [] }
-  return res.json()
+  title: string
+  original_title: string | null
+  type: 'movie' | 'tv'
+  poster: string | null
+  year: string | null
+  popularity: number
 }
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
-  const q = searchParams.get('q') ?? ''
+  const q = searchParams.get('q')?.trim() ?? ''
   const limit = Math.min(Number(searchParams.get('limit') ?? '6'), 20)
 
   if (q.length < 2) return NextResponse.json({ results: [] })
 
-  // Türkçe + orijinal dil aramasını paralel çalıştır
-  const [trData, enData] = await Promise.all([
-    tmdbSearch(q, 'tr-TR').catch(() => ({ results: [] as RawResult[] })),
-    tmdbSearch(q, 'en-US').catch(() => ({ results: [] as RawResult[] })),
+  const supabase = await createClient()
+  const perType = limit + 5
+
+  // Türkçe (title/name) veya orijinal dil (original_title/original_name) başlığına göre eşleşir
+  const [{ data: movies }, { data: series }] = await Promise.all([
+    supabase.from('movies')
+      .select('tmdb_id, title, original_title, poster_path, release_date, popularity')
+      .or(`title.ilike.%${q}%,original_title.ilike.%${q}%`)
+      .order('popularity', { ascending: false })
+      .limit(perType),
+    supabase.from('series')
+      .select('tmdb_id, name, original_name, poster_path, first_air_date, popularity')
+      .or(`name.ilike.%${q}%,original_name.ilike.%${q}%`)
+      .order('popularity', { ascending: false })
+      .limit(perType),
   ])
 
-  // Merge + dedup: TR sonuçları öncelikli (lokalize başlık için)
-  const seen = new Set<number>()
-  const merged: RawResult[] = []
-  for (const r of [...(trData.results ?? []), ...(enData.results ?? [])]) {
-    if ((r.media_type === 'movie' || r.media_type === 'tv') && !seen.has(r.id)) {
-      seen.add(r.id)
-      merged.push(r)
-    }
-  }
+  const combined: Result[] = [
+    ...(movies ?? []).map((m): Result => ({
+      id: m.tmdb_id,
+      title: m.title,
+      original_title: m.original_title ?? null,
+      type: 'movie',
+      poster: getPosterUrl(m.poster_path, 'w342'),
+      year: (m.release_date ?? '').slice(0, 4) || null,
+      popularity: m.popularity ?? 0,
+    })),
+    ...(series ?? []).map((s): Result => ({
+      id: s.tmdb_id,
+      title: s.name,
+      original_title: s.original_name ?? null,
+      type: 'tv',
+      poster: getPosterUrl(s.poster_path, 'w342'),
+      year: (s.first_air_date ?? '').slice(0, 4) || null,
+      popularity: s.popularity ?? 0,
+    })),
+  ]
 
-  const results = merged.slice(0, limit).map((r) => ({
-    id: r.id,
-    title: r.title || r.name || '',
-    original_title: r.original_title || r.original_name || null,
-    type: r.media_type,
-    poster: getPosterUrl(r.poster_path, 'w342'),
-    year: (r.release_date || r.first_air_date || '').substring(0, 4) || null,
-  }))
+  const results = combined
+    .sort((a, b) => b.popularity - a.popularity)
+    .slice(0, limit)
+    .map(({ popularity: _popularity, ...rest }) => rest)
 
   return NextResponse.json({ results })
 }
