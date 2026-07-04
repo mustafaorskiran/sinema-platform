@@ -111,7 +111,7 @@ export default async function AdminKullanicilarPage({ searchParams }: Props) {
       {totalPages > 1 && (
         <div className="flex justify-center gap-2 mt-6">
           {page > 1 && (
-            <a href={`/admin/kullanicilar?sayfa=${page - 1}${q ? `&q=${q}` : ''}`}
+            <a href={`/Mustafa/kullanicilar?sayfa=${page - 1}${q ? `&q=${q}` : ''}`}
               className="px-4 py-2 rounded-lg text-sm transition-all hover:text-white"
               style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
               {t('admin.users.prevPage')}
@@ -119,7 +119,7 @@ export default async function AdminKullanicilarPage({ searchParams }: Props) {
           )}
           <span className="px-4 py-2 text-sm text-[--text-secondary] flex items-center">{page} / {totalPages}</span>
           {page < totalPages && (
-            <a href={`/admin/kullanicilar?sayfa=${page + 1}${q ? `&q=${q}` : ''}`}
+            <a href={`/Mustafa/kullanicilar?sayfa=${page + 1}${q ? `&q=${q}` : ''}`}
               className="px-4 py-2 rounded-lg text-sm transition-all hover:text-white"
               style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
               {t('admin.users.nextPage')}

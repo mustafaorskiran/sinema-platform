@@ -139,7 +139,7 @@ export default async function AdminDashboard() {
           style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
             <h2 className="font-semibold text-white">{t('admin.dashboard.recentReviewsTitle')}</h2>
-            <a href="/admin/yorumlar" className="text-xs text-[--accent] hover:underline">{t('admin.dashboard.seeAll')}</a>
+            <a href="/Mustafa/yorumlar" className="text-xs text-[--accent] hover:underline">{t('admin.dashboard.seeAll')}</a>
           </div>
           <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.04)' }}>
             {(recentReviews ?? []).map(r => (
@@ -185,7 +185,7 @@ export default async function AdminDashboard() {
           style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
             <h2 className="font-semibold text-white">{t('admin.dashboard.recentUsersTitle')}</h2>
-            <a href="/admin/kullanicilar" className="text-xs text-[--accent] hover:underline">{t('admin.dashboard.seeAll')}</a>
+            <a href="/Mustafa/kullanicilar" className="text-xs text-[--accent] hover:underline">{t('admin.dashboard.seeAll')}</a>
           </div>
           <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.04)' }}>
             {(recentUsers ?? []).map(u => (

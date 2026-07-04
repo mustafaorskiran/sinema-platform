@@ -122,7 +122,7 @@ export default function UserDropdown({ user }: Props) {
 
             {user.is_admin && (
               <DropLink
-                href="/admin"
+                href="/Mustafa"
                 label={t('nav.adminPanelLink')}
                 icon={<IconShield className="h-3.5 w-3.5 shrink-0" style={{ color: 'var(--accent)' }} />}
                 accent

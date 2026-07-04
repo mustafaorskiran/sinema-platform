@@ -29,7 +29,7 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   // Admin route protection (secondary layer — AdminLayout already calls requireAdmin())
-  if (request.nextUrl.pathname.startsWith('/admin')) {
+  if (request.nextUrl.pathname.startsWith('/Mustafa')) {
     if (!user) {
       const loginUrl = new URL('/auth/giris', request.url)
       loginUrl.searchParams.set('next', request.nextUrl.pathname)

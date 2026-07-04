@@ -9,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: '*',
         allow: '/',
         disallow: [
-          '/admin/',
+          '/Mustafa/',
           '/api/',
           '/auth/callback',
           '/auth/giris',
@@ -25,7 +25,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: 'Googlebot',
         allow: '/',
-        disallow: ['/admin/', '/api/', '/auth/', '/profil/duzenle', '/mesajlar/', '/bildirimler', '/gunluk'],
+        disallow: ['/Mustafa/', '/api/', '/auth/', '/profil/duzenle', '/mesajlar/', '/bildirimler', '/gunluk'],
       },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,

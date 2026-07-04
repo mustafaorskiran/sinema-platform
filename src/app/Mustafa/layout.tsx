@@ -14,17 +14,17 @@ import {
 } from '@/components/icons'
 
 const NAV = [
-  { href: '/admin',              label: 'Dashboard',    icon: IconLayoutDashboard },
-  { href: '/admin/kullanicilar', label: 'Kullanıcılar', icon: IconUsers },
-  { href: '/admin/yorumlar',     label: 'Yorumlar',     icon: IconMessageSquare },
-  { href: '/admin/moderasyon',   label: 'Moderasyon',   icon: IconEyeOff },
-  { href: '/admin/alintilar',    label: 'Alıntılar',    icon: IconMessageSquare },
-  { href: '/admin/raporlar',     label: 'Raporlar',     icon: IconAlertTriangle },
-  { href: '/admin/ozel-secim',   label: 'Özel Seçim',   icon: IconStar },
-  { href: '/admin/listeler',     label: 'Listeler',     icon: IconList },
-  { href: '/admin/trivia',       label: 'Trivia',       icon: IconMessageSquare },
-  { href: '/admin/push',         label: 'Push',         icon: IconBell },
-  { href: '/admin/loglar',       label: 'Loglar',       icon: IconClock },
+  { href: '/Mustafa',              label: 'Dashboard',    icon: IconLayoutDashboard },
+  { href: '/Mustafa/kullanicilar', label: 'Kullanıcılar', icon: IconUsers },
+  { href: '/Mustafa/yorumlar',     label: 'Yorumlar',     icon: IconMessageSquare },
+  { href: '/Mustafa/moderasyon',   label: 'Moderasyon',   icon: IconEyeOff },
+  { href: '/Mustafa/alintilar',    label: 'Alıntılar',    icon: IconMessageSquare },
+  { href: '/Mustafa/raporlar',     label: 'Raporlar',     icon: IconAlertTriangle },
+  { href: '/Mustafa/ozel-secim',   label: 'Özel Seçim',   icon: IconStar },
+  { href: '/Mustafa/listeler',     label: 'Listeler',     icon: IconList },
+  { href: '/Mustafa/trivia',       label: 'Trivia',       icon: IconMessageSquare },
+  { href: '/Mustafa/push',         label: 'Push',         icon: IconBell },
+  { href: '/Mustafa/loglar',       label: 'Loglar',       icon: IconClock },
 ]
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
