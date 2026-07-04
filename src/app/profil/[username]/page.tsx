@@ -11,8 +11,6 @@ import ActivityHeatmap from '@/components/ActivityHeatmap'
 import PinReviewButton from '@/components/PinReviewButton'
 import WatchGoalWidget from '@/components/WatchGoalWidget'
 import YearlyChallenge from '@/components/YearlyChallenge'
-import InviteSection from '@/components/InviteSection'
-import EmbedWidgetCopy from '@/components/EmbedWidgetCopy'
 import ProfileViewTracker from '@/components/ProfileViewTracker'
 import BlockButton from '@/components/BlockButton'
 import DiziProgressWidget from './DiziProgressWidget'
@@ -504,14 +502,6 @@ export default async function ProfilPage({ params }: Props) {
               </a>
             ))}
           </div>
-        </div>
-      )}
-
-      {/* Arkadaşlarını Davet Et (sadece kendi profilinde) */}
-      {isOwnProfile && <InviteSection />}
-      {isOwnProfile && (
-        <div className="mb-8">
-          <EmbedWidgetCopy username={profile.username} />
         </div>
       )}
 
