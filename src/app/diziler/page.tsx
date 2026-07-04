@@ -11,8 +11,8 @@ import { IconTv, IconStarFilled } from '@/components/icons'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Diziler',
-  description: 'Türkçe dizi arşivi — türe, yıla ve platforma göre filtrele, puan ver ve yorum yaz.',
+  title: 'Dizi Listesi ve Yorumları',
+  description: 'En iyi diziler listesi — türe, yıla ve platforma göre filtrele, puan ver, dizi yorumu yaz.',
   alternates: { canonical: '/diziler' },
 }
 

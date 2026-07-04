@@ -16,8 +16,8 @@ import { IconFilm } from '@/components/icons'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Filmler',
-  description: 'Türkçe film arşivi — türe, yıla ve platforma göre filtrele, puan ver ve yorum yaz.',
+  title: 'Film Listesi ve Yorumları',
+  description: 'En iyi filmler listesi — türe, yıla ve platforma göre filtrele, puan ver, film yorumu yaz.',
   alternates: { canonical: '/filmler' },
 }
 

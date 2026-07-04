@@ -11,27 +11,35 @@ import { getLocale, getMessages, createT } from '@/lib/i18n'
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sinezon.com'
 const SITE_NAME = 'Sinezon'
 
+const HOME_TITLE = 'Sinezon — Film ve Dizi Yorumları, Puanlama'
+const HOME_DESC = 'Film ve dizi yorumları oku, puan ver, listeler oluştur. Türkiye\'nin Türkçe sinema topluluğu — IMDb ve Letterboxd tarzı film puanlama platformu.'
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Sinezon — Film & Dizi Dünyası',
+    default: HOME_TITLE,
     template: `%s | ${SITE_NAME}`,
   },
-  description: 'Film ve dizi puan ver, yorum yap, listeler oluştur. Türkçe sinema topluluğu.',
+  description: HOME_DESC,
+  keywords: [
+    'film yorumları', 'dizi yorumları', 'film puanla', 'dizi puanla',
+    'en iyi filmler', 'en iyi diziler', 'film önerisi', 'sinema topluluğu',
+    'film izleme listesi', 'Türkçe film platformu',
+  ],
   manifest: '/manifest.json',
   openGraph: {
     siteName: SITE_NAME,
     locale: 'tr_TR',
     type: 'website',
-    title: 'Sinezon — Film & Dizi Dünyası',
-    description: 'Film ve dizi puan ver, yorum yap, listeler oluştur. Türkçe sinema topluluğu.',
+    title: HOME_TITLE,
+    description: HOME_DESC,
     url: '/',
   },
   twitter: {
     card: 'summary_large_image',
     site: '@sinezon',
-    title: 'Sinezon — Film & Dizi Dünyası',
-    description: 'Film ve dizi puan ver, yorum yap, listeler oluştur. Türkçe sinema topluluğu.',
+    title: HOME_TITLE,
+    description: HOME_DESC,
   },
   alternates: {
     canonical: '/',
@@ -81,11 +89,35 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   const footerText = (messages.footer?.rights as string) ?? '© 2025 SineMa'
 
+  const orgJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: SITE_NAME,
+    url: SITE_URL,
+    logo: `${SITE_URL}/icons/icon-512.png`,
+    sameAs: [],
+  }
+
+  const websiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE_NAME,
+    url: SITE_URL,
+    inLanguage: 'tr',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${SITE_URL}/arama?q={search_term_string}`,
+      'query-input': 'required name=search_term_string',
+    },
+  }
+
   return (
     <html lang={locale} className="h-full dark">
       <head>
         <meta name="theme-color" content="#080A0F" />
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
         {process.env.NEXT_PUBLIC_ADSENSE_ID && (
           <script
             async

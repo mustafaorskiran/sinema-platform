@@ -28,6 +28,7 @@ import DemoRatings from '@/components/DemoRatings'
 import TriviaSection from '@/components/TriviaSection'
 import AwardsSection from '@/components/AwardsSection'
 import Keywords from '@/components/Keywords'
+import BreadcrumbJsonLd from '@/components/BreadcrumbJsonLd'
 import ParentsGuide from '@/components/ParentsGuide'
 import StickyRating from '@/components/StickyRating'
 import PageNav from '@/components/PageNav'
@@ -374,9 +375,16 @@ export default async function FilmPage({ params, searchParams }: Props) {
     ...(imdbId && { sameAs: `https://www.imdb.com/title/${imdbId}/` }),
   }
 
+  const breadcrumbItems = [
+    { name: 'Ana Sayfa', path: '/' },
+    { name: 'Filmler', path: '/filmler' },
+    { name: title, path: `/film/${movieId}` },
+  ]
+
   return (
     <>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+    <BreadcrumbJsonLd items={breadcrumbItems} />
     <div>
       {/* Backdrop */}
       <div className="relative h-[72vh] min-h-[500px] max-h-[860px] overflow-hidden">

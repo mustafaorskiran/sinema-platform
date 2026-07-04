@@ -39,6 +39,7 @@ import AIChatWidget from '@/components/AIChatWidget'
 import AlsoWatched from '@/components/AlsoWatched'
 import FilmOnerButton from '@/components/FilmOnerButton'
 import AdBanner from '@/components/AdBanner'
+import BreadcrumbJsonLd from '@/components/BreadcrumbJsonLd'
 import { IconCake, IconScale, IconTv, IconStar, IconStarFilled, IconClipboard } from '@/components/icons'
 import type { Review } from '@/lib/types'
 import type { Metadata } from 'next'
@@ -371,9 +372,16 @@ export default async function DiziPage({ params, searchParams }: Props) {
     ...(imdbId && { sameAs: `https://www.imdb.com/title/${imdbId}/` }),
   }
 
+  const breadcrumbItems = [
+    { name: 'Ana Sayfa', path: '/' },
+    { name: 'Diziler', path: '/diziler' },
+    { name: title, path: `/dizi/${seriesId}` },
+  ]
+
   return (
     <>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+    <BreadcrumbJsonLd items={breadcrumbItems} />
     <div>
       {/* Backdrop */}
       <div className="relative h-[72vh] min-h-[500px] max-h-[860px] overflow-hidden">

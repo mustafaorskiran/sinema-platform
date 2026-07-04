@@ -192,6 +192,7 @@ export default async function HomePage() {
 
   return (
     <div>
+      <h1 className="sr-only">Sinezon — Film ve Dizi Yorumları, Puanlama ve Listeler</h1>
       {/* ── Hero ─────────────────────────────────────────────────── */}
       {hero && (
         <div className="relative h-[60vh] sm:h-[75vh] min-h-[380px] overflow-hidden">
@@ -210,9 +211,9 @@ export default async function HomePage() {
                   {t('home.heroBadge')}
                 </span>
               </div>
-              <h1 className="text-2xl sm:text-4xl md:text-6xl font-bold text-white leading-tight mb-3 drop-shadow-lg">
+              <h2 className="text-2xl sm:text-4xl md:text-6xl font-bold text-white leading-tight mb-3 drop-shadow-lg">
                 {getMediaTitle(hero)}
-              </h1>
+              </h2>
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center gap-1">
                   <IconStar className="h-4 w-4 fill-[--gold] text-[--gold]" />

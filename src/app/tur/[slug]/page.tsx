@@ -12,6 +12,7 @@ import MovieCard from '@/components/MovieCard'
 import Pagination from '@/components/Pagination'
 import TurSidebar from '@/components/TurSidebar'
 import { getTranslations } from '@/lib/i18n'
+import BreadcrumbJsonLd from '@/components/BreadcrumbJsonLd'
 import type { Metadata } from 'next'
 
 interface Props {
@@ -104,6 +105,10 @@ export default async function TurPage({ params, searchParams }: Props) {
 
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <BreadcrumbJsonLd items={[
+        { name: 'Ana Sayfa', path: '/' },
+        { name: `${genre.name} Filmleri ve Dizileri`, path: `/tur/${slug}` },
+      ]} />
 
       {/* Breadcrumb */}
       <div className="flex gap-2 text-xs text-[--text-secondary] mb-6">
