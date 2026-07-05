@@ -1,8 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { useState } from 'react'
+import Logo from '@/components/Logo'
 import { IconEye, IconEyeOff } from '@/components/icons'
 import { createClient } from '@/lib/supabase/client'
 import GoogleAuthButton from '@/components/GoogleAuthButton'
@@ -51,11 +51,8 @@ export default function GirisPage() {
       <div className="w-full max-w-sm relative z-10">
         {/* Logo */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2.5 mb-5">
-            <Image src="/logo-mark.png" alt="Sinezon" width={32} height={32} className="h-8 w-8" priority />
-            <span className="text-2xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>
-              Sine<span style={{ color: 'var(--accent)' }}>zon</span>
-            </span>
+          <Link href="/" className="inline-flex justify-center mb-5">
+            <Logo variant="full" size="md" />
           </Link>
           <h1 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>{t('auth.welcomeBack')}</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>{t('auth.loginSubtitle')}</p>

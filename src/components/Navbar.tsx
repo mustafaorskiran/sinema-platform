@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { IconSearch, IconFilm, IconTv, IconMenu, IconClose, IconChevronRight } from '@/components/icons'
+import Logo from './Logo'
 import NotificationBell from './NotificationBell'
 import LanguageSwitcher from './LanguageSwitcher'
 import { NavDropdown } from './NavDropdown'
@@ -258,10 +259,7 @@ export default function Navbar({ user }: NavbarProps) {
           {/* LEFT: Logo + Nav links (lg+) */}
           <div className="flex items-center gap-1 shrink-0">
             <Link href="/" className="flex items-center gap-2 shrink-0 group mr-1">
-              <Image src="/logo-mark.png" alt="Sinezon" width={28} height={28} className="h-7 w-7 transition-transform duration-300 group-hover:scale-110" priority />
-              <span className="text-lg font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>
-                Sine<span style={{ color: 'var(--accent)' }}>zon</span>
-              </span>
+              <Logo variant="horizontal" size="md" className="transition-transform duration-300 group-hover:scale-105" />
             </Link>
 
             {/* Nav links — visible only on lg+ to prevent overflow on md */}
@@ -383,10 +381,7 @@ export default function Navbar({ user }: NavbarProps) {
         {/* ── Mobile row (< md) ── */}
         <div className="flex md:hidden h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2 shrink-0 group">
-            <Image src="/logo-mark.png" alt="Sinezon" width={28} height={28} className="h-7 w-7 transition-transform duration-300 group-hover:scale-110" priority />
-            <span className="text-lg font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>
-              Sine<span style={{ color: 'var(--accent)' }}>zon</span>
-            </span>
+            <Logo variant="icon" size="md" className="transition-transform duration-300 group-hover:scale-110" />
           </Link>
 
           <div className="flex items-center gap-1">

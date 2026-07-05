@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import Logo from '@/components/Logo'
 import {
   IconFilm, IconStarFilled, IconPencil, IconClipboard, IconCalendar, IconUsers,
   IconTrophy, IconRobot, IconFire, IconTv, IconMasks, IconNewspaper, IconGift,
@@ -53,9 +54,8 @@ export default async function HakkindaPage() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Hero */}
       <div className="text-center mb-14">
-        <div className="inline-flex items-center gap-2 mb-6">
-          <span className="text-4xl font-black" style={{ color: '#E11D48' }}>Sine</span>
-          <span className="text-4xl font-black" style={{ color: '#D4A843' }}>zon</span>
+        <div className="inline-flex justify-center mb-6">
+          <Logo variant="full" size="md" />
         </div>
         <h1 className="text-3xl font-black text-white mb-3">
           {t('legal.heroTitle')}

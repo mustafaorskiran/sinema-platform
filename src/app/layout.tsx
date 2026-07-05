@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import Navbar from '@/components/Navbar'
+import Logo from '@/components/Logo'
 import BottomNav from '@/components/BottomNav'
 import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration'
 import KeyboardShortcuts from '@/components/KeyboardShortcuts'
@@ -176,7 +177,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               </div>
             </div>
             <div className="max-w-6xl mx-auto px-6 pt-6 flex items-center justify-between" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
-              <p className="font-bold text-white">Sinezon</p>
+              <Logo variant="wordmark" size="sm" />
               <p>{footerText}</p>
             </div>
           </footer>

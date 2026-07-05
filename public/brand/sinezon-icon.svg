@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Sinezon">
+  <path d="M86,26 C64,14 34,20 30,40 C27,54 40,58 58,58" fill="none" stroke="#FFFFFF" stroke-width="15" stroke-linecap="round"/>
+  <path d="M58,58 C76,58 94,62 90,80 C86,100 56,106 30,92" fill="none" stroke="#E50914" stroke-width="15" stroke-linecap="round"/>
+  <polygon points="66,72 66,88 82,80" fill="#FFFFFF"/>
+</svg>
