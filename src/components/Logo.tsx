@@ -11,7 +11,7 @@ const ICON_PATHS = (
   <>
     <path d="M86,26 C64,14 34,20 30,40 C27,54 40,58 58,58" fill="none" stroke="#FFFFFF" strokeWidth={15} strokeLinecap="round" />
     <path d="M58,58 C76,58 94,62 90,80 C86,100 56,106 30,92" fill="none" stroke="#E50914" strokeWidth={15} strokeLinecap="round" />
-    <polygon points="66,72 66,88 82,80" fill="#FFFFFF" />
+    <polygon points="52,60 52,96 88,78" fill="#FFFFFF" />
   </>
 )
 

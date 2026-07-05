@@ -258,8 +258,8 @@ export default function Navbar({ user }: NavbarProps) {
         >
           {/* LEFT: Logo + Nav links (lg+) */}
           <div className="flex items-center gap-1 shrink-0">
-            <Link href="/" className="flex items-center gap-2 shrink-0 group mr-1">
-              <Logo variant="horizontal" size="md" className="transition-transform duration-300 group-hover:scale-105" />
+            <Link href="/" className="flex items-center gap-2 shrink-0 group mr-5">
+              <Logo variant="horizontal" size="sm" className="transition-transform duration-300 group-hover:scale-105" />
             </Link>
 
             {/* Nav links — visible only on lg+ to prevent overflow on md */}

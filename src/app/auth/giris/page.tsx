@@ -51,8 +51,8 @@ export default function GirisPage() {
       <div className="w-full max-w-sm relative z-10">
         {/* Logo */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex justify-center mb-5">
-            <Logo variant="full" size="md" />
+          <Link href="/" className="inline-flex justify-center mb-4">
+            <Logo variant="full" size="sm" />
           </Link>
           <h1 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>{t('auth.welcomeBack')}</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>{t('auth.loginSubtitle')}</p>
