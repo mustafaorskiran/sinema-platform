@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useLocale } from '@/context/LocaleContext'
 
 interface Props {
@@ -47,7 +47,16 @@ const DAY_LABELS = ['Paz', '', 'Sal', '', 'Per', '', 'Cmt']
 export default function ActivityHeatmap({ entries }: Props) {
   const { t } = useLocale()
   const [tooltip, setTooltip] = useState<{ text: string; x: number; y: number } | null>(null)
-  const weeks = useMemo(() => getLastNWeeks(52), [])
+  // `new Date()` bağımlı hesaplama sunucu (UTC) ve istemci (yerel saat dilimi) arasında
+  // gün farkına, dolayısıyla hydration mismatch'e yol açabiliyor — bu yüzden yalnızca
+  // mount sonrası (istemci tarafında) hesaplanıyor.
+  const [weeks, setWeeks] = useState<ReturnType<typeof getLastNWeeks>>([])
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setWeeks(getLastNWeeks(52))
+    setMounted(true)
+  }, [])
 
   const countMap = useMemo(() => {
     const map: Record<string, number> = {}
@@ -69,9 +78,10 @@ export default function ActivityHeatmap({ entries }: Props) {
   }
 
   const totalThisYear = useMemo(() => {
+    if (!mounted) return 0
     const year = new Date().getFullYear()
     return Object.entries(countMap).filter(([k]) => k.startsWith(String(year))).reduce((s, [, v]) => s + v, 0)
-  }, [countMap])
+  }, [countMap, mounted])
 
   // Ay etiketleri için hafta başlarını bul
   const monthLabels: { label: string; weekIdx: number }[] = []
@@ -83,6 +93,12 @@ export default function ActivityHeatmap({ entries }: Props) {
       lastMonth = month
     }
   })
+
+  if (!mounted) {
+    return (
+      <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)', minHeight: 176 }} />
+    )
+  }
 
   return (
     <div className="rounded-xl p-5 overflow-x-auto" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
