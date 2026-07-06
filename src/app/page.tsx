@@ -17,6 +17,22 @@ import { createClient } from '@/lib/supabase/server'
 import { getTranslations } from '@/lib/i18n'
 import type { TMDbMovie } from '@/lib/types'
 
+// Supabase sorgusu belirtilen sürede tamamlanmazsa (DB aşırı yüklendiğinde
+// olduğu gibi) tüm ana sayfanın sonsuza kadar yüklenmesini önlemek için,
+// sorunlu sorguyu görmezden gelip fallback değerle devam eder.
+function withFallback<T>(query: PromiseLike<T>, fallback: T, timeoutMs = 6000): Promise<T> {
+  return new Promise<T>((resolve) => {
+    let settled = false
+    const timer = setTimeout(() => {
+      if (!settled) { settled = true; resolve(fallback) }
+    }, timeoutMs)
+    Promise.resolve(query).then(
+      (value) => { if (!settled) { settled = true; clearTimeout(timer); resolve(value) } },
+      () => { if (!settled) { settled = true; clearTimeout(timer); resolve(fallback) } },
+    )
+  })
+}
+
 export default async function HomePage() {
   const supabase = await createClient()
   const { t } = await getTranslations()
@@ -50,30 +66,30 @@ export default async function HomePage() {
     getTopRatedSeries().catch(() => ({ results: [] as TMDbMovie[] })),
     discoverMovies({ sortBy: 'release_date.desc', minRating: '6' }).catch(() => ({ results: [] })),
     discoverMovies({ minRating: '8', sortBy: 'vote_count.desc' }).catch(() => ({ results: [] })),
-    supabase.from('movies').select('*', { count: 'exact', head: true }),
-    supabase.from('series').select('*', { count: 'exact', head: true }),
-    supabase.from('quotes').select('id,content,character_name,media_id,media_type')
-      .eq('approved', true).order('created_at', { ascending: false }).limit(1).maybeSingle(),
-    supabase.from('featured_picks').select('*').order('created_at', { ascending: false }).limit(1).maybeSingle(),
-    supabase.auth.getUser(),
-    supabase.from('watchlist')
+    withFallback(supabase.from('movies').select('*', { count: 'exact', head: true }), { count: null } as any),
+    withFallback(supabase.from('series').select('*', { count: 'exact', head: true }), { count: null } as any),
+    withFallback(supabase.from('quotes').select('id,content,character_name,media_id,media_type')
+      .eq('approved', true).order('created_at', { ascending: false }).limit(1).maybeSingle(), { data: null } as any),
+    withFallback(supabase.from('featured_picks').select('*').order('created_at', { ascending: false }).limit(1).maybeSingle(), { data: null } as any),
+    withFallback(supabase.auth.getUser(), { data: { user: null } } as any),
+    withFallback(supabase.from('watchlist')
       .select('media_id,media_type')
       .eq('media_type', 'film')
-      .gte('created_at', sevenDaysAgoISO),
-    supabase.from('reviews').select('*', { count: 'exact', head: true }),
-    supabase.from('profiles').select('*', { count: 'exact', head: true }),
-    supabase.from('reviews')
+      .gte('created_at', sevenDaysAgoISO), { data: null } as any),
+    withFallback(supabase.from('reviews').select('*', { count: 'exact', head: true }), { count: null } as any),
+    withFallback(supabase.from('profiles').select('*', { count: 'exact', head: true }), { count: null } as any),
+    withFallback(supabase.from('reviews')
       .select('id, media_id, media_type, content, rating, created_at, profiles(username, avatar_url)')
       .not('content', 'is', null)
       .neq('content', '')
       .gte('rating', 7)
       .order('created_at', { ascending: false })
-      .limit(3),
-    supabase.from('reviews')
+      .limit(3), { data: null } as any),
+    withFallback(supabase.from('reviews')
       .select('user_id, profiles(username, avatar_url)')
       .gte('created_at', sevenDaysAgoISO)
       .order('created_at', { ascending: false })
-      .limit(200),
+      .limit(200), { data: null } as any),
   ])
 
   // Haftalık liderlik — kullanıcı başına yorum sayısı
@@ -121,10 +137,10 @@ export default async function HomePage() {
   let quoteMediaTitle: string | null = null
   if (featuredQuote) {
     if (featuredQuote.media_type === 'film') {
-      const { data: mv } = await supabase.from('movies').select('title').eq('tmdb_id', featuredQuote.media_id).maybeSingle()
+      const { data: mv } = await withFallback(supabase.from('movies').select('title').eq('tmdb_id', featuredQuote.media_id).maybeSingle(), { data: null } as any)
       quoteMediaTitle = mv?.title ?? null
     } else {
-      const { data: sv } = await supabase.from('series').select('name').eq('tmdb_id', featuredQuote.media_id).maybeSingle()
+      const { data: sv } = await withFallback(supabase.from('series').select('name').eq('tmdb_id', featuredQuote.media_id).maybeSingle(), { data: null } as any)
       quoteMediaTitle = sv?.name ?? null
     }
   }
@@ -134,9 +150,9 @@ export default async function HomePage() {
   let personalizedGenres: { items: TMDbMovie[]; name: string; slug: string }[] = []
 
   if (user) {
-    const { data: prof } = await supabase
+    const { data: prof } = await withFallback(supabase
       .from('profiles').select('onboarding_completed,genre_preferences')
-      .eq('id', user.id).maybeSingle()
+      .eq('id', user.id).maybeSingle(), { data: null } as any)
 
     userOnboarded = prof?.onboarding_completed ?? false
     const genrePrefs: number[] = prof?.genre_preferences ?? []

@@ -54,11 +54,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const [moviesRes, seriesRes] = await Promise.all([
       fetch(
         `${SUPABASE_URL}/rest/v1/movies?select=tmdb_id&order=popularity.desc&limit=10000`,
-        { headers, next: { revalidate: 86400 } }
+        { headers, next: { revalidate: 86400 }, signal: AbortSignal.timeout(15000) }
       ),
       fetch(
         `${SUPABASE_URL}/rest/v1/series?select=tmdb_id&order=popularity.desc&limit=10000`,
-        { headers, next: { revalidate: 86400 } }
+        { headers, next: { revalidate: 86400 }, signal: AbortSignal.timeout(15000) }
       ),
     ])
 
@@ -97,11 +97,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
 
     const [listsRes, profilesRes, threadsRes, collectionsRes, editorialRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/lists?select=id,updated_at&public=eq.true&order=updated_at.desc&limit=5000`, { headers, next: { revalidate: 86400 } }),
-      fetch(`${SUPABASE_URL}/rest/v1/profiles?select=username,updated_at&username=not.is.null&order=updated_at.desc&limit=10000`, { headers, next: { revalidate: 86400 } }),
-      fetch(`${SUPABASE_URL}/rest/v1/forum_threads?select=id,updated_at&order=updated_at.desc&limit=5000`, { headers, next: { revalidate: 86400 } }),
-      fetch(`${SUPABASE_URL}/rest/v1/collection?select=user_id,updated_at&order=updated_at.desc&limit=1000`, { headers, next: { revalidate: 86400 } }),
-      fetch(`${SUPABASE_URL}/rest/v1/lists?select=slug,updated_at&user_id=is.null&slug=not.is.null`, { headers, next: { revalidate: 86400 } }),
+      fetch(`${SUPABASE_URL}/rest/v1/lists?select=id,updated_at&public=eq.true&order=updated_at.desc&limit=5000`, { headers, next: { revalidate: 86400 }, signal: AbortSignal.timeout(15000) }),
+      fetch(`${SUPABASE_URL}/rest/v1/profiles?select=username,updated_at&username=not.is.null&order=updated_at.desc&limit=10000`, { headers, next: { revalidate: 86400 }, signal: AbortSignal.timeout(15000) }),
+      fetch(`${SUPABASE_URL}/rest/v1/forum_threads?select=id,updated_at&order=updated_at.desc&limit=5000`, { headers, next: { revalidate: 86400 }, signal: AbortSignal.timeout(15000) }),
+      fetch(`${SUPABASE_URL}/rest/v1/collection?select=user_id,updated_at&order=updated_at.desc&limit=1000`, { headers, next: { revalidate: 86400 }, signal: AbortSignal.timeout(15000) }),
+      fetch(`${SUPABASE_URL}/rest/v1/lists?select=slug,updated_at&user_id=is.null&slug=not.is.null`, { headers, next: { revalidate: 86400 }, signal: AbortSignal.timeout(15000) }),
     ])
 
     if (listsRes.ok) {

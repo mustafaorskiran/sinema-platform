@@ -110,28 +110,6 @@ export default async function FilmPage({ params, searchParams }: Props) {
   const videos    = videosData.results.filter(v => v.site === 'YouTube')
 
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  // Benzer filmler: önce lokal katalogdan genre eşleşmesi dene
-  let similar = similarData.results.slice(0, 12)
-  const movieGenreIds = (movie.genres ?? []).map((g: { id: number }) => g.id)
-  if (movieGenreIds.length > 0) {
-    const { data: localSimilar } = await supabase
-      .from('movies')
-      .select('tmdb_id, title, poster_path, vote_average, release_year, genre_ids')
-      .contains('genre_ids', [movieGenreIds[0]])
-      .neq('tmdb_id', movieId)
-      .gte('vote_count', 100)
-      .order('popularity', { ascending: false })
-      .limit(12)
-    if ((localSimilar ?? []).length >= 6) {
-      similar = (localSimilar ?? []).map((m: any) => ({
-        id: m.tmdb_id, title: m.title, poster_path: m.poster_path,
-        vote_average: m.vote_average, release_date: m.release_year ? `${m.release_year}-01-01` : '',
-        genre_ids: m.genre_ids ?? [], overview: '', popularity: 0, backdrop_path: null, vote_count: 0,
-      }))
-    }
-  }
 
   const reviewSortMap: Record<string, { col: string; asc: boolean }> = {
     yeni:        { col: 'created_at',  asc: false },
@@ -140,12 +118,60 @@ export default async function FilmPage({ params, searchParams }: Props) {
     populer:     { col: 'created_at',  asc: false },
   }
   const rSort = reviewSortMap[siralama] ?? reviewSortMap.yeni
-  const { data: reviews } = await supabase
-    .from('reviews')
-    .select('*, profiles(username, avatar_url, is_admin)')
-    .eq('media_id', movieId)
-    .eq('media_type', 'film')
-    .order(rSort.col, { ascending: rSort.asc })
+  const movieGenreIds = (movie.genres ?? []).map((g: { id: number }) => g.id)
+
+  // ── Birinci tur: birbirinden bağımsız tüm Supabase sorgularını paralel çek ──
+  const [
+    { data: { user } },
+    { data: localSimilar },
+    { data: reviews },
+    { data: watchlistEntries },
+    { data: triviaItems },
+    { data: movieQuotes },
+    { data: editorialMemberships },
+    { data: containingListsRaw },
+    { data: topics },
+    { data: allVotes },
+  ] = await Promise.all([
+    supabase.auth.getUser(),
+    movieGenreIds.length > 0
+      ? supabase.from('movies')
+          .select('tmdb_id, title, poster_path, vote_average, release_year, genre_ids')
+          .contains('genre_ids', [movieGenreIds[0]])
+          .neq('tmdb_id', movieId)
+          .gte('vote_count', 100)
+          .order('popularity', { ascending: false })
+          .limit(12)
+      : Promise.resolve({ data: null } as any),
+    supabase.from('reviews')
+      .select('*, profiles(username, avatar_url, is_admin)')
+      .eq('media_id', movieId).eq('media_type', 'film')
+      .order(rSort.col, { ascending: rSort.asc }),
+    supabase.from('watchlist').select('status').eq('media_id', movieId).eq('media_type', 'film'),
+    supabase.from('trivia')
+      .select('id, content, type, created_at, profiles(username)')
+      .eq('media_id', movieId).eq('media_type', 'film').eq('approved', true)
+      .order('created_at', { ascending: true }),
+    supabase.from('quotes')
+      .select('id, content, character_name, likes_count')
+      .eq('media_id', movieId).eq('media_type', 'film').eq('approved', true)
+      .order('likes_count', { ascending: false })
+      .limit(5),
+    supabase.from('list_items').select('list_id').eq('media_id', movieId).eq('media_type', 'film'),
+    supabase.from('list_items').select('list_id').eq('media_id', movieId).eq('media_type', 'film').limit(20),
+    supabase.from('topics').select('id, name, slug, emoji').order('id'),
+    supabase.from('topic_votes').select('topic_id, user_id').eq('media_id', movieId).eq('media_type', 'film'),
+  ])
+
+  // Benzer filmler: önce lokal katalogdan genre eşleşmesi dene
+  let similar = similarData.results.slice(0, 12)
+  if ((localSimilar ?? []).length >= 6) {
+    similar = (localSimilar ?? []).map((m: any) => ({
+      id: m.tmdb_id, title: m.title, poster_path: m.poster_path,
+      vote_average: m.vote_average, release_date: m.release_year ? `${m.release_year}-01-01` : '',
+      genre_ids: m.genre_ids ?? [], overview: '', popularity: 0, backdrop_path: null, vote_count: 0,
+    }))
+  }
 
   const userReview = reviews?.find((r: Review) => r.user_id === user?.id)
 
@@ -156,25 +182,56 @@ export default async function FilmPage({ params, searchParams }: Props) {
     : null
 
   // Watchlist topluluk istatistikleri (kullanıcıya özel değil, genel sayım)
-  const { data: watchlistEntries } = await supabase
-    .from('watchlist')
-    .select('status')
-    .eq('media_id', movieId)
-    .eq('media_type', 'film')
   const watchedCount = (watchlistEntries ?? []).filter(w => w.status === 'izledim').length
   const wantCount    = (watchlistEntries ?? []).filter(w => w.status === 'izlemek-istiyorum').length
 
+  const editorialListIds = (editorialMemberships ?? []).map((m: any) => m.list_id)
+  const containingListIds = [...new Set((containingListsRaw ?? []).map((r: any) => r.list_id))]
+
+  const voteCounts: Record<number, number> = {}
+  for (const v of allVotes ?? []) voteCounts[v.topic_id] = (voteCounts[v.topic_id] ?? 0) + 1
+  const userVotedTopicIds = user ? (allVotes ?? []).filter(v => v.user_id === user.id).map(v => v.topic_id) : []
+  const avgRating = reviews && reviews.length > 0
+    ? (reviews.reduce((sum: number, r: Review) => sum + r.rating, 0) / reviews.length).toFixed(1)
+    : null
+
+  // ── İkinci tur: birincinin sonuçlarına bağımlı sorgular ──────────────────
   const reviewIds = (reviews ?? []).map(r => r.id)
   let likeData: Record<string, { count: number; liked: boolean }> = {}
   let replyCount: Record<string, number> = {}
   let helpfulData: Record<string, { count: number; marked: boolean }> = {}
-  if (reviewIds.length > 0) {
-    const [{ data: likes }, { data: repliesRaw }, { data: helpfulRows }] = await Promise.all([
-      supabase.from('review_likes').select('review_id, user_id').in('review_id', reviewIds),
-      supabase.from('review_replies').select('review_id').in('review_id', reviewIds),
-      supabase.from('review_helpful').select('review_id, user_id').in('review_id', reviewIds),
-    ])
 
+  let watchlistStatus: 'izlemek-istiyorum' | 'izledim' | null = null
+  let friendsRatings: { username: string; avatar_url: string | null; rating: number }[] = []
+  let privateNote = ''
+  let inCollection = false
+  let collectionFormat = 'dijital'
+  let hasReminder = false
+
+  const [likesRes, userBlockRes, containingListsRes] = await Promise.all([
+    reviewIds.length > 0
+      ? Promise.all([
+          supabase.from('review_likes').select('review_id, user_id').in('review_id', reviewIds),
+          supabase.from('review_replies').select('review_id').in('review_id', reviewIds),
+          supabase.from('review_helpful').select('review_id, user_id').in('review_id', reviewIds),
+        ])
+      : Promise.resolve(null),
+    user
+      ? Promise.all([
+          supabase.from('watchlist').select('status').eq('user_id', user.id).eq('media_id', movieId).eq('media_type', 'film').maybeSingle(),
+          supabase.from('follows').select('following_id').eq('follower_id', user.id),
+          supabase.from('private_notes').select('note').eq('user_id', user.id).eq('media_id', movieId).eq('media_type', 'film').maybeSingle(),
+          supabase.from('collection').select('format').eq('user_id', user.id).eq('media_id', movieId).eq('media_type', 'film').maybeSingle(),
+          supabase.from('release_reminders').select('id').eq('user_id', user.id).eq('media_id', movieId).eq('media_type', 'film').maybeSingle(),
+        ])
+      : Promise.resolve(null),
+    containingListIds.length > 0
+      ? supabase.from('lists').select('id, title, profiles(username)').in('id', containingListIds).eq('public', true).not('user_id', 'is', null).limit(6)
+      : Promise.resolve({ data: [] } as any),
+  ])
+
+  if (likesRes) {
+    const [{ data: likes }, { data: repliesRaw }, { data: helpfulRows }] = likesRes
     for (const id of reviewIds) {
       const reviewLikes = (likes ?? []).filter(l => l.review_id === id)
       likeData[id] = {
@@ -195,91 +252,32 @@ export default async function FilmPage({ params, searchParams }: Props) {
     ? [...(reviews ?? [])].sort((a, b) => (likeData[b.id]?.count ?? 0) - (likeData[a.id]?.count ?? 0))
     : (reviews ?? [])
 
-  let watchlistStatus: 'izlemek-istiyorum' | 'izledim' | null = null
-  let friendsRatings: { username: string; avatar_url: string | null; rating: number }[] = []
-  let privateNote = ''
-  let inCollection = false
-  let collectionFormat = 'dijital'
-  let hasReminder = false
-
-  if (user) {
-    const [{ data: wl }, { data: follows }, { data: noteRow }, { data: colRow }, { data: reminderRow }] = await Promise.all([
-      supabase.from('watchlist').select('status').eq('user_id', user.id).eq('media_id', movieId).eq('media_type', 'film').maybeSingle(),
-      supabase.from('follows').select('following_id').eq('follower_id', user.id),
-      supabase.from('private_notes').select('note').eq('user_id', user.id).eq('media_id', movieId).eq('media_type', 'film').maybeSingle(),
-      supabase.from('collection').select('format').eq('user_id', user.id).eq('media_id', movieId).eq('media_type', 'film').maybeSingle(),
-      supabase.from('release_reminders').select('id').eq('user_id', user.id).eq('media_id', movieId).eq('media_type', 'film').maybeSingle(),
-    ])
+  let followingIdsForFriends: string[] = []
+  if (userBlockRes) {
+    const [{ data: wl }, { data: follows }, { data: noteRow }, { data: colRow }, { data: reminderRow }] = userBlockRes
     watchlistStatus = (wl?.status as typeof watchlistStatus) ?? null
     privateNote = noteRow?.note ?? ''
     inCollection = !!colRow
     collectionFormat = colRow?.format ?? 'dijital'
     hasReminder = !!reminderRow
-
-    if (follows && follows.length > 0) {
-      const followingIds = follows.map(f => f.following_id)
-      const { data: friendReviews } = await supabase
-        .from('reviews')
-        .select('rating, profiles(username, avatar_url)')
-        .eq('media_id', movieId)
-        .eq('media_type', 'film')
-        .in('user_id', followingIds)
-      friendsRatings = (friendReviews ?? []).map(r => ({
-        username: (r.profiles as unknown as { username: string; avatar_url: string | null })?.username ?? '',
-        avatar_url: (r.profiles as unknown as { username: string; avatar_url: string | null })?.avatar_url ?? null,
-        rating: r.rating,
-      }))
-    }
+    if (follows && follows.length > 0) followingIdsForFriends = follows.map(f => f.following_id)
   }
 
-  // Trivia & Goofs
-  const { data: triviaItems } = await supabase
-    .from('trivia')
-    .select('id, content, type, created_at, profiles(username)')
-    .eq('media_id', movieId).eq('media_type', 'film').eq('approved', true)
-    .order('created_at', { ascending: true })
+  if (followingIdsForFriends.length > 0) {
+    const { data: friendReviews } = await supabase
+      .from('reviews')
+      .select('rating, profiles(username, avatar_url)')
+      .eq('media_id', movieId)
+      .eq('media_type', 'film')
+      .in('user_id', followingIdsForFriends)
+    friendsRatings = (friendReviews ?? []).map(r => ({
+      username: (r.profiles as unknown as { username: string; avatar_url: string | null })?.username ?? '',
+      avatar_url: (r.profiles as unknown as { username: string; avatar_url: string | null })?.avatar_url ?? null,
+      rating: r.rating,
+    }))
+  }
 
-  // Film Alıntıları
-  const { data: movieQuotes } = await supabase
-    .from('quotes')
-    .select('id, content, character_name, likes_count')
-    .eq('media_id', movieId).eq('media_type', 'film').eq('approved', true)
-    .order('likes_count', { ascending: false })
-    .limit(5)
-
-  // Bu filmin yer aldığı editöryal listeler (ödüller için)
-  const { data: editorialMemberships } = await supabase
-    .from('list_items')
-    .select('list_id')
-    .eq('media_id', movieId)
-    .eq('media_type', 'film')
-  const editorialListIds = (editorialMemberships ?? []).map((m: any) => m.list_id)
-
-  // Bu filmi içeren public kullanıcı listeleri (editöryal listeler hariç)
-  const { data: containingListsRaw } = await supabase
-    .from('list_items')
-    .select('list_id')
-    .eq('media_id', movieId)
-    .eq('media_type', 'film')
-    .limit(20)
-  const containingListIds = [...new Set((containingListsRaw ?? []).map((r: any) => r.list_id))]
-  const { data: containingLists } = containingListIds.length > 0
-    ? await supabase.from('lists').select('id, title, profiles(username)').in('id', containingListIds).eq('public', true).not('user_id', 'is', null).limit(6)
-    : { data: [] }
-
-  // Konular
-  const { data: topics } = await supabase.from('topics').select('id, name, slug, emoji').order('id')
-  const { data: allVotes } = await supabase
-    .from('topic_votes')
-    .select('topic_id, user_id')
-    .eq('media_id', movieId)
-    .eq('media_type', 'film')
-  const voteCounts: Record<number, number> = {}
-  for (const v of allVotes ?? []) voteCounts[v.topic_id] = (voteCounts[v.topic_id] ?? 0) + 1
-  const userVotedTopicIds = user ? (allVotes ?? []).filter(v => v.user_id === user.id).map(v => v.topic_id) : []
-  const avgRating = reviews && reviews.length > 0
-    ? (reviews.reduce((sum: number, r: Review) => sum + r.rating, 0) / reviews.length).toFixed(1)
-    : null
+  const { data: containingLists } = containingListsRes
 
   const backdrop = getBackdropUrl(movie.backdrop_path)
   const poster = getPosterUrl(movie.poster_path, 'w500')
