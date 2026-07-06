@@ -6,6 +6,8 @@ import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
 import { IconArrowLeft, IconTv, IconCalendarDays, IconChevronLeft, IconChevronRight } from '@/components/icons'
 
+export const dynamic = 'force-dynamic'
+
 interface Props {
   params: Promise<{ username: string }>
   searchParams: Promise<{ sayfa?: string }>
