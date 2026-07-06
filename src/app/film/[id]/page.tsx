@@ -92,23 +92,6 @@ export default async function FilmPage({ params, searchParams }: Props) {
   const { siralama = 'yeni' } = (await searchParams) ?? {}
   const movieId = Number(id)
 
-  const [movie, similarData, imagesData, keywordsData, certification, videosData, watchProviders] = await Promise.all([
-    getMovieDetail(movieId).catch(() => null),
-    getSimilarMovies(movieId).catch(() => ({ results: [] })),
-    getMovieImages(movieId).catch(() => ({ backdrops: [], posters: [] })),
-    getMovieKeywords(movieId),
-    getMovieCertification(movieId),
-    getMovieVideos(movieId),
-    getMovieWatchProviders(movieId).catch(() => null),
-  ])
-  if (!movie) notFound()
-  const backdrops = imagesData.backdrops.slice(0, 18)
-  const posters   = [...imagesData.posters]
-    .sort((a, b) => b.vote_average - a.vote_average)
-    .slice(0, 10)
-  const keywords  = keywordsData.keywords ?? []
-  const videos    = videosData.results.filter(v => v.site === 'YouTube')
-
   const supabase = await createClient()
 
   const reviewSortMap: Record<string, { col: string; asc: boolean }> = {
@@ -118,12 +101,12 @@ export default async function FilmPage({ params, searchParams }: Props) {
     populer:     { col: 'created_at',  asc: false },
   }
   const rSort = reviewSortMap[siralama] ?? reviewSortMap.yeni
-  const movieGenreIds = (movie.genres ?? []).map((g: { id: number }) => g.id)
 
-  // ── Birinci tur: birbirinden bağımsız tüm Supabase sorgularını paralel çek ──
+  // ── TMDb istekleri ve movie verisine bağlı olmayan Supabase sorguları aynı anda başlar ──
+  // (getSession() network isteği yapmaz — middleware zaten bu istek için getUser() ile doğruladı)
   const [
-    { data: { user } },
-    { data: localSimilar },
+    [movie, similarData, imagesData, keywordsData, certification, videosData, watchProviders],
+    { data: { session } },
     { data: reviews },
     { data: watchlistEntries },
     { data: triviaItems },
@@ -133,16 +116,16 @@ export default async function FilmPage({ params, searchParams }: Props) {
     { data: topics },
     { data: allVotes },
   ] = await Promise.all([
-    supabase.auth.getUser(),
-    movieGenreIds.length > 0
-      ? supabase.from('movies')
-          .select('tmdb_id, title, poster_path, vote_average, release_year, genre_ids')
-          .contains('genre_ids', [movieGenreIds[0]])
-          .neq('tmdb_id', movieId)
-          .gte('vote_count', 100)
-          .order('popularity', { ascending: false })
-          .limit(12)
-      : Promise.resolve({ data: null } as any),
+    Promise.all([
+      getMovieDetail(movieId).catch(() => null),
+      getSimilarMovies(movieId).catch(() => ({ results: [] })),
+      getMovieImages(movieId).catch(() => ({ backdrops: [], posters: [] })),
+      getMovieKeywords(movieId),
+      getMovieCertification(movieId),
+      getMovieVideos(movieId),
+      getMovieWatchProviders(movieId).catch(() => null),
+    ]),
+    supabase.auth.getSession(),
     supabase.from('reviews')
       .select('*, profiles(username, avatar_url, is_admin)')
       .eq('media_id', movieId).eq('media_type', 'film')
@@ -161,6 +144,30 @@ export default async function FilmPage({ params, searchParams }: Props) {
     supabase.from('list_items').select('list_id').eq('media_id', movieId).eq('media_type', 'film').limit(20),
     supabase.from('topics').select('id, name, slug, emoji').order('id'),
     supabase.from('topic_votes').select('topic_id, user_id').eq('media_id', movieId).eq('media_type', 'film'),
+  ])
+  if (!movie) notFound()
+  const user = session?.user ?? null
+  const backdrops = imagesData.backdrops.slice(0, 18)
+  const posters   = [...imagesData.posters]
+    .sort((a, b) => b.vote_average - a.vote_average)
+    .slice(0, 10)
+  const keywords  = keywordsData.keywords ?? []
+  const videos    = videosData.results.filter(v => v.site === 'YouTube')
+  const movieGenreIds = (movie.genres ?? []).map((g: { id: number }) => g.id)
+  const director = movie.credits?.crew?.find((c) => c.job === 'Director')
+
+  // ── movie verisine bağlı sorgular: lokal benzer filmler + yönetmenin diğer filmleri aynı anda ──
+  const [{ data: localSimilar }, directorCredits] = await Promise.all([
+    movieGenreIds.length > 0
+      ? supabase.from('movies')
+          .select('tmdb_id, title, poster_path, vote_average, release_year, genre_ids')
+          .contains('genre_ids', [movieGenreIds[0]])
+          .neq('tmdb_id', movieId)
+          .gte('vote_count', 100)
+          .order('popularity', { ascending: false })
+          .limit(12)
+      : Promise.resolve({ data: null } as any),
+    director?.id ? getPersonCredits(director.id).catch(() => null) : Promise.resolve(null),
   ])
 
   // Benzer filmler: önce lokal katalogdan genre eşleşmesi dene
@@ -282,19 +289,15 @@ export default async function FilmPage({ params, searchParams }: Props) {
   const backdrop = getBackdropUrl(movie.backdrop_path)
   const poster = getPosterUrl(movie.poster_path, 'w500')
   const title = getMediaTitle(movie)
-  const director = movie.credits?.crew?.find((c) => c.job === 'Director')
   const cast = movie.credits?.cast?.slice(0, 12) ?? []
 
   // Yönetmenin diğer filmleri
   let directorOtherMovies: { id: number; title: string; poster_path: string | null; release_date: string; vote_average: number }[] = []
-  if (director?.id) {
-    try {
-      const dcredits = await getPersonCredits(director.id)
-      directorOtherMovies = (dcredits.crew ?? [])
-        .filter(c => c.job === 'Director' && c.id !== movieId && c.poster_path && c.vote_average > 5)
-        .sort((a, b) => b.vote_average - a.vote_average)
-        .slice(0, 8) as typeof directorOtherMovies
-    } catch {}
+  if (directorCredits) {
+    directorOtherMovies = (directorCredits.crew ?? [])
+      .filter((c: any) => c.job === 'Director' && c.id !== movieId && c.poster_path && c.vote_average > 5)
+      .sort((a: any, b: any) => b.vote_average - a.vote_average)
+      .slice(0, 8) as typeof directorOtherMovies
   }
   const trailer = movie.videos?.results?.find((v) => v.type === 'Trailer' && v.site === 'YouTube')
 

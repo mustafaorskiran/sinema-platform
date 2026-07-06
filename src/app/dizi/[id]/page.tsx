@@ -92,23 +92,6 @@ export default async function DiziPage({ params, searchParams }: Props) {
   const { siralama = 'yeni' } = (await searchParams) ?? {}
   const seriesId = Number(id)
 
-  const [series, similarData, imagesData, keywordsData, certification, videosData, watchProviders] = await Promise.all([
-    getSeriesDetail(seriesId).catch(() => null),
-    getSimilarSeries(seriesId).catch(() => ({ results: [] })),
-    getSeriesImages(seriesId).catch(() => ({ backdrops: [], posters: [] })),
-    getSeriesKeywords(seriesId),
-    getSeriesCertification(seriesId),
-    getTVVideos(seriesId),
-    getTVWatchProviders(seriesId).catch(() => null),
-  ])
-  if (!series) notFound()
-  const backdrops = imagesData.backdrops.slice(0, 18)
-  const posters   = [...imagesData.posters]
-    .sort((a, b) => b.vote_average - a.vote_average)
-    .slice(0, 10)
-  const keywords  = keywordsData.results ?? []
-  const videos    = videosData.results.filter(v => v.site === 'YouTube')
-
   const supabase = await createClient()
 
   const tvReviewSortMap: Record<string, { col: string; asc: boolean }> = {
@@ -118,12 +101,12 @@ export default async function DiziPage({ params, searchParams }: Props) {
     populer:     { col: 'created_at', asc: false },
   }
   const tvSort = tvReviewSortMap[siralama] ?? tvReviewSortMap.yeni
-  const seriesGenreIds = (series.genres ?? []).map((g: { id: number }) => g.id)
 
-  // ── Birinci tur: birbirinden bağımsız tüm Supabase sorgularını paralel çek ──
+  // ── TMDb istekleri ve series verisine bağlı olmayan Supabase sorguları aynı anda başlar ──
+  // (getSession() network isteği yapmaz — middleware zaten bu istek için getUser() ile doğruladı)
   const [
-    { data: { user } },
-    { data: localSimilar },
+    [series, similarData, imagesData, keywordsData, certification, videosData, watchProviders],
+    { data: { session } },
     { data: reviews },
     { data: watchlistEntries },
     { data: triviaItems },
@@ -133,16 +116,16 @@ export default async function DiziPage({ params, searchParams }: Props) {
     { data: topics },
     { data: allVotes },
   ] = await Promise.all([
-    supabase.auth.getUser(),
-    seriesGenreIds.length > 0
-      ? supabase.from('series')
-          .select('tmdb_id, name, poster_path, vote_average, first_air_year, genre_ids')
-          .contains('genre_ids', [seriesGenreIds[0]])
-          .neq('tmdb_id', seriesId)
-          .gte('vote_count', 50)
-          .order('popularity', { ascending: false })
-          .limit(12)
-      : Promise.resolve({ data: null } as any),
+    Promise.all([
+      getSeriesDetail(seriesId).catch(() => null),
+      getSimilarSeries(seriesId).catch(() => ({ results: [] })),
+      getSeriesImages(seriesId).catch(() => ({ backdrops: [], posters: [] })),
+      getSeriesKeywords(seriesId),
+      getSeriesCertification(seriesId),
+      getTVVideos(seriesId),
+      getTVWatchProviders(seriesId).catch(() => null),
+    ]),
+    supabase.auth.getSession(),
     supabase.from('reviews')
       .select('*, profiles(username, avatar_url, is_admin)')
       .eq('media_id', seriesId).eq('media_type', 'dizi')
@@ -161,6 +144,30 @@ export default async function DiziPage({ params, searchParams }: Props) {
     supabase.from('list_items').select('list_id').eq('media_id', seriesId).eq('media_type', 'dizi'),
     supabase.from('topics').select('id, name, slug, emoji').order('id'),
     supabase.from('topic_votes').select('topic_id, user_id').eq('media_id', seriesId).eq('media_type', 'dizi'),
+  ])
+  if (!series) notFound()
+  const user = session?.user ?? null
+  const backdrops = imagesData.backdrops.slice(0, 18)
+  const posters   = [...imagesData.posters]
+    .sort((a, b) => b.vote_average - a.vote_average)
+    .slice(0, 10)
+  const keywords  = keywordsData.results ?? []
+  const videos    = videosData.results.filter(v => v.site === 'YouTube')
+  const seriesGenreIds = (series.genres ?? []).map((g: { id: number }) => g.id)
+  const director = series.credits?.crew?.find((c) => c.job === 'Director' || c.job === 'Series Director' || c.job === 'Creator')
+
+  // ── series verisine bağlı sorgular: lokal benzer diziler + yaratıcının diğer dizileri aynı anda ──
+  const [{ data: localSimilar }, directorCredits] = await Promise.all([
+    seriesGenreIds.length > 0
+      ? supabase.from('series')
+          .select('tmdb_id, name, poster_path, vote_average, first_air_year, genre_ids')
+          .contains('genre_ids', [seriesGenreIds[0]])
+          .neq('tmdb_id', seriesId)
+          .gte('vote_count', 50)
+          .order('popularity', { ascending: false })
+          .limit(12)
+      : Promise.resolve({ data: null } as any),
+    director?.id ? getPersonCredits(director.id).catch(() => null) : Promise.resolve(null),
   ])
 
   // Benzer diziler: lokal katalogdan genre eşleşmesi
@@ -279,19 +286,15 @@ export default async function DiziPage({ params, searchParams }: Props) {
   const poster = getPosterUrl(series.poster_path, 'w500')
   const title = getMediaTitle(series)
   const cast = series.credits?.cast?.slice(0, 12) ?? []
-  const director = series.credits?.crew?.find((c) => c.job === 'Director' || c.job === 'Series Director' || c.job === 'Creator')
   const trailer = series.videos?.results?.find((v) => v.type === 'Trailer' && v.site === 'YouTube')
 
   // Creator/yönetmenin diğer dizileri
   let directorOtherSeries: { id: number; name: string; poster_path: string | null; first_air_date: string; vote_average: number }[] = []
-  if (director?.id) {
-    try {
-      const dcredits = await getPersonCredits(director.id)
-      directorOtherSeries = (dcredits.crew ?? [])
-        .filter((c: any) => (c.job === 'Director' || c.job === 'Creator' || c.job === 'Series Director') && c.id !== seriesId && c.poster_path && c.vote_average > 5 && (c.first_air_date || c.release_date))
-        .sort((a: any, b: any) => b.vote_average - a.vote_average)
-        .slice(0, 8) as typeof directorOtherSeries
-    } catch {}
+  if (directorCredits) {
+    directorOtherSeries = (directorCredits.crew ?? [])
+      .filter((c: any) => (c.job === 'Director' || c.job === 'Creator' || c.job === 'Series Director') && c.id !== seriesId && c.poster_path && c.vote_average > 5 && (c.first_air_date || c.release_date))
+      .sort((a: any, b: any) => b.vote_average - a.vote_average)
+      .slice(0, 8) as typeof directorOtherSeries
   }
 
   // Tam ekip
