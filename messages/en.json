@@ -1720,6 +1720,14 @@
     "embedViewProfile": "View Profile →",
     "embedWatchedLabel": "Watched",
     "episodes": "Episodes",
+    "episodesTab": {
+      "title": "{name} — Episodes",
+      "recordCount": "{count} episodes",
+      "empty": "No episodes watched yet",
+      "emptyHint": "Mark episodes as watched on series pages to see them here",
+      "exploreSeries": "Explore Series",
+      "seasonEpisode": "Season {season} · Episode {episode}"
+    },
     "favorites": "Favorites",
     "filmVsSeries": "Movies vs Series",
     "films": "Movies",

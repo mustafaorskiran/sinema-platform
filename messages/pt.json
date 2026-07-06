@@ -1720,6 +1720,14 @@
     "embedViewProfile": "Ver Perfil →",
     "embedWatchedLabel": "Viu",
     "episodes": "Episódios",
+    "episodesTab": {
+      "title": "{name} — Episódios",
+      "recordCount": "{count} episódios",
+      "empty": "Ainda não há episódios assistidos",
+      "emptyHint": "Marca episódios como vistos nas páginas de séries para os veres aqui",
+      "exploreSeries": "Explorar Séries",
+      "seasonEpisode": "Temporada {season} · Episódio {episode}"
+    },
     "favorites": "Favoritos",
     "filmVsSeries": "Filmes vs Séries",
     "films": "Filmes",

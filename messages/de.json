@@ -1720,6 +1720,14 @@
     "embedViewProfile": "Profil ansehen →",
     "embedWatchedLabel": "Gesehen",
     "episodes": "Folgen",
+    "episodesTab": {
+      "title": "{name} — Folgen",
+      "recordCount": "{count} Folgen",
+      "empty": "Noch keine Folgen gesehen",
+      "emptyHint": "Markiere Folgen auf Serienseiten als gesehen, um sie hier zu sehen",
+      "exploreSeries": "Serien entdecken",
+      "seasonEpisode": "Staffel {season} · Folge {episode}"
+    },
     "favorites": "Favoriten",
     "filmVsSeries": "Film vs. Serie",
     "films": "Filme",

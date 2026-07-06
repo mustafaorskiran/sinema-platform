@@ -1720,6 +1720,14 @@
     "embedViewProfile": "查看主页 →",
     "embedWatchedLabel": "已看",
     "episodes": "集",
+    "episodesTab": {
+      "title": "{name} — 剧集",
+      "recordCount": "{count} 集",
+      "empty": "还没有观看记录",
+      "emptyHint": "在剧集页面标记已看集数后会显示在这里",
+      "exploreSeries": "探索剧集",
+      "seasonEpisode": "第 {season} 季 · 第 {episode} 集"
+    },
     "favorites": "收藏",
     "filmVsSeries": "电影 vs 剧集",
     "films": "电影",

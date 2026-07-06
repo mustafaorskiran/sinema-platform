@@ -1720,6 +1720,14 @@
     "embedViewProfile": "Féach ar an bPróifíl →",
     "embedWatchedLabel": "Feicthe",
     "episodes": "Eipeasóid",
+    "episodesTab": {
+      "title": "{name} — Eipeasóidí",
+      "recordCount": "{count} eipeasóid",
+      "empty": "Níor breathnaíodh aon eipeasóid fós",
+      "emptyHint": "Marcáil eipeasóidí mar fheicthe ar leathanaigh sraithe chun iad a fheiceáil anseo",
+      "exploreSeries": "Taiscéal Sraitheanna",
+      "seasonEpisode": "Séasúr {season} · Eipeasóid {episode}"
+    },
     "favorites": "Ceanáin",
     "filmVsSeries": "Scannán vs Sraith",
     "films": "Scannáin",

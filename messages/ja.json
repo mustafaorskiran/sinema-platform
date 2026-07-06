@@ -1720,6 +1720,14 @@
     "embedViewProfile": "プロフィールを見る →",
     "embedWatchedLabel": "視聴済み",
     "episodes": "エピソード",
+    "episodesTab": {
+      "title": "{name} — エピソード",
+      "recordCount": "{count} 話",
+      "empty": "まだ視聴したエピソードがありません",
+      "emptyHint": "ドラマページでエピソードを視聴済みにするとここに表示されます",
+      "exploreSeries": "ドラマを探す",
+      "seasonEpisode": "シーズン {season} · 第{episode}話"
+    },
     "favorites": "お気に入り",
     "filmVsSeries": "映画 vs ドラマ",
     "films": "映画",

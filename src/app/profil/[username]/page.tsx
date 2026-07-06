@@ -509,9 +509,9 @@ export default async function ProfilPage({ params }: Props) {
       <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 mb-10">
         <StatCard href={`/profil/${username}/yorumlar?tip=film`} label={t('profile.films')} value={filmCount} icon={<IconFilm className="h-4 w-4" />} accentColor="#60a5fa" />
         <StatCard href={`/profil/${username}/yorumlar?tip=dizi`} label={t('profile.series')} value={diziCount} icon={<IconTv className="h-4 w-4" />} accentColor="#a78bfa" />
-        <StatCard label={t('profile.episodes')} value={episodeCount ?? 0} icon={<IconTv className="h-3.5 w-3.5" />} accentColor="#34d399" />
+        <StatCard href={`/profil/${username}/bolumler`} label={t('profile.episodes')} value={episodeCount ?? 0} icon={<IconTv className="h-3.5 w-3.5" />} accentColor="#34d399" />
         <StatCard href={`/profil/${username}/yorumlar`} label={t('profile.reviewsShort')} value={totalReviews} icon={<IconMessageSquare className="h-4 w-4" />} accentColor="var(--accent)" />
-        <StatCard label={t('profile.avgRating')} value={avgRating ?? '—'} gold={!!avgRating} icon={<IconStar className="h-4 w-4" />} accentColor="var(--gold)" />
+        <StatCard href={`/profil/${username}/yorumlar?sirala=puan-yuksek`} label={t('profile.avgRating')} value={avgRating ?? '—'} gold={!!avgRating} icon={<IconStar className="h-4 w-4" />} accentColor="var(--gold)" />
         <StatCard href={`/profil/${username}/gunluk`} label={t('profile.diaryShort')} value={diaryCount ?? 0} icon={<IconCalendarDays className="h-4 w-4" />} accentColor="#38bdf8" />
       </div>
 

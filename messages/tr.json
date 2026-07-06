@@ -1720,6 +1720,14 @@
     "embedViewProfile": "Profili Görüntüle →",
     "embedWatchedLabel": "İzledi",
     "episodes": "Bölüm",
+    "episodesTab": {
+      "title": "{name} — Bölümler",
+      "recordCount": "{count} bölüm",
+      "empty": "Henüz bölüm izlenmemiş",
+      "emptyHint": "Dizi sayfalarından bölüm işaretledikçe burada listelenir",
+      "exploreSeries": "Dizi Keşfet",
+      "seasonEpisode": "Sezon {season} · Bölüm {episode}"
+    },
     "favorites": "Favoriler",
     "filmVsSeries": "Film vs Dizi",
     "films": "Film",
