@@ -151,7 +151,7 @@ export default async function ProfilYorumlarPage({ params, searchParams }: Props
           <div className="space-y-4">
             {enriched.map((r: any) => (
               <div key={r.id} className="flex gap-4 p-4 rounded-2xl" style={card}>
-                <Link href={`/${r.media_type}/${r.media_id}`}
+                <Link href={`/${r.media_type}/${r.media_id}`} prefetch={false}
                   className="shrink-0 w-14 h-[84px] rounded-xl overflow-hidden"
                   style={{ background: 'rgba(255,255,255,0.06)' }}>
                   {r.poster
@@ -163,7 +163,7 @@ export default async function ProfilYorumlarPage({ params, searchParams }: Props
                 </Link>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2 mb-1">
-                    <Link href={`/${r.media_type}/${r.media_id}`}
+                    <Link href={`/${r.media_type}/${r.media_id}`} prefetch={false}
                       className="font-bold text-sm text-white hover:text-[--accent] transition-colors line-clamp-1">
                       {r.title}
                     </Link>

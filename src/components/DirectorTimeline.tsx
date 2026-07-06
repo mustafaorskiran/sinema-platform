@@ -71,7 +71,7 @@ export default async function DirectorTimeline({ credits, personName }: Props) {
                     : null
 
                   return (
-                    <Link key={`${c.id}-${i}`} href={href}
+                    <Link key={`${c.id}-${i}`} href={href} prefetch={false}
                       className="flex items-center gap-2 px-3 py-2 rounded-xl transition-all hover:-translate-y-0.5 group"
                       style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)', maxWidth: '220px' }}>
                       {poster && (

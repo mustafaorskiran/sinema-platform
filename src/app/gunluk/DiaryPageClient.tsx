@@ -71,7 +71,7 @@ export default function DiaryPageClient({ grouped, totalPages, currentPage }: Pr
                   </div>
 
                   {/* Poster */}
-                  <Link href={`/${entry.media_type}/${entry.media_id}`} className="shrink-0">
+                  <Link href={`/${entry.media_type}/${entry.media_id}`} className="shrink-0" prefetch={false}>
                     <div className="w-10 h-14 rounded-lg overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}>
                       {entry.poster
                         ? <img src={entry.poster} alt={entry.title} className="w-full h-full object-cover" />

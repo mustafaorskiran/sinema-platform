@@ -178,7 +178,7 @@ export default async function AkisPage({ searchParams }: Props) {
                     {r.media_type === 'film' ? t('film.badge') : t('series.badge')}
                   </span>
                 </div>
-                <Link href={`/${r.media_type}/${r.media_id}`} className="flex gap-3 group">
+                <Link href={`/${r.media_type}/${r.media_id}`} className="flex gap-3 group" prefetch={false}>
                   <div className="w-12 aspect-[2/3] rounded-lg overflow-hidden shrink-0" style={{ background: 'rgba(255,255,255,0.06)' }}>
                     {media?.poster ? <img src={media.poster} alt="" className="w-full h-full object-cover" /> : <div className="w-full h-full" />}
                   </div>
@@ -209,7 +209,7 @@ export default async function AkisPage({ searchParams }: Props) {
                     <span className="text-xs text-[--text-secondary] truncate">
                       <UserHoverCard username={profile?.username ?? ''}><Link href={profileHref} className="font-semibold text-white hover:text-[--accent] transition-colors">{profile?.username}</Link></UserHoverCard>
                       {' '}{t('feed.watchedLabel')} {' '}
-                      <Link href={`/${w.media_type}/${w.media_id}`} className="text-white hover:text-[--accent] transition-colors">{media?.title ?? `#${w.media_id}`}</Link>
+                      <Link href={`/${w.media_type}/${w.media_id}`} prefetch={false} className="text-white hover:text-[--accent] transition-colors">{media?.title ?? `#${w.media_id}`}</Link>
                     </span>
                     <span className="text-[10px] text-[--text-secondary]/60 shrink-0 ml-auto">{timeAgo(w.created_at, t)}</span>
                   </div>
@@ -236,7 +236,7 @@ export default async function AkisPage({ searchParams }: Props) {
                     <span className="text-xs text-[--text-secondary] truncate">
                       <UserHoverCard username={profile?.username ?? ''}><Link href={profileHref} className="font-semibold text-white hover:text-[--accent] transition-colors">{profile?.username}</Link></UserHoverCard>
                       {' '}{t('feed.diaryAddedLabel')} {' '}
-                      <Link href={`/${d.media_type}/${d.media_id}`} className="text-white hover:text-[--accent] transition-colors">{media?.title ?? `#${d.media_id}`}</Link>
+                      <Link href={`/${d.media_type}/${d.media_id}`} prefetch={false} className="text-white hover:text-[--accent] transition-colors">{media?.title ?? `#${d.media_id}`}</Link>
                       {d.rating && <span className="text-[--gold] ml-1 inline-flex items-center gap-0.5"><IconStarFilled size={12} />{d.rating}</span>}
                     </span>
                     <span className="text-[10px] text-[--text-secondary]/60 shrink-0 ml-auto">{timeAgo(d.watched_at, t)}</span>

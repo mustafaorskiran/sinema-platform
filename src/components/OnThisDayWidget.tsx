@@ -68,7 +68,7 @@ export default async function OnThisDayWidget() {
           const title = item.title ?? item.name ?? ''
 
           return (
-            <Link key={item.id} href={`/film/${item.id}`} className="group relative">
+            <Link key={item.id} href={`/film/${item.id}`} prefetch={false} className="group relative">
               <div className="aspect-[2/3] rounded-xl overflow-hidden"
                 style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
                 {poster

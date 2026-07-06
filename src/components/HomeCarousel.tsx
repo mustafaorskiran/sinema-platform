@@ -80,6 +80,7 @@ export default function HomeCarousel({ title, icon, href, items, defaultType = '
               <Link
                 key={`${item.id}-${itemType}`}
                 href={`/${itemType}/${item.id}`}
+                prefetch={false}
                 className="group/card shrink-0 w-[148px]"
                 style={{ scrollSnapAlign: 'start' }}
               >

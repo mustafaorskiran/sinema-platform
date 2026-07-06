@@ -53,6 +53,7 @@ export default function SimilarWatchers({ mediaId, mediaType }: Props) {
           <Link
             key={item.id}
             href={`/${item.type}/${item.id}`}
+            prefetch={false}
             className="group"
           >
             <div className="aspect-[2/3] rounded-lg overflow-hidden rounded-xl group-hover:border-[--accent]/50 transition-colors relative" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>

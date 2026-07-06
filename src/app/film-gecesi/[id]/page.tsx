@@ -97,7 +97,7 @@ export default async function FilmGecesiDetailPage({ params }: Props) {
           ) : (
             <div className="space-y-2">
               {withMedia.map((item, idx) => (
-                <Link key={item.id} href={`/${item.media_type}/${item.media_id}`}
+                <Link key={item.id} href={`/${item.media_type}/${item.media_id}`} prefetch={false}
                   className="flex items-center gap-3 p-3 rounded-xl transition-all hover:-translate-y-0.5 group"
                   style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
                   <span className="text-sm font-bold text-[--text-secondary] w-6 text-center shrink-0">{idx + 1}</span>

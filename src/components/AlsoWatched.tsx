@@ -73,7 +73,7 @@ export default async function AlsoWatched({ mediaId, mediaType }: Props) {
       <h2 className="text-lg font-bold text-white mb-4">{t('alsoWatched.title')}</h2>
       <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
         {valid.map(item => (
-          <Link key={`${item.media_type}-${item.media_id}`} href={`/${item.media_type}/${item.media_id}`}
+          <Link key={`${item.media_type}-${item.media_id}`} href={`/${item.media_type}/${item.media_id}`} prefetch={false}
             className="group relative rounded-xl overflow-hidden aspect-[2/3] hover:-translate-y-1 transition-transform duration-200"
             style={{ background: 'rgba(255,255,255,0.04)' }}>
             {item.poster

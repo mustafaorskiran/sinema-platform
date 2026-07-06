@@ -146,7 +146,7 @@ export default async function ProfilGunlukPage({ params, searchParams }: Props) 
               const ratingInfo = entry.rating ? RATING_LABELS[Math.round(entry.rating)] : null
               return (
                 <div key={entry.id} className="flex gap-4 p-4 rounded-xl" style={card}>
-                  <Link href={`/${entry.media_type}/${entry.media_id}`}
+                  <Link href={`/${entry.media_type}/${entry.media_id}`} prefetch={false}
                     className="shrink-0 w-12 h-[72px] rounded-lg overflow-hidden"
                     style={{ background: 'rgba(255,255,255,0.06)' }}>
                     {entry.poster
@@ -158,7 +158,7 @@ export default async function ProfilGunlukPage({ params, searchParams }: Props) 
                   </Link>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
-                      <Link href={`/${entry.media_type}/${entry.media_id}`}
+                      <Link href={`/${entry.media_type}/${entry.media_id}`} prefetch={false}
                         className="font-semibold text-sm text-white hover:text-[--accent] transition-colors line-clamp-1">
                         {entry.title}
                       </Link>

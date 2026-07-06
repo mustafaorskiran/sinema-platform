@@ -188,7 +188,7 @@ export default async function YilOzetiPage({ params, searchParams }: Props) {
           {bestEntry && bestTitle && (
             <div className="rounded-xl p-5" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               <p className="text-sm font-semibold text-white mb-3 flex items-center gap-1.5"><IconStarFilled size={16} /> {t('profile.topRatedTitle')}</p>
-              <Link href={`/${bestEntry.media_type}/${bestEntry.media_id}`} className="flex items-center gap-3 hover:opacity-90 transition-opacity">
+              <Link href={`/${bestEntry.media_type}/${bestEntry.media_id}`} prefetch={false} className="flex items-center gap-3 hover:opacity-90 transition-opacity">
                 {bestPoster && (
                   <img src={bestPoster} alt={bestTitle} className="w-12 h-18 rounded-lg object-cover" />
                 )}

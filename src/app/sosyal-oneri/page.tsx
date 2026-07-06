@@ -137,7 +137,7 @@ export default async function SosyalOneriPage() {
       ) : (
         <div className="grid sm:grid-cols-2 gap-4">
           {enriched.map(item => (
-            <Link key={`${item.media_type}-${item.media_id}`} href={`/${item.media_type}/${item.media_id}`}
+            <Link key={`${item.media_type}-${item.media_id}`} href={`/${item.media_type}/${item.media_id}`} prefetch={false}
               className="flex gap-4 p-4 rounded-2xl transition-all duration-200 hover:-translate-y-0.5 group"
               style={card}>
               <div className="shrink-0 w-16 h-24 rounded-xl overflow-hidden"

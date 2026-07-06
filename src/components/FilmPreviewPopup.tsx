@@ -106,6 +106,7 @@ export default function FilmPreviewPopup({
             {/* Link */}
             <Link
               href={href}
+              prefetch={false}
               className="block text-center text-xs font-medium text-[--accent] hover:underline mt-1"
             >
               {t('filmPreviewPopup.goToDetail')} →

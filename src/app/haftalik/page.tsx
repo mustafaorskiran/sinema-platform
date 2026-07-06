@@ -137,7 +137,7 @@ export default async function HaftalikPage() {
                   const title = item.title ?? item.name ?? ''
                   const year = (item.release_date ?? item.first_air_date ?? '').slice(0, 4)
                   return (
-                    <Link key={item.id} href={`/${type}/${item.id}`}
+                    <Link key={item.id} href={`/${type}/${item.id}`} prefetch={false}
                       className="flex items-center gap-4 p-3 rounded-xl transition-all hover:-translate-y-0.5 group"
                       style={card}>
                       <span className="w-7 text-center font-black tabular-nums text-sm shrink-0"
@@ -204,7 +204,7 @@ export default async function HaftalikPage() {
                       <p className="text-xs leading-relaxed line-clamp-2" style={{ color: 'rgba(255,255,255,0.5)' }}>
                         {r.content}
                       </p>
-                      <Link href={`/${r.media_type}/${r.media_id}`}
+                      <Link href={`/${r.media_type}/${r.media_id}`} prefetch={false}
                         className="text-[10px] mt-1 hover:text-white transition-colors block"
                         style={{ color: 'rgba(255,255,255,0.25)' }}>
                         {r.mediaTitle} →

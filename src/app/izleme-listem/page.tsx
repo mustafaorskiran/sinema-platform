@@ -114,7 +114,7 @@ export default async function IzlemeLisTemPage({ searchParams }: Props) {
               <span className="text-sm font-bold text-[--text-secondary] w-6 text-center shrink-0">{idx + 1}</span>
 
               {/* Poster */}
-              <Link href={`/${item.media_type}/${item.media_id}`} className="shrink-0">
+              <Link href={`/${item.media_type}/${item.media_id}`} prefetch={false} className="shrink-0">
                 <div className="w-10 aspect-[2/3] rounded-lg overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
                   {item.poster
                     ? <img src={item.poster} alt={item.title} className="w-full h-full object-cover" />
@@ -125,7 +125,7 @@ export default async function IzlemeLisTemPage({ searchParams }: Props) {
 
               {/* Bilgi */}
               <div className="flex-1 min-w-0">
-                <Link href={`/${item.media_type}/${item.media_id}`}>
+                <Link href={`/${item.media_type}/${item.media_id}`} prefetch={false}>
                   <p className="text-sm font-semibold text-white group-hover:text-[--accent] transition-colors truncate">{item.title}</p>
                 </Link>
                 <div className="flex items-center gap-2 mt-0.5">

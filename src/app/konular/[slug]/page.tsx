@@ -107,7 +107,7 @@ export default async function KonuDetayPage({ params }: Props) {
             const voted = userVotes.includes(media_id)
             return (
               <div key={`${media_type}-${media_id}`} className="group relative">
-                <Link href={`/${media_type}/${media_id}`}>
+                <Link href={`/${media_type}/${media_id}`} prefetch={false}>
                   <div className="aspect-[2/3] rounded-xl overflow-hidden rounded-xl group-hover:border-[--accent]/40 transition-colors" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
                     {poster
                       ? <img src={poster} alt={title} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" />

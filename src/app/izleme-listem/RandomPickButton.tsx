@@ -38,7 +38,7 @@ export default function RandomPickButton({ items }: { items: Item[] }) {
             )}
             <h2 className="text-xl font-bold text-white mb-5">{pick.title}</h2>
             <div className="flex gap-3 justify-center">
-              <Link href={`/${pick.type}/${pick.id}`}
+              <Link href={`/${pick.type}/${pick.id}`} prefetch={false}
                 className="flex-1 py-2.5 rounded-xl bg-[--accent] hover:bg-[--accent-hover] text-white text-sm font-semibold transition-colors">
                 Sayfaya Git
               </Link>

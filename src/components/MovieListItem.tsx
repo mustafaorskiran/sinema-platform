@@ -32,7 +32,7 @@ export default async function MovieListItem({ media, type, genreIdToName, sinema
       style={{ background: 'var(--bg-card)' }}
     >
       {/* ① POSTER */}
-      <Link href={href} className="shrink-0 block">
+      <Link href={href} prefetch={false} className="shrink-0 block">
         <div
           className="w-[112px] h-[168px] rounded-xl overflow-hidden"
           style={{ background: 'var(--bg-secondary)', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
@@ -60,7 +60,7 @@ export default async function MovieListItem({ media, type, genreIdToName, sinema
 
         {/* ② BAŞLIK */}
         <div>
-          <Link href={href} className="group/title">
+          <Link href={href} prefetch={false} className="group/title">
             <span
               className="font-bold text-[19px] leading-snug transition-colors duration-150 group-hover/title:text-white"
               style={{ color: 'var(--text-primary)' }}

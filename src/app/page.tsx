@@ -592,11 +592,11 @@ export default async function HomePage() {
                       </div>
                     </div>
                     {review.content && (
-                      <Link href={`/${review.media_type}/${review.media_id}`} className="text-[13px] leading-relaxed line-clamp-3 hover:opacity-80 transition-opacity" style={{ color: 'rgba(255,255,255,0.55)' }}>
+                      <Link href={`/${review.media_type}/${review.media_id}`} prefetch={false} className="text-[13px] leading-relaxed line-clamp-3 hover:opacity-80 transition-opacity" style={{ color: 'rgba(255,255,255,0.55)' }}>
                         {review.content}
                       </Link>
                     )}
-                    <Link href={`/${review.media_type}/${review.media_id}`}
+                    <Link href={`/${review.media_type}/${review.media_id}`} prefetch={false}
                       className="text-[11px] font-medium mt-auto hover:underline inline-flex items-center gap-0.5"
                       style={{ color: review.media_type === 'film' ? 'rgba(96,165,250,0.7)' : 'rgba(167,139,250,0.7)' }}>
                       {review.media_type === 'film' ? t('home.filmBadge') : t('home.seriesBadge')} <IconChevronRight size={12} />

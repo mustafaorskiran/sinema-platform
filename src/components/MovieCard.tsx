@@ -30,7 +30,7 @@ export default function MovieCard({ media, type }: MovieCardProps) {
 
   return (
     <div className="group">
-      <Link href={`/${type}/${media.id}`} className="block">
+      <Link href={`/${type}/${media.id}`} prefetch={false} className="block">
         <div
           className="relative overflow-hidden rounded-xl transition-transform duration-300 group-hover:-translate-y-2 movie-card-grid"
           style={{ background: 'var(--bg-card)' }}

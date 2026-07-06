@@ -202,7 +202,7 @@ function UserCard({ user, isFollowing, loading, onFollow }: {
 
 function PickCard({ pick }: { pick: Pick }) {
   return (
-    <Link href={`/${pick.media_type}/${pick.media_id}`} className="group block">
+    <Link href={`/${pick.media_type}/${pick.media_id}`} prefetch={false} className="group block">
       <div className="aspect-[2/3] rounded-xl overflow-hidden relative transition-all group-hover:border-[--accent]/50"
         style={{ background: 'rgba(20,28,47,0.9)', border: '1px solid rgba(255,255,255,0.06)' }}>
         {pick.poster
