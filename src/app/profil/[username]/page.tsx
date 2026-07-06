@@ -507,12 +507,12 @@ export default async function ProfilPage({ params }: Props) {
 
       {/* İstatistikler */}
       <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 mb-10">
-        <StatCard label={t('profile.films')} value={filmCount} icon={<IconFilm className="h-4 w-4" />} accentColor="#60a5fa" />
-        <StatCard label={t('profile.series')} value={diziCount} icon={<IconTv className="h-4 w-4" />} accentColor="#a78bfa" />
+        <StatCard href={`/profil/${username}/yorumlar?tip=film`} label={t('profile.films')} value={filmCount} icon={<IconFilm className="h-4 w-4" />} accentColor="#60a5fa" />
+        <StatCard href={`/profil/${username}/yorumlar?tip=dizi`} label={t('profile.series')} value={diziCount} icon={<IconTv className="h-4 w-4" />} accentColor="#a78bfa" />
         <StatCard label={t('profile.episodes')} value={episodeCount ?? 0} icon={<IconTv className="h-3.5 w-3.5" />} accentColor="#34d399" />
-        <StatCard label={t('profile.reviewsShort')} value={totalReviews} icon={<IconMessageSquare className="h-4 w-4" />} accentColor="var(--accent)" />
+        <StatCard href={`/profil/${username}/yorumlar`} label={t('profile.reviewsShort')} value={totalReviews} icon={<IconMessageSquare className="h-4 w-4" />} accentColor="var(--accent)" />
         <StatCard label={t('profile.avgRating')} value={avgRating ?? '—'} gold={!!avgRating} icon={<IconStar className="h-4 w-4" />} accentColor="var(--gold)" />
-        <StatCard label={t('profile.diaryShort')} value={diaryCount ?? 0} icon={<IconCalendarDays className="h-4 w-4" />} accentColor="#38bdf8" />
+        <StatCard href={`/profil/${username}/gunluk`} label={t('profile.diaryShort')} value={diaryCount ?? 0} icon={<IconCalendarDays className="h-4 w-4" />} accentColor="#38bdf8" />
       </div>
 
       {/* İzleme Listeleri */}
@@ -774,18 +774,16 @@ function WatchlistSection({ title, icon, items, hoverColor }: {
   )
 }
 
-function StatCard({ label, value, gold, icon, accentColor }: {
+function StatCard({ label, value, gold, icon, accentColor, href }: {
   label: string
   value: string | number
   gold?: boolean
   icon?: React.ReactNode
   accentColor?: string
+  href?: string
 }) {
-  return (
-    <div
-      className="rounded-xl p-4 text-center"
-      style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)', ...(accentColor ? { borderTop: `2px solid ${accentColor}` } : {}) }}
-    >
+  const content = (
+    <>
       {icon && (
         <div className="flex justify-center mb-1.5" style={{ color: accentColor ?? 'var(--text-secondary)' }}>
           {icon}
@@ -793,6 +791,22 @@ function StatCard({ label, value, gold, icon, accentColor }: {
       )}
       <div className={`text-2xl font-bold ${gold ? 'text-[--gold]' : 'text-white'}`}>{value}</div>
       <div className="text-[11px] text-[--text-secondary] mt-0.5">{label}</div>
+    </>
+  )
+  const className = "rounded-xl p-4 text-center block transition-transform duration-150" + (href ? " hover:-translate-y-0.5" : "")
+  const style = { background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)', ...(accentColor ? { borderTop: `2px solid ${accentColor}` } : {}) }
+
+  if (href) {
+    return (
+      <Link href={href} prefetch={false} className={className} style={style}>
+        {content}
+      </Link>
+    )
+  }
+
+  return (
+    <div className={className} style={style}>
+      {content}
     </div>
   )
 }
