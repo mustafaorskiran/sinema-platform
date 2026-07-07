@@ -933,9 +933,12 @@
     "goToProfile": "Profilime Git",
     "inviteCountSuffix": "davet",
     "invitedBySuffix": "sizi Sinezon'a davet etti!",
+    "copyLink": "Linki Kopyala",
     "leaderboardEmpty": "Henüz kimse davet etmemiş. İlk sen ol!",
     "leaderboardSubtitle": "Sinezon'a en çok arkadaşını davet eden kullanıcılar",
     "leaderboardTitle": "🔗 Davet Liderleri",
+    "myLinkDesc": "Bu linkle kayıt olan arkadaşların, davet liderlik tablosunda sayılır.",
+    "myLinkTitle": "Davet Linkin",
     "pitch": "Film ve dizi yorumları, izleme listeleri, arkadaş tavsiyeleri ile sinema deneyimini bir üst seviyeye taşı.",
     "registerFree": "Ücretsiz Kayıt Ol"
   },
@@ -1693,8 +1696,11 @@
       "earnedCount": "{earned}/{total} rozet kazanıldı ({pct}%)",
       "lockedBadges": "Kilitli Rozetler",
       "overallProgress": "Genel İlerleme",
+      "pin": "Profilde göster",
+      "pinHint": "Profilinde öne çıkarmak için en fazla {max} rozet seç.",
       "remaining": "{count} rozet daha kazanabilirsin",
-      "title": "{name} — Rozetler"
+      "title": "{name} — Rozetler",
+      "unpin": "Profilden kaldır"
     },
     "basedOnRatings": "{count} puan üzerinden",
     "collectionTab": {

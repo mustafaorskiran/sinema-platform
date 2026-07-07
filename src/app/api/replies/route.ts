@@ -42,13 +42,13 @@ export async function POST(req: NextRequest) {
       if (targetProfile?.email_on_reply) {
         const { data: targetUser } = await supabase.auth.admin.getUserById(review.user_id)
         if (targetUser?.user?.email) {
-          fetch(`${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sinema-platform.vercel.app'}/api/send-email`, {
+          fetch(`${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sinezon.com'}/api/send-email`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'x-internal-key': process.env.INTERNAL_API_KEY },
             body: JSON.stringify({
               to: targetUser.user.email,
               subject: `@${actorName} yorumuna cevap yazdı`,
-              html: `<p><strong>@${actorName}</strong> yorumuna cevap yazdı:</p><blockquote>${content.trim().slice(0, 300)}</blockquote><p><a href="${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sinema-platform.vercel.app'}/bildirimler">Bildirimleri görüntüle →</a></p>`,
+              html: `<p><strong>@${actorName}</strong> yorumuna cevap yazdı:</p><blockquote>${content.trim().slice(0, 300)}</blockquote><p><a href="${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sinezon.com'}/bildirimler">Bildirimleri görüntüle →</a></p>`,
             }),
           }).catch(() => {})
         }

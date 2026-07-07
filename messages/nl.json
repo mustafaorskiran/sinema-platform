@@ -933,6 +933,9 @@
     "goToProfile": "Ga naar Mijn Profiel",
     "inviteCountSuffix": "uitnodigingen",
     "invitedBySuffix": "heeft je uitgenodigd voor Sinezon!",
+    "copyLink": "Link Kopiëren",
+    "myLinkDesc": "Vrienden die zich via deze link aanmelden tellen mee voor het uitnodigingsklassement.",
+    "myLinkTitle": "Jouw Uitnodigingslink",
     "leaderboardEmpty": "Nog niemand heeft iemand uitgenodigd. Wees de eerste!",
     "leaderboardSubtitle": "Gebruikers die de meeste vrienden hebben uitgenodigd voor Sinezon",
     "leaderboardTitle": "🔗 Uitnodigingstop",
@@ -1693,8 +1696,11 @@
       "earnedCount": "{earned}/{total} badges behaald ({pct}%)",
       "lockedBadges": "Vergrendelde badges",
       "overallProgress": "Algehele voortgang",
+      "pin": "Tonen op profiel",
+      "pinHint": "Kies maximaal {max} badges om op je profiel te tonen.",
       "remaining": "Je kunt nog {count} badges behalen",
-      "title": "{name} — Badges"
+      "title": "{name} — Badges",
+      "unpin": "Verwijderen van profiel"
     },
     "basedOnRatings": "gebaseerd op {count} beoordelingen",
     "collectionTab": {

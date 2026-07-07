@@ -1,10 +1,10 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import BadgesSection from '@/components/BadgesSection'
 import { computeBadges, ALL_BADGE_COUNT } from '@/lib/badges'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
-import { IconMedal, IconLock } from '@/components/icons'
 
 interface Props {
   params: Promise<{ username: string }>
@@ -25,11 +25,14 @@ export default async function ProfilRozetlerPage({ params }: Props) {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('id, username, full_name, avatar_url, created_at, follower_count')
+    .select('id, username, full_name, avatar_url, created_at, follower_count, pinned_badges')
     .eq('username', username)
     .single()
 
   if (!profile) notFound()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  const isOwnProfile = user?.id === profile.id
 
   const [
     { count: reviewCount },
@@ -55,7 +58,7 @@ export default async function ProfilRozetlerPage({ params }: Props) {
     ? reviewsForAvg.reduce((s, r) => s + r.rating, 0) / reviewsForAvg.length
     : 0
 
-  const badges = computeBadges({
+  const stats = {
     reviewCount: reviewCount ?? 0,
     filmCount: filmCount ?? 0,
     diziCount: diziCount ?? 0,
@@ -66,16 +69,9 @@ export default async function ProfilRozetlerPage({ params }: Props) {
     threadCount: threadCount ?? 0,
     topicVoteCount: topicVoteCount ?? 0,
     joinedAt: profile.created_at,
-  })
-
-  const earned = badges.filter(b => b.earned)
-  const unearned = badges.filter(b => !b.earned)
-  const pct = Math.round((earned.length / ALL_BADGE_COUNT) * 100)
-
-  const card = {
-    background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))',
-    border: '1px solid rgba(255,255,255,0.06)',
   }
+  const earnedCount = computeBadges(stats).filter(b => b.earned).length
+  const pct = Math.round((earnedCount / ALL_BADGE_COUNT) * 100)
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
@@ -98,75 +94,12 @@ export default async function ProfilRozetlerPage({ params }: Props) {
             {t('profile.badgesTab.title', { name: profile.full_name ?? `@${username}` })}
           </h1>
           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
-            {t('profile.badgesTab.earnedCount', { earned: earned.length, total: ALL_BADGE_COUNT, pct })}
+            {t('profile.badgesTab.earnedCount', { earned: earnedCount, total: ALL_BADGE_COUNT, pct })}
           </p>
         </div>
       </div>
 
-      {/* İlerleme barı */}
-      <div className="mb-8 p-5 rounded-2xl" style={card}>
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-semibold text-white">{t('profile.badgesTab.overallProgress')}</span>
-          <span className="text-sm font-bold" style={{ color: '#D4A843' }}>{pct}%</span>
-        </div>
-        <div className="h-2.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
-          <div className="h-full rounded-full transition-all duration-700"
-            style={{
-              width: `${pct}%`,
-              background: pct === 100
-                ? 'linear-gradient(90deg, #D4A843, #F0C060)'
-                : 'linear-gradient(90deg, #E11D48, #be123c)',
-            }} />
-        </div>
-        <p className="text-xs mt-2" style={{ color: 'rgba(255,255,255,0.3)' }}>
-          {t('profile.badgesTab.remaining', { count: ALL_BADGE_COUNT - earned.length })}
-        </p>
-      </div>
-
-      {/* Kazanılan Rozetler */}
-      {earned.length > 0 && (
-        <section className="mb-8">
-          <h2 className="text-base font-bold text-white mb-4 flex items-center gap-2">
-            <IconMedal size={18} className="text-[--gold]" /> {t('profile.badgesTab.earnedBadges')}
-            <span className="text-sm font-normal" style={{ color: 'rgba(255,255,255,0.4)' }}>({earned.length})</span>
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {earned.map(b => (
-              <div key={b.id} className="flex items-center gap-3 p-3 rounded-xl"
-                style={{ background: 'rgba(212,168,67,0.07)', border: '1px solid rgba(212,168,67,0.2)' }}>
-                <b.icon size={26} strokeWidth={1.5} className="shrink-0 text-[--gold]" />
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-white truncate">{b.name}</p>
-                  <p className="text-[11px] leading-tight" style={{ color: 'rgba(255,255,255,0.45)' }}>{b.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Kazanılmayan Rozetler */}
-      {unearned.length > 0 && (
-        <section>
-          <h2 className="text-base font-bold mb-4 flex items-center gap-2"
-            style={{ color: 'rgba(255,255,255,0.5)' }}>
-            <IconLock size={16} /> {t('profile.badgesTab.lockedBadges')}
-            <span className="text-sm font-normal" style={{ color: 'rgba(255,255,255,0.25)' }}>({unearned.length})</span>
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {unearned.map(b => (
-              <div key={b.id} className="flex items-center gap-3 p-3 rounded-xl opacity-50"
-                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <b.icon size={26} strokeWidth={1.5} className="shrink-0 opacity-60" />
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-white truncate">{b.name}</p>
-                  <p className="text-[11px] leading-tight" style={{ color: 'rgba(255,255,255,0.35)' }}>{b.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+      <BadgesSection stats={stats} initialPinned={profile.pinned_badges ?? []} isOwnProfile={isOwnProfile} />
     </div>
   )
 }

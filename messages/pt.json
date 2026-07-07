@@ -933,6 +933,9 @@
     "goToProfile": "Ir para o Meu Perfil",
     "inviteCountSuffix": "convites",
     "invitedBySuffix": "convidou-te para o Sinezon!",
+    "copyLink": "Copiar Link",
+    "myLinkDesc": "Amigos que se registarem com este link contam para o ranking de convites.",
+    "myLinkTitle": "O Teu Link de Convite",
     "leaderboardEmpty": "Ainda ninguém convidou. Sê o primeiro!",
     "leaderboardSubtitle": "Os utilizadores que mais amigos convidaram para o Sinezon",
     "leaderboardTitle": "🔗 Líderes de Convites",
@@ -1693,8 +1696,11 @@
       "earnedCount": "{earned}/{total} emblemas conquistados ({pct}%)",
       "lockedBadges": "Emblemas Bloqueados",
       "overallProgress": "Progresso Geral",
+      "pin": "Mostrar no perfil",
+      "pinHint": "Escolhe até {max} emblemas para destacar no teu perfil.",
       "remaining": "Ainda podes conquistar mais {count} emblemas",
-      "title": "{name} — Emblemas"
+      "title": "{name} — Emblemas",
+      "unpin": "Remover do perfil"
     },
     "basedOnRatings": "com base em {count} classificações",
     "collectionTab": {

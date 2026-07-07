@@ -933,6 +933,9 @@
     "goToProfile": "前往我的主页",
     "inviteCountSuffix": "次邀请",
     "invitedBySuffix": "邀请你加入 Sinezon！",
+    "copyLink": "复制链接",
+    "myLinkDesc": "通过此链接注册的朋友将计入邀请排行榜。",
+    "myLinkTitle": "你的邀请链接",
     "leaderboardEmpty": "还没有人发出邀请，快来当第一个吧！",
     "leaderboardSubtitle": "邀请好友加入 Sinezon 最多的用户",
     "leaderboardTitle": "🔗 邀请排行榜",
@@ -1693,8 +1696,11 @@
       "earnedCount": "已获得 {earned}/{total} 个徽章（{pct}%）",
       "lockedBadges": "未解锁的徽章",
       "overallProgress": "总体进度",
+      "pin": "在个人资料中显示",
+      "pinHint": "最多选择 {max} 个徽章在个人资料中展示。",
       "remaining": "你还可以获得 {count} 个徽章",
-      "title": "{name} — 徽章"
+      "title": "{name} — 徽章",
+      "unpin": "从个人资料中移除"
     },
     "basedOnRatings": "基于 {count} 个评分",
     "collectionTab": {

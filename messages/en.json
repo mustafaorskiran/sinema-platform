@@ -933,6 +933,9 @@
     "goToProfile": "Go to My Profile",
     "inviteCountSuffix": "invites",
     "invitedBySuffix": "invited you to Sinezon!",
+    "copyLink": "Copy Link",
+    "myLinkDesc": "Friends who sign up with this link count toward the invite leaderboard.",
+    "myLinkTitle": "Your Invite Link",
     "leaderboardEmpty": "No one has invited anyone yet. Be the first!",
     "leaderboardSubtitle": "Users who've invited the most friends to Sinezon",
     "leaderboardTitle": "🔗 Invite Leaders",
@@ -1693,8 +1696,11 @@
       "earnedCount": "{earned}/{total} badges earned ({pct}%)",
       "lockedBadges": "Locked Badges",
       "overallProgress": "Overall Progress",
+      "pin": "Show on profile",
+      "pinHint": "Pick up to {max} badges to showcase on your profile.",
       "remaining": "You can earn {count} more badges",
-      "title": "{name} — Badges"
+      "title": "{name} — Badges",
+      "unpin": "Remove from profile"
     },
     "basedOnRatings": "based on {count} ratings",
     "collectionTab": {

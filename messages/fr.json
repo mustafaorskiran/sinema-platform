@@ -933,6 +933,9 @@
     "goToProfile": "Aller à mon profil",
     "inviteCountSuffix": "invitations",
     "invitedBySuffix": "t'a invité(e) sur Sinezon !",
+    "copyLink": "Copier le lien",
+    "myLinkDesc": "Les amis qui s'inscrivent avec ce lien comptent dans le classement des invitations.",
+    "myLinkTitle": "Ton lien d'invitation",
     "leaderboardEmpty": "Personne n'a encore invité d'ami. Sois le premier !",
     "leaderboardSubtitle": "Les utilisateurs qui ont invité le plus d'amis sur Sinezon",
     "leaderboardTitle": "🔗 Meilleurs parrains",
@@ -1693,8 +1696,11 @@
       "earnedCount": "{earned}/{total} badges obtenus ({pct} %)",
       "lockedBadges": "Badges verrouillés",
       "overallProgress": "Progression globale",
+      "pin": "Afficher sur le profil",
+      "pinHint": "Choisis jusqu'à {max} badges à mettre en avant sur ton profil.",
       "remaining": "Tu peux encore obtenir {count} badges",
-      "title": "{name} — Badges"
+      "title": "{name} — Badges",
+      "unpin": "Retirer du profil"
     },
     "basedOnRatings": "sur {count} notes",
     "collectionTab": {

@@ -8,7 +8,7 @@ interface Props {
   isOwn: boolean
 }
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sinema-platform.vercel.app'
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sinezon.com'
 
 export default function EmbedPage({ username, isOwn }: Props) {
   const { t } = useLocale()

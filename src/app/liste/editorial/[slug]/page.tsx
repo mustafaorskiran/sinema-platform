@@ -48,7 +48,7 @@ export default async function EditorialListPage({ params }: Props) {
 
   if (isDynamic) {
     // Dinamik listeler için API'yi çağır (Server Component'ta)
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://sinema-platform.vercel.app'
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://sinezon.com'
     const res = await fetch(`${baseUrl}/api/editorial-list/${slug}`, { next: { revalidate: 3600 } })
     if (res.ok) {
       const json = await res.json()

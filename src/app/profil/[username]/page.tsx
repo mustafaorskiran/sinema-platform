@@ -16,6 +16,7 @@ import BlockButton from '@/components/BlockButton'
 import DiziProgressWidget from './DiziProgressWidget'
 import AffiniteSkoru from '@/components/AffiniteSkoru'
 import XPLevelUp from '@/components/XPLevelUp'
+import InviteSection from '@/components/InviteSection'
 import type { Metadata } from 'next'
 import type { Review } from '@/lib/types'
 import { getTranslations } from '@/lib/i18n'
@@ -160,6 +161,8 @@ export default async function ProfilPage({ params }: Props) {
     joinedAt: profile.created_at,
   })
   const earnedBadges = badges.filter(b => b.earned)
+  const pinnedBadgeIds: string[] = profile.pinned_badges ?? []
+  const pinnedBadges = earnedBadges.filter(b => pinnedBadgeIds.includes(b.id))
 
   // Streak hesapla
   const allDates = new Set([
@@ -273,6 +276,17 @@ export default async function ProfilPage({ params }: Props) {
         <div className="flex-1">
           <div className="flex items-center gap-4 flex-wrap">
             <h1 className="text-3xl font-bold text-white">{username}</h1>
+            {pinnedBadges.length > 0 && (
+              <div className="flex items-center gap-1.5">
+                {pinnedBadges.map(b => (
+                  <div key={b.id} title={`${b.name} — ${b.desc}`}
+                    className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ background: 'rgba(212,168,67,0.1)', border: '1px solid rgba(212,168,67,0.25)' }}>
+                    <b.icon size={16} strokeWidth={1.5} className="text-[--gold]" />
+                  </div>
+                ))}
+              </div>
+            )}
             {isOwnProfile ? (
               <div className="flex items-center gap-2 flex-wrap">
                 <Link
@@ -513,6 +527,9 @@ export default async function ProfilPage({ params }: Props) {
           </div>
         </div>
       )}
+
+      {/* Davet linki (sadece kendi profilinde) */}
+      {isOwnProfile && <InviteSection />}
 
       {/* İstatistikler */}
       <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 mb-10">

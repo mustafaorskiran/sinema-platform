@@ -47,13 +47,13 @@ export async function POST(req: NextRequest) {
     if (process.env.RESEND_API_KEY && process.env.INTERNAL_API_KEY) {
       const { data: targetUser } = await supabase.auth.admin.getUserById(thread.user_id)
       if (targetUser?.user?.email) {
-        fetch(`${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sinema-platform.vercel.app'}/api/send-email`, {
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sinezon.com'}/api/send-email`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'x-internal-key': process.env.INTERNAL_API_KEY },
           body: JSON.stringify({
             to: targetUser.user.email,
             subject: `Forum konuna yanıt geldi: "${thread.title?.slice(0, 50)}"`,
-            html: `<p><strong>@${actorName}</strong> forum konuna yanıt yazdı.</p><p><em>${content.trim().slice(0, 200)}</em></p><p><a href="${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sinema-platform.vercel.app'}/forum/${thread_id}">Konuyu görüntüle →</a></p>`,
+            html: `<p><strong>@${actorName}</strong> forum konuna yanıt yazdı.</p><p><em>${content.trim().slice(0, 200)}</em></p><p><a href="${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sinezon.com'}/forum/${thread_id}">Konuyu görüntüle →</a></p>`,
           }),
         }).catch(() => {})
       }

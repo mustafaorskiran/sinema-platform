@@ -933,6 +933,9 @@
     "goToProfile": "Téigh chuig mo Phróifíl",
     "inviteCountSuffix": "cuireadh",
     "invitedBySuffix": "thug sé/sí cuireadh duit chuig Sinezon!",
+    "copyLink": "Cóipeáil an Nasc",
+    "myLinkDesc": "Comhairtear cairde a chláraíonn tríd an nasc seo do chlár na dtosaitheoirí cuireadh.",
+    "myLinkTitle": "Do Nasc Cuiridh",
     "leaderboardEmpty": "Níor thug aon duine cuireadh d'aon duine fós. Bí ar an gcéad duine!",
     "leaderboardSubtitle": "Na húsáideoirí a thug cuireadh don líon is mó cairde chuig Sinezon",
     "leaderboardTitle": "🔗 Ceannairí Cuiridh",
@@ -1693,8 +1696,11 @@
       "earnedCount": "{earned}/{total} suaitheantas gnóthaithe ({pct}%)",
       "lockedBadges": "Suaitheantais Faoi Ghlas",
       "overallProgress": "Dul Chun Cinn Foriomlán",
+      "pin": "Taispeáin ar phróifíl",
+      "pinHint": "Roghnaigh suas le {max} suaitheantas le taispeáint ar do phróifíl.",
       "remaining": "Is féidir leat {count} suaitheantas eile a ghnóthú",
-      "title": "{name} — Suaitheantais"
+      "title": "{name} — Suaitheantais",
+      "unpin": "Bain den phróifíl"
     },
     "basedOnRatings": "bunaithe ar {count} luacháil",
     "collectionTab": {

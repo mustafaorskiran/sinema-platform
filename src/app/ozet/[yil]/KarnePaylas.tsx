@@ -15,7 +15,7 @@ export default function KarnePaylas({ year, totalFilm, totalDizi, totalReviews, 
 
   async function share() {
     const text = `🎬 ${year} Sinema Karnem\n🎥 ${totalFilm} Film · 📺 ${totalDizi} Dizi · ✍️ ${totalReviews} Yorum\n@${username} — Sinezon`
-    const url = `https://sinema-platform.vercel.app/ozet/${year}`
+    const url = `https://sinezon.com/ozet/${year}`
     if (navigator.share) {
       try { await navigator.share({ title: `${year} Sinema Karnem`, text, url }) } catch { /* cancelled */ }
     } else {
