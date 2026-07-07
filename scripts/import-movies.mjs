@@ -3,8 +3,8 @@
  * Kullanım: node scripts/import-movies.mjs
  *
  * Gerekli env değişkenleri (.env.local'dan okur):
- *   TMDB_API_TOKEN        - TMDb Bearer token
- *   SUPABASE_SERVICE_KEY  - Supabase service_role key (admin)
+ *   TMDB_BEARER_TOKEN         - TMDb Bearer token
+ *   SUPABASE_SERVICE_ROLE_KEY - Supabase service_role key (admin)
  *   NEXT_PUBLIC_SUPABASE_URL
  */
 
@@ -32,8 +32,8 @@ loadEnv()
 
 // ─── Ayarlar ────────────────────────────────────────────────
 const SUPABASE_URL      = process.env.NEXT_PUBLIC_SUPABASE_URL
-const SUPABASE_SVC_KEY  = process.env.SUPABASE_SERVICE_KEY
-const TMDB_TOKEN        = process.env.TMDB_API_KEY ?? process.env.TMDB_API_TOKEN
+const SUPABASE_SVC_KEY  = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SERVICE_KEY
+const TMDB_TOKEN        = process.env.TMDB_BEARER_TOKEN ?? process.env.TMDB_API_KEY ?? process.env.TMDB_API_TOKEN
 const MIN_POPULARITY    = 0.1      // filtre eşiği (0.5→0.1: daha fazla film)
 const CONCURRENCY       = 35       // eş zamanlı TMDb isteği
 const INSERT_BATCH      = 500      // Supabase'e tek seferde yazılacak kayıt
@@ -43,8 +43,8 @@ const PROGRESS_FILE     = resolve(CACHE_DIR, 'progress.json')
 if (!SUPABASE_URL || !SUPABASE_SVC_KEY || !TMDB_TOKEN) {
   console.error('Eksik env değişkeni:')
   if (!SUPABASE_URL)     console.error('  NEXT_PUBLIC_SUPABASE_URL')
-  if (!SUPABASE_SVC_KEY) console.error('  SUPABASE_SERVICE_KEY  (Supabase → Project Settings → API → service_role)')
-  if (!TMDB_TOKEN)       console.error('  TMDB_API_KEY')
+  if (!SUPABASE_SVC_KEY) console.error('  SUPABASE_SERVICE_ROLE_KEY  (Supabase → Project Settings → API → service_role)')
+  if (!TMDB_TOKEN)       console.error('  TMDB_BEARER_TOKEN')
   process.exit(1)
 }
 

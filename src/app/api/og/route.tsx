@@ -1,4 +1,4 @@
-import { ImageResponse } from '@vercel/og'
+import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
 
 export const runtime = 'edge'
@@ -102,7 +102,7 @@ export async function GET(req: NextRequest) {
               fontSize: '18px', fontWeight: 900, color: '#fff',
             }}>S</div>
             <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '18px', fontWeight: 600 }}>
-              sinema-platform.vercel.app
+              sinezon.com
             </div>
           </div>
         </div>

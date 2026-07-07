@@ -25,8 +25,8 @@ function loadEnv() {
 loadEnv()
 
 const SUPABASE_URL     = process.env.NEXT_PUBLIC_SUPABASE_URL
-const SUPABASE_SVC_KEY = process.env.SUPABASE_SERVICE_KEY
-const TMDB_TOKEN       = process.env.TMDB_API_KEY ?? process.env.TMDB_API_TOKEN
+const SUPABASE_SVC_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SERVICE_KEY
+const TMDB_TOKEN       = process.env.TMDB_BEARER_TOKEN ?? process.env.TMDB_API_KEY ?? process.env.TMDB_API_TOKEN
 const MIN_POPULARITY   = 0.1      // 0.5→0.1: daha fazla dizi
 const CONCURRENCY      = 35
 const INSERT_BATCH     = 500
@@ -34,7 +34,7 @@ const CACHE_DIR        = resolve(__dirname, '.cache')
 const PROGRESS_FILE    = resolve(CACHE_DIR, 'progress-series.json')
 
 if (!SUPABASE_URL || !SUPABASE_SVC_KEY || !TMDB_TOKEN) {
-  console.error('Eksik env: NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_KEY, TMDB_API_KEY')
+  console.error('Eksik env: NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, TMDB_BEARER_TOKEN')
   process.exit(1)
 }
 
