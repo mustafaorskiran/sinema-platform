@@ -33,11 +33,13 @@ export default function BottomNav({ user }: BottomNavProps) {
       className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
       style={{
         paddingBottom: 'env(safe-area-inset-bottom)',
-        background: 'rgba(6,8,14,0.96)',
+        background: 'rgba(8,10,16,0.99)',
         backdropFilter: 'blur(24px) saturate(200%)',
         WebkitBackdropFilter: 'blur(24px) saturate(200%)',
-        borderTop: '1px solid rgba(255,255,255,0.06)',
-        boxShadow: '0 -1px 0 rgba(212,168,67,0.08), 0 -12px 40px rgba(0,0,0,0.6)',
+        borderTop: '1px solid rgba(255,255,255,0.1)',
+        boxShadow: '0 -1px 0 rgba(212,168,67,0.1), 0 -12px 40px rgba(0,0,0,0.7)',
+        transform: 'translateZ(0)',
+        WebkitTransform: 'translateZ(0)',
       }}
     >
       <div className="flex items-center h-16">
@@ -51,9 +53,9 @@ export default function BottomNav({ user }: BottomNavProps) {
                   style={{ background: 'linear-gradient(90deg, #D4A843, #E11D48)' }} />
               )}
               <Icon className="h-[22px] w-[22px] transition-all duration-200"
-                style={{ color: active ? 'var(--accent)' : 'rgba(255,255,255,0.28)' }} />
+                style={{ color: active ? 'var(--accent)' : 'rgba(255,255,255,0.55)' }} />
               <span className="text-[9.5px] font-bold tracking-wide transition-all duration-200"
-                style={{ color: active ? 'rgba(225,29,72,0.9)' : 'rgba(255,255,255,0.22)' }}>
+                style={{ color: active ? 'rgba(225,29,72,0.9)' : 'rgba(255,255,255,0.45)' }}>
                 {label}
               </span>
             </Link>
@@ -77,10 +79,10 @@ export default function BottomNav({ user }: BottomNavProps) {
             </div>
           ) : (
             <IconUser className="h-[22px] w-[22px]"
-              style={{ color: profileActive ? 'var(--accent)' : 'rgba(255,255,255,0.28)' }} />
+              style={{ color: profileActive ? 'var(--accent)' : 'rgba(255,255,255,0.55)' }} />
           )}
           <span className="text-[9.5px] font-bold tracking-wide transition-all duration-200"
-            style={{ color: profileActive ? 'rgba(225,29,72,0.9)' : 'rgba(255,255,255,0.22)' }}>
+            style={{ color: profileActive ? 'rgba(225,29,72,0.9)' : 'rgba(255,255,255,0.45)' }}>
             {t('nav.profileShort')}
           </span>
         </Link>
