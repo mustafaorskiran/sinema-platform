@@ -9,7 +9,7 @@ import WatchlistNoteButton from './WatchlistNoteButton'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
 
-export const metadata: Metadata = { title: 'İzleme Listem | SineMa' }
+export const metadata: Metadata = { title: 'İzleme Listem | Sinezon' }
 
 interface Props {
   searchParams: Promise<{ sirala?: string; tip?: string }>

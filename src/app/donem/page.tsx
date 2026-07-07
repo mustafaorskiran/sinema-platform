@@ -9,7 +9,10 @@ import {
   IconFilm, IconCalendarDays, IconSparkles,
 } from '@/components/icons'
 
-export const metadata: Metadata = { title: 'Dönemlere Göre Filmler | SineMa' }
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getTranslations()
+  return { title: `${t('browse.donem.title')} | Sinezon` }
+}
 
 const DECADES = [
   { label: '2020\'ler', start: 2020, end: 2029, icon: IconFire },

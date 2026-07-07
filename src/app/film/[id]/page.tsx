@@ -182,7 +182,7 @@ export default async function FilmPage({ params, searchParams }: Props) {
 
   const userReview = reviews?.find((r: Review) => r.user_id === user?.id)
 
-  // SineMa platform puanı
+  // Sinezon platform puanı
   const ratedReviews = (reviews ?? []).filter(r => r.rating > 0)
   const sinemaPuan = ratedReviews.length > 0
     ? ratedReviews.reduce((s: number, r: Review) => s + r.rating, 0) / ratedReviews.length

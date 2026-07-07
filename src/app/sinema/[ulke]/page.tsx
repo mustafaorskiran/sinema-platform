@@ -34,7 +34,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { ulke } = await params
   const info = ULKELER[ulke]
-  return { title: info ? `${info.bayrak} ${info.ad} Sineması | SineMa` : 'Ülke Sineması' }
+  return { title: info ? `${info.bayrak} ${info.ad} Sineması | Sinezon` : 'Ülke Sineması' }
 }
 
 const PAGE_SIZE = 40

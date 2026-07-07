@@ -8,7 +8,7 @@ interface Props {
   searchParams: Promise<{ q?: string; sayfa?: string }>
 }
 
-export const metadata: Metadata = { title: 'Kullanıcılar | SineMa' }
+export const metadata: Metadata = { title: 'Kullanıcılar | Sinezon' }
 
 const PAGE_SIZE = 24
 

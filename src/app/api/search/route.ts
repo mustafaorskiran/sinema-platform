@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { getPosterUrl } from '@/lib/tmdb'
 import { sanitizeSearchInput } from '@/lib/sanitizeSearch'
+import { rateLimit } from '@/lib/rateLimit'
 import { NextRequest, NextResponse } from 'next/server'
 
 interface Result {
@@ -14,6 +15,10 @@ interface Result {
 }
 
 export async function GET(request: NextRequest) {
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
+  const allowed = await rateLimit(`search:${ip}`, 60 * 1000, 30)
+  if (!allowed) return NextResponse.json({ error: 'Çok fazla istek' }, { status: 429 })
+
   const { searchParams } = new URL(request.url)
   const q = sanitizeSearchInput(searchParams.get('q')?.trim() ?? '')
   const limit = Math.min(Number(searchParams.get('limit') ?? '6'), 20)

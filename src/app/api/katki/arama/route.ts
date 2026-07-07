@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { getActiveTMDbLanguage } from '@/lib/tmdb'
+import { rateLimit } from '@/lib/rateLimit'
 
 export async function GET(req: NextRequest) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Giriş gerekli' }, { status: 401 })
+
+  const allowed = await rateLimit(`katki-arama:${user.id}`, 60 * 1000, 20)
+  if (!allowed) return NextResponse.json({ error: 'Çok fazla istek' }, { status: 429 })
+
   const { searchParams } = new URL(req.url)
   const q = searchParams.get('q')?.trim()
   const tip = searchParams.get('tip') ?? 'film'
@@ -23,8 +31,6 @@ export async function GET(req: NextRequest) {
   if (!res.ok) return NextResponse.json({ results: [] })
   const data = await res.json()
   const tmdbResults = (data.results ?? []).slice(0, 12)
-
-  const supabase = await createClient()
   const tmdbIds = tmdbResults.map((r: any) => r.id)
 
   // Hangilerinin zaten local DB'de olduğunu kontrol et

@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
           body: JSON.stringify({
             to: targetUser.user.email,
             subject: `${actorProfile?.username} seni takip etmeye başladı`,
-            html: `<p><strong>${actorProfile?.username}</strong> SineMa'da seni takip etmeye başladı! <a href="${process.env.NEXT_PUBLIC_SITE_URL}/profil/${actorProfile?.username}">Profilini görüntüle →</a></p>`,
+            html: `<p><strong>${actorProfile?.username}</strong> Sinezon'da seni takip etmeye başladı! <a href="${process.env.NEXT_PUBLIC_SITE_URL}/profil/${actorProfile?.username}">Profilini görüntüle →</a></p>`,
           }),
         }).catch(() => {})
       }

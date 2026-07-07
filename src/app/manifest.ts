@@ -2,14 +2,14 @@ import type { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'SineMa — Film & Dizi Yorumları',
-    short_name: 'SineMa',
+    name: 'Sinezon — Film & Dizi Yorumları',
+    short_name: 'Sinezon',
     description: 'Filmler ve diziler hakkında yorum yap, puan ver, keşfet.',
     start_url: '/',
     display: 'standalone',
     orientation: 'portrait',
-    background_color: '#0a0a0a',
-    theme_color: '#e50914',
+    background_color: '#0B0F19',
+    theme_color: '#E11D48',
     categories: ['entertainment', 'social'],
     icons: [
       { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },

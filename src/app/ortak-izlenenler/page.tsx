@@ -4,7 +4,10 @@ import OrtakIzlenenlerClient from './OrtakIzlenenlerClient'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
 
-export const metadata: Metadata = { title: 'Ortak İzlenenler' }
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getTranslations()
+  return { title: t('social.commonWatchedTitle') }
+}
 
 export default async function OrtakIzlenenlerPage({
   searchParams,

@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
   try {
     const company = await getCompanyDetail(Number(id))
-    return { title: `${company.name} | SineMa`, description: company.description || `${company.name} yapım şirketinin filmleri ve dizileri` }
+    return { title: `${company.name} | Sinezon`, description: company.description || `${company.name} yapım şirketinin filmleri ve dizileri` }
   } catch {
     return { title: 'Şirket bulunamadı' }
   }

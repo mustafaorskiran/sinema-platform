@@ -5,9 +5,12 @@ import CreatePollForm from './CreatePollForm'
 import { getTranslations } from '@/lib/i18n'
 import { IconClipboard } from '@/components/icons'
 
-export const metadata: Metadata = {
-  title: 'Anketler | Sinezon',
-  description: 'Film ve dizi anketleri — oy ver, tartış.',
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getTranslations()
+  return {
+    title: `${t('community.pollsTitle')} | Sinezon`,
+    description: t('community.pollsSubtitle'),
+  }
 }
 
 export default async function AnketlerPage() {

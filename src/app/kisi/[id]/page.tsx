@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const person = await getPersonDetail(Number(id))
     return {
-      title: `${person.name} | SineMa`,
+      title: `${person.name} | Sinezon`,
       description: person.biography?.slice(0, 160),
     }
   } catch {

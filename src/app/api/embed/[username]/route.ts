@@ -4,6 +4,17 @@ import { getPosterUrl } from '@/lib/tmdb'
 
 export const revalidate = 600
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sinezon.com'
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ username: string }> }
@@ -52,8 +63,9 @@ export async function GET(
 
   const postersHtml = (recent ?? []).map(w => {
     const info = posterCache.get(`${w.media_type}-${w.media_id}`)
-    const posterImg = info?.poster ? `<img src="${info.poster}" alt="${info?.title ?? ''}" style="width:100%;height:100%;object-fit:cover;display:block">` : ''
-    return `<a href="https://sinema-platform.vercel.app/${w.media_type}/${w.media_id}" target="_blank" rel="noopener noreferrer" title="${info?.title ?? ''}" style="flex:1;border-radius:6px;overflow:hidden;aspect-ratio:2/3;background:rgba(255,255,255,0.04);display:block">${posterImg}</a>`
+    const safeTitle = escapeHtml(info?.title ?? '')
+    const posterImg = info?.poster ? `<img src="${escapeHtml(info.poster)}" alt="${safeTitle}" style="width:100%;height:100%;object-fit:cover;display:block">` : ''
+    return `<a href="${SITE_URL}/${encodeURIComponent(w.media_type)}/${encodeURIComponent(String(w.media_id))}" target="_blank" rel="noopener noreferrer" title="${safeTitle}" style="flex:1;border-radius:6px;overflow:hidden;aspect-ratio:2/3;background:rgba(255,255,255,0.04);display:block">${posterImg}</a>`
   }).join('')
 
   const statsHtml = [
@@ -63,16 +75,17 @@ export async function GET(
     ...(avgRating ? [{ v: `★ ${avgRating}`, l: 'Ort.' }] : []),
   ].map(s => `<div style="flex:1;text-align:center;padding:6px 4px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06)"><p style="font-size:13px;font-weight:800;color:#fff;line-height:1">${s.v}</p><p style="font-size:9px;color:rgba(255,255,255,0.3);margin-top:2px">${s.l}</p></div>`).join('')
 
+  const safeUsername = escapeHtml(username)
   const avatarContent = profile.avatar_url
-    ? `<img src="${profile.avatar_url}" alt="" style="width:100%;height:100%;object-fit:cover">`
-    : profile.username[0].toUpperCase()
+    ? `<img src="${escapeHtml(profile.avatar_url)}" alt="" style="width:100%;height:100%;object-fit:cover">`
+    : escapeHtml(profile.username[0].toUpperCase())
 
   const html = `<!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>@${username} — Sinezon</title>
+<title>@${safeUsername} — Sinezon</title>
 <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:linear-gradient(160deg,rgba(10,15,28,.99),rgba(8,12,22,1));min-height:100vh;display:flex;align-items:center;justify-content:center;padding:12px}a{text-decoration:none;color:inherit}</style>
 </head>
 <body>
@@ -81,12 +94,12 @@ export async function GET(
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
     <div style="${avatarStyle}">${avatarContent}</div>
     <div style="flex:1;min-width:0">
-      <a href="https://sinema-platform.vercel.app/profil/${username}" target="_blank">
-        <p style="font-size:13px;font-weight:700;color:#fff;line-height:1.2">@${username}</p>
+      <a href="${SITE_URL}/profil/${encodeURIComponent(username)}" target="_blank">
+        <p style="font-size:13px;font-weight:700;color:#fff;line-height:1.2">@${safeUsername}</p>
       </a>
-      ${profile.bio ? `<p style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${profile.bio}</p>` : ''}
+      ${profile.bio ? `<p style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${escapeHtml(profile.bio)}</p>` : ''}
     </div>
-    <a href="https://sinema-platform.vercel.app" target="_blank" style="font-size:11px;font-weight:900;flex-shrink:0">
+    <a href="${SITE_URL}" target="_blank" style="font-size:11px;font-weight:900;flex-shrink:0">
       <span style="color:#E11D48">Sine</span><span style="color:rgba(212,168,67,.8)">zon</span>
     </a>
   </div>
@@ -99,7 +112,7 @@ export async function GET(
     <div style="display:flex;gap:5px">${postersHtml}</div>
   </div>` : ''}
 
-  <p style="text-align:center;font-size:9px;color:rgba(255,255,255,.12);margin-top:10px">sinema-platform.vercel.app</p>
+  <p style="text-align:center;font-size:9px;color:rgba(255,255,255,.12);margin-top:10px">sinezon.com</p>
 </div>
 </body>
 </html>`

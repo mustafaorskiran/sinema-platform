@@ -2,7 +2,7 @@ import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle, getMediaY
 import KarsilastirClient from './KarsilastirClient'
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Film Karşılaştır | SineMa' }
+export const metadata: Metadata = { title: 'Film Karşılaştır | Sinezon' }
 
 interface Props {
   searchParams: Promise<{ a?: string; b?: string; ta?: string; tb?: string }>

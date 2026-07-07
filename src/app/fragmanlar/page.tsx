@@ -14,7 +14,7 @@ import type { Metadata } from 'next'
 import type { TrailerItem, TMDbMovie } from '@/lib/types'
 
 export const metadata: Metadata = {
-  title: 'Fragmanlar — SineMa',
+  title: 'Fragmanlar — Sinezon',
   description: 'Film ve dizi fragmanları, ön izlemeler ve yakında çıkacak yapıtlar',
 }
 

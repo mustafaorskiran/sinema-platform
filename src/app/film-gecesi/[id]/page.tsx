@@ -13,7 +13,7 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  return { title: 'Film Gecesi | SineMa' }
+  return { title: 'Film Gecesi | Sinezon' }
 }
 
 export default async function FilmGecesiDetailPage({ params }: Props) {

@@ -4,7 +4,7 @@ import { getTranslations } from '@/lib/i18n'
 import YeniPartiForm from './YeniPartiForm'
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Etkinlik Oluştur | SineMa' }
+export const metadata: Metadata = { title: 'Etkinlik Oluştur | Sinezon' }
 
 export default async function YeniFilmGecesiPage() {
   const supabase = await createClient()

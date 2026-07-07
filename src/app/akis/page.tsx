@@ -8,7 +8,7 @@ import UserHoverCard from '@/components/UserHoverCard'
 import TakipOnerileri from '@/components/TakipOnerileri'
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Akış | SineMa' }
+export const metadata: Metadata = { title: 'Akış | Sinezon' }
 
 interface Props {
   searchParams: Promise<{ tip?: string; sayfa?: string }>

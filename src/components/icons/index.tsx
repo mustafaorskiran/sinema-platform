@@ -1,5 +1,5 @@
 /**
- * SineMa SVG İkon Kütüphanesi
+ * Sinezon SVG İkon Kütüphanesi
  * Tüm ikonlar bu dosyadan import edilmeli.
  * Lucide veya başka bir ikon kütüphanesinden direkt import yapma.
  *

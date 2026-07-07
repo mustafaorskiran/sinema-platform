@@ -12,9 +12,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
   try {
     const col = await getCollection(Number(id))
-    return { title: `${col.name} | SineMa` }
+    return { title: `${col.name} | Sinezon` }
   } catch {
-    return { title: 'Koleksiyon | SineMa' }
+    return { title: 'Koleksiyon | Sinezon' }
   }
 }
 

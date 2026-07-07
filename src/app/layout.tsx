@@ -88,7 +88,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     }
   } catch {}
 
-  const footerText = (messages.footer?.rights as string) ?? '© 2025 SineMa'
+  const footerText = (messages.footer?.rights as string) ?? '© 2025 Sinezon'
 
   const orgJsonLd = {
     '@context': 'https://schema.org',

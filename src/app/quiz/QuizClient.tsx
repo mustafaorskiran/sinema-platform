@@ -83,12 +83,20 @@ export default function QuizClient({ films }: Props) {
     if (current + 1 >= TOTAL_QUESTIONS) {
       setFinished(true)
       // Skoru kaydet (score state handleAnswer ile zaten güncellenmiş)
+      const correct = Math.round(score / 10)
       try {
-        await fetch('/api/quiz/score', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ score, correct: Math.round(score / 10), total: TOTAL_QUESTIONS }),
-        })
+        await Promise.all([
+          fetch('/api/quiz/score', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ score, correct, total: TOTAL_QUESTIONS }),
+          }),
+          fetch('/api/daily-quiz-streak', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ score: correct }),
+          }),
+        ])
         setScoreSaved(true)
       } catch {}
     } else {

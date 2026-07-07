@@ -141,9 +141,20 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
 
+  const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      setError('Sadece JPEG, PNG, WEBP veya GIF dosyası yükleyebilirsiniz.')
+      return
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      setError('Profil fotoğrafı en fazla 2 MB olabilir.')
+      return
+    }
+    setError('')
     setAvatarFile(file)
     setPreviewUrl(URL.createObjectURL(file))
   }
@@ -151,6 +162,15 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
   function handleBannerChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type) || file.type === 'image/gif') {
+      setError('Kapak fotoğrafı için sadece JPEG, PNG veya WEBP yükleyebilirsiniz.')
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Kapak fotoğrafı en fazla 5 MB olabilir.')
+      return
+    }
+    setError('')
     setBannerFile(file)
     setBannerPreview(URL.createObjectURL(file))
   }

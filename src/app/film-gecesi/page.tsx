@@ -4,7 +4,7 @@ import { getTranslations } from '@/lib/i18n'
 import { IconCalendarDays, IconPlus, IconUsers, IconFilm } from '@/components/icons'
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Film Gecesi | SineMa' }
+export const metadata: Metadata = { title: 'Film Gecesi | Sinezon' }
 
 export default async function FilmGecesiPage() {
   const { t } = await getTranslations()

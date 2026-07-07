@@ -50,7 +50,10 @@ export async function PATCH(
 
   const body = await req.json()
   // Only allow updating safe fields — prevent arbitrary column updates
-  const allowed = ['title', 'content', 'is_pinned', 'is_locked']
+  // is_pinned/is_locked yalnızca admin tarafından değiştirilebilir
+  const allowed = profile?.is_admin
+    ? ['title', 'content', 'is_pinned', 'is_locked']
+    : ['title', 'content']
   const update: Record<string, unknown> = {}
   for (const key of allowed) {
     if (key in body) update[key] = body[key]

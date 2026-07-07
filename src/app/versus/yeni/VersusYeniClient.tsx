@@ -5,19 +5,11 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { IconFilm, IconSwords } from '@/components/icons'
 
-function posterUrl(path: string | null, size = 'w342') {
-  if (!path) return null
-  return `https://image.tmdb.org/t/p/${size}${path}`
-}
-
 interface TMDbResult {
   id: number
-  title?: string
-  name?: string
-  poster_path: string | null
-  release_date?: string
-  first_air_date?: string
-  media_type?: string
+  title: string
+  poster: string | null
+  year: string | null
 }
 
 interface Props {
@@ -40,9 +32,10 @@ export default function VersusYeniClient({ userId }: Props) {
     if (q.trim().length < 2) { setResults([]); return }
     setLoading(true)
     try {
-      const res = await fetch(`/api/arama?q=${encodeURIComponent(q)}&tip=film`)
+      const res = await fetch(`/api/search?q=${encodeURIComponent(q)}&limit=12`)
       const data = await res.json()
-      setResults((data.results ?? []).slice(0, 6))
+      const films = (data.results ?? []).filter((r: { type: string }) => r.type === 'movie')
+      setResults(films.slice(0, 6))
     } catch {
       setResults([])
     } finally {
@@ -93,14 +86,14 @@ export default function VersusYeniClient({ userId }: Props) {
                 <>
                   <div className="w-20 aspect-[2/3] rounded-xl overflow-hidden"
                     style={{ background: 'rgba(255,255,255,0.06)' }}>
-                    {film.poster_path
-                      ? <img src={posterUrl(film.poster_path) ?? ''} alt={film.title ?? film.name ?? ''} className="w-full h-full object-cover" />
+                    {film.poster
+                      ? <img src={film.poster} alt={film.title} className="w-full h-full object-cover" />
                       : <div className="w-full h-full flex items-center justify-center"><IconFilm size={24} /></div>
                     }
                   </div>
-                  <p className="text-xs font-semibold text-white text-center line-clamp-2">{film.title ?? film.name}</p>
+                  <p className="text-xs font-semibold text-white text-center line-clamp-2">{film.title}</p>
                   <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>
-                    {(film.release_date ?? film.first_air_date ?? '').slice(0, 4)}
+                    {film.year ?? ''}
                   </p>
                 </>
               ) : (
@@ -142,15 +135,15 @@ export default function VersusYeniClient({ userId }: Props) {
                 className="w-full flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-white/5 text-left">
                 <div className="w-8 h-12 rounded overflow-hidden shrink-0"
                   style={{ background: 'rgba(255,255,255,0.06)' }}>
-                  {r.poster_path
-                    ? <img src={posterUrl(r.poster_path) ?? ''} alt="" className="w-full h-full object-cover" />
+                  {r.poster
+                    ? <img src={r.poster} alt="" className="w-full h-full object-cover" />
                     : <div className="w-full h-full flex items-center justify-center"><IconFilm size={16} /></div>
                   }
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-white">{r.title ?? r.name}</p>
+                  <p className="text-sm font-medium text-white">{r.title}</p>
                   <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
-                    {(r.release_date ?? r.first_air_date ?? '').slice(0, 4)}
+                    {r.year ?? ''}
                   </p>
                 </div>
               </button>

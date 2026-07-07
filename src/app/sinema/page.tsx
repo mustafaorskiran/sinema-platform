@@ -3,7 +3,7 @@ import { getTranslations } from '@/lib/i18n'
 import type { Metadata } from 'next'
 import { IconGlobe } from '@/components/icons'
 
-export const metadata: Metadata = { title: 'Dünya Sineması | SineMa' }
+export const metadata: Metadata = { title: 'Dünya Sineması | Sinezon' }
 
 const ULKELER = [
   { slug: 'kore',       kod: 'KR', bayrak: '🇰🇷', nameKey: 'country.names.kore',       tmdb: 'KR', descKey: 'country.descs.kore' },

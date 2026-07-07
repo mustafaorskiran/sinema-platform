@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { IconFilm, IconChevronUp } from '@/components/icons'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Profile {
   id: string
@@ -23,6 +24,7 @@ interface Props {
 }
 
 export default function OrtakIzlenenlerClient({ myProfile, following, defaultUser }: Props) {
+  const { t } = useLocale()
   const [selectedUser, setSelectedUser] = useState<Profile | null>(
     defaultUser ? (following.find(f => f.username === defaultUser) ?? null) : null
   )
@@ -42,10 +44,10 @@ export default function OrtakIzlenenlerClient({ myProfile, following, defaultUse
       {/* Kullanıcı seç */}
       <div className="mb-8">
         <p className="text-xs font-semibold text-[--text-secondary] uppercase tracking-wider mb-3">
-          Takip ettiğin kullanıcılar
+          {t('social.commonWatchedFollowingLabel')}
         </p>
         {following.length === 0 ? (
-          <p className="text-[--text-secondary] text-sm">Henüz kimseyi takip etmiyorsun.</p>
+          <p className="text-[--text-secondary] text-sm">{t('social.commonWatchedNoFollowing')}</p>
         ) : (
           <div className="flex flex-wrap gap-2">
             {following.map(u => (
@@ -68,7 +70,7 @@ export default function OrtakIzlenenlerClient({ myProfile, following, defaultUse
       {selectedUser && (
         <div>
           <p className="text-sm font-semibold text-white mb-4">
-            @{myProfile.username} ve @{selectedUser.username} ortak izledi
+            {t('social.commonWatchedWith', { user1: myProfile.username, user2: selectedUser.username })}
           </p>
           {loading ? (
             <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-3">
@@ -79,11 +81,11 @@ export default function OrtakIzlenenlerClient({ myProfile, following, defaultUse
           ) : items.length === 0 ? (
             <div className="py-16 text-center rounded-2xl rounded-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
               <IconFilm size={40} strokeWidth={1.5} className="mb-3 mx-auto text-white/30" />
-              <p className="text-sm text-[--text-secondary]">Henüz ortak izlenen içerik yok.</p>
+              <p className="text-sm text-[--text-secondary]">{t('social.commonWatchedEmpty')}</p>
             </div>
           ) : (
             <>
-              <p className="text-xs text-[--text-secondary] mb-4">{items.length} ortak içerik</p>
+              <p className="text-xs text-[--text-secondary] mb-4">{t('social.commonWatchedCount', { count: items.length })}</p>
               <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-3">
                 {items.map(item => (
                   <a key={`${item.media_type}-${item.media_id}`}
@@ -105,7 +107,7 @@ export default function OrtakIzlenenlerClient({ myProfile, following, defaultUse
       {!selectedUser && following.length > 0 && (
         <div className="py-16 text-center rounded-2xl rounded-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
           <IconChevronUp size={40} strokeWidth={1.5} className="mb-3 mx-auto text-white/30" />
-          <p className="text-sm text-[--text-secondary]">Ortak izlenenleri görmek için bir kullanıcı seç.</p>
+          <p className="text-sm text-[--text-secondary]">{t('social.commonWatchedSelectPrompt')}</p>
         </div>
       )}
     </div>
