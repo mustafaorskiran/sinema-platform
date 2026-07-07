@@ -773,6 +773,7 @@
     "aboutHeading": "Über uns",
     "aboutUs": "Über uns",
     "communityHeading": "Community",
+    "features": "Alle Funktionen",
     "exploreHeading": "Entdecken",
     "leaderboard": "Bestenliste",
     "myDiary": "Mein Tagebuch",
@@ -1825,6 +1826,9 @@
     "widgetTitle": "Profil-Widget",
     "widgetTitleOther": "@{username}-Widget",
     "widgetTitleOwn": "Widget — Zu deiner Seite hinzufügen",
+    "commonWatchedTab": {
+      "title": "Gemeinsam Gesehen"
+    },
     "yearInReviewTab": {
       "title": "Jahresrückblick"
     },

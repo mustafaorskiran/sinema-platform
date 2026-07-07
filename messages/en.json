@@ -773,6 +773,7 @@
     "aboutHeading": "About",
     "aboutUs": "About Us",
     "communityHeading": "Community",
+    "features": "All Features",
     "exploreHeading": "Explore",
     "leaderboard": "Leaderboard",
     "myDiary": "My Diary",
@@ -1825,6 +1826,9 @@
     "widgetTitle": "Profile Widget",
     "widgetTitleOther": "@{username} Widget",
     "widgetTitleOwn": "Widget — Add to Your Site",
+    "commonWatchedTab": {
+      "title": "Watched Together"
+    },
     "yearInReviewTab": {
       "title": "Year in Review"
     },

@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { IconStar, IconStarFilled, IconFilm, IconTv, IconCalendarDays, IconBookmark, IconCheck, IconPencil, IconList, IconGlobe, IconLock, IconMapPin, IconTrendingUp, IconClapperboard, IconMessageSquare, IconFire, IconEye, IconPin, IconChevronRight, IconClipboard, IconPackage } from '@/components/icons'
+import { IconStar, IconStarFilled, IconFilm, IconTv, IconCalendarDays, IconBookmark, IconCheck, IconPencil, IconList, IconGlobe, IconLock, IconMapPin, IconTrendingUp, IconClapperboard, IconMessageSquare, IconFire, IconEye, IconPin, IconChevronRight, IconClipboard, IconPackage, IconLayers } from '@/components/icons'
 import { createClient } from '@/lib/supabase/server'
 import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle } from '@/lib/tmdb'
 import FollowButton from '@/components/FollowButton'
@@ -325,6 +325,15 @@ export default async function ProfilPage({ params }: Props) {
                     <IconClapperboard className="h-3.5 w-3.5" />
                     {t('profile.yearInReviewTab.title')}
                   </Link>
+                  {user && (
+                    <Link
+                      href={`/ortak-izlenenler?kullanici=${username}`}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[--border] text-sm text-[--text-secondary] hover:text-white hover:border-white/30 transition-colors"
+                    >
+                      <IconLayers className="h-3.5 w-3.5" />
+                      {t('profile.commonWatchedTab.title')}
+                    </Link>
+                  )}
                 </div>
                 {user && <AffiniteSkoru username={username} />}
               </div>

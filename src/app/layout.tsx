@@ -145,6 +145,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   <li><a href="/versus" className="hover:text-white transition-colors">{t('nav.megaMenu.explore.filmVsFilm')}</a></li>
                   <li><a href="/yakinda" className="hover:text-white transition-colors">{t('footer.upcomingReleases')}</a></li>
                   <li><a href="/kutu-ofis" className="hover:text-white transition-colors">{t('nav.megaMenu.films.boxOffice')}</a></li>
+                  <li><a href="/donem" className="hover:text-white transition-colors">{t('browse.donem.title')}</a></li>
                 </ul>
               </div>
               <div>
@@ -153,6 +154,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   <li><a href="/liderlik" className="hover:text-white transition-colors">{t('footer.leaderboard')}</a></li>
                   <li><a href="/haftalik" className="hover:text-white transition-colors">{t('nav.megaMenu.explore.weeklyDigest')}</a></li>
                   <li><a href="/forum" className="hover:text-white transition-colors">{t('nav.forum')}</a></li>
+                  <li><a href="/anketler" className="hover:text-white transition-colors">{t('community.pollsTitle')}</a></li>
                   <li><a href="/alintilar" className="hover:text-white transition-colors">{t('nav.megaMenu.explore.quotes')}</a></li>
                   <li><a href="/haberler" className="hover:text-white transition-colors">{t('nav.megaMenu.films.news')}</a></li>
                 </ul>
@@ -171,6 +173,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <p className="font-semibold text-white mb-3">{t('footer.aboutHeading')}</p>
                 <ul className="space-y-2">
                   <li><a href="/hakkinda" className="hover:text-white transition-colors">{t('footer.aboutUs')}</a></li>
+                  <li><a href="/premium" className="hover:text-white transition-colors">{t('footer.features')}</a></li>
                   <li><a href="/gizlilik" className="hover:text-white transition-colors">{t('footer.privacy')}</a></li>
                   <li><a href="/kullanim-sartlari" className="hover:text-white transition-colors">{t('footer.terms')}</a></li>
                 </ul>

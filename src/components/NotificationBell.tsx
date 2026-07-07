@@ -94,7 +94,7 @@ export default function NotificationBell({ userId }: Props) {
 
   function notifHref(n: Notification) {
     if (n.type === 'follow' && n.actor?.username) return `/profil/${n.actor.username}`
-    if (n.type === 'like' && n.review) return `/${n.review.media_type}/${n.review.media_id}`
+    if ((n.type === 'like' || n.type === 'reply') && n.review) return `/${n.review.media_type}/${n.review.media_id}`
     return '#'
   }
 

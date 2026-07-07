@@ -773,6 +773,7 @@
     "aboutHeading": "Sobre",
     "aboutUs": "Sobre Nós",
     "communityHeading": "Comunidade",
+    "features": "Todas as Funcionalidades",
     "exploreHeading": "Explorar",
     "leaderboard": "Classificação",
     "myDiary": "O Meu Diário",
@@ -1825,6 +1826,9 @@
     "widgetTitle": "Widget de Perfil",
     "widgetTitleOther": "Widget de @{username}",
     "widgetTitleOwn": "Widget — Adiciona ao Teu Site",
+    "commonWatchedTab": {
+      "title": "Assistidos em Comum"
+    },
     "yearInReviewTab": {
       "title": "Resumo do Ano"
     },

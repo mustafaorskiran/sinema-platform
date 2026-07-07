@@ -65,7 +65,7 @@ export async function POST(req: Request) {
       <ul style="padding-left:20px;color:#ddd;line-height:2">${mediaListHtml || '<li>Bu hafta içerik yok</li>'}</ul>
       <hr style="border-color:#333;margin:24px 0">
       <p style="color:#666;font-size:12px">
-        Bu e-postayı durdurmak için <a href="${SITE_URL}/profil/ayarlar" style="color:#e50914">bildirim ayarlarını</a> düzenleyebilirsin.
+        Bu e-postayı durdurmak için <a href="${SITE_URL}/ayarlar" style="color:#e50914">bildirim ayarlarını</a> düzenleyebilirsin.
       </p>
     </body>
     </html>

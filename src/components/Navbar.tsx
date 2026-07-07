@@ -276,6 +276,7 @@ export default function Navbar({ user }: NavbarProps) {
                   { label: t('nav.megaMenu.films.oscarWinners'),     href: '/filmler?ozel=oscar-kazananlar',        description: t('nav.megaMenu.films.oscarWinnersDesc') },
                   { label: t('nav.megaMenu.films.cult'),             href: '/filmler?ozel=kult-filmler',            description: t('nav.megaMenu.films.cultDesc') },
                   { label: t('nav.megaMenu.films.boxOffice'),        href: '/kutu-ofis',                            description: t('nav.megaMenu.films.boxOfficeDesc') },
+                  { label: t('browse.donem.title'),                  href: '/donem',                                description: t('browse.donem.subtitle') },
                   { label: t('nav.megaMenu.films.newOnPlatforms'),   href: '/yeni-gelenler',                        description: t('nav.megaMenu.films.newOnPlatformsDesc') },
                   { label: t('nav.megaMenu.films.news'),             href: '/haberler',                             description: t('nav.megaMenu.films.newsDesc') },
                   { label: t('nav.megaMenu.films.top10'),            href: '/top10',                                description: t('nav.megaMenu.films.top10Desc') },
@@ -300,6 +301,7 @@ export default function Navbar({ user }: NavbarProps) {
                 columns={2}
                 items={[
                   { label: t('nav.megaMenu.explore.mostCommented'),    href: '/en-cok-yorumlanan',    description: t('nav.megaMenu.explore.mostCommentedDesc') },
+                  { label: t('community.pollsTitle'),                  href: '/anketler',             description: t('community.pollsSubtitle') },
                   { label: t('nav.whatToWatch'),                        href: '/ne-izlesem',           description: t('nav.megaMenu.explore.whatToWatchDesc') },
                   { label: t('nav.megaMenu.explore.moodPick'),          href: '/mood',                 description: t('nav.megaMenu.explore.moodPickDesc') },
                   { label: t('nav.megaMenu.explore.similarUsers'),      href: '/benzer-kullanicilar',  description: t('nav.megaMenu.explore.similarUsersDesc') },
@@ -490,6 +492,7 @@ export default function Navbar({ user }: NavbarProps) {
               <Link href="/listeler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.lists')}</Link>
               <Link href="/kisiler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.people')}</Link>
               <Link href="/forum" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.forum')}</Link>
+              <Link href="/premium" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('footer.features')}</Link>
             </div>
 
             {/* Filmler */}
@@ -503,6 +506,7 @@ export default function Navbar({ user }: NavbarProps) {
               <Link href="/filmler?ozel=oscar-kazananlar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.films.oscarWinners')}</Link>
               <Link href="/filmler?ozel=kult-filmler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.films.cult')}</Link>
               <Link href="/yeni-gelenler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.newArrivalsMobile')}</Link>
+              <Link href="/donem" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('browse.donem.title')}</Link>
             </div>
 
             {/* Diziler */}
@@ -523,6 +527,7 @@ export default function Navbar({ user }: NavbarProps) {
             </div>
             <div className="grid grid-cols-2 gap-x-4">
               <Link href="/fragmanlar" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.trailers')}</Link>
+              <Link href="/anketler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('community.pollsTitle')}</Link>
               <Link href="/yayin-takvimi" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.explore.releaseCalendar')}</Link>
               <Link href="/kutu-ofis" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.megaMenu.films.boxOffice')}</Link>
               <Link href="/haberler" className="py-2.5 text-[--text-secondary] hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{t('nav.newsShort')}</Link>

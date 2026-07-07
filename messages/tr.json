@@ -773,6 +773,7 @@
     "aboutHeading": "Hakkında",
     "aboutUs": "Hakkımızda",
     "communityHeading": "Topluluk",
+    "features": "Tüm Özellikler",
     "exploreHeading": "Keşfet",
     "leaderboard": "Liderlik Tablosu",
     "myDiary": "Günlüğüm",
@@ -1825,6 +1826,9 @@
     "widgetTitle": "Profil Widget",
     "widgetTitleOther": "@{username} Widget",
     "widgetTitleOwn": "Widget — Sitene Ekle",
+    "commonWatchedTab": {
+      "title": "Ortak İzlenenler"
+    },
     "yearInReviewTab": {
       "title": "Yıl Özeti"
     },

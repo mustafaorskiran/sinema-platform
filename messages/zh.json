@@ -773,6 +773,7 @@
     "aboutHeading": "关于",
     "aboutUs": "关于我们",
     "communityHeading": "社区",
+    "features": "全部功能",
     "exploreHeading": "探索",
     "leaderboard": "排行榜",
     "myDiary": "我的日记",
@@ -1825,6 +1826,9 @@
     "widgetTitle": "主页小组件",
     "widgetTitleOther": "@{username} 的小组件",
     "widgetTitleOwn": "小组件 — 添加到你的网站",
+    "commonWatchedTab": {
+      "title": "共同观看"
+    },
     "yearInReviewTab": {
       "title": "年度回顾"
     },

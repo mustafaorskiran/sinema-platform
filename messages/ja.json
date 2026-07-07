@@ -773,6 +773,7 @@
     "aboutHeading": "サイトについて",
     "aboutUs": "私たちについて",
     "communityHeading": "コミュニティ",
+    "features": "すべての機能",
     "exploreHeading": "見つける",
     "leaderboard": "ランキング",
     "myDiary": "マイ日記",
@@ -1825,6 +1826,9 @@
     "widgetTitle": "プロフィールウィジェット",
     "widgetTitleOther": "@{username}のウィジェット",
     "widgetTitleOwn": "ウィジェット — サイトに追加",
+    "commonWatchedTab": {
+      "title": "共通の視聴履歴"
+    },
     "yearInReviewTab": {
       "title": "年間まとめ"
     },

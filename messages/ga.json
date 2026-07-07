@@ -773,6 +773,7 @@
     "aboutHeading": "Maidir Linn",
     "aboutUs": "Fúinn",
     "communityHeading": "Pobal",
+    "features": "Gach Gné",
     "exploreHeading": "Aimsigh",
     "leaderboard": "Clár na gCeannairí",
     "myDiary": "Mo Dhialann",
@@ -1825,6 +1826,9 @@
     "widgetTitle": "Giuirléid Próifíle",
     "widgetTitleOther": "Giuirléid @{username}",
     "widgetTitleOwn": "Giuirléid — Cuir le do Shuíomh",
+    "commonWatchedTab": {
+      "title": "Féachta i gComhpháirt"
+    },
     "yearInReviewTab": {
       "title": "Achoimre na Bliana"
     },

@@ -773,6 +773,7 @@
     "aboutHeading": "Over ons",
     "aboutUs": "Over ons",
     "communityHeading": "Community",
+    "features": "Alle Functies",
     "exploreHeading": "Ontdekken",
     "leaderboard": "Ranglijst",
     "myDiary": "Mijn dagboek",
@@ -1825,6 +1826,9 @@
     "widgetTitle": "Profielwidget",
     "widgetTitleOther": "@{username} Widget",
     "widgetTitleOwn": "Widget — Toevoegen aan je Site",
+    "commonWatchedTab": {
+      "title": "Samen Bekeken"
+    },
     "yearInReviewTab": {
       "title": "Jaaroverzicht"
     },
