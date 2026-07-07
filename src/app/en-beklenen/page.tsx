@@ -31,7 +31,7 @@ async function fetchMostAnticipated(type: 'movie' | 'tv') {
 
   try {
     const res = await fetch(url.toString(), {
-      headers: { Authorization: `Bearer ${process.env.TMDB_API_KEY}`, accept: 'application/json' },
+      headers: { Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`, accept: 'application/json' },
       next: { revalidate: 3600 },
     })
     if (!res.ok) return []

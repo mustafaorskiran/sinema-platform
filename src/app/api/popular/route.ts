@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 
 const BASE = 'https://api.themoviedb.org/3'
 const HEADERS = {
-  Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
+  Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
   accept: 'application/json',
 }
 

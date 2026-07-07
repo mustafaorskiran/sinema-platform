@@ -13,7 +13,7 @@ const TMDB_BASE = 'https://api.themoviedb.org/3'
 async function getSeriesInfo(seriesId: number) {
   try {
     const res = await fetch(`${TMDB_BASE}/tv/${seriesId}?language=tr-TR`, {
-      headers: { Authorization: `Bearer ${process.env.TMDB_API_KEY}`, accept: 'application/json' },
+      headers: { Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`, accept: 'application/json' },
       next: { revalidate: 86400 },
     })
     if (!res.ok) return null

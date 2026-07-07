@@ -27,7 +27,7 @@ const DIFFICULTY_LEVELS = [
 ]
 
 async function fetchQuizFilms(zorluk: string): Promise<TMDbFilm[]> {
-  const apiKey = process.env.TMDB_API_KEY
+  const apiKey = process.env.TMDB_BEARER_TOKEN
   if (!apiKey) return []
 
   const headers = { Authorization: `Bearer ${apiKey}`, accept: "application/json" }

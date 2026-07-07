@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     const res = await fetch(
       `https://api.themoviedb.org/3/tv/${seriesId}/season/${season}?language=tr-TR`,
       {
-        headers: { Authorization: `Bearer ${process.env.TMDB_API_KEY}`, accept: 'application/json' },
+        headers: { Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`, accept: 'application/json' },
         next: { revalidate: 86400 },
       }
     )

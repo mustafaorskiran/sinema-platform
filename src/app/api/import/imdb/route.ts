@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     entries: { imdbId: string; rating?: string; dateRated?: string; titleType?: string; title?: string }[]
   }
 
-  const tmdbKey = process.env.TMDB_API_KEY
+  const tmdbKey = process.env.TMDB_BEARER_TOKEN
   let added = 0, skipped = 0, notFound = 0
   const errors: string[] = []
 

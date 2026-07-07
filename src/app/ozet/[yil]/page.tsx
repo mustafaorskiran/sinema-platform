@@ -89,7 +89,7 @@ export default async function YilOzetiPage({ params }: Props) {
     .slice(0, 5)
 
   // Fetch TMDB titles for top rated
-  const tmdbKey = process.env.TMDB_API_KEY ?? ''
+  const tmdbKey = process.env.TMDB_BEARER_TOKEN ?? ''
   const topRated = await Promise.all(topRatedRaw.map(async e => {
     try {
       const type = e.media_type === 'film' ? 'movie' : 'tv'

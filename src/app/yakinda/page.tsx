@@ -65,7 +65,7 @@ function daysUntil(dateStr: string): number {
 export default async function YakindaPage({ searchParams }: Props) {
   const { t } = await getTranslations()
   const { tip = 'film' } = await searchParams
-  const apiKey = process.env.TMDB_API_KEY ?? ''
+  const apiKey = process.env.TMDB_BEARER_TOKEN ?? ''
 
   const [films, diziler] = await Promise.all([
     fetchUpcomingMovies(apiKey),

@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
   const tip = searchParams.get('tip') ?? 'film'
   if (!q || q.length < 2) return NextResponse.json({ results: [] })
 
-  const tmdbKey = process.env.TMDB_API_KEY
+  const tmdbKey = process.env.TMDB_BEARER_TOKEN
   const endpoint = tip === 'film' ? 'movie' : 'tv'
   const res = await fetch(
     `https://api.themoviedb.org/3/search/${endpoint}?query=${encodeURIComponent(q)}&language=tr-TR&page=1`,

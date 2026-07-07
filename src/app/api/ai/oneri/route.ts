@@ -12,7 +12,7 @@ export async function GET() {
   if (!allowed) return NextResponse.json({ error: 'Çok fazla istek. 10 dakika bekle.' }, { status: 429 })
 
   if (!process.env.OPENAI_API_KEY) return NextResponse.json({ error: 'AI kullanılamıyor' }, { status: 503 })
-  const tmdbKey = process.env.TMDB_API_KEY
+  const tmdbKey = process.env.TMDB_BEARER_TOKEN
   if (!tmdbKey) return NextResponse.json({ error: 'TMDB kullanılamıyor' }, { status: 503 })
 
   const { data: reviews } = await supabase

@@ -50,7 +50,7 @@ export default async function HaftalikPage() {
   const { start, label } = weekRange()
   const supabase = await createClient()
   const { t } = await getTranslations()
-  const apiKey = process.env.TMDB_API_KEY ?? ''
+  const apiKey = process.env.TMDB_BEARER_TOKEN ?? ''
 
   const [
     { data: topReviewsRaw },

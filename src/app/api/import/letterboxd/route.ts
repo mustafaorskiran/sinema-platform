@@ -9,7 +9,7 @@ interface Entry {
 }
 
 async function searchTMDb(name: string, year: string): Promise<{ tmdb_id: number; title: string } | null> {
-  const apiKey = process.env.TMDB_API_KEY
+  const apiKey = process.env.TMDB_BEARER_TOKEN
   if (!apiKey) return null
 
   const yearParam = year ? `&year=${year}` : ''

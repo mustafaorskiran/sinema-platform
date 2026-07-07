@@ -52,7 +52,7 @@ export default async function Top10Page({ searchParams }: PageProps) {
   const period = PERIODS.find(p => p.id === donem) ?? PERIODS[0]
 
   const supabase = await createClient()
-  const apiKey = process.env.TMDB_API_KEY ?? ''
+  const apiKey = process.env.TMDB_BEARER_TOKEN ?? ''
 
   const cutoff = period.days > 0
     ? new Date(Date.now() - period.days * 24 * 3600 * 1000).toISOString()

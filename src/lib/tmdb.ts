@@ -3,7 +3,7 @@ import type { TMDbMovie, TMDbMovieDetail, TMDbSearchResult, TMDbPerson, TMDbPers
 import { isValidLocale, getTMDbLanguage, DEFAULT_LOCALE } from './i18n-config'
 
 const BASE_URL = 'https://api.themoviedb.org/3'
-const API_KEY = process.env.TMDB_API_KEY
+const API_KEY = process.env.TMDB_BEARER_TOKEN
 
 export const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p'
 

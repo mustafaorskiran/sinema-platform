@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 const BASE_URL = 'https://api.themoviedb.org/3'
-const API_KEY = process.env.TMDB_API_KEY
+const API_KEY = process.env.TMDB_BEARER_TOKEN
 
 export async function GET(req: NextRequest) {
   const type = req.nextUrl.searchParams.get('type') ?? 'movie'

@@ -47,8 +47,8 @@ export default async function EmbedProfilPage({ params }: Props) {
   for (const r of recent) {
     try {
       const endpoint = r.media_type === 'film'
-        ? `https://api.themoviedb.org/3/movie/${r.media_id}?language=tr-TR&api_key=${process.env.TMDB_API_KEY}`
-        : `https://api.themoviedb.org/3/tv/${r.media_id}?language=tr-TR&api_key=${process.env.TMDB_API_KEY}`
+        ? `https://api.themoviedb.org/3/movie/${r.media_id}?language=tr-TR&api_key=${process.env.TMDB_BEARER_TOKEN}`
+        : `https://api.themoviedb.org/3/tv/${r.media_id}?language=tr-TR&api_key=${process.env.TMDB_BEARER_TOKEN}`
       const res = await fetch(endpoint, { next: { revalidate: 86400 } })
       if (res.ok) {
         const data = await res.json()

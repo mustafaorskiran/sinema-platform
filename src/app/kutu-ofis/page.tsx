@@ -25,7 +25,7 @@ interface TMDbMovie {
 }
 
 async function fetchNowPlaying(): Promise<TMDbMovie[]> {
-  const apiKey = process.env.TMDB_API_KEY
+  const apiKey = process.env.TMDB_BEARER_TOKEN
   if (!apiKey) return []
 
   try {

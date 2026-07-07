@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   const { tmdbId, mediaType } = await req.json()
   if (!tmdbId || !mediaType) return NextResponse.json({ error: 'Geçersiz istek' }, { status: 400 })
 
-  const tmdbKey = process.env.TMDB_API_KEY
+  const tmdbKey = process.env.TMDB_BEARER_TOKEN
   const endpoint = mediaType === 'film' ? 'movie' : 'tv'
   const table = mediaType === 'film' ? 'movies' : 'series'
 

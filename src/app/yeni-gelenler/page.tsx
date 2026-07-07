@@ -52,7 +52,7 @@ async function fetchPlatformContent(providerId: number, mediaType: 'movie' | 'tv
   try {
     const res = await fetch(url.toString(), {
       headers: {
-        Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
+        Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
         accept: 'application/json',
       },
       next: { revalidate: 3600 },

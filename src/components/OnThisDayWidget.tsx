@@ -24,7 +24,7 @@ async function fetchOnThisDay() {
         url.searchParams.set('sort_by', 'popularity.desc')
         url.searchParams.set('vote_count.gte', '50')
         const res = await fetch(url.toString(), {
-          headers: { Authorization: `Bearer ${process.env.TMDB_API_KEY}`, accept: 'application/json' },
+          headers: { Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`, accept: 'application/json' },
           next: { revalidate: 86400 },
         })
         if (!res.ok) return null

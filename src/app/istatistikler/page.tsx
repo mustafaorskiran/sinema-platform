@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 }
 
 async function fetchFilmTitle(mediaId: number, t: (key: string, params?: Record<string, string | number>) => string): Promise<string> {
-  const apiKey = process.env.TMDB_API_KEY
+  const apiKey = process.env.TMDB_BEARER_TOKEN
   if (!apiKey) return t('stats.filmFallback', { id: mediaId })
   try {
     const res = await fetch(
