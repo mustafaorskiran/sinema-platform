@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { getActiveTMDbLanguage } from '@/lib/tmdb'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -9,10 +10,16 @@ export async function GET(req: NextRequest) {
 
   const tmdbKey = process.env.TMDB_BEARER_TOKEN
   const endpoint = tip === 'film' ? 'movie' : 'tv'
-  const res = await fetch(
-    `https://api.themoviedb.org/3/search/${endpoint}?query=${encodeURIComponent(q)}&language=tr-TR&page=1`,
-    { headers: { Authorization: `Bearer ${tmdbKey}` }, next: { revalidate: 0 } }
-  )
+  const lang = await getActiveTMDbLanguage()
+  let res: Response
+  try {
+    res = await fetch(
+      `https://api.themoviedb.org/3/search/${endpoint}?query=${encodeURIComponent(q)}&language=${lang}&page=1`,
+      { headers: { Authorization: `Bearer ${tmdbKey}` }, next: { revalidate: 0 } }
+    )
+  } catch {
+    return NextResponse.json({ results: [] })
+  }
   if (!res.ok) return NextResponse.json({ results: [] })
   const data = await res.json()
   const tmdbResults = (data.results ?? []).slice(0, 12)

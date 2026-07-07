@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getActiveTMDbLanguage } from '@/lib/tmdb'
 
 export async function GET(req: NextRequest) {
   const seriesId = req.nextUrl.searchParams.get('series_id')
@@ -6,8 +7,9 @@ export async function GET(req: NextRequest) {
   if (!seriesId || !season) return NextResponse.json({ episodes: [] })
 
   try {
+    const lang = await getActiveTMDbLanguage()
     const res = await fetch(
-      `https://api.themoviedb.org/3/tv/${seriesId}/season/${season}?language=tr-TR`,
+      `https://api.themoviedb.org/3/tv/${seriesId}/season/${season}?language=${lang}`,
       {
         headers: { Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`, accept: 'application/json' },
         next: { revalidate: 86400 },

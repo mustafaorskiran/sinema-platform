@@ -50,19 +50,25 @@ export default function KayitPage() {
     if (!/^[a-zA-Z0-9_]+$/.test(trimmedUser)) { setError(t('auth.usernameInvalidChars')); return }
     if (password.length < 6) { setError(t('auth.passwordMinLength')); return }
     setLoading(true)
-    const supabase = createClient()
-    const { data: existing } = await supabase.from('profiles').select('id').eq('username', trimmedUser).maybeSingle()
-    if (existing) { setError(t('auth.usernameTaken')); setLoading(false); return }
-    const nextUrl = refUser ? `/auth/callback?next=/onboarding&ref=${refUser}` : `/auth/callback?next=/onboarding`
-    const { error: authError } = await supabase.auth.signUp({
-      email, password,
-      options: { data: { username: trimmedUser }, emailRedirectTo: `${window.location.origin}${nextUrl}` },
-    })
-    if (authError) {
-      setError(authError.message === 'User already registered' ? t('auth.emailAlreadyRegistered') : t('auth.registerError'))
-      setLoading(false); return
+    try {
+      const supabase = createClient()
+      const { data: existing } = await supabase.from('profiles').select('id').eq('username', trimmedUser).maybeSingle()
+      if (existing) { setError(t('auth.usernameTaken')); return }
+      const nextUrl = refUser ? `/auth/callback?next=/onboarding&ref=${refUser}` : `/auth/callback?next=/onboarding`
+      const { error: authError } = await supabase.auth.signUp({
+        email, password,
+        options: { data: { username: trimmedUser }, emailRedirectTo: `${window.location.origin}${nextUrl}` },
+      })
+      if (authError) {
+        setError(authError.message === 'User already registered' ? t('auth.emailAlreadyRegistered') : t('auth.registerError'))
+        return
+      }
+      setSuccess(true)
+    } catch {
+      setError(t('auth.registerError'))
+    } finally {
+      setLoading(false)
     }
-    setSuccess(true); setLoading(false)
   }
 
   const inputBase = {

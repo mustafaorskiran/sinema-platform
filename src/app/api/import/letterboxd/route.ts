@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { rateLimit } from '@/lib/rateLimit'
+import { getActiveTMDbLanguage } from '@/lib/tmdb'
+
+const MAX_ENTRIES = 2000
 
 interface Entry {
   name: string
@@ -8,12 +11,12 @@ interface Entry {
   rating: string
 }
 
-async function searchTMDb(name: string, year: string): Promise<{ tmdb_id: number; title: string } | null> {
+async function searchTMDb(name: string, year: string, lang: string): Promise<{ tmdb_id: number; title: string } | null> {
   const apiKey = process.env.TMDB_BEARER_TOKEN
   if (!apiKey) return null
 
   const yearParam = year ? `&year=${year}` : ''
-  const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(name)}&language=tr-TR${yearParam}&page=1`
+  const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(name)}&language=${lang}${yearParam}&page=1`
   try {
     const res = await fetch(url, {
       headers: { Authorization: `Bearer ${apiKey}`, accept: 'application/json' },
@@ -42,6 +45,9 @@ export async function POST(req: NextRequest) {
   if (!Array.isArray(entries) || entries.length === 0) {
     return NextResponse.json({ added: 0, skipped: 0, notFound: 0, errors: [] })
   }
+  if (entries.length > MAX_ENTRIES) {
+    return NextResponse.json({ error: `En fazla ${MAX_ENTRIES} kayıt aktarılabilir.` }, { status: 400 })
+  }
 
   const { data: existing } = await supabase
     .from('watchlist')
@@ -50,6 +56,7 @@ export async function POST(req: NextRequest) {
     .eq('media_type', 'film')
 
   const existingIds = new Set((existing ?? []).map(w => w.media_id))
+  const lang = await getActiveTMDbLanguage()
 
   let added = 0, skipped = 0, notFound = 0
   const errors: string[] = []
@@ -58,7 +65,7 @@ export async function POST(req: NextRequest) {
   for (const entry of entries) {
     if (!entry.name) continue
 
-    const found = await searchTMDb(entry.name, entry.year)
+    const found = await searchTMDb(entry.name, entry.year, lang)
     if (!found) { notFound++; continue }
 
     if (existingIds.has(found.tmdb_id)) { skipped++; continue }

@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import {
   discoverMovies, getNowPlayingMovies, getUpcomingMovies, getTopRatedMovies,
 } from '@/lib/tmdb'
+import { sanitizeSearchInput } from '@/lib/sanitizeSearch'
 
 const PAGE_SIZE = 40
 
@@ -91,7 +92,8 @@ export async function GET(req: NextRequest) {
 
       // Başlık arama (trigram index)
       if (keyword?.trim()) {
-        query = query.or(`title.ilike.%${keyword.trim()}%,original_title.ilike.%${keyword.trim()}%`)
+        const kw = sanitizeSearchInput(keyword.trim())
+        query = query.or(`title.ilike.%${kw}%,original_title.ilike.%${kw}%`)
       }
 
       // Sıralama

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { rateLimit } from '@/lib/rateLimit'
+import { getActiveTMDbLanguage } from '@/lib/tmdb'
 import OpenAI from 'openai'
 
 export async function GET() {
@@ -27,11 +28,12 @@ export async function GET() {
     return NextResponse.json({ error: 'Yeterli izleme geçmişi yok. En az 1 film/dizi değerlendirmen gerekiyor (≥7 puan).' }, { status: 400 })
   }
 
+  const lang = await getActiveTMDbLanguage()
   const tmdbTitles: string[] = []
   for (const r of reviews.slice(0, 8)) {
     try {
       const endpoint = r.media_type === 'film' ? 'movie' : 'tv'
-      const res = await fetch(`https://api.themoviedb.org/3/${endpoint}/${r.media_id}?language=tr-TR`, {
+      const res = await fetch(`https://api.themoviedb.org/3/${endpoint}/${r.media_id}?language=${lang}`, {
         headers: { Authorization: `Bearer ${tmdbKey}`, accept: 'application/json' },
         next: { revalidate: 3600 },
       })

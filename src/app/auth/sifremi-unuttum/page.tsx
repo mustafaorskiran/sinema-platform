@@ -17,17 +17,21 @@ export default function SifremiUnuttumPage() {
     e.preventDefault()
     setLoading(true)
     setError('')
-    const supabase = createClient()
-    const { error: authError } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/callback?type=recovery`,
-    })
-    if (authError) {
+    try {
+      const supabase = createClient()
+      const { error: authError } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/callback?type=recovery`,
+      })
+      if (authError) {
+        setError(t('auth.genericError'))
+        return
+      }
+      setSent(true)
+    } catch {
       setError(t('auth.genericError'))
+    } finally {
       setLoading(false)
-      return
     }
-    setSent(true)
-    setLoading(false)
   }
 
   const inputBase = {

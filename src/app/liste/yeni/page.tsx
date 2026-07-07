@@ -21,16 +21,21 @@ export default function YeniListePage() {
     setLoading(true)
     setError('')
 
-    const res = await fetch('/api/lists', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, description, public: isPublic }),
-    })
+    try {
+      const res = await fetch('/api/lists', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, description, public: isPublic }),
+      })
 
-    if (res.ok) {
-      const list = await res.json()
-      router.push(`/liste/${list.id}`)
-    } else {
+      if (res.ok) {
+        const list = await res.json()
+        router.push(`/liste/${list.id}`)
+      } else {
+        setError(t('list.createFailed'))
+        setLoading(false)
+      }
+    } catch {
       setError(t('list.createFailed'))
       setLoading(false)
     }

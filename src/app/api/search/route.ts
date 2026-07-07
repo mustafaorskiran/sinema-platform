@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { getPosterUrl } from '@/lib/tmdb'
+import { sanitizeSearchInput } from '@/lib/sanitizeSearch'
 import { NextRequest, NextResponse } from 'next/server'
 
 interface Result {
@@ -14,7 +15,7 @@ interface Result {
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
-  const q = searchParams.get('q')?.trim() ?? ''
+  const q = sanitizeSearchInput(searchParams.get('q')?.trim() ?? '')
   const limit = Math.min(Number(searchParams.get('limit') ?? '6'), 20)
 
   if (q.length < 2) return NextResponse.json({ results: [] })

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { discoverSeries } from '@/lib/tmdb'
+import { sanitizeSearchInput } from '@/lib/sanitizeSearch'
 
 const PAGE_SIZE = 40
 
@@ -44,7 +45,8 @@ export async function GET(req: NextRequest) {
 
       // Başlık arama (trigram index)
       if (q?.trim()) {
-        query = query.or(`name.ilike.%${q.trim()}%,original_name.ilike.%${q.trim()}%`)
+        const qs = sanitizeSearchInput(q.trim())
+        query = query.or(`name.ilike.%${qs}%,original_name.ilike.%${qs}%`)
       }
 
       // Tür filtresi

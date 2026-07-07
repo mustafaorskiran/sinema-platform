@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/server'
 import AramaFiltreler from './AramaFiltreler'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { sanitizeSearchInput } from '@/lib/sanitizeSearch'
 
 interface Props {
   searchParams: Promise<{ q?: string; sayfa?: string; tip?: string; yil?: string; tur?: string; min_puan?: string; dil?: string }>
@@ -50,7 +51,8 @@ export default async function AramaPage({ searchParams }: Props) {
   }
 
   const supabase = await createClient()
-  const term = q.trim()
+  // Görüntülenen metin (q/başlık) ham kalır; DB filtresine giden term temizlenir (filter injection önleme)
+  const term = sanitizeSearchInput(q.trim())
 
   // Paralel sorgular
   const [

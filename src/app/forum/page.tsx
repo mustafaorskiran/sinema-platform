@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
 import { IconSearch, IconClose, IconPin } from '@/components/icons'
+import { sanitizeSearchInput } from '@/lib/sanitizeSearch'
 
 export const metadata: Metadata = { title: 'Forum | Sinezon' }
 
@@ -42,7 +43,8 @@ export default async function ForumPage({ searchParams }: Props) {
 
   if (query) {
     // pg_trgm ile title + content araması
-    threadQuery = threadQuery.or(`title.ilike.%${query}%,content.ilike.%${query}%`)
+    const qs = sanitizeSearchInput(query)
+    threadQuery = threadQuery.or(`title.ilike.%${qs}%,content.ilike.%${qs}%`)
     threadQuery = threadQuery.limit(30)
   } else if (kategoriFilter) {
     // Kategoriye göre filtrele

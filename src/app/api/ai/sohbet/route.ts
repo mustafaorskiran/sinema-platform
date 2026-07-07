@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { rateLimit } from '@/lib/rateLimit'
 import OpenAI from 'openai'
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Giriş gerekli' }, { status: 401 })
+
+  const allowed = await rateLimit(`ai-sohbet:${user.id}`, 10 * 60 * 1000, 10)
+  if (!allowed) return NextResponse.json({ error: 'Çok fazla istek. Biraz sonra tekrar dene.' }, { status: 429 })
 
   const { question, title, year, genres, director, mediaType } = await req.json()
   if (!question?.trim() || !title) {

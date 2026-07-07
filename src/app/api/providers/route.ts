@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getActiveTMDbLanguage } from '@/lib/tmdb'
 
 const BASE_URL = 'https://api.themoviedb.org/3'
 const API_KEY = process.env.TMDB_BEARER_TOKEN
@@ -8,7 +9,8 @@ export async function GET(req: NextRequest) {
   const region = req.nextUrl.searchParams.get('region') ?? 'TR'
 
   try {
-    const url = `${BASE_URL}/watch/providers/${type}?watch_region=${region}&language=tr-TR`
+    const lang = await getActiveTMDbLanguage()
+    const url = `${BASE_URL}/watch/providers/${type}?watch_region=${region}&language=${lang}`
     const res = await fetch(url, {
       headers: { Authorization: `Bearer ${API_KEY}`, accept: 'application/json' },
       next: { revalidate: 86400 },

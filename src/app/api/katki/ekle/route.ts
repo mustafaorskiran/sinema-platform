@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { getActiveTMDbLanguage } from '@/lib/tmdb'
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient()
@@ -23,10 +24,16 @@ export async function POST(req: NextRequest) {
   if (existing) return NextResponse.json({ ok: true, alreadyExists: true, tmdbId })
 
   // TMDb'den çek
-  const res = await fetch(
-    `https://api.themoviedb.org/3/${endpoint}/${tmdbId}?language=tr-TR`,
-    { headers: { Authorization: `Bearer ${tmdbKey}` } }
-  )
+  const lang = await getActiveTMDbLanguage()
+  let res: Response
+  try {
+    res = await fetch(
+      `https://api.themoviedb.org/3/${endpoint}/${tmdbId}?language=${lang}`,
+      { headers: { Authorization: `Bearer ${tmdbKey}` } }
+    )
+  } catch {
+    return NextResponse.json({ error: 'TMDb hatası' }, { status: 500 })
+  }
   if (!res.ok) return NextResponse.json({ error: 'TMDb hatası' }, { status: 500 })
   const m = await res.json()
 

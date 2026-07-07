@@ -3,6 +3,7 @@ import InfiniteGrid from '@/components/InfiniteGrid'
 import FilmlerSidebar from '@/components/FilmlerSidebar'
 import AdBanner from '@/components/AdBanner'
 import { FILM_GENRES } from '@/lib/film-genres'
+import { sanitizeSearchInput } from '@/lib/sanitizeSearch'
 import { OZEL_KATEGORILER } from '@/lib/ozel-kategoriler'
 import { createClient } from '@/lib/supabase/server'
 import {
@@ -197,7 +198,8 @@ export default async function FilmlerPage({ searchParams }: Props) {
 
     // Başlık arama (trigram index)
     if (keyword?.trim()) {
-      query = query.or(`title.ilike.%${keyword.trim()}%,original_title.ilike.%${keyword.trim()}%`)
+      const kw = sanitizeSearchInput(keyword.trim())
+      query = query.or(`title.ilike.%${kw}%,original_title.ilike.%${kw}%`)
     }
 
     // Sıralama

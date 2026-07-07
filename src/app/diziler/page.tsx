@@ -7,6 +7,7 @@ import { OZEL_KATEGORILER } from '@/lib/ozel-kategoriler'
 import { createClient } from '@/lib/supabase/server'
 import { discoverSeries, getTVProviderList } from '@/lib/tmdb'
 import { getTranslations } from '@/lib/i18n'
+import { sanitizeSearchInput } from '@/lib/sanitizeSearch'
 import { IconTv, IconStarFilled } from '@/components/icons'
 import type { Metadata } from 'next'
 
@@ -90,7 +91,10 @@ export default async function DizilerPage({ searchParams }: Props) {
     total_pages = data.total_pages
   } else {
     let query = supabase.from('series').select('*', { count: 'exact' })
-    if (q?.trim()) query = query.or(`name.ilike.%${q.trim()}%,original_name.ilike.%${q.trim()}%`)
+    if (q?.trim()) {
+      const qs = sanitizeSearchInput(q.trim())
+      query = query.or(`name.ilike.%${qs}%,original_name.ilike.%${qs}%`)
+    }
     if (genre) {
       const ids = genre.split(',').map(Number).filter(Boolean)
       if (ids.length === 1) query = query.contains('genre_ids', ids)

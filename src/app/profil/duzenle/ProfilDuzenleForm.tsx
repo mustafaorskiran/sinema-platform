@@ -171,84 +171,85 @@ export default function ProfilDuzenleForm({ userId, initialUsername, initialAvat
     }
 
     setLoading(true)
-    const supabase = createClient()
+    try {
+      const supabase = createClient()
 
-    if (trimmed !== initialUsername) {
-      const { data: existing } = await supabase
+      if (trimmed !== initialUsername) {
+        const { data: existing } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('username', trimmed)
+          .neq('id', userId)
+          .maybeSingle()
+
+        if (existing) {
+          setError('Bu kullanıcı adı zaten kullanılıyor.')
+          return
+        }
+      }
+
+      // Avatar yükle
+      let newAvatarUrl = avatarUrl
+      if (avatarFile) {
+        const ext = avatarFile.name.split('.').pop()
+        const path = `${userId}/avatar.${ext}`
+        const { error: uploadError } = await supabase.storage.from('avatars').upload(path, avatarFile, { upsert: true })
+        if (uploadError) {
+          setError('Avatar yüklenirken hata oluştu.')
+          return
+        }
+        const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
+        newAvatarUrl = `${publicUrl}?t=${Date.now()}`
+      }
+
+      // Banner yükle
+      let newBannerUrl = bannerUrl || null
+      if (bannerFile) {
+        const ext = bannerFile.name.split('.').pop()
+        const path = `${userId}/banner.${ext}`
+        const { error: uploadError } = await supabase.storage.from('avatars').upload(path, bannerFile, { upsert: true })
+        if (uploadError) {
+          setError('Banner yüklenirken hata oluştu.')
+          return
+        }
+        const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
+        newBannerUrl = `${publicUrl}?t=${Date.now()}`
+      }
+
+      const { error: updateError } = await supabase
         .from('profiles')
-        .select('id')
-        .eq('username', trimmed)
-        .neq('id', userId)
-        .maybeSingle()
+        .update({
+          username: trimmed,
+          avatar_url: newAvatarUrl,
+          banner_url: newBannerUrl,
+          bio: bio.trim() || null,
+          location: location.trim() || null,
+          website: website.trim() || null,
+          twitter_url: twitterUrl.trim() || null,
+          letterboxd_url: letterboxdUrl.trim() || null,
+          imdb_url: imdbUrl.trim() || null,
+          birth_year: birthYear ? Number(birthYear) : null,
+          country: country.trim() || null,
+          theme_color: themeColor,
+          email_notifications: emailNotifications,
+          email_on_follow: emailOnFollow,
+          email_on_like: emailOnLike,
+          email_on_reply: emailOnReply,
+        })
+        .eq('id', userId)
 
-      if (existing) {
-        setError('Bu kullanıcı adı zaten kullanılıyor.')
-        setLoading(false)
+      if (updateError) {
+        setError('Profil güncellenirken hata oluştu.')
         return
       }
-    }
 
-    // Avatar yükle
-    let newAvatarUrl = avatarUrl
-    if (avatarFile) {
-      const ext = avatarFile.name.split('.').pop()
-      const path = `${userId}/avatar.${ext}`
-      const { error: uploadError } = await supabase.storage.from('avatars').upload(path, avatarFile, { upsert: true })
-      if (uploadError) {
-        setError('Avatar yüklenirken hata oluştu.')
-        setLoading(false)
-        return
-      }
-      const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
-      newAvatarUrl = `${publicUrl}?t=${Date.now()}`
-    }
-
-    // Banner yükle
-    let newBannerUrl = bannerUrl || null
-    if (bannerFile) {
-      const ext = bannerFile.name.split('.').pop()
-      const path = `${userId}/banner.${ext}`
-      const { error: uploadError } = await supabase.storage.from('avatars').upload(path, bannerFile, { upsert: true })
-      if (uploadError) {
-        setError('Banner yüklenirken hata oluştu.')
-        setLoading(false)
-        return
-      }
-      const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
-      newBannerUrl = `${publicUrl}?t=${Date.now()}`
-    }
-
-    const { error: updateError } = await supabase
-      .from('profiles')
-      .update({
-        username: trimmed,
-        avatar_url: newAvatarUrl,
-        banner_url: newBannerUrl,
-        bio: bio.trim() || null,
-        location: location.trim() || null,
-        website: website.trim() || null,
-        twitter_url: twitterUrl.trim() || null,
-        letterboxd_url: letterboxdUrl.trim() || null,
-        imdb_url: imdbUrl.trim() || null,
-        birth_year: birthYear ? Number(birthYear) : null,
-        country: country.trim() || null,
-        theme_color: themeColor,
-        email_notifications: emailNotifications,
-        email_on_follow: emailOnFollow,
-        email_on_like: emailOnLike,
-        email_on_reply: emailOnReply,
-      })
-      .eq('id', userId)
-
-    if (updateError) {
+      setSuccess(true)
+      setTimeout(() => router.push(`/profil/${trimmed}`), 1200)
+    } catch {
       setError('Profil güncellenirken hata oluştu.')
+    } finally {
       setLoading(false)
-      return
     }
-
-    setSuccess(true)
-    setLoading(false)
-    setTimeout(() => router.push(`/profil/${trimmed}`), 1200)
   }
 
   const displayAvatar = previewUrl ?? avatarUrl

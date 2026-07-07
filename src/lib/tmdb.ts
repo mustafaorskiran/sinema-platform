@@ -7,7 +7,7 @@ const API_KEY = process.env.TMDB_BEARER_TOKEN
 
 export const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p'
 
-async function getActiveTMDbLanguage(): Promise<string> {
+export async function getActiveTMDbLanguage(): Promise<string> {
   try {
     const cookieStore = await cookies()
     const raw = cookieStore.get('locale')?.value ?? ''

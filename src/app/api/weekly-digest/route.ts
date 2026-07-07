@@ -2,13 +2,14 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY
-const SITE_URL = 'https://sinema-platform.vercel.app'
+const FROM_EMAIL = process.env.FROM_EMAIL ?? 'bildirim@sinezon.com'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sinezon.com'
 
 export async function POST(req: Request) {
-  // Sadece Vercel Cron veya admin çağırabilir
+  // Sadece cron veya admin çağırabilir — CRON_SECRET tanımlı değilse istek reddedilir (fail-closed)
   const authHeader = req.headers.get('authorization')
   const cronSecret = process.env.CRON_SECRET
-  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -51,21 +52,21 @@ export async function POST(req: Request) {
 
   // E-posta HTML içeriği
   const mediaListHtml = topMedia.map(m =>
-    `<li><a href="${SITE_URL}/${m.media_type}/${m.media_id}" style="color:#e50914">${m.media_type === 'film' ? '🎬' : '📺'} ${m.media_type} #${m.media_id}</a> — ${m.count} yorum</li>`
+    `<li><a href="${SITE_URL}/${m.media_type}/${m.media_id}" style="color:#E11D48">${m.media_type === 'film' ? '🎬' : '📺'} ${m.media_type} #${m.media_id}</a> — ${m.count} yorum</li>`
   ).join('')
 
   const html = `
     <!DOCTYPE html>
     <html lang="tr">
-    <head><meta charset="utf-8"><title>Haftalık SineMa Özeti</title></head>
-    <body style="font-family:sans-serif;background:#141414;color:#fff;padding:32px;max-width:600px;margin:0 auto">
-      <h1 style="color:#e50914">🎬 Bu Haftanın Özeti</h1>
-      <p style="color:#aaa">Bu hafta SineMa'da neler oldu?</p>
+    <head><meta charset="utf-8"><title>Haftalık Sinezon Özeti</title></head>
+    <body style="font-family:sans-serif;background:#0B0F19;color:#fff;padding:32px;max-width:600px;margin:0 auto">
+      <h1 style="color:#E11D48">🎬 Bu Haftanın Özeti</h1>
+      <p style="color:#aaa">Bu hafta Sinezon'da neler oldu?</p>
       <h2 style="color:#fff;font-size:18px">En Çok Yorumlanan İçerikler</h2>
       <ul style="padding-left:20px;color:#ddd;line-height:2">${mediaListHtml || '<li>Bu hafta içerik yok</li>'}</ul>
       <hr style="border-color:#333;margin:24px 0">
       <p style="color:#666;font-size:12px">
-        Bu e-postayı durdurmak için <a href="${SITE_URL}/ayarlar" style="color:#e50914">bildirim ayarlarını</a> düzenleyebilirsin.
+        Bu e-postayı durdurmak için <a href="${SITE_URL}/ayarlar" style="color:#E11D48">bildirim ayarlarını</a> düzenleyebilirsin.
       </p>
     </body>
     </html>
@@ -87,9 +88,9 @@ export async function POST(req: Request) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${RESEND_API_KEY}` },
         body: JSON.stringify({
-          from: 'SineMa <bildirim@sinema-platform.vercel.app>',
+          from: `Sinezon <${FROM_EMAIL}>`,
           to: email,
-          subject: 'Haftalık SineMa Özeti',
+          subject: 'Haftalık Sinezon Özeti',
           html,
         }),
       })

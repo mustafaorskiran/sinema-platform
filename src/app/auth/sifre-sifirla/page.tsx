@@ -40,14 +40,19 @@ export default function SifreSifirlaPage() {
     if (password.length < 6) { setError(t('auth.passwordMinLengthLong')); return }
     if (password !== confirm) { setError(t('auth.passwordsDontMatch')); return }
     setLoading(true)
-    const supabase = createClient()
-    const { error: authError } = await supabase.auth.updateUser({ password })
-    if (authError) {
+    try {
+      const supabase = createClient()
+      const { error: authError } = await supabase.auth.updateUser({ password })
+      if (authError) {
+        setError(t('auth.passwordUpdateFailed'))
+        setLoading(false); return
+      }
+      setDone(true)
+      setTimeout(() => router.push('/'), 2500)
+    } catch {
       setError(t('auth.passwordUpdateFailed'))
-      setLoading(false); return
+      setLoading(false)
     }
-    setDone(true)
-    setTimeout(() => router.push('/'), 2500)
   }
 
   const inputBase = {

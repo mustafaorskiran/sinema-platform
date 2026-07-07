@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { rateLimit } from '@/lib/rateLimit'
 import OpenAI from 'openai'
 
 export async function GET(req: NextRequest) {
+  // Bu endpoint girişsiz erişilebiliyor (her ziyaretçi film/dizi sayfasında tetikliyor) — IP bazlı sınırla
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
+  const allowed = await rateLimit(`ai-film-ozeti:${ip}`, 60 * 1000, 20)
+  if (!allowed) return NextResponse.json({ error: 'Çok fazla istek' }, { status: 429 })
+
   const mediaId = req.nextUrl.searchParams.get('id')
   const mediaType = req.nextUrl.searchParams.get('type')
   const title = req.nextUrl.searchParams.get('title') ?? ''

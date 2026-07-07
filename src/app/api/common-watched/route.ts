@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { getMovieMini, getSeriesMini } from '@/lib/tmdb'
 
 export async function GET(req: NextRequest) {
   const supabase = await createClient()
@@ -26,17 +27,13 @@ export async function GET(req: NextRequest) {
   const enriched = await Promise.all(
     slice.map(async (item: { media_id: number; media_type: string }) => {
       try {
-        const endpoint = item.media_type === 'film'
-          ? `https://api.themoviedb.org/3/movie/${item.media_id}?language=tr-TR`
-          : `https://api.themoviedb.org/3/tv/${item.media_id}?language=tr-TR`
-        const res = await fetch(endpoint, {
-          headers: { Authorization: `Bearer ${process.env.TMDB_API_TOKEN}` },
-        })
-        const data = await res.json()
+        const data = item.media_type === 'film'
+          ? await getMovieMini(item.media_id)
+          : await getSeriesMini(item.media_id)
         return {
           media_id: item.media_id,
           media_type: item.media_type,
-          title: data.title ?? data.name ?? '',
+          title: (data as { title?: string; name?: string }).title ?? (data as { title?: string; name?: string }).name ?? '',
           poster_path: data.poster_path ?? null,
         }
       } catch {
