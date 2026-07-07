@@ -10,6 +10,10 @@ jobs:
     steps:
       - name: Trigger Coolify deploy webhook
         run: |
+          # Not: force parametresi HİÇ eklenmiyor — Coolify'da bilinen bir hata
+          # (coollabsio/coolify #8104, #5381) "force=false" değerini PHP'de her
+          # zaman true olarak yorumlayıp --no-cache ile tam yeniden derleme
+          # yaptırıyor. Parametreyi tamamen atlamak cache'i etkin tutuyor.
           curl --fail --silent --show-error \
             -H "Authorization: Bearer ${{ secrets.COOLIFY_DEPLOY_TOKEN }}" \
-            "http://188.245.204.228:8000/api/v1/deploy?uuid=ks5j9hsgvx71clctx6vd6ryu&force=false"
+            "http://188.245.204.228:8000/api/v1/deploy?uuid=ks5j9hsgvx71clctx6vd6ryu"
