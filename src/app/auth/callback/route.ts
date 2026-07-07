@@ -33,7 +33,10 @@ async function uniqueUsername(
 }
 
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = new URL(request.url)
+  const { searchParams } = new URL(request.url)
+  // Reverse proxy (Traefik/Coolify) arkasında request.url'in origin'i container'ın
+  // iç adresini (localhost:3000) yansıtabiliyor — bunun yerine site URL'ini kullan.
+  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sinezon.com'
   const code = searchParams.get('code')
   const type = searchParams.get('type')
   const next = searchParams.get('next') ?? '/'
