@@ -52,8 +52,21 @@ const nextConfig: NextConfig = {
         // Kullanıcıya özel veri döndürmeyen, tamamen genel içerik uçları —
         // yukarıdaki no-store kuralını burada override ediyoruz (Next.js
         // headers() içinde sıradaki eşleşme kazanır). Diğer tüm API'ler
-        // korumalı kalır.
-        source: '/api/(filmler|diziler|search)',
+        // korumalı kalır. Üç ayrı sabit path — path-to-regexp'te OR grubu
+        // (filmler|diziler|search) beklenen şekilde eşleşmediği için.
+        source: '/api/filmler',
+        headers: [
+          { key: 'Cache-Control', value: 'public, s-maxage=60, stale-while-revalidate=300' },
+        ],
+      },
+      {
+        source: '/api/diziler',
+        headers: [
+          { key: 'Cache-Control', value: 'public, s-maxage=60, stale-while-revalidate=300' },
+        ],
+      },
+      {
+        source: '/api/search',
         headers: [
           { key: 'Cache-Control', value: 'public, s-maxage=60, stale-while-revalidate=300' },
         ],
