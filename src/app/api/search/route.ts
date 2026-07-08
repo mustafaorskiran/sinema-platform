@@ -68,5 +68,7 @@ export async function GET(request: NextRequest) {
     .slice(0, limit)
     .map(({ popularity: _popularity, ...rest }) => rest)
 
-  return NextResponse.json({ results })
+  return NextResponse.json({ results }, {
+    headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300' },
+  })
 }

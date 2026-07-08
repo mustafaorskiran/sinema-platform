@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { discoverSeries } from '@/lib/tmdb'
 import { sanitizeSearchInput } from '@/lib/sanitizeSearch'
+import { getCachedCatalogCount } from '@/lib/catalogSize'
+
+const CACHE_HEADERS = { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300' }
 
 const PAGE_SIZE = 40
 
@@ -32,15 +35,14 @@ export async function GET(req: NextRequest) {
       }).catch(() => ({ results: [], total_pages: 1 }))
       results     = data.results
       total_pages = data.total_pages
-      return NextResponse.json({ results, total_pages })
+      return NextResponse.json({ results, total_pages }, { headers: CACHE_HEADERS })
     }
 
     // Supabase catalog — büyük katalog için tüm filtreler desteklenir
     const supabase = await createClient()
-    const { count: catalogCount } = await supabase
-      .from('series').select('*', { count: 'exact', head: true }).limit(1)
+    const catalogCount = await getCachedCatalogCount('series')
 
-    if ((catalogCount ?? 0) > 1000) {
+    if (catalogCount > 1000) {
       let query = supabase.from('series').select('*', { count: 'exact' })
 
       // Başlık arama (trigram index)
@@ -93,7 +95,7 @@ export async function GET(req: NextRequest) {
       }))
       total_pages = Math.ceil((count ?? 0) / PAGE_SIZE)
 
-      return NextResponse.json({ results, total_pages })
+      return NextResponse.json({ results, total_pages }, { headers: CACHE_HEADERS })
     }
 
     // Fallback: küçük katalog → TMDb discover
@@ -104,7 +106,7 @@ export async function GET(req: NextRequest) {
     results     = data.results
     total_pages = data.total_pages
 
-    return NextResponse.json({ results, total_pages })
+    return NextResponse.json({ results, total_pages }, { headers: CACHE_HEADERS })
   } catch {
     return NextResponse.json({ results: [], total_pages: 1 }, { status: 500 })
   }

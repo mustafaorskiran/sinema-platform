@@ -4,6 +4,12 @@ import {
   discoverMovies, getNowPlayingMovies, getUpcomingMovies, getTopRatedMovies,
 } from '@/lib/tmdb'
 import { sanitizeSearchInput } from '@/lib/sanitizeSearch'
+import { getCachedCatalogCount } from '@/lib/catalogSize'
+
+/// Aynı filtre kombinasyonuyla gelen tekrar istekler (infinite-scroll,
+/// farklı kullanıcılar) 60sn boyunca CDN/proxy seviyesinde önbellekten
+/// karşılanır — TMDb/Supabase'e her seferinde gitmeyi önler.
+const CACHE_HEADERS = { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300' }
 
 const PAGE_SIZE = 40
 
@@ -37,13 +43,13 @@ export async function GET(req: NextRequest) {
       const data = await getNowPlayingMovies(page).catch(() => ({ results: [], total_pages: 1 }))
       results     = data.results ?? []
       total_pages = (data as any).total_pages ?? 1
-      return NextResponse.json({ results, total_pages })
+      return NextResponse.json({ results, total_pages }, { headers: CACHE_HEADERS })
     }
     if (kategori === 'yakinda' && isRealtime) {
       const data = await getUpcomingMovies(page).catch(() => ({ results: [], total_pages: 1 }))
       results     = data.results ?? []
       total_pages = (data as any).total_pages ?? 1
-      return NextResponse.json({ results, total_pages })
+      return NextResponse.json({ results, total_pages }, { headers: CACHE_HEADERS })
     }
 
     // Platform filtresi → TMDb (streaming verisi bizde yok)
@@ -57,15 +63,14 @@ export async function GET(req: NextRequest) {
       }).catch(() => ({ results: [], total_pages: 1 }))
       results     = data.results
       total_pages = data.total_pages
-      return NextResponse.json({ results, total_pages })
+      return NextResponse.json({ results, total_pages }, { headers: CACHE_HEADERS })
     }
 
     // Supabase catalog — büyük katalog için tüm filtreler desteklenir
     const supabase = await createClient()
-    const { count: catalogCount } = await supabase
-      .from('movies').select('*', { count: 'exact', head: true }).limit(1)
+    const catalogCount = await getCachedCatalogCount('movies')
 
-    if ((catalogCount ?? 0) > 10000) {
+    if (catalogCount > 10000) {
       let query = supabase.from('movies').select('*', { count: 'exact' })
 
       // Tür filtresi
@@ -121,7 +126,7 @@ export async function GET(req: NextRequest) {
       }))
       total_pages = Math.ceil((count ?? 0) / PAGE_SIZE)
 
-      return NextResponse.json({ results, total_pages })
+      return NextResponse.json({ results, total_pages }, { headers: CACHE_HEADERS })
     }
 
     // Fallback: küçük katalog veya en-iyi sekmesi → TMDb discover
@@ -145,7 +150,7 @@ export async function GET(req: NextRequest) {
       total_pages = data.total_pages
     }
 
-    return NextResponse.json({ results, total_pages })
+    return NextResponse.json({ results, total_pages }, { headers: CACHE_HEADERS })
   } catch {
     return NextResponse.json({ results: [], total_pages: 1 }, { status: 500 })
   }
