@@ -43,7 +43,9 @@ export async function GET(req: NextRequest) {
     const catalogCount = await getCachedCatalogCount('series')
 
     if (catalogCount > 1000) {
-      let query = supabase.from('series').select('*', { count: 'exact' })
+      // bkz. filmler/route.ts — 'exact' count büyük tabloda ana gecikme
+      // kaynağıydı, 'estimated' anlık PostgreSQL istatistiği kullanır.
+      let query = supabase.from('series').select('*', { count: 'estimated' })
 
       // Başlık arama (trigram index)
       if (q?.trim()) {

@@ -48,6 +48,16 @@ const nextConfig: NextConfig = {
           { key: 'Cache-Control', value: 'no-store' },
         ],
       },
+      {
+        // Kullanıcıya özel veri döndürmeyen, tamamen genel içerik uçları —
+        // yukarıdaki no-store kuralını burada override ediyoruz (Next.js
+        // headers() içinde sıradaki eşleşme kazanır). Diğer tüm API'ler
+        // korumalı kalır.
+        source: '/api/(filmler|diziler|search)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, s-maxage=60, stale-while-revalidate=300' },
+        ],
+      },
     ]
   },
 };

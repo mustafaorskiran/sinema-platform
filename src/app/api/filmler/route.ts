@@ -71,7 +71,13 @@ export async function GET(req: NextRequest) {
     const catalogCount = await getCachedCatalogCount('movies')
 
     if (catalogCount > 10000) {
-      let query = supabase.from('movies').select('*', { count: 'exact' })
+      // 'exact' count 600K+ satırlık tabloda bir window function'a (count(*)
+      // OVER()) dönüşüyor ve TÜM eşleşen satırları işlemeyi zorunlu kılıyor —
+      // EXPLAIN ANALYZE'da bu tek başına ~7.2sn'lik gecikmenin kaynağıydı.
+      // 'estimated' PostgreSQL istatistiklerinden anlık bir tahmin döner;
+      // total_pages yaklaşık olur ama infinite-scroll zaten hasMore ile
+      // çalıştığı için bu fark hissedilmez.
+      let query = supabase.from('movies').select('*', { count: 'estimated' })
 
       // Tür filtresi
       if (genre) {
