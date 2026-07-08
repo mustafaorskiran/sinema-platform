@@ -2333,6 +2333,7 @@
     "commonWatchedCount": "{count} titres en commun",
     "commonWatchedDesc": "Découvre quels films tu as en commun avec une personne que tu suis.",
     "commonWatchedEmpty": "Aucun visionnage en commun pour l'instant.",
+    "commonWatchedFindFriends": "Trouver des Amis",
     "commonWatchedFollowingLabel": "Personnes que tu suis",
     "commonWatchedNoFollowing": "Tu ne suis encore personne.",
     "commonWatchedSelectPrompt": "Sélectionne un utilisateur pour voir vos visionnages en commun.",
@@ -2512,8 +2513,13 @@
   "top10Page": {
     "allTime": "Tous les temps",
     "allTimeLower": "Tous les temps",
+    "films": "Films",
+    "metaDesc": "Les 10 films et séries les plus regardés et commentés sur Sinezon.",
+    "metaTitle": "Top 10 Sinezon | Sinezon",
+    "series": "Séries",
     "thisMonth": "Ce mois-ci",
-    "thisWeek": "Cette semaine"
+    "thisWeek": "Cette semaine",
+    "updateNote": "Mis à jour selon l'activité des utilisateurs Sinezon · Actualisé toutes les heures"
   },
   "topic": {
     "addTopic": "+ Ajouter un sujet",
@@ -2598,6 +2604,7 @@
     "country": "Pays",
     "createOwn": "Crée ta propre comparaison",
     "durationEpisode": "Durée / Épisode",
+    "empty": "Aucune comparaison pour le moment. Revenez plus tard.",
     "feature": "Caractéristique",
     "genres": "Genres",
     "language": "Langue",
@@ -2753,5 +2760,126 @@
   "zevkDna": {
     "subtitle": "Profil de genres basé sur tes habitudes de visionnage",
     "title": "ADN de goûts"
+  },
+  "badges": {
+    "first_review": {
+      "name": "Premier Pas",
+      "desc": "Tu as écrit ta première critique"
+    },
+    "reviews_10": {
+      "name": "Cinéphile",
+      "desc": "Tu as écrit 10 critiques"
+    },
+    "reviews_50": {
+      "name": "Passionné de Cinéma",
+      "desc": "Tu as écrit 50 critiques"
+    },
+    "reviews_100": {
+      "name": "Cinéphile Confirmé",
+      "desc": "Tu as écrit 100 critiques"
+    },
+    "reviews_500": {
+      "name": "Légende",
+      "desc": "Tu as écrit 500 critiques"
+    },
+    "film_fan": {
+      "name": "Fan de Films",
+      "desc": "Tu as noté 10+ films"
+    },
+    "series_fan": {
+      "name": "Accro aux Séries",
+      "desc": "Tu as noté 10+ séries"
+    },
+    "balanced": {
+      "name": "Équilibré",
+      "desc": "Tes critiques de films et séries sont équilibrées"
+    },
+    "optimist": {
+      "name": "Optimiste",
+      "desc": "Ta note moyenne est de 8 ou plus"
+    },
+    "critic": {
+      "name": "Critique Sévère",
+      "desc": "Ta note moyenne est de 5 ou moins"
+    },
+    "first_follower": {
+      "name": "Populaire",
+      "desc": "Tu as eu ton premier abonné"
+    },
+    "popular_10": {
+      "name": "Papillon Social",
+      "desc": "Tu as 10 abonnés"
+    },
+    "popular_50": {
+      "name": "Influenceur",
+      "desc": "Tu as 50 abonnés"
+    },
+    "list_maker": {
+      "name": "Maître des Listes",
+      "desc": "Tu as créé 3 listes"
+    },
+    "films_100": {
+      "name": "Club des 100 Films",
+      "desc": "Tu as noté 100 films"
+    },
+    "first_list": {
+      "name": "Créateur de Listes",
+      "desc": "Tu as créé ta première liste"
+    },
+    "member_1year": {
+      "name": "Annuaire Sinezon",
+      "desc": "Tu es membre de Sinezon depuis 1 an"
+    },
+    "diary_1": {
+      "name": "Début du Journal",
+      "desc": "Tu as fait ta première entrée de journal"
+    },
+    "diary_10": {
+      "name": "Tenue de Journal",
+      "desc": "Tu as 10 entrées de journal"
+    },
+    "diary_50": {
+      "name": "Livre de Souvenirs",
+      "desc": "Tu as 50 entrées de journal"
+    },
+    "forum_poster": {
+      "name": "Contributeur du Forum",
+      "desc": "Tu as créé 5 sujets de forum"
+    },
+    "forum_active": {
+      "name": "Star du Forum",
+      "desc": "Tu as créé 20 sujets de forum"
+    },
+    "topic_voter": {
+      "name": "Maître des Tags",
+      "desc": "Tu as étiqueté 10+ titres avec des sujets"
+    }
+  },
+  "diziProgress": {
+    "title": "Progression des Séries",
+    "viewAll": "Tout voir",
+    "episodeCount": "{watched}/{total} épisodes",
+    "finished": "Terminé",
+    "fallbackName": "Série #{id}"
+  },
+  "haftalik": {
+    "aiRecommendation": "Obtenir une Recommandation IA",
+    "allTop10": "Tout le Top 10",
+    "discussionForum": "Forum de Discussion",
+    "explore": "Explorer",
+    "eyebrow": "Résumé Hebdomadaire",
+    "hourlyUpdate": "Mis à jour toutes les heures",
+    "leaderboard": "Classement",
+    "metaDesc": "Les films les plus commentés de la semaine, les critiques les plus actifs et les sorties à venir.",
+    "metaTitle": "Résumé de la Semaine | Sinezon",
+    "newLists": "Listes Créées cette Semaine",
+    "reviewCount": "{count} critiques",
+    "title": "Résumé de la Semaine",
+    "topReviewers": "Critiques de la Semaine",
+    "topReviews": "Critiques les Plus Appréciées de la Semaine",
+    "trending": "Tendance cette Semaine",
+    "upcoming": "Bientôt Disponible",
+    "weeklyTop10": "Top 10 de la Semaine",
+    "whatToWatch": "Que Regarder ?"
   }
 }

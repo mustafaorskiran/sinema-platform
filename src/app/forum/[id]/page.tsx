@@ -12,8 +12,31 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
   const supabase = await createClient()
-  const { data } = await supabase.from('forum_threads').select('title').eq('id', id).single()
-  return { title: data ? `${data.title} — Forum` : 'Forum' }
+  const { data } = await supabase.from('forum_threads').select('title, content').eq('id', id).single()
+  if (!data) return { title: 'Forum' }
+
+  const title = `${data.title} — Forum`
+  const description = (data.content ?? '').slice(0, 155) || 'Sinezon forumunda tartışmaya katıl.'
+  const ogImage = `/api/og?${new URLSearchParams({ title: data.title, type: 'forum' }).toString()}`
+
+  return {
+    title,
+    description,
+    alternates: { canonical: `/forum/${id}` },
+    openGraph: {
+      title,
+      description,
+      images: [{ url: ogImage, width: 1200, height: 630, alt: data.title }],
+      type: 'article',
+      url: `/forum/${id}`,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [ogImage],
+    },
+  }
 }
 
 export default async function ForumThreadPage({ params }: Props) {

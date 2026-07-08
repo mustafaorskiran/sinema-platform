@@ -159,7 +159,7 @@ export default async function ProfilPage({ params }: Props) {
     threadCount: threadCount ?? 0,
     topicVoteCount: topicVoteCount ?? 0,
     joinedAt: profile.created_at,
-  })
+  }, t)
   const earnedBadges = badges.filter(b => b.earned)
   const pinnedBadgeIds: string[] = profile.pinned_badges ?? []
   const pinnedBadges = earnedBadges.filter(b => pinnedBadgeIds.includes(b.id))

@@ -4,10 +4,13 @@ import { rateLimit } from '@/lib/rateLimit'
 import {
   getMovieDetail, getMovieCertification, getPosterUrl, getBackdropUrl,
 } from '@/lib/tmdb'
+import { isValidLocale, getTMDbLanguage, DEFAULT_LOCALE } from '@/lib/i18n'
 
 /// Mobil uygulama (ve gelecekte diğer istemciler) için film detay uç noktası.
 /// Web'in kendisi bu veriyi doğrudan server component içinde çekiyor
 /// (src/app/film/[id]/page.tsx) — burası SADECE dış istemciler için.
+/// Web cookie'yle dil belirlerken, mobil istemcinin cookie'si olmadığından
+/// ?lang= query param ile app locale kodu (tr/en/de/...) gönderilir.
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -22,9 +25,12 @@ export async function GET(
     return NextResponse.json({ error: 'Geçersiz id' }, { status: 400 })
   }
 
+  const rawLang = req.nextUrl.searchParams.get('lang') ?? ''
+  const tmdbLang = getTMDbLanguage(isValidLocale(rawLang) ? rawLang : DEFAULT_LOCALE)
+
   try {
     const [movie, certification] = await Promise.all([
-      getMovieDetail(movieId),
+      getMovieDetail(movieId, tmdbLang),
       getMovieCertification(movieId).catch(() => null),
     ])
 

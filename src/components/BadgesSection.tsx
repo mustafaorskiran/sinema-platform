@@ -18,7 +18,7 @@ export default function BadgesSection({ stats, initialPinned, isOwnProfile }: Pr
   const [pinned, setPinned] = useState<string[]>(initialPinned)
   const [saving, setSaving] = useState(false)
 
-  const badges = computeBadges(stats)
+  const badges = computeBadges(stats, t)
   const earned = badges.filter(b => b.earned)
   const unearned = badges.filter(b => !b.earned)
   const pct = Math.round((earned.length / ALL_BADGE_COUNT) * 100)

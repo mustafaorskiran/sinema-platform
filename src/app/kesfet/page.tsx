@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import type { Metadata } from 'next'
 import { getTranslations } from '@/lib/i18n'
+import { getActiveTMDbLanguage } from '@/lib/tmdb'
 import { IconGem, IconTomato, IconZap, IconStarFilled, IconFire } from '@/components/icons'
 
 export const revalidate = 3600
@@ -13,9 +14,9 @@ export const metadata: Metadata = {
 
 const BASE = 'https://api.themoviedb.org/3'
 
-async function tmdb(path: string, params: Record<string, string>) {
+async function tmdb(path: string, params: Record<string, string>, lang: string) {
   const url = new URL(`${BASE}${path}`)
-  url.searchParams.set('language', 'tr-TR')
+  url.searchParams.set('language', lang)
   url.searchParams.set('page', '1')
   Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v))
   try {
@@ -80,9 +81,10 @@ const CATEGORIES: Category[] = [
 
 export default async function KesfetPage() {
   const { t } = await getTranslations()
+  const tmdbLang = await getActiveTMDbLanguage()
   const results = await Promise.all(
     CATEGORIES.map(cat =>
-      tmdb('/discover/movie', cat.params).then(items => ({ ...cat, items }))
+      tmdb('/discover/movie', cat.params, tmdbLang).then(items => ({ ...cat, items }))
     )
   )
 

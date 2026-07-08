@@ -121,7 +121,7 @@ export default async function IstatistiklerPage({ params }: Props) {
     threadCount: threadCount ?? 0,
     topicVoteCount: topicVoteCount ?? 0,
     joinedAt: profile.created_at,
-  })
+  }, t)
   const earnedBadges = badges.filter(b => b.earned)
   const lockedBadges = badges.filter(b => !b.earned)
 

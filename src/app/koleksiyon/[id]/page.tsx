@@ -12,7 +12,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
   try {
     const col = await getCollection(Number(id))
-    return { title: `${col.name} | Sinezon` }
+    const title = `${col.name} | Sinezon`
+    const description = col.overview ? col.overview.slice(0, 155) : `${col.name} — Sinezon'da keşfet.`
+    const posterUrl = col.poster_path ? `https://image.tmdb.org/t/p/w300${col.poster_path}` : ''
+    const ogImage = `/api/og?${new URLSearchParams({ title: col.name, type: 'liste', ...(posterUrl && { poster: posterUrl }) }).toString()}`
+
+    return {
+      title,
+      description,
+      alternates: { canonical: `/koleksiyon/${id}` },
+      openGraph: {
+        title,
+        description,
+        images: [{ url: ogImage, width: 1200, height: 630, alt: col.name }],
+        type: 'website',
+        url: `/koleksiyon/${id}`,
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description,
+        images: [ogImage],
+      },
+    }
   } catch {
     return { title: 'Koleksiyon | Sinezon' }
   }

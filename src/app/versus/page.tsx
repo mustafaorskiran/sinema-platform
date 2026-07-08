@@ -45,7 +45,8 @@ export default async function VersusPage() {
   if (!versusRows || versusRows.length === 0) {
     return (
       <div className="max-w-lg mx-auto px-4 py-20 text-center">
-        <p className="text-white">{t('common.loading')}</p>
+        <IconSwords size={32} className="mx-auto mb-3 opacity-30" />
+        <p className="text-white/60">{t('versus.empty')}</p>
       </div>
     )
   }

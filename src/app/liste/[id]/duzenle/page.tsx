@@ -1,5 +1,6 @@
 import { notFound, redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { isAdmin } from '@/lib/admin'
 import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle } from '@/lib/tmdb'
 import ListeDuzenleClient from './ListeDuzenleClient'
 import type { Metadata } from 'next'
@@ -19,8 +20,11 @@ export default async function ListeDuzenle({ params }: Props) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/giris')
 
-  const { data: list } = await supabase.from('lists').select('*').eq('id', id).eq('user_id', user.id).single()
+  const { data: list } = await supabase.from('lists').select('*').eq('id', id).single()
   if (!list) notFound()
+  const owns = list.user_id === user.id
+  const editorialAdmin = list.is_editorial && list.user_id === null && await isAdmin(supabase, user.id)
+  if (!owns && !editorialAdmin) notFound()
 
   const { data: items } = await supabase.from('list_items').select('*').eq('list_id', id).order('position', { ascending: true })
 
@@ -41,5 +45,5 @@ export default async function ListeDuzenle({ params }: Props) {
     })
   )
 
-  return <ListeDuzenleClient list={{ ...list, cover_url: list.cover_url ?? null }} items={itemsWithMedia} />
+  return <ListeDuzenleClient list={{ ...list, cover_url: list.cover_url ?? null, is_editorial: list.is_editorial ?? false }} items={itemsWithMedia} />
 }

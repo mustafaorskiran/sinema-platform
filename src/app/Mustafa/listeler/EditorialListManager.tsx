@@ -217,14 +217,21 @@ export default function EditorialListManager({ lists }: Props) {
                   </button>
                 </td>
                 <td className="px-4 py-3 text-right">
-                  <a
-                    href={list.slug ? `/liste/editorial/${list.slug}` : `/liste/${list.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-[--accent] hover:underline inline-flex items-center gap-1"
-                  >
-                    Görüntüle <IconArrowRight size={12} />
-                  </a>
+                  <div className="flex items-center justify-end gap-3">
+                    {!list.list_type?.startsWith('dynamic') && (
+                      <a href={`/liste/${list.id}/duzenle`} className="text-xs text-[--text-secondary] hover:text-white hover:underline">
+                        Yönet
+                      </a>
+                    )}
+                    <a
+                      href={list.slug ? `/liste/editorial/${list.slug}` : `/liste/${list.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-[--accent] hover:underline inline-flex items-center gap-1"
+                    >
+                      Görüntüle <IconArrowRight size={12} />
+                    </a>
+                  </div>
                 </td>
               </tr>
             ))}

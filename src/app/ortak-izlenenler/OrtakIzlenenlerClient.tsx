@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { IconFilm, IconChevronUp } from '@/components/icons'
+import Link from 'next/link'
+import { IconFilm, IconChevronUp, IconUsers } from '@/components/icons'
 import { useLocale } from '@/context/LocaleContext'
 
 interface Profile {
@@ -47,7 +48,15 @@ export default function OrtakIzlenenlerClient({ myProfile, following, defaultUse
           {t('social.commonWatchedFollowingLabel')}
         </p>
         {following.length === 0 ? (
-          <p className="text-[--text-secondary] text-sm">{t('social.commonWatchedNoFollowing')}</p>
+          <div className="py-16 text-center rounded-2xl rounded-xl" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <IconUsers size={40} strokeWidth={1.5} className="mb-3 mx-auto text-white/30" />
+            <p className="text-sm text-[--text-secondary] mb-4">{t('social.commonWatchedNoFollowing')}</p>
+            <Link href="/arkadaslar"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all hover:scale-105"
+              style={{ background: 'var(--accent)', color: '#fff' }}>
+              {t('social.commonWatchedFindFriends')}
+            </Link>
+          </div>
         ) : (
           <div className="flex flex-wrap gap-2">
             {following.map(u => (

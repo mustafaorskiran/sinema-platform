@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { getPosterUrl, getMediaTitle, getMediaYear, getMovieDetail, getSeriesDetail } from '@/lib/tmdb'
-import { getTranslations } from '@/lib/i18n'
+import { getPosterUrl, getMediaTitle, getMediaYear, getMovieDetail, getSeriesDetail, getActiveTMDbLanguage } from '@/lib/tmdb'
+import { getTranslations, getLocaleInfo, type Locale } from '@/lib/i18n'
 import {
   IconNewspaper, IconFire, IconFilm, IconTv, IconStarFilled, IconMessageSquare,
   IconHeartFilled, IconClipboard, IconPencil, IconLink, IconCalendar, IconTrophy,
@@ -11,12 +11,16 @@ import type { Metadata } from 'next'
 
 export const revalidate = 3600
 
-export const metadata: Metadata = {
-  title: 'Haftanın Özeti | Sinezon',
-  description: 'Bu haftanın en çok konuşulan filmleri, en aktif yorumcular ve yakında gelenler.',
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getTranslations()
+  return {
+    title: t('haftalik.metaTitle'),
+    description: t('haftalik.metaDesc'),
+  }
 }
 
-function weekRange() {
+function weekRange(locale: Locale) {
+  const bcp47 = getLocaleInfo(locale).tmdb
   const now = new Date()
   const day = now.getDay()
   const monday = new Date(now)
@@ -28,15 +32,15 @@ function weekRange() {
   return {
     start: monday.toISOString(),
     end: sunday.toISOString(),
-    label: `${monday.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })} – ${sunday.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}`,
+    label: `${monday.toLocaleDateString(bcp47, { day: 'numeric', month: 'long' })} – ${sunday.toLocaleDateString(bcp47, { day: 'numeric', month: 'long', year: 'numeric' })}`,
   }
 }
 
 const TMDB_BASE = 'https://api.themoviedb.org/3'
 
-async function fetchTrendingWeek(apiKey: string) {
+async function fetchTrendingWeek(apiKey: string, lang: string) {
   try {
-    const r = await fetch(`${TMDB_BASE}/trending/all/week?language=tr-TR`, {
+    const r = await fetch(`${TMDB_BASE}/trending/all/week?language=${lang}`, {
       headers: { Authorization: `Bearer ${apiKey}` },
       next: { revalidate: 3600 },
     })
@@ -47,9 +51,10 @@ async function fetchTrendingWeek(apiKey: string) {
 }
 
 export default async function HaftalikPage() {
-  const { start, label } = weekRange()
   const supabase = await createClient()
-  const { t } = await getTranslations()
+  const { t, locale } = await getTranslations()
+  const { start, label } = weekRange(locale)
+  const tmdbLang = await getActiveTMDbLanguage()
   const apiKey = process.env.TMDB_BEARER_TOKEN ?? ''
 
   const [
@@ -81,7 +86,7 @@ export default async function HaftalikPage() {
       .eq('is_public', true)
       .order('created_at', { ascending: false })
       .limit(5),
-    fetchTrendingWeek(apiKey),
+    fetchTrendingWeek(apiKey, tmdbLang),
   ])
 
   // Aktif kullanıcı sıralaması
@@ -115,9 +120,9 @@ export default async function HaftalikPage() {
       {/* Başlık */}
       <div className="mb-10">
         <p className="text-xs font-bold uppercase tracking-[0.18em] mb-2" style={{ color: 'rgba(212,168,67,0.6)' }}>
-          Haftalık Özet
+          {t('haftalik.eyebrow')}
         </p>
-        <h1 className="text-3xl font-black text-white mb-1 inline-flex items-center gap-2"><IconNewspaper size={28} /> Bu Haftanın Özeti</h1>
+        <h1 className="text-3xl font-black text-white mb-1 inline-flex items-center gap-2"><IconNewspaper size={28} /> {t('haftalik.title')}</h1>
         <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>{label}</p>
       </div>
 
@@ -129,7 +134,7 @@ export default async function HaftalikPage() {
           {trendingAll.length > 0 && (
             <section>
               <h2 className="text-xs font-bold uppercase tracking-[0.15em] mb-4 inline-flex items-center gap-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                <IconFire size={14} /> Bu Hafta Trend
+                <IconFire size={14} /> {t('haftalik.trending')}
               </h2>
               <div className="space-y-2">
                 {trendingAll.map((item: any, i: number) => {
@@ -168,7 +173,7 @@ export default async function HaftalikPage() {
               </div>
               <Link href="/top10" className="inline-block mt-3 text-xs hover:text-white transition-colors"
                 style={{ color: 'rgba(255,255,255,0.3)' }}>
-                Tüm Top 10 →
+                {t('haftalik.allTop10')} →
               </Link>
             </section>
           )}
@@ -177,7 +182,7 @@ export default async function HaftalikPage() {
           {topReviews.length > 0 && (
             <section>
               <h2 className="text-xs font-bold uppercase tracking-[0.15em] mb-4 inline-flex items-center gap-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                <IconMessageSquare size={14} /> Haftanın En Beğenilen Yorumları
+                <IconMessageSquare size={14} /> {t('haftalik.topReviews')}
               </h2>
               <div className="space-y-3">
                 {topReviews.map((r: any) => (
@@ -220,7 +225,7 @@ export default async function HaftalikPage() {
           {(newListsRaw ?? []).length > 0 && (
             <section>
               <h2 className="text-xs font-bold uppercase tracking-[0.15em] mb-4 inline-flex items-center gap-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                <IconClipboard size={14} /> Bu Hafta Oluşturulan Listeler
+                <IconClipboard size={14} /> {t('haftalik.newLists')}
               </h2>
               <div className="space-y-2">
                 {(newListsRaw ?? []).map((l: any) => (
@@ -250,7 +255,7 @@ export default async function HaftalikPage() {
           {activeUsers.length > 0 && (
             <section className="p-5 rounded-2xl" style={card}>
               <h2 className="text-xs font-bold uppercase tracking-[0.15em] mb-4 inline-flex items-center gap-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                <IconPencil size={14} /> Bu Haftanın Yorumcuları
+                <IconPencil size={14} /> {t('haftalik.topReviewers')}
               </h2>
               <div className="space-y-3">
                 {activeUsers.map((u, i) => (
@@ -272,7 +277,7 @@ export default async function HaftalikPage() {
                         @{u.username}
                       </p>
                       <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>
-                        {u.count} yorum
+                        {t('haftalik.reviewCount', { count: u.count })}
                       </p>
                     </div>
                   </Link>
@@ -280,7 +285,7 @@ export default async function HaftalikPage() {
               </div>
               <Link href="/liderlik" className="block mt-4 text-xs text-center hover:text-white transition-colors"
                 style={{ color: 'rgba(255,255,255,0.25)' }}>
-                Liderlik Tablosu →
+                {t('haftalik.leaderboard')} →
               </Link>
             </section>
           )}
@@ -288,16 +293,16 @@ export default async function HaftalikPage() {
           {/* Hızlı Bağlantılar */}
           <section className="p-5 rounded-2xl" style={card}>
             <h2 className="text-xs font-bold uppercase tracking-[0.15em] mb-4 inline-flex items-center gap-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>
-              <IconLink size={14} /> Keşfet
+              <IconLink size={14} /> {t('haftalik.explore')}
             </h2>
             <div className="space-y-2">
               {[
-                { href: '/yakinda', label: 'Yakında Çıkacaklar', icon: IconCalendar },
-                { href: '/top10', label: 'Haftanın Top 10\'u', icon: IconFire },
-                { href: '/liderlik', label: 'Liderlik Tablosu', icon: IconTrophy },
-                { href: '/ne-izlesem', label: 'Ne İzlesem?', icon: IconDice },
-                { href: '/forum', label: 'Tartışma Forumu', icon: IconMessageSquare },
-                { href: '/oneri', label: 'AI Öneri Al', icon: IconRobot },
+                { href: '/yakinda', label: t('haftalik.upcoming'), icon: IconCalendar },
+                { href: '/top10', label: t('haftalik.weeklyTop10'), icon: IconFire },
+                { href: '/liderlik', label: t('haftalik.leaderboard'), icon: IconTrophy },
+                { href: '/ne-izlesem', label: t('haftalik.whatToWatch'), icon: IconDice },
+                { href: '/forum', label: t('haftalik.discussionForum'), icon: IconMessageSquare },
+                { href: '/oneri', label: t('haftalik.aiRecommendation'), icon: IconRobot },
               ].map(link => (
                 <Link key={link.href} href={link.href}
                   className="flex items-center gap-2 text-sm py-2 px-3 rounded-lg transition-colors hover:bg-white/5"
@@ -311,7 +316,7 @@ export default async function HaftalikPage() {
           {/* Özet Bilgisi */}
           <div className="text-center">
             <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.15)' }}>
-              Saatlik güncellenir
+              {t('haftalik.hourlyUpdate')}
             </p>
           </div>
         </div>

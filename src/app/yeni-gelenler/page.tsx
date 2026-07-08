@@ -5,6 +5,7 @@ import { IconTv, IconFilm } from '@/components/icons'
 import AdBanner from '@/components/AdBanner'
 import type { TMDbMovie, TMDbSearchResult } from '@/lib/types'
 import { getTranslations } from '@/lib/i18n'
+import { getActiveTMDbLanguage } from '@/lib/tmdb'
 
 export const revalidate = 3600
 
@@ -33,7 +34,7 @@ const PLATFORMS: Platform[] = [
   { id: 'apple',      label: 'Apple TV+',       providerId: 350,  color: '#A0A0A0' },
 ]
 
-async function fetchPlatformContent(providerId: number, mediaType: 'movie' | 'tv'): Promise<TMDbMovie[]> {
+async function fetchPlatformContent(providerId: number, mediaType: 'movie' | 'tv', lang: string): Promise<TMDbMovie[]> {
   const thirtyDaysAgo = new Date()
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
   const dateStr = thirtyDaysAgo.toISOString().split('T')[0]
@@ -47,7 +48,7 @@ async function fetchPlatformContent(providerId: number, mediaType: 'movie' | 'tv
   url.searchParams.set('sort_by', sortBy)
   url.searchParams.set(dateField, dateStr)
   url.searchParams.set('page', '1')
-  url.searchParams.set('language', 'tr-TR')
+  url.searchParams.set('language', lang)
 
   try {
     const res = await fetch(url.toString(), {
@@ -71,6 +72,7 @@ interface PageProps {
 
 export default async function YeniGelenlerPage({ searchParams }: PageProps) {
   const { t } = await getTranslations()
+  const tmdbLang = await getActiveTMDbLanguage()
   const params = await searchParams
   const activePlatformId = params.platform ?? 'netflix'
   const tip = params.tip ?? 'film'
@@ -79,8 +81,8 @@ export default async function YeniGelenlerPage({ searchParams }: PageProps) {
   const mediaType = tip === 'dizi' ? 'tv' : 'movie'
 
   const [filmler, diziler] = await Promise.all([
-    fetchPlatformContent(activePlatform.providerId, 'movie'),
-    fetchPlatformContent(activePlatform.providerId, 'tv'),
+    fetchPlatformContent(activePlatform.providerId, 'movie', tmdbLang),
+    fetchPlatformContent(activePlatform.providerId, 'tv', tmdbLang),
   ])
 
   const items = mediaType === 'tv' ? diziler : filmler

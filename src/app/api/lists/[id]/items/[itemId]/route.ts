@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { isAdmin } from '@/lib/admin'
 import { NextRequest, NextResponse } from 'next/server'
 
 type Ctx = { params: Promise<{ id: string; itemId: string }> }
@@ -9,15 +10,17 @@ export async function DELETE(_req: NextRequest, { params }: Ctx) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  // Verify list belongs to this user
+  // Verify list belongs to this user (veya editöryal liste + admin)
   const { data: list } = await supabase
     .from('lists')
-    .select('user_id')
+    .select('user_id, is_editorial')
     .eq('id', list_id)
     .single()
 
   if (!list) return NextResponse.json({ error: 'Liste bulunamadı' }, { status: 404 })
-  if (list.user_id !== user.id) return NextResponse.json({ error: 'Bu listeden silme yetkiniz yok' }, { status: 403 })
+  const owns = list.user_id === user.id
+  const editorialAdmin = list.is_editorial && list.user_id === null && await isAdmin(supabase, user.id)
+  if (!owns && !editorialAdmin) return NextResponse.json({ error: 'Bu listeden silme yetkiniz yok' }, { status: 403 })
 
   await supabase.from('list_items').delete().eq('id', itemId).eq('list_id', list_id)
   return NextResponse.json({ ok: true })

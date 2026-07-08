@@ -12,6 +12,7 @@ interface ListItem {
 }
 interface ListData {
   id: string; title: string; description: string | null; public: boolean; cover_url?: string | null
+  is_editorial?: boolean
 }
 
 export default function ListeDuzenleClient({ list, items: initial }: { list: ListData; items: ListItem[] }) {
@@ -169,6 +170,11 @@ export default function ListeDuzenleClient({ list, items: initial }: { list: Lis
       {/* İçerikler */}
       <div className="rounded-xl rounded-2xl p-6 mb-6" style={{ background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))', border: '1px solid rgba(255,255,255,0.06)' }}>
         <h2 className="font-semibold text-white mb-4">{t('list.contents')} ({items.length})</h2>
+        {list.is_editorial && (
+          <p className="text-xs text-[--text-secondary] mb-4 bg-white/5 border border-white/10 rounded-lg px-3 py-2">
+            Film/dizi eklemek için ilgili film/dizi sayfasına gidip &quot;Listeye Ekle&quot; menüsünden bu listeyi seçin.
+          </p>
+        )}
         {items.length === 0 ? (
           <p className="text-sm text-[--text-secondary] text-center py-8">{t('list.empty')}</p>
         ) : (

@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const supabase = await createClient()
   const { data } = await supabase
     .from('lists')
-    .select('title, profiles(username)')
+    .select('title, cover_url, profiles(username)')
     .eq('id', id)
     .single()
   if (!data) return { title: 'Liste bulunamadı' }
@@ -25,6 +25,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = username
     ? `${username} tarafından oluşturulan film & dizi listesi. Sinezon'da keşfet.`
     : 'Film ve dizi listesi. Sinezon\'da keşfet.'
+  const ogImage = `/api/og?${new URLSearchParams({
+    title, type: 'liste', ...(data.cover_url && { poster: data.cover_url }),
+  }).toString()}`
   return {
     title,
     description,
@@ -32,8 +35,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${title} | Sinezon`,
       description,
+      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
       type: 'website',
       url: `/liste/${id}`,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${title} | Sinezon`,
+      description,
+      images: [ogImage],
     },
   }
 }

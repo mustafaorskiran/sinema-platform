@@ -2333,6 +2333,7 @@
     "commonWatchedCount": "{count} shared items",
     "commonWatchedDesc": "See which movies you've both watched with someone you follow.",
     "commonWatchedEmpty": "No shared watches yet.",
+    "commonWatchedFindFriends": "Find Friends",
     "commonWatchedFollowingLabel": "People you follow",
     "commonWatchedNoFollowing": "You're not following anyone yet.",
     "commonWatchedSelectPrompt": "Select a user to see what you've both watched.",
@@ -2512,8 +2513,13 @@
   "top10Page": {
     "allTime": "All Time",
     "allTimeLower": "all time",
+    "films": "Movies",
+    "metaDesc": "The 10 most-watched and most-reviewed movies and series on Sinezon.",
+    "metaTitle": "Sinezon Top 10 | Sinezon",
+    "series": "Series",
     "thisMonth": "This Month",
-    "thisWeek": "This Week"
+    "thisWeek": "This Week",
+    "updateNote": "Updated based on Sinezon users' activity · Refreshed hourly"
   },
   "topic": {
     "addTopic": "+ Add Topic",
@@ -2598,6 +2604,7 @@
     "country": "Country",
     "createOwn": "Create your own comparison",
     "durationEpisode": "Duration / Episode",
+    "empty": "No comparisons yet. Check back later.",
     "feature": "Feature",
     "genres": "Genres",
     "language": "Language",
@@ -2753,5 +2760,126 @@
   "zevkDna": {
     "subtitle": "Genre profile based on your watching habits",
     "title": "Taste DNA"
+  },
+  "badges": {
+    "first_review": {
+      "name": "First Step",
+      "desc": "You wrote your first review"
+    },
+    "reviews_10": {
+      "name": "Movie Lover",
+      "desc": "You wrote 10 reviews"
+    },
+    "reviews_50": {
+      "name": "Cinema Enthusiast",
+      "desc": "You wrote 50 reviews"
+    },
+    "reviews_100": {
+      "name": "Cinephile",
+      "desc": "You wrote 100 reviews"
+    },
+    "reviews_500": {
+      "name": "Legend",
+      "desc": "You wrote 500 reviews"
+    },
+    "film_fan": {
+      "name": "Movie Fan",
+      "desc": "You've reviewed 10+ movies"
+    },
+    "series_fan": {
+      "name": "Series Addict",
+      "desc": "You've reviewed 10+ series"
+    },
+    "balanced": {
+      "name": "Balanced",
+      "desc": "Your movie and series reviews are balanced"
+    },
+    "optimist": {
+      "name": "Optimist",
+      "desc": "Your average rating is 8 or higher"
+    },
+    "critic": {
+      "name": "Harsh Critic",
+      "desc": "Your average rating is 5 or lower"
+    },
+    "first_follower": {
+      "name": "Popular",
+      "desc": "You got your first follower"
+    },
+    "popular_10": {
+      "name": "Social Butterfly",
+      "desc": "You have 10 followers"
+    },
+    "popular_50": {
+      "name": "Influencer",
+      "desc": "You have 50 followers"
+    },
+    "list_maker": {
+      "name": "List Master",
+      "desc": "You created 3 lists"
+    },
+    "films_100": {
+      "name": "100 Films Club",
+      "desc": "You've reviewed 100 films"
+    },
+    "first_list": {
+      "name": "List Creator",
+      "desc": "You created your first list"
+    },
+    "member_1year": {
+      "name": "Sinezon Yearbook",
+      "desc": "You've been a Sinezon member for 1 year"
+    },
+    "diary_1": {
+      "name": "Diary Beginner",
+      "desc": "You made your first diary entry"
+    },
+    "diary_10": {
+      "name": "Diary Keeper",
+      "desc": "You have 10 diary entries"
+    },
+    "diary_50": {
+      "name": "Book of Memories",
+      "desc": "You have 50 diary entries"
+    },
+    "forum_poster": {
+      "name": "Forum Contributor",
+      "desc": "You started 5 forum threads"
+    },
+    "forum_active": {
+      "name": "Forum Star",
+      "desc": "You started 20 forum threads"
+    },
+    "topic_voter": {
+      "name": "Tag Master",
+      "desc": "You've tagged 10+ titles with topics"
+    }
+  },
+  "diziProgress": {
+    "title": "Series Progress",
+    "viewAll": "View all",
+    "episodeCount": "{watched}/{total} episodes",
+    "finished": "Finished",
+    "fallbackName": "Series #{id}"
+  },
+  "haftalik": {
+    "aiRecommendation": "Get AI Recommendation",
+    "allTop10": "All Top 10",
+    "discussionForum": "Discussion Forum",
+    "explore": "Explore",
+    "eyebrow": "Weekly Recap",
+    "hourlyUpdate": "Updated hourly",
+    "leaderboard": "Leaderboard",
+    "metaDesc": "This week's most talked-about movies, most active reviewers, and what's coming soon.",
+    "metaTitle": "Weekly Recap | Sinezon",
+    "newLists": "Lists Created This Week",
+    "reviewCount": "{count} reviews",
+    "title": "This Week's Recap",
+    "topReviewers": "This Week's Reviewers",
+    "topReviews": "This Week's Top-Liked Reviews",
+    "trending": "Trending This Week",
+    "upcoming": "Coming Soon",
+    "weeklyTop10": "This Week's Top 10",
+    "whatToWatch": "What Should I Watch?"
   }
 }

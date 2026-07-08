@@ -3,6 +3,7 @@ import Image from 'next/image'
 import type { Metadata } from 'next'
 import AdBanner from '@/components/AdBanner'
 import { getTranslations } from '@/lib/i18n'
+import { getActiveTMDbLanguage } from '@/lib/tmdb'
 import { IconFire, IconMedal, IconFilm } from '@/components/icons'
 
 export const revalidate = 3600
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
 
 const BASE = 'https://api.themoviedb.org/3'
 
-async function fetchMostAnticipated(type: 'movie' | 'tv') {
+async function fetchMostAnticipated(type: 'movie' | 'tv', lang: string) {
   const today = new Date().toISOString().slice(0, 10)
   const inOneYear = new Date(Date.now() + 365 * 24 * 3600 * 1000).toISOString().slice(0, 10)
 
@@ -22,7 +23,7 @@ async function fetchMostAnticipated(type: 'movie' | 'tv') {
   const dateLte = type === 'movie' ? 'primary_release_date.lte' : 'first_air_date.lte'
 
   const url = new URL(`${BASE}/discover/${type}`)
-  url.searchParams.set('language', 'tr-TR')
+  url.searchParams.set('language', lang)
   url.searchParams.set('region', 'TR')
   url.searchParams.set(dateGte, today)
   url.searchParams.set(dateLte, inOneYear)
@@ -48,8 +49,9 @@ export default async function EnBeklenenPage({ searchParams }: Props) {
   const { tip = 'film' } = await searchParams
   const isMovie = tip !== 'dizi'
   const { t } = await getTranslations()
+  const tmdbLang = await getActiveTMDbLanguage()
 
-  const items = await fetchMostAnticipated(isMovie ? 'movie' : 'tv')
+  const items = await fetchMostAnticipated(isMovie ? 'movie' : 'tv', tmdbLang)
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">

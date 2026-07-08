@@ -28,8 +28,8 @@ export function getBackdropUrl(path: string | null, size: 'w780' | 'w1280' | 'or
   return `${TMDB_IMAGE_BASE}/${size}${path}`
 }
 
-async function tmdbFetch<T>(endpoint: string, params: Record<string, string> = {}): Promise<T> {
-  const lang = await getActiveTMDbLanguage()
+async function tmdbFetch<T>(endpoint: string, params: Record<string, string> = {}, langOverride?: string): Promise<T> {
+  const lang = langOverride ?? await getActiveTMDbLanguage()
   const url = new URL(`${BASE_URL}${endpoint}`)
   url.searchParams.set('language', lang)
   Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v))
@@ -75,12 +75,12 @@ export async function getTrendingAll(): Promise<TMDbSearchResult> {
   return tmdbFetch('/trending/all/week')
 }
 
-export async function getMovieDetail(id: number): Promise<TMDbMovieDetail> {
-  return tmdbFetch(`/movie/${id}`, { append_to_response: 'credits,videos,external_ids' })
+export async function getMovieDetail(id: number, langOverride?: string): Promise<TMDbMovieDetail> {
+  return tmdbFetch(`/movie/${id}`, { append_to_response: 'credits,videos,external_ids' }, langOverride)
 }
 
-export async function getSeriesDetail(id: number): Promise<TMDbMovieDetail> {
-  return tmdbFetch(`/tv/${id}`, { append_to_response: 'credits,videos,external_ids' })
+export async function getSeriesDetail(id: number, langOverride?: string): Promise<TMDbMovieDetail> {
+  return tmdbFetch(`/tv/${id}`, { append_to_response: 'credits,videos,external_ids' }, langOverride)
 }
 
 export async function getMovieMini(id: number): Promise<TMDbMovieDetail> {

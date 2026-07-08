@@ -1,22 +1,26 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getTranslations } from '@/lib/i18n'
+import { getActiveTMDbLanguage } from '@/lib/tmdb'
 import type { Metadata } from 'next'
 import { IconFire, IconFilm, IconTv, IconStarFilled } from '@/components/icons'
 
 export const revalidate = 3600
 
-export const metadata: Metadata = {
-  title: 'Sinezon Top 10 | Sinezon',
-  description: "Sinezon'da en çok izlenen ve yorum alan 10 film ve dizi.",
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getTranslations()
+  return {
+    title: t('top10Page.metaTitle'),
+    description: t('top10Page.metaDesc'),
+  }
 }
 
 const TMDB_BASE = 'https://api.themoviedb.org/3'
 
-async function getTmdbDetail(mediaId: number, mediaType: string, apiKey: string) {
+async function getTmdbDetail(mediaId: number, mediaType: string, apiKey: string, lang: string) {
   try {
     const type = mediaType === 'film' ? 'movie' : 'tv'
-    const r = await fetch(`${TMDB_BASE}/${type}/${mediaId}?language=tr-TR`, {
+    const r = await fetch(`${TMDB_BASE}/${type}/${mediaId}?language=${lang}`, {
       headers: { Authorization: `Bearer ${apiKey}` },
       next: { revalidate: 3600 },
     })
@@ -47,6 +51,7 @@ interface PageProps {
 
 export default async function Top10Page({ searchParams }: PageProps) {
   const { t } = await getTranslations()
+  const tmdbLang = await getActiveTMDbLanguage()
   const params = await searchParams
   const donem = params.donem ?? 'hafta'
   const period = PERIODS.find(p => p.id === donem) ?? PERIODS[0]
@@ -93,11 +98,11 @@ export default async function Top10Page({ searchParams }: PageProps) {
   if (sorted.length < 5) {
     const trendType = period.id === 'hafta' ? 'week' : 'day'
     const [trendFilm, trendDizi] = await Promise.all([
-      fetch(`${TMDB_BASE}/trending/movie/${trendType}?language=tr-TR`, {
+      fetch(`${TMDB_BASE}/trending/movie/${trendType}?language=${tmdbLang}`, {
         headers: { Authorization: `Bearer ${apiKey}` },
         next: { revalidate: 3600 },
       }).then(r => r.ok ? r.json() : { results: [] }),
-      fetch(`${TMDB_BASE}/trending/tv/${trendType}?language=tr-TR`, {
+      fetch(`${TMDB_BASE}/trending/tv/${trendType}?language=${tmdbLang}`, {
         headers: { Authorization: `Bearer ${apiKey}` },
         next: { revalidate: 3600 },
       }).then(r => r.ok ? r.json() : { results: [] }),
@@ -115,7 +120,7 @@ export default async function Top10Page({ searchParams }: PageProps) {
   } else {
     const enriched = await Promise.all(
       sorted.map(async item => {
-        const d = await getTmdbDetail(item.media_id, item.media_type, apiKey)
+        const d = await getTmdbDetail(item.media_id, item.media_type, apiKey, tmdbLang)
         return {
           ...item,
           title: d?.title ?? d?.name ?? `#${item.media_id}`,
@@ -242,21 +247,21 @@ export default async function Top10Page({ searchParams }: PageProps) {
         <div>
           <div className="flex items-center gap-2 mb-4">
             <IconFilm size={24} />
-            <h2 className="text-lg font-bold text-white">Filmler</h2>
+            <h2 className="text-lg font-bold text-white">{t('top10Page.films')}</h2>
           </div>
           <TopList items={filmTop} type="film" />
         </div>
         <div>
           <div className="flex items-center gap-2 mb-4">
             <IconTv size={24} />
-            <h2 className="text-lg font-bold text-white">Diziler</h2>
+            <h2 className="text-lg font-bold text-white">{t('top10Page.series')}</h2>
           </div>
           <TopList items={diziTop} type="dizi" />
         </div>
       </div>
 
       <p className="text-center text-xs mt-10" style={{ color: 'rgba(255,255,255,0.2)' }}>
-        Sinezon kullanıcılarının aktivitesine göre güncellenir · Saatlik yenileme
+        {t('top10Page.updateNote')}
       </p>
     </div>
   )

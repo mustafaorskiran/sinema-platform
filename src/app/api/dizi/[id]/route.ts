@@ -4,9 +4,10 @@ import { rateLimit } from '@/lib/rateLimit'
 import {
   getSeriesDetail, getSeriesCertification, getPosterUrl, getBackdropUrl,
 } from '@/lib/tmdb'
+import { isValidLocale, getTMDbLanguage, DEFAULT_LOCALE } from '@/lib/i18n'
 
 /// Mobil uygulama için dizi detay uç noktası — film/[id] route'unun
-/// dizi karşılığı, aynı desen.
+/// dizi karşılığı, aynı desen. ?lang= için bkz. film/[id]/route.ts.
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -21,9 +22,12 @@ export async function GET(
     return NextResponse.json({ error: 'Geçersiz id' }, { status: 400 })
   }
 
+  const rawLang = req.nextUrl.searchParams.get('lang') ?? ''
+  const tmdbLang = getTMDbLanguage(isValidLocale(rawLang) ? rawLang : DEFAULT_LOCALE)
+
   try {
     const [series, certification] = await Promise.all([
-      getSeriesDetail(seriesId),
+      getSeriesDetail(seriesId, tmdbLang),
       getSeriesCertification(seriesId).catch(() => null),
     ])
 

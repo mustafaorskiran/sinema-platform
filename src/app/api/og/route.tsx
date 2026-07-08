@@ -55,13 +55,13 @@ export async function GET(req: NextRequest) {
             display: 'flex', alignItems: 'center', marginBottom: '20px',
           }}>
             <div style={{
-              background: type === 'film' ? 'rgba(59,130,246,0.2)' : 'rgba(139,92,246,0.2)',
-              border: `1px solid ${type === 'film' ? 'rgba(59,130,246,0.4)' : 'rgba(139,92,246,0.4)'}`,
-              color: type === 'film' ? '#60a5fa' : '#a78bfa',
+              background: type === 'film' ? 'rgba(59,130,246,0.2)' : type === 'dizi' ? 'rgba(139,92,246,0.2)' : 'rgba(225,29,72,0.2)',
+              border: `1px solid ${type === 'film' ? 'rgba(59,130,246,0.4)' : type === 'dizi' ? 'rgba(139,92,246,0.4)' : 'rgba(225,29,72,0.4)'}`,
+              color: type === 'film' ? '#60a5fa' : type === 'dizi' ? '#a78bfa' : '#fb7185',
               padding: '6px 16px', borderRadius: '100px',
               fontSize: '16px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
             }}>
-              {type === 'film' ? '🎬 Film' : '📺 Dizi'}
+              {type === 'film' ? '🎬 Film' : type === 'dizi' ? '📺 Dizi' : type === 'liste' ? '📋 Liste' : '💬 Forum'}
             </div>
           </div>
 

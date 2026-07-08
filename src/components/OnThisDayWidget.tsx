@@ -1,11 +1,12 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { getTranslations } from '@/lib/i18n'
+import { getTranslations, getLocaleInfo } from '@/lib/i18n'
+import { getActiveTMDbLanguage } from '@/lib/tmdb'
 import { IconCalendarDays, IconStarFilled } from '@/components/icons'
 
 const BASE = 'https://api.themoviedb.org/3'
 
-async function fetchOnThisDay() {
+async function fetchOnThisDay(lang: string) {
   const today = new Date()
   const mm = String(today.getMonth() + 1).padStart(2, '0')
   const dd = String(today.getDate()).padStart(2, '0')
@@ -18,7 +19,7 @@ async function fetchOnThisDay() {
       const dateStr = `${year}-${mm}-${dd}`
       try {
         const url = new URL(`${BASE}/discover/movie`)
-        url.searchParams.set('language', 'tr-TR')
+        url.searchParams.set('language', lang)
         url.searchParams.set('primary_release_date.gte', dateStr)
         url.searchParams.set('primary_release_date.lte', dateStr)
         url.searchParams.set('sort_by', 'popularity.desc')
@@ -40,12 +41,13 @@ async function fetchOnThisDay() {
 }
 
 export default async function OnThisDayWidget() {
-  const { t } = await getTranslations()
-  const items = await fetchOnThisDay()
+  const { t, locale } = await getTranslations()
+  const tmdbLang = await getActiveTMDbLanguage()
+  const items = await fetchOnThisDay(tmdbLang)
   if (items.length === 0) return null
 
   const today = new Date()
-  const dateLabel = today.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })
+  const dateLabel = today.toLocaleDateString(getLocaleInfo(locale).tmdb, { day: 'numeric', month: 'long' })
 
   return (
     <section className="mb-12">

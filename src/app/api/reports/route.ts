@@ -36,14 +36,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Geçersiz rapor nedeni' }, { status: 400 })
   }
 
-  // Prevent duplicate reports from same user on same target
+  // Prevent duplicate reports from same user on same target (henüz çözülmemiş
+  // raporlar için — admin "resolved" yaptıktan sonra tekrar raporlanabilir)
   const { data: existing } = await supabase
     .from('reports')
     .select('id')
     .eq('reporter_id', user.id)
     .eq('target_type', target_type)
     .eq('target_id', String(target_id))
-    .eq('status', 'pending')
+    .eq('resolved', false)
     .maybeSingle()
 
   if (existing) {

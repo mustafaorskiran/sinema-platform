@@ -70,7 +70,7 @@ export default async function ProfilRozetlerPage({ params }: Props) {
     topicVoteCount: topicVoteCount ?? 0,
     joinedAt: profile.created_at,
   }
-  const earnedCount = computeBadges(stats).filter(b => b.earned).length
+  const earnedCount = computeBadges(stats, t).filter(b => b.earned).length
   const pct = Math.round((earnedCount / ALL_BADGE_COUNT) * 100)
 
   return (

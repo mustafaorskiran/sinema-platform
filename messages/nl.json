@@ -2333,6 +2333,7 @@
     "commonWatchedCount": "{count} gedeelde titels",
     "commonWatchedDesc": "Bekijk welke films je gemeen hebt met iemand die je volgt.",
     "commonWatchedEmpty": "Nog geen samen bekeken titels.",
+    "commonWatchedFindFriends": "Vrienden Vinden",
     "commonWatchedFollowingLabel": "Mensen die je volgt",
     "commonWatchedNoFollowing": "Je volgt nog niemand.",
     "commonWatchedSelectPrompt": "Selecteer een gebruiker om samen bekeken titels te zien.",
@@ -2512,8 +2513,13 @@
   "top10Page": {
     "allTime": "Aller tijden",
     "allTimeLower": "Aller tijden",
+    "films": "Films",
+    "metaDesc": "De 10 meest bekeken en meest besproken films en series op Sinezon.",
+    "metaTitle": "Sinezon Top 10 | Sinezon",
+    "series": "Series",
     "thisMonth": "Deze maand",
-    "thisWeek": "Deze week"
+    "thisWeek": "Deze week",
+    "updateNote": "Bijgewerkt op basis van activiteit van Sinezon-gebruikers · Elk uur vernieuwd"
   },
   "topic": {
     "addTopic": "+ Thema Toevoegen",
@@ -2598,6 +2604,7 @@
     "country": "Land",
     "createOwn": "Maak je eigen vergelijking",
     "durationEpisode": "Duur / Aflevering",
+    "empty": "Nog geen vergelijkingen. Kom later terug.",
     "feature": "Kenmerk",
     "genres": "Genres",
     "language": "Taal",
@@ -2753,5 +2760,126 @@
   "zevkDna": {
     "subtitle": "Genreprofiel op basis van je kijkgedrag",
     "title": "Smaak-DNA"
+  },
+  "badges": {
+    "first_review": {
+      "name": "Eerste Stap",
+      "desc": "Je hebt je eerste review geschreven"
+    },
+    "reviews_10": {
+      "name": "Filmliefhebber",
+      "desc": "Je hebt 10 reviews geschreven"
+    },
+    "reviews_50": {
+      "name": "Bioscoopfanaat",
+      "desc": "Je hebt 50 reviews geschreven"
+    },
+    "reviews_100": {
+      "name": "Cinefiel",
+      "desc": "Je hebt 100 reviews geschreven"
+    },
+    "reviews_500": {
+      "name": "Legende",
+      "desc": "Je hebt 500 reviews geschreven"
+    },
+    "film_fan": {
+      "name": "Filmfan",
+      "desc": "Je hebt 10+ films beoordeeld"
+    },
+    "series_fan": {
+      "name": "Series Verslaafde",
+      "desc": "Je hebt 10+ series beoordeeld"
+    },
+    "balanced": {
+      "name": "Evenwichtig",
+      "desc": "Je film- en serierecensies zijn in balans"
+    },
+    "optimist": {
+      "name": "Optimist",
+      "desc": "Je gemiddelde score is 8 of hoger"
+    },
+    "critic": {
+      "name": "Strenge Criticus",
+      "desc": "Je gemiddelde score is 5 of lager"
+    },
+    "first_follower": {
+      "name": "Populair",
+      "desc": "Je hebt je eerste volger"
+    },
+    "popular_10": {
+      "name": "Sociale Vlinder",
+      "desc": "Je hebt 10 volgers"
+    },
+    "popular_50": {
+      "name": "Influencer",
+      "desc": "Je hebt 50 volgers"
+    },
+    "list_maker": {
+      "name": "Lijstmeester",
+      "desc": "Je hebt 3 lijsten gemaakt"
+    },
+    "films_100": {
+      "name": "100 Films Club",
+      "desc": "Je hebt 100 films beoordeeld"
+    },
+    "first_list": {
+      "name": "Lijstmaker",
+      "desc": "Je hebt je eerste lijst gemaakt"
+    },
+    "member_1year": {
+      "name": "Sinezon Jaarboek",
+      "desc": "Je bent al 1 jaar Sinezon-lid"
+    },
+    "diary_1": {
+      "name": "Dagboekbegin",
+      "desc": "Je hebt je eerste dagboeknotitie gemaakt"
+    },
+    "diary_10": {
+      "name": "Dagboekhouder",
+      "desc": "Je hebt 10 dagboeknotities"
+    },
+    "diary_50": {
+      "name": "Herinneringenboek",
+      "desc": "Je hebt 50 dagboeknotities"
+    },
+    "forum_poster": {
+      "name": "Forumdeelnemer",
+      "desc": "Je hebt 5 forumonderwerpen gestart"
+    },
+    "forum_active": {
+      "name": "Forumster",
+      "desc": "Je hebt 20 forumonderwerpen gestart"
+    },
+    "topic_voter": {
+      "name": "Tagmeester",
+      "desc": "Je hebt 10+ titels getagd met onderwerpen"
+    }
+  },
+  "diziProgress": {
+    "title": "Serievoortgang",
+    "viewAll": "Alles bekijken",
+    "episodeCount": "{watched}/{total} afleveringen",
+    "finished": "Voltooid",
+    "fallbackName": "Serie #{id}"
+  },
+  "haftalik": {
+    "aiRecommendation": "AI-aanbeveling Krijgen",
+    "allTop10": "Alle Top 10",
+    "discussionForum": "Discussieforum",
+    "explore": "Ontdekken",
+    "eyebrow": "Weekoverzicht",
+    "hourlyUpdate": "Elk uur bijgewerkt",
+    "leaderboard": "Ranglijst",
+    "metaDesc": "De meest besproken films van deze week, actiefste recensenten en binnenkort te verschijnen titels.",
+    "metaTitle": "Weekoverzicht | Sinezon",
+    "newLists": "Deze Week Aangemaakte Lijsten",
+    "reviewCount": "{count} reviews",
+    "title": "Overzicht van Deze Week",
+    "topReviewers": "Recensenten van Deze Week",
+    "topReviews": "Best Beoordeelde Reviews van de Week",
+    "trending": "Trending Deze Week",
+    "upcoming": "Binnenkort",
+    "weeklyTop10": "Top 10 van de Week",
+    "whatToWatch": "Wat Zal Ik Kijken?"
   }
 }

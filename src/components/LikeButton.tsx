@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useLocale } from '@/context/LocaleContext'
 import { IconHeartFilled, IconHeart } from '@/components/icons'
 
 interface LikeButtonProps {
@@ -11,6 +12,7 @@ interface LikeButtonProps {
 }
 
 export default function LikeButton({ reviewId, initialCount, initialLiked, isLoggedIn }: LikeButtonProps) {
+  const { t } = useLocale()
   const [liked, setLiked] = useState(initialLiked)
   const [count, setCount] = useState(initialCount)
   const [loading, setLoading] = useState(false)
@@ -40,6 +42,8 @@ export default function LikeButton({ reviewId, initialCount, initialLiked, isLog
     <button
       onClick={handleClick}
       disabled={loading}
+      aria-label={liked ? t('quote.unlike') : t('quote.like')}
+      aria-pressed={liked}
       className={`flex items-center gap-1.5 text-sm transition-all duration-150 disabled:opacity-60 ${
         liked ? 'text-red-400 hover:text-red-300' : 'text-[--text-secondary] hover:text-red-400'
       }`}

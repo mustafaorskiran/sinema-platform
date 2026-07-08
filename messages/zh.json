@@ -2333,6 +2333,7 @@
     "commonWatchedCount": "{count} 个共同内容",
     "commonWatchedDesc": "查看你和关注的人共同看过哪些电影。",
     "commonWatchedEmpty": "暂无共同观看的内容。",
+    "commonWatchedFindFriends": "寻找好友",
     "commonWatchedFollowingLabel": "你关注的用户",
     "commonWatchedNoFollowing": "你还没有关注任何人。",
     "commonWatchedSelectPrompt": "选择一位用户查看共同观看内容。",
@@ -2512,8 +2513,13 @@
   "top10Page": {
     "allTime": "所有时间",
     "allTimeLower": "所有时间",
+    "films": "电影",
+    "metaDesc": "Sinezon上观看次数和评论最多的10部电影和剧集。",
+    "metaTitle": "Sinezon Top 10 | Sinezon",
+    "series": "剧集",
     "thisMonth": "本月",
-    "thisWeek": "本周"
+    "thisWeek": "本周",
+    "updateNote": "根据Sinezon用户活动更新 · 每小时刷新"
   },
   "topic": {
     "addTopic": "+ 添加主题",
@@ -2598,6 +2604,7 @@
     "country": "国家",
     "createOwn": "创建你自己的对比",
     "durationEpisode": "时长/集数",
+    "empty": "暂无比较内容，请稍后再来查看。",
     "feature": "特征",
     "genres": "类型",
     "language": "语言",
@@ -2753,5 +2760,126 @@
   "zevkDna": {
     "subtitle": "基于观看习惯的类型画像",
     "title": "品味 DNA"
+  },
+  "badges": {
+    "first_review": {
+      "name": "第一步",
+      "desc": "你写下了第一条评论"
+    },
+    "reviews_10": {
+      "name": "电影爱好者",
+      "desc": "你写了10条评论"
+    },
+    "reviews_50": {
+      "name": "影迷",
+      "desc": "你写了50条评论"
+    },
+    "reviews_100": {
+      "name": "影痴",
+      "desc": "你写了100条评论"
+    },
+    "reviews_500": {
+      "name": "传奇",
+      "desc": "你写了500条评论"
+    },
+    "film_fan": {
+      "name": "电影粉丝",
+      "desc": "你评论了10部以上的电影"
+    },
+    "series_fan": {
+      "name": "剧集狂热者",
+      "desc": "你评论了10部以上的剧集"
+    },
+    "balanced": {
+      "name": "均衡型",
+      "desc": "你的电影和剧集评论很均衡"
+    },
+    "optimist": {
+      "name": "乐观派",
+      "desc": "你的平均评分为8分或以上"
+    },
+    "critic": {
+      "name": "严厉影评人",
+      "desc": "你的平均评分为5分或以下"
+    },
+    "first_follower": {
+      "name": "人气之星",
+      "desc": "你获得了第一个关注者"
+    },
+    "popular_10": {
+      "name": "社交达人",
+      "desc": "你有10个关注者"
+    },
+    "popular_50": {
+      "name": "网红",
+      "desc": "你有50个关注者"
+    },
+    "list_maker": {
+      "name": "片单达人",
+      "desc": "你创建了3个片单"
+    },
+    "films_100": {
+      "name": "百部电影俱乐部",
+      "desc": "你评论了100部电影"
+    },
+    "first_list": {
+      "name": "片单创建者",
+      "desc": "你创建了第一个片单"
+    },
+    "member_1year": {
+      "name": "Sinezon年鉴",
+      "desc": "你已是Sinezon会员1年"
+    },
+    "diary_1": {
+      "name": "日记新手",
+      "desc": "你写下了第一篇日记"
+    },
+    "diary_10": {
+      "name": "日记达人",
+      "desc": "你有10篇日记"
+    },
+    "diary_50": {
+      "name": "回忆之书",
+      "desc": "你有50篇日记"
+    },
+    "forum_poster": {
+      "name": "论坛参与者",
+      "desc": "你发起了5个论坛话题"
+    },
+    "forum_active": {
+      "name": "论坛之星",
+      "desc": "你发起了20个论坛话题"
+    },
+    "topic_voter": {
+      "name": "标签达人",
+      "desc": "你为10个以上作品添加了话题标签"
+    }
+  },
+  "diziProgress": {
+    "title": "剧集进度",
+    "viewAll": "查看全部",
+    "episodeCount": "{watched}/{total} 集",
+    "finished": "已完结",
+    "fallbackName": "剧集 #{id}"
+  },
+  "haftalik": {
+    "aiRecommendation": "获取AI推荐",
+    "allTop10": "查看全部Top10",
+    "discussionForum": "讨论区",
+    "explore": "探索",
+    "eyebrow": "本周摘要",
+    "hourlyUpdate": "每小时更新",
+    "leaderboard": "排行榜",
+    "metaDesc": "本周热议电影、最活跃影评人以及即将上映的内容。",
+    "metaTitle": "本周摘要 | Sinezon",
+    "newLists": "本周创建的片单",
+    "reviewCount": "{count} 条评论",
+    "title": "本周摘要",
+    "topReviewers": "本周评论者",
+    "topReviews": "本周最受欢迎的评论",
+    "trending": "本周热门",
+    "upcoming": "即将上映",
+    "weeklyTop10": "本周Top10",
+    "whatToWatch": "看点什么？"
   }
 }

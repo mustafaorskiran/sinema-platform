@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
+import { getActiveTMDbLanguage } from '@/lib/tmdb'
+import { getTranslations } from '@/lib/i18n'
 import { IconTv, IconChevronRight, IconCheck } from '@/components/icons'
 
 interface Props {
@@ -10,9 +12,9 @@ interface Props {
 
 const TMDB_BASE = 'https://api.themoviedb.org/3'
 
-async function getSeriesInfo(seriesId: number) {
+async function getSeriesInfo(seriesId: number, lang: string) {
   try {
-    const res = await fetch(`${TMDB_BASE}/tv/${seriesId}?language=tr-TR`, {
+    const res = await fetch(`${TMDB_BASE}/tv/${seriesId}?language=${lang}`, {
       headers: { Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`, accept: 'application/json' },
       next: { revalidate: 86400 },
     })
@@ -23,6 +25,8 @@ async function getSeriesInfo(seriesId: number) {
 
 export default async function DiziProgressWidget({ userId, username }: Props) {
   const supabase = await createClient()
+  const { t } = await getTranslations()
+  const tmdbLang = await getActiveTMDbLanguage()
 
   // episode_watches tablosundan izlenen bölümleri seri bazında say
   const { data: watches } = await supabase
@@ -50,12 +54,12 @@ export default async function DiziProgressWidget({ userId, username }: Props) {
   // TMDb'den seri detayları
   const seriesDetails = await Promise.all(
     sortedSeries.map(async ([id, episodes]) => {
-      const info = await getSeriesInfo(id)
+      const info = await getSeriesInfo(id, tmdbLang)
       return {
         id,
         watchedEpisodes: episodes.size,
         total: info?.number_of_episodes ?? 0,
-        name: info?.name ?? info?.original_name ?? `Dizi #${id}`,
+        name: info?.name ?? info?.original_name ?? t('diziProgress.fallbackName', { id }),
         poster: info?.poster_path ?? null,
         status: info?.status ?? '',
       }
@@ -70,11 +74,11 @@ export default async function DiziProgressWidget({ userId, username }: Props) {
     <div className="mb-12">
       <div className="flex items-center justify-between mb-5">
         <h2 className="text-xl font-bold text-white flex items-center gap-2">
-          <IconTv size={20} /> Dizi İlerlemesi
+          <IconTv size={20} /> {t('diziProgress.title')}
         </h2>
         <Link href={`/dizi-takip`}
           className="text-xs hover:underline inline-flex items-center gap-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>
-          Tümünü gör <IconChevronRight size={12} />
+          {t('diziProgress.viewAll')} <IconChevronRight size={12} />
         </Link>
       </div>
 
@@ -120,13 +124,13 @@ export default async function DiziProgressWidget({ userId, username }: Props) {
 
                 <div className="flex items-center justify-between">
                   <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>
-                    {s.watchedEpisodes}/{s.total} bölüm
+                    {t('diziProgress.episodeCount', { watched: s.watchedEpisodes, total: s.total })}
                   </p>
                   <span
                     className="text-[10px] font-bold inline-flex items-center gap-0.5"
                     style={{ color: isFinished ? '#4ade80' : 'rgba(255,255,255,0.4)' }}
                   >
-                    {isFinished ? <><IconCheck size={10} /> Bitti</> : `%${pct}`}
+                    {isFinished ? <><IconCheck size={10} /> {t('diziProgress.finished')}</> : `%${pct}`}
                   </span>
                 </div>
               </div>

@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { IconStarFilled, IconTrendingUp, IconGlobe, IconMapPin, IconMedal } from '@/components/icons'
-import { getPosterUrl, getMediaTitle, getMediaYear } from '@/lib/tmdb'
+import { getPosterUrl, getMediaTitle, getMediaYear, getActiveTMDbLanguage } from '@/lib/tmdb'
 import { getTranslations } from '@/lib/i18n'
 import type { TMDbMovie, TMDbSearchResult } from '@/lib/types'
 
@@ -13,9 +13,9 @@ export const metadata: Metadata = {
   description: "Türkiye ve dünya gişe sıralamalarını keşfet.",
 }
 
-async function fetchGise(endpoint: string): Promise<TMDbMovie[]> {
+async function fetchGise(endpoint: string, lang: string): Promise<TMDbMovie[]> {
   const url = new URL(`https://api.themoviedb.org/3${endpoint}`)
-  url.searchParams.set('language', 'tr-TR')
+  url.searchParams.set('language', lang)
   url.searchParams.set('page', '1')
   try {
     const res = await fetch(url.toString(), {
@@ -43,10 +43,11 @@ export default async function GisePage({ searchParams }: PageProps) {
   const params = await searchParams
   const tab = params.tab === 'dunya' ? 'dunya' : 'turkiye'
   const { t } = await getTranslations()
+  const tmdbLang = await getActiveTMDbLanguage()
 
   const [turkiyeMovies, dunyaMovies] = await Promise.all([
-    fetchGise('/movie/now_playing?region=TR'),
-    fetchGise('/movie/popular'),
+    fetchGise('/movie/now_playing?region=TR', tmdbLang),
+    fetchGise('/movie/popular', tmdbLang),
   ])
 
   const movies = tab === 'dunya' ? dunyaMovies.slice(0, 20) : turkiyeMovies.slice(0, 20)

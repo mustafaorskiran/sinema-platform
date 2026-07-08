@@ -2333,6 +2333,7 @@
     "commonWatchedCount": "共通の作品 {count} 件",
     "commonWatchedDesc": "フォローしている人とどの映画を一緒に視聴したか確認しましょう。",
     "commonWatchedEmpty": "まだ共通の視聴作品はありません。",
+    "commonWatchedFindFriends": "友達を見つける",
     "commonWatchedFollowingLabel": "フォロー中のユーザー",
     "commonWatchedNoFollowing": "まだ誰もフォローしていません。",
     "commonWatchedSelectPrompt": "共通の視聴作品を見るにはユーザーを選択してください。",
@@ -2512,8 +2513,13 @@
   "top10Page": {
     "allTime": "歴代",
     "allTimeLower": "歴代",
+    "films": "映画",
+    "metaDesc": "Sinezonで最も視聴され、レビューされた映画とドラマ10選。",
+    "metaTitle": "Sinezon トップ10 | Sinezon",
+    "series": "ドラマ",
     "thisMonth": "今月",
-    "thisWeek": "今週"
+    "thisWeek": "今週",
+    "updateNote": "Sinezonユーザーのアクティビティに基づいて更新 · 1時間ごとに更新"
   },
   "topic": {
     "addTopic": "+ テーマを追加",
@@ -2598,6 +2604,7 @@
     "country": "国",
     "createOwn": "自分の比較を作成する",
     "durationEpisode": "時間 / エピソード",
+    "empty": "まだ比較がありません。後でもう一度確認してください。",
     "feature": "項目",
     "genres": "ジャンル",
     "language": "言語",
@@ -2753,5 +2760,126 @@
   "zevkDna": {
     "subtitle": "視聴傾向に基づくジャンルプロフィール",
     "title": "好みのDNA"
+  },
+  "badges": {
+    "first_review": {
+      "name": "最初の一歩",
+      "desc": "最初のレビューを書きました"
+    },
+    "reviews_10": {
+      "name": "映画好き",
+      "desc": "10件のレビューを書きました"
+    },
+    "reviews_50": {
+      "name": "映画愛好家",
+      "desc": "50件のレビューを書きました"
+    },
+    "reviews_100": {
+      "name": "シネフィル",
+      "desc": "100件のレビューを書きました"
+    },
+    "reviews_500": {
+      "name": "レジェンド",
+      "desc": "500件のレビューを書きました"
+    },
+    "film_fan": {
+      "name": "映画ファン",
+      "desc": "10本以上の映画をレビューしました"
+    },
+    "series_fan": {
+      "name": "ドラマ中毒",
+      "desc": "10本以上のドラマをレビューしました"
+    },
+    "balanced": {
+      "name": "バランス型",
+      "desc": "映画とドラマのレビューがバランスよく"
+    },
+    "optimist": {
+      "name": "楽観主義者",
+      "desc": "平均評価が8以上"
+    },
+    "critic": {
+      "name": "辛口評論家",
+      "desc": "平均評価が5以下"
+    },
+    "first_follower": {
+      "name": "人気者",
+      "desc": "最初のフォロワーを獲得しました"
+    },
+    "popular_10": {
+      "name": "社交的な蝶",
+      "desc": "フォロワーが10人になりました"
+    },
+    "popular_50": {
+      "name": "インフルエンサー",
+      "desc": "フォロワーが50人になりました"
+    },
+    "list_maker": {
+      "name": "リストマスター",
+      "desc": "3個のリストを作成しました"
+    },
+    "films_100": {
+      "name": "映画100本クラブ",
+      "desc": "100本の映画をレビューしました"
+    },
+    "first_list": {
+      "name": "リスト作成者",
+      "desc": "最初のリストを作成しました"
+    },
+    "member_1year": {
+      "name": "Sinezon年鑑",
+      "desc": "Sinezonメンバー歴1年"
+    },
+    "diary_1": {
+      "name": "日記の始まり",
+      "desc": "最初の日記を記録しました"
+    },
+    "diary_10": {
+      "name": "日記継続者",
+      "desc": "10件の日記があります"
+    },
+    "diary_50": {
+      "name": "思い出の本",
+      "desc": "50件の日記があります"
+    },
+    "forum_poster": {
+      "name": "フォーラム参加者",
+      "desc": "5件のフォーラムスレッドを開始しました"
+    },
+    "forum_active": {
+      "name": "フォーラムスター",
+      "desc": "20件のフォーラムスレッドを開始しました"
+    },
+    "topic_voter": {
+      "name": "タグマスター",
+      "desc": "10件以上の作品にトピックタグを付けました"
+    }
+  },
+  "diziProgress": {
+    "title": "ドラマの進捗",
+    "viewAll": "すべて見る",
+    "episodeCount": "{watched}/{total} 話",
+    "finished": "完了",
+    "fallbackName": "ドラマ #{id}"
+  },
+  "haftalik": {
+    "aiRecommendation": "AIのおすすめを見る",
+    "allTop10": "トップ10をすべて見る",
+    "discussionForum": "ディスカッションフォーラム",
+    "explore": "探す",
+    "eyebrow": "週間まとめ",
+    "hourlyUpdate": "1時間ごとに更新",
+    "leaderboard": "ランキング",
+    "metaDesc": "今週最も話題の映画、最もアクティブなレビュアー、近日公開の作品。",
+    "metaTitle": "今週のまとめ | Sinezon",
+    "newLists": "今週作成されたリスト",
+    "reviewCount": "{count} 件のレビュー",
+    "title": "今週のまとめ",
+    "topReviewers": "今週のレビュアー",
+    "topReviews": "今週の人気レビュー",
+    "trending": "今週のトレンド",
+    "upcoming": "近日公開",
+    "weeklyTop10": "今週のトップ10",
+    "whatToWatch": "何を見ようか？"
   }
 }

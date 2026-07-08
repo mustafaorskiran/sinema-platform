@@ -2333,6 +2333,7 @@
     "commonWatchedCount": "{count} ortak içerik",
     "commonWatchedDesc": "Takip ettiğin biriyle hangi filmleri ortak izlediğini gör.",
     "commonWatchedEmpty": "Henüz ortak izlenen içerik yok.",
+    "commonWatchedFindFriends": "Arkadaş Bul",
     "commonWatchedFollowingLabel": "Takip ettiğin kullanıcılar",
     "commonWatchedNoFollowing": "Henüz kimseyi takip etmiyorsun.",
     "commonWatchedSelectPrompt": "Ortak izlenenleri görmek için bir kullanıcı seç.",
@@ -2512,8 +2513,13 @@
   "top10Page": {
     "allTime": "Tüm Zamanlar",
     "allTimeLower": "Tüm zamanlar",
+    "films": "Filmler",
+    "metaDesc": "Sinezon'da en çok izlenen ve yorum alan 10 film ve dizi.",
+    "metaTitle": "Sinezon Top 10 | Sinezon",
+    "series": "Diziler",
     "thisMonth": "Bu Ay",
-    "thisWeek": "Bu Hafta"
+    "thisWeek": "Bu Hafta",
+    "updateNote": "Sinezon kullanıcılarının aktivitesine göre güncellenir · Saatlik yenileme"
   },
   "topic": {
     "addTopic": "+ Konu Ekle",
@@ -2598,6 +2604,7 @@
     "country": "Ülke",
     "createOwn": "Kendi karşılaştırmanı oluştur",
     "durationEpisode": "Süre / Bölüm",
+    "empty": "Şu anda hiç karşılaştırma yok. Daha sonra tekrar kontrol edin.",
     "feature": "Özellik",
     "genres": "Türler",
     "language": "Dil",
@@ -2753,5 +2760,126 @@
   "zevkDna": {
     "subtitle": "İzleme alışkanlığına göre tür profili",
     "title": "Zevk DNA'sı"
+  },
+  "badges": {
+    "first_review": {
+      "name": "İlk Adım",
+      "desc": "İlk yorumunu yaptın"
+    },
+    "reviews_10": {
+      "name": "Film Sever",
+      "desc": "10 yorum yaptın"
+    },
+    "reviews_50": {
+      "name": "Sinema Tutkunu",
+      "desc": "50 yorum yaptın"
+    },
+    "reviews_100": {
+      "name": "Sinefil",
+      "desc": "100 yorum yaptın"
+    },
+    "reviews_500": {
+      "name": "Efsane",
+      "desc": "500 yorum yaptın"
+    },
+    "film_fan": {
+      "name": "Film Hayranı",
+      "desc": "10+ film yorumladın"
+    },
+    "series_fan": {
+      "name": "Dizi Bağımlısı",
+      "desc": "10+ dizi yorumladın"
+    },
+    "balanced": {
+      "name": "Dengeli",
+      "desc": "Film ve dizi yorumların dengeli"
+    },
+    "optimist": {
+      "name": "İyimser",
+      "desc": "Ort. puanın 8 veya üstü"
+    },
+    "critic": {
+      "name": "Sert Eleştirmen",
+      "desc": "Ort. puanın 5 veya altı"
+    },
+    "first_follower": {
+      "name": "Popüler",
+      "desc": "İlk takipçini kazandın"
+    },
+    "popular_10": {
+      "name": "Sosyal Kelebek",
+      "desc": "10 takipçin var"
+    },
+    "popular_50": {
+      "name": "Fenomen",
+      "desc": "50 takipçin var"
+    },
+    "list_maker": {
+      "name": "Liste Ustası",
+      "desc": "3 liste oluşturdun"
+    },
+    "films_100": {
+      "name": "100 Film Kulübü",
+      "desc": "100 filmi yorumladın"
+    },
+    "first_list": {
+      "name": "Liste Kurucusu",
+      "desc": "İlk listeni oluşturdun"
+    },
+    "member_1year": {
+      "name": "Sinezon Yıllığı",
+      "desc": "1 yıldır Sinezon üyesisin"
+    },
+    "diary_1": {
+      "name": "Günlük Başlangıcı",
+      "desc": "İlk günlük kaydını yaptın"
+    },
+    "diary_10": {
+      "name": "Günlük Tutucu",
+      "desc": "10 günlük kaydın var"
+    },
+    "diary_50": {
+      "name": "Anılar Kitabı",
+      "desc": "50 günlük kaydın var"
+    },
+    "forum_poster": {
+      "name": "Forum Katılımcısı",
+      "desc": "5 forum konusu açtın"
+    },
+    "forum_active": {
+      "name": "Forum Yıldızı",
+      "desc": "20 forum konusu açtın"
+    },
+    "topic_voter": {
+      "name": "Etiket Ustası",
+      "desc": "10+ içeriği konularla etiketledin"
+    }
+  },
+  "diziProgress": {
+    "title": "Dizi İlerlemesi",
+    "viewAll": "Tümünü gör",
+    "episodeCount": "{watched}/{total} bölüm",
+    "finished": "Bitti",
+    "fallbackName": "Dizi #{id}"
+  },
+  "haftalik": {
+    "aiRecommendation": "AI Öneri Al",
+    "allTop10": "Tüm Top 10",
+    "discussionForum": "Tartışma Forumu",
+    "explore": "Keşfet",
+    "eyebrow": "Haftalık Özet",
+    "hourlyUpdate": "Saatlik güncellenir",
+    "leaderboard": "Liderlik Tablosu",
+    "metaDesc": "Bu haftanın en çok konuşulan filmleri, en aktif yorumcular ve yakında gelenler.",
+    "metaTitle": "Haftanın Özeti | Sinezon",
+    "newLists": "Bu Hafta Oluşturulan Listeler",
+    "reviewCount": "{count} yorum",
+    "title": "Bu Haftanın Özeti",
+    "topReviewers": "Bu Haftanın Yorumcuları",
+    "topReviews": "Haftanın En Beğenilen Yorumları",
+    "trending": "Bu Hafta Trend",
+    "upcoming": "Yakında Çıkacaklar",
+    "weeklyTop10": "Haftanın Top 10'u",
+    "whatToWatch": "Ne İzlesem?"
   }
 }

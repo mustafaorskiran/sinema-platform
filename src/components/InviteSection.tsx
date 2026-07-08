@@ -45,6 +45,7 @@ export default function InviteSection() {
           readOnly
           value={link}
           onFocus={e => e.target.select()}
+          aria-label={t('invite.myLinkTitle')}
           className="flex-1 min-w-0 rounded-lg px-3 py-2 text-xs outline-none"
           style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)', color: 'rgba(255,255,255,0.7)' }}
         />

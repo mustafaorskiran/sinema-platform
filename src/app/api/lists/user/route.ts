@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { isAdmin } from '@/lib/admin'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(req: NextRequest) {
@@ -10,13 +11,29 @@ export async function GET(req: NextRequest) {
   const media_id = Number(searchParams.get('media_id'))
   const media_type = searchParams.get('media_type')
 
-  const { data: lists } = await supabase
+  const { data: ownLists } = await supabase
     .from('lists')
     .select('id, title')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 
-  if (!lists?.length) return NextResponse.json([])
+  let lists = ownLists ?? []
+
+  // Adminler editöryal listelere de (sahipsiz, is_editorial=true) içerik
+  // ekleyip çıkarabilir — aynı dropdown, ayrı bir admin arayüzü gerekmiyor.
+  if (await isAdmin(supabase, user.id)) {
+    const { data: editorialLists } = await supabase
+      .from('lists')
+      .select('id, title')
+      .is('user_id', null)
+      .eq('is_editorial', true)
+      .order('created_at', { ascending: false })
+    if (editorialLists?.length) {
+      lists = [...lists, ...editorialLists.map(l => ({ id: l.id, title: `🎬 ${l.title}` }))]
+    }
+  }
+
+  if (!lists.length) return NextResponse.json([])
 
   const listIds = lists.map(l => l.id)
   const { data: existingItems } = await supabase

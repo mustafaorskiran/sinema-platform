@@ -2333,6 +2333,7 @@
     "commonWatchedCount": "{count} ábhar i gcomhpháirt",
     "commonWatchedDesc": "Féach cé na scannáin atá feicthe agat féin agus ag duine a leanann tú.",
     "commonWatchedEmpty": "Níl aon ábhar feicthe i gcomhpháirt fós.",
+    "commonWatchedFindFriends": "Aimsigh Cairde",
     "commonWatchedFollowingLabel": "Daoine a leanann tú",
     "commonWatchedNoFollowing": "Níl aon duine á leanúint agat fós.",
     "commonWatchedSelectPrompt": "Roghnaigh úsáideoir chun ábhar feicthe i gcomhpháirt a fheiceáil.",
@@ -2512,8 +2513,13 @@
   "top10Page": {
     "allTime": "Riamh",
     "allTimeLower": "riamh",
+    "films": "Scannáin",
+    "metaDesc": "Na 10 scannán agus sraith is mó a bhfuil féachta agus léirmheasta orthu ar Sinezon.",
+    "metaTitle": "Barr 10 Sinezon | Sinezon",
+    "series": "Sraitheanna",
     "thisMonth": "An Mhí Seo",
-    "thisWeek": "An Tseachtain Seo"
+    "thisWeek": "An Tseachtain Seo",
+    "updateNote": "Nuashonraithe bunaithe ar ghníomhaíocht úsáideoirí Sinezon · Athnuaite gach uair an chloig"
   },
   "topic": {
     "addTopic": "+ Cuir Topaic Leis",
@@ -2598,6 +2604,7 @@
     "country": "Tír",
     "createOwn": "Cruthaigh do chomparáid féin",
     "durationEpisode": "Fad / Eipeasóid",
+    "empty": "Níl aon chomparáidí ann fós. Seiceáil ar ais níos déanaí.",
     "feature": "Gné",
     "genres": "Seánraí",
     "language": "Teanga",
@@ -2753,5 +2760,126 @@
   "zevkDna": {
     "subtitle": "Próifíl seánra bunaithe ar do nósanna féachana",
     "title": "DNA Blas"
+  },
+  "badges": {
+    "first_review": {
+      "name": "An Chéad Chéim",
+      "desc": "Scríobh tú do chéad léirmheas"
+    },
+    "reviews_10": {
+      "name": "Grá don Scannán",
+      "desc": "Scríobh tú 10 léirmheas"
+    },
+    "reviews_50": {
+      "name": "Díograiseoir Scannán",
+      "desc": "Scríobh tú 50 léirmheas"
+    },
+    "reviews_100": {
+      "name": "Cineagrafaí",
+      "desc": "Scríobh tú 100 léirmheas"
+    },
+    "reviews_500": {
+      "name": "Finscéal",
+      "desc": "Scríobh tú 500 léirmheas"
+    },
+    "film_fan": {
+      "name": "Lucht Leanúna Scannán",
+      "desc": "Rinne tú léirmheas ar 10+ scannán"
+    },
+    "series_fan": {
+      "name": "Andúileach Sraitheanna",
+      "desc": "Rinne tú léirmheas ar 10+ sraith"
+    },
+    "balanced": {
+      "name": "Cothrom",
+      "desc": "Tá do léirmheasanna scannán agus sraithe cothrom"
+    },
+    "optimist": {
+      "name": "Duine Dóchasach",
+      "desc": "Tá do mheánrátáil 8 nó níos airde"
+    },
+    "critic": {
+      "name": "Léirmheastóir Géar",
+      "desc": "Tá do mheánrátáil 5 nó níos ísle"
+    },
+    "first_follower": {
+      "name": "Éileamh",
+      "desc": "Fuair tú do chéad leantóir"
+    },
+    "popular_10": {
+      "name": "Féileacán Sóisialta",
+      "desc": "Tá 10 leantóir agat"
+    },
+    "popular_50": {
+      "name": "Duine Tionchair",
+      "desc": "Tá 50 leantóir agat"
+    },
+    "list_maker": {
+      "name": "Máistir Liostaí",
+      "desc": "Chruthaigh tú 3 liosta"
+    },
+    "films_100": {
+      "name": "Club 100 Scannán",
+      "desc": "Rinne tú léirmheas ar 100 scannán"
+    },
+    "first_list": {
+      "name": "Cruthaitheoir Liostaí",
+      "desc": "Chruthaigh tú do chéad liosta"
+    },
+    "member_1year": {
+      "name": "Bliainiris Sinezon",
+      "desc": "Tá tú i do bhall de Sinezon le 1 bhliain"
+    },
+    "diary_1": {
+      "name": "Tús an Dialainn",
+      "desc": "Rinne tú do chéad iontráil dialainne"
+    },
+    "diary_10": {
+      "name": "Coinneálaí Dialainne",
+      "desc": "Tá 10 iontráil dialainne agat"
+    },
+    "diary_50": {
+      "name": "Leabhar Cuimhní",
+      "desc": "Tá 50 iontráil dialainne agat"
+    },
+    "forum_poster": {
+      "name": "Rannpháirtí Fóraim",
+      "desc": "Chuir tú tús le 5 shnáithe fóraim"
+    },
+    "forum_active": {
+      "name": "Réalta Fóraim",
+      "desc": "Chuir tú tús le 20 snáithe fóraim"
+    },
+    "topic_voter": {
+      "name": "Máistir Clibeanna",
+      "desc": "Chuir tú clibeanna ar 10+ theideal le hábhair"
+    }
+  },
+  "diziProgress": {
+    "title": "Dul Chun Cinn Sraithe",
+    "viewAll": "Féach ar fad",
+    "episodeCount": "{watched}/{total} eipeasóid",
+    "finished": "Críochnaithe",
+    "fallbackName": "Sraith #{id}"
+  },
+  "haftalik": {
+    "aiRecommendation": "Faigh Moladh AI",
+    "allTop10": "Gach Barr 10",
+    "discussionForum": "Fóram Plé",
+    "explore": "Taiscéal",
+    "eyebrow": "Achoimre Sheachtainiúil",
+    "hourlyUpdate": "Nuashonraithe gach uair an chloig",
+    "leaderboard": "Clár na gCeannairí",
+    "metaDesc": "Na scannáin is mó plé na seachtaine, na léirmheastóirí is gníomhaí, agus a bhfuil ag teacht go luath.",
+    "metaTitle": "Achoimre na Seachtaine | Sinezon",
+    "newLists": "Liostaí a Cruthaíodh an tSeachtain Seo",
+    "reviewCount": "{count} léirmheas",
+    "title": "Achoimre na Seachtaine Seo",
+    "topReviewers": "Léirmheastóirí na Seachtaine Seo",
+    "topReviews": "Léirmheasanna is Fearr Leis an tSeachtain",
+    "trending": "Ag Treochtáil an tSeachtain Seo",
+    "upcoming": "Ag Teacht go Luath",
+    "weeklyTop10": "Barr 10 na Seachtaine",
+    "whatToWatch": "Cad ba chóir dom a fheiceáil?"
   }
 }
