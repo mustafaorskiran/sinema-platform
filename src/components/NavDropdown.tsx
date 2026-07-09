@@ -10,6 +10,7 @@ export interface DropItem {
   href?: string
   description?: string
   separator?: boolean
+  heading?: string
 }
 
 interface Props {
@@ -95,20 +96,29 @@ export function NavDropdown({ label, href, icon, items, columns = 1 }: Props) {
           >
             {columns === 2 ? (
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
-                {regularItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href!}
-                    className="flex flex-col px-4 py-3 transition-all duration-150 text-[--text-secondary] hover:text-[--text-primary] hover:bg-white/[.06] active:bg-white/[.04]"
-                    style={{ borderRight: '1px solid var(--border)' }}
-                  >
-                    <span className="text-[13px] font-medium">{item.label}</span>
-                    {item.description && (
-                      <span className="text-[11px] mt-0.5" style={{ color: 'var(--text-secondary)', opacity: 0.55 }}>
-                        {item.description}
-                      </span>
-                    )}
-                  </Link>
+                {regularItems.map((item, i) => (
+                  item.heading ? (
+                    <div
+                      key={`heading-${i}`}
+                      className="px-4 pb-1.5 text-[10px] font-semibold uppercase tracking-widest"
+                      style={{ color: 'var(--text-secondary)', opacity: 0.45, paddingTop: i === 0 ? '10px' : '16px', gridColumn: '1 / -1' }}
+                    >
+                      {item.heading}
+                    </div>
+                  ) : (
+                    <Link
+                      key={item.href}
+                      href={item.href!}
+                      className="flex flex-col px-4 py-2 transition-all duration-150 text-[--text-secondary] hover:text-[--text-primary] hover:bg-white/[.06] active:bg-white/[.04]"
+                    >
+                      <span className="text-[13px] font-medium">{item.label}</span>
+                      {item.description && (
+                        <span className="text-[11px] mt-0.5" style={{ color: 'var(--text-secondary)', opacity: 0.55 }}>
+                          {item.description}
+                        </span>
+                      )}
+                    </Link>
+                  )
                 ))}
               </div>
             ) : (

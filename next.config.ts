@@ -20,6 +20,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      // /mood ve /ruh-hali aynı özelliğin iki kopyasıydı — tek route'a indirildi.
+      { source: '/mood', destination: '/ruh-hali', permanent: true },
+      // /gise, /kutu-ofis ile örtüşüyordu (ikisi de gişe sıralaması) — tek route'a indirildi.
+      { source: '/gise', destination: '/kutu-ofis', permanent: true },
+    ]
+  },
   async headers() {
     return [
       {

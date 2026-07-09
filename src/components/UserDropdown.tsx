@@ -103,8 +103,15 @@ export default function UserDropdown({ user }: Props) {
           <div className="py-1.5 overflow-y-auto flex-1" style={{ scrollbarWidth: 'none' }}>
             <DropLink href={`/profil/${user.username ?? ''}`} label={t('nav.myProfile')} />
             <DropLink href="/izleme-listem" label={t('nav.myList')} />
+            <DropLink href="/dizi-takip" label={t('nav.seriesTracker')} />
+            <DropLink href="/gunluk" label={t('footer.myDiary')} />
+            <DropLink href={`/ozet/${new Date().getFullYear()}`} label={t('footer.yearRecap')} />
+            <DropLink href="/yillik-hedef" label={t('yearlyGoal.myGoal')} />
             <DropLink href="/mesajlar" label={t('nav.messages')} />
             <DropLink href="/akis" label={t('nav.feedShort')} />
+
+            <div className="my-1.5 mx-3" style={{ borderTop: '1px solid var(--border)' }} />
+
             <DropLink href="/oneriler" label={t('nav.recommendationsShort')} />
             <DropLink href="/oneri" label={t('nav.aiRecommendationShort')} />
             <DropLink href="/film-gecesi" label={t('nav.movieNight')} />
