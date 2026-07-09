@@ -1,11 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClient as createServerClient } from '@/lib/supabase/server'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { getActiveTMDbLanguage } from '@/lib/tmdb'
 import { rateLimit } from '@/lib/rateLimit'
 
-export async function GET(req: NextRequest) {
-  const supabase = await createClient()
+async function getAuthedClient(req: NextRequest) {
+  const authHeader = req.headers.get('authorization')
+  if (authHeader?.startsWith('Bearer ')) {
+    const client = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      { global: { headers: { Authorization: authHeader } } },
+    )
+    const { data: { user } } = await client.auth.getUser(authHeader.slice(7))
+    return { supabase: client, user }
+  }
+  const supabase = await createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
+  return { supabase, user }
+}
+
+export async function GET(req: NextRequest) {
+  const { supabase, user } = await getAuthedClient(req)
   if (!user) return NextResponse.json({ error: 'Giriş gerekli' }, { status: 401 })
 
   const allowed = await rateLimit(`katki-arama:${user.id}`, 60 * 1000, 20)

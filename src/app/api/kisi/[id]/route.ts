@@ -37,6 +37,18 @@ export async function GET(
         year: (c.release_date ?? c.first_air_date ?? '').slice(0, 4) || null,
       }))
 
+    const directorFilmography = (credits?.crew ?? [])
+      .filter((c: any) => c.job === 'Director')
+      .sort((a: any, b: any) => (b.release_date ?? b.first_air_date ?? '').localeCompare(a.release_date ?? a.first_air_date ?? ''))
+      .slice(0, 30)
+      .map((c: any) => ({
+        id: c.id,
+        mediaType: c.media_type === 'tv' ? 'dizi' : 'film',
+        title: c.title ?? c.name ?? '',
+        poster: getPosterUrl(c.poster_path, 'w342'),
+        year: (c.release_date ?? c.first_air_date ?? '').slice(0, 4) || null,
+      }))
+
     return NextResponse.json({
       id: person.id,
       name: person.name,
@@ -47,6 +59,7 @@ export async function GET(
       knownForDepartment: person.known_for_department || null,
       profile: getProfileUrl(person.profile_path, 'h632'),
       knownFor,
+      directorFilmography,
     })
   } catch {
     return NextResponse.json({ error: 'Kişi bulunamadı' }, { status: 404 })

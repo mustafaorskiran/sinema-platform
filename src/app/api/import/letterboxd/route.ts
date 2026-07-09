@@ -1,7 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClient as createServerClient } from '@/lib/supabase/server'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { rateLimit } from '@/lib/rateLimit'
 import { getActiveTMDbLanguage } from '@/lib/tmdb'
+
+async function getAuthedClient(req: NextRequest) {
+  const authHeader = req.headers.get('authorization')
+  if (authHeader?.startsWith('Bearer ')) {
+    const client = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      { global: { headers: { Authorization: authHeader } } },
+    )
+    const { data: { user } } = await client.auth.getUser(authHeader.slice(7))
+    return { supabase: client, user }
+  }
+  const supabase = await createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  return { supabase, user }
+}
 
 const MAX_ENTRIES = 2000
 
@@ -33,8 +50,7 @@ async function searchTMDb(name: string, year: string, lang: string): Promise<{ t
 }
 
 export async function POST(req: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const { supabase, user } = await getAuthedClient(req)
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   // Rate limit: 20 batch / saat

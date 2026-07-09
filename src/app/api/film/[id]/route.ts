@@ -75,7 +75,11 @@ export async function GET(
         profile: c.profile_path ? getPosterUrl(c.profile_path, 'w342') : null,
       })),
       director: (movie.credits?.crew ?? []).find(c => c.job === 'Director')?.name ?? null,
+      directorId: (movie.credits?.crew ?? []).find(c => c.job === 'Director')?.id ?? null,
       trailerKey: trailer?.key ?? null,
+      productionCompanies: (movie.production_companies ?? []).slice(0, 4).map(c => ({
+        id: c.id, name: c.name, logo: c.logo_path ? getPosterUrl(c.logo_path, 'w342') : null,
+      })),
     })
   } catch {
     return NextResponse.json({ error: 'Film bulunamadı' }, { status: 404 })
