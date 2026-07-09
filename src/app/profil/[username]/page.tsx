@@ -6,6 +6,7 @@ import { getMovieDetail, getSeriesDetail, getPosterUrl, getMediaTitle } from '@/
 import FollowButton from '@/components/FollowButton'
 import MessageButton from '@/components/MessageButton'
 import { computeBadges } from '@/lib/badges'
+import BadgeMedal from '@/components/BadgeMedal'
 import FavoritesEditor from '@/components/FavoritesEditor'
 import ActivityHeatmap from '@/components/ActivityHeatmap'
 import PinReviewButton from '@/components/PinReviewButton'
@@ -279,10 +280,8 @@ export default async function ProfilPage({ params }: Props) {
             {pinnedBadges.length > 0 && (
               <div className="flex items-center gap-1.5">
                 {pinnedBadges.map(b => (
-                  <div key={b.id} title={`${b.name} — ${b.desc}`}
-                    className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0"
-                    style={{ background: 'rgba(212,168,67,0.1)', border: '1px solid rgba(212,168,67,0.25)' }}>
-                    <b.icon size={16} strokeWidth={1.5} className="text-[--gold]" />
+                  <div key={b.id} title={`${b.name} — ${b.desc}`}>
+                    <BadgeMedal icon={b.icon} color={b.color} colorDark={b.colorDark} earned size={32} />
                   </div>
                 ))}
               </div>
@@ -631,11 +630,11 @@ export default async function ProfilPage({ params }: Props) {
                 className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl cursor-default group transition-all duration-200 hover:-translate-y-0.5"
                 style={{
                   background: 'linear-gradient(160deg, rgba(20,28,47,0.9), rgba(14,20,32,0.95))',
-                  border: '1px solid rgba(212,168,67,0.12)',
+                  border: `1px solid ${badge.color}30`,
                   boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
                 }}
               >
-                <badge.icon size={24} strokeWidth={1.5} className="text-[--gold] shrink-0" />
+                <BadgeMedal icon={badge.icon} color={badge.color} colorDark={badge.colorDark} earned size={38} />
                 <div>
                   <p className="text-[12px] font-semibold leading-none" style={{ color: 'var(--text-primary)' }}>{badge.name}</p>
                   <p className="text-[10px] mt-0.5 max-w-[140px]" style={{ color: 'rgba(255,255,255,0.35)' }}>{badge.desc}</p>

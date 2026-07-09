@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useLocale } from '@/context/LocaleContext'
 import { computeBadges, ALL_BADGE_COUNT, type BadgeStats } from '@/lib/badges'
 import { IconMedal, IconLock, IconPin } from '@/components/icons'
+import BadgeMedal from '@/components/BadgeMedal'
 
 interface Props {
   stats: BadgeStats
@@ -87,8 +88,8 @@ export default function BadgesSection({ stats, initialPinned, isOwnProfile }: Pr
               const isPinned = pinned.includes(b.id)
               return (
                 <div key={b.id} className="relative flex items-center gap-3 p-3 rounded-xl"
-                  style={{ background: 'rgba(212,168,67,0.07)', border: '1px solid rgba(212,168,67,0.2)' }}>
-                  <b.icon size={26} strokeWidth={1.5} className="shrink-0 text-[--gold]" />
+                  style={{ background: `${b.color}12`, border: `1px solid ${b.color}40` }}>
+                  <BadgeMedal icon={b.icon} color={b.color} colorDark={b.colorDark} earned size={48} />
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-semibold text-white truncate">{b.name}</p>
                     <p className="text-[11px] leading-tight" style={{ color: 'rgba(255,255,255,0.45)' }}>{b.desc}</p>
@@ -124,9 +125,9 @@ export default function BadgesSection({ stats, initialPinned, isOwnProfile }: Pr
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {unearned.map(b => (
-              <div key={b.id} className="flex items-center gap-3 p-3 rounded-xl opacity-50"
+              <div key={b.id} className="flex items-center gap-3 p-3 rounded-xl"
                 style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <b.icon size={26} strokeWidth={1.5} className="shrink-0 opacity-60" />
+                <BadgeMedal icon={b.icon} color={b.color} colorDark={b.colorDark} earned={false} size={48} />
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-white truncate">{b.name}</p>
                   <p className="text-[11px] leading-tight" style={{ color: 'rgba(255,255,255,0.35)' }}>{b.desc}</p>

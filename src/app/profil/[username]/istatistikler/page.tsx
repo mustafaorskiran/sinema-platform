@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getMovieMini, getSeriesMini } from '@/lib/tmdb'
 import { computeBadges, ALL_BADGE_COUNT } from '@/lib/badges'
+import BadgeMedal from '@/components/BadgeMedal'
 import ActivityHeatmap from '@/components/ActivityHeatmap'
 import WatchCalendar from '@/components/WatchCalendar'
 import ZevkDNA from '@/components/ZevkDNA'
@@ -447,9 +448,9 @@ export default async function IstatistiklerPage({ params }: Props) {
                       key={badge.id}
                       title={badge.desc}
                       className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-default"
-                      style={{ background: 'rgba(74,222,128,0.06)', border: '1px solid rgba(74,222,128,0.2)' }}
+                      style={{ background: `${badge.color}12`, border: `1px solid ${badge.color}35` }}
                     >
-                      <badge.icon size={20} strokeWidth={1.5} className="text-green-400 shrink-0" />
+                      <BadgeMedal icon={badge.icon} color={badge.color} colorDark={badge.colorDark} earned size={34} />
                       <div>
                         <p className="text-xs font-semibold text-white leading-none">{badge.name}</p>
                         <p className="text-[10px] text-[--text-secondary] mt-0.5">{badge.desc}</p>
@@ -468,10 +469,10 @@ export default async function IstatistiklerPage({ params }: Props) {
                     <div
                       key={badge.id}
                       title={badge.desc}
-                      className="flex items-center gap-2 px-3 py-2 rounded-lg opacity-35 cursor-default"
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-default"
                       style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
                     >
-                      <badge.icon size={20} strokeWidth={1.5} className="shrink-0 opacity-60" />
+                      <BadgeMedal icon={badge.icon} color={badge.color} colorDark={badge.colorDark} earned={false} size={34} />
                       <div>
                         <p className="text-xs font-semibold text-white leading-none">{badge.name}</p>
                         <p className="text-[10px] text-[--text-secondary] mt-0.5">{badge.desc}</p>
