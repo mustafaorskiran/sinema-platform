@@ -6,13 +6,14 @@ import SinemalarClient from './SinemalarClient'
 
 export const metadata: Metadata = { title: 'Sinemalar & Vizyonda' }
 
-// Büyük Türkiye sinema zincirleri
+// Büyük Türkiye sinema zincirleri — 2026-07 itibarıyla doğrulanmış, çalışan
+// adresler. Cinemaximum + CGV, Paribu Cineverse markası altında birleşti
+// (eski cinemaximum.com.tr / cgv.com.tr artık çözümlenmiyor). CineLux
+// (sertifika uyuşmazlığı) ve Özgür Sineması (DNS çözülmüyor) kaldırıldı.
 const SINEMA_ZINCIRLERI = [
-  { name: 'Cinemaximum', logo: '🎬', url: 'https://www.cinemaximum.com.tr', desc: 'Mars Entertainment grubu' },
-  { name: 'CGV', logo: '🎭', url: 'https://www.cgv.com.tr', desc: 'Uluslararası zincir' },
-  { name: 'CineLux', logo: '🎪', url: 'https://www.cinelux.com.tr', desc: 'Lüks sinema deneyimi' },
-  { name: 'Cinemarine', logo: '⚓', url: 'https://www.cinemarine.com.tr', desc: 'Fethiye & Datça' },
-  { name: 'Özgür Sineması', logo: '🌟', url: 'https://www.ozgursinemasi.com', desc: 'Bağımsız sinema' },
+  { name: 'Paribu Cineverse', logo: '🎬', url: 'https://www.paribucineverse.com', desc: 'Eski Cinemaximum + CGV, Türkiye\'nin en büyük zinciri' },
+  { name: 'Cinens', logo: '🎪', url: 'https://www.cinens.com', desc: 'Çok şehirli sinema zinciri' },
+  { name: 'Cinemarine', logo: '⚓', url: 'https://www.cinemarine.com.tr', desc: '11 ilde 15 salon' },
   { name: 'Biletinial', logo: '🎟️', url: 'https://biletinial.com/tr-tr/sinema', desc: 'Tüm sinemalar bilet' },
   { name: 'Beyazperde', logo: '📽️', url: 'https://www.beyazperde.com/sinemalar/', desc: 'Seans & sinema rehberi' },
   { name: 'Sinemalar.com', logo: '🏢', url: 'https://www.sinemalar.com', desc: 'Türkiye sinema rehberi' },
