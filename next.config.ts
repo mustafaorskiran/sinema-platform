@@ -3,10 +3,13 @@ import path from "path";
 
 // Self-hosted Next.js has no eviction for the default filesystem ISR/fetch cache —
 // it filled the server disk and took the site down (2026-07-20/21). Route cache
-// entries through Redis instead when configured (see cache-handler.js). Uses a raw
-// TCP connection (ioredis), not the REST/fetch client — that collided with Next's
-// own fetch-patching and crashed renders (incident 2026-07-21).
-const hasRedisCache = !!process.env.REDIS_URL;
+// FETCH-kind entries through Redis instead when configured (see cache-handler.js).
+// Uses the REST/fetch client (@upstash/redis), not ioredis — ioredis's Node-only
+// TCP APIs get rejected by Turbopack's Edge Runtime build check, since middleware
+// always runs on Edge and this file is bundled into edge chunks too.
+const hasRedisCache = !!(
+  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+);
 
 const nextConfig: NextConfig = {
   ...(hasRedisCache
