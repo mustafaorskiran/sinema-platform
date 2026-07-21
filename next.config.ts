@@ -1,6 +1,20 @@
 import type { NextConfig } from "next";
+import path from "path";
+
+// Self-hosted Next.js has no eviction for the default filesystem ISR/fetch cache —
+// it filled the server disk and took the site down (2026-07-20/21). Route cache
+// entries through Redis instead when Upstash is configured (see cache-handler.js).
+const hasRedisCache = !!(
+  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+);
 
 const nextConfig: NextConfig = {
+  ...(hasRedisCache
+    ? {
+        cacheHandler: path.join(__dirname, "cache-handler.js"),
+        cacheMaxMemorySize: 0,
+      }
+    : {}),
   images: {
     remotePatterns: [
       {
