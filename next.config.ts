@@ -3,10 +3,10 @@ import path from "path";
 
 // Self-hosted Next.js has no eviction for the default filesystem ISR/fetch cache —
 // it filled the server disk and took the site down (2026-07-20/21). Route cache
-// entries through Redis instead when Upstash is configured (see cache-handler.js).
-const hasRedisCache = !!(
-  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
-);
+// entries through Redis instead when configured (see cache-handler.js). Uses a raw
+// TCP connection (ioredis), not the REST/fetch client — that collided with Next's
+// own fetch-patching and crashed renders (incident 2026-07-21).
+const hasRedisCache = !!process.env.REDIS_URL;
 
 const nextConfig: NextConfig = {
   ...(hasRedisCache
