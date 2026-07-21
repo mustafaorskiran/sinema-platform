@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Suspense } from 'react'
 import {
   IconChevronRight, IconFilm, IconStar, IconStarFilled, IconTrendingUp, IconTv, IconFire, IconMessageSquare, IconMedal,
@@ -213,9 +214,9 @@ export default async function HomePage() {
       {hero && (
         <div className="relative h-[60vh] sm:h-[75vh] min-h-[380px] overflow-hidden">
           {heroBackdrop && (
-            <img src={heroBackdrop} alt={getMediaTitle(hero)}
-              className="absolute inset-0 w-full h-full object-cover"
-              loading="eager" fetchPriority="high" />
+            <Image src={heroBackdrop} alt={getMediaTitle(hero)}
+              fill sizes="100vw" priority quality={80}
+              className="object-cover" />
           )}
           <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/60 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-t from-[--bg-primary] via-transparent to-transparent" />
